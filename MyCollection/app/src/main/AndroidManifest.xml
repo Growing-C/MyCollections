@@ -10,16 +10,39 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 线程池-->
         <activity
             android:name=".functions.threadpool.ThreadPoolDemo"
             android:label="@string/title_activity_thread_pool_demo"></activity>
+
+        <!--抢红包-->
+        <service
+            android:name=".functions.weixindemo.EnvelopeService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/red_envelope_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
+
+        <activity
+            android:name=".functions.weixindemo.RedEnvelopeDemo"
+            android:label="@string/title_activity_main"></activity>
+
     </application>
 
 </manifest>

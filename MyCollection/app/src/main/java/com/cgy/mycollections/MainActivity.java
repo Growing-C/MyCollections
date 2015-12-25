@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
+import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Demo[] demos = {
-            new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class)
+            new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class),
+            new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, RedEnvelopeDemo.class)
     };
 
     private View.OnClickListener mClickListener = new View.OnClickListener() {

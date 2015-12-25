@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/red_envelope_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/bottom_bar"
+        android:onClick="click"
+        android:text="@string/red_envelope_btn"
+        />
+    <Button
+        android:id="@+id/red_envelope_btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/bottom_bar"
+        android:onClick="click"
+        android:text="@string/red_envelope_btn_close"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
