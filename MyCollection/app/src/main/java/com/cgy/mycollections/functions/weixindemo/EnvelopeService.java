@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 public class EnvelopeService extends AccessibilityService {
     public static final String TAG = "cgy";
+    public boolean onGetBoolean = false;//表示已经点击了一个领取红包不要再点上一个了，一次只能抢最下面的那个红包
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -78,6 +79,7 @@ public class EnvelopeService extends AccessibilityService {
 
     @SuppressLint("NewApi")
     private void getPacket() {
+        onGetBoolean = false;
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         if (rootNode == null) {
             Log.d(TAG, "rootWindow为空!");
@@ -96,7 +98,9 @@ public class EnvelopeService extends AccessibilityService {
     public void recycle(AccessibilityNodeInfo info) {
         if (info.getChildCount() == 0) {
             if (info.getText() != null) {
-                if ("领取红包".equals(info.getText().toString())) {
+                String str = info.getText().toString();
+                if ("领取红包".equals(str) || "開".equals(str)) {
+                    onGetBoolean = true;
                     //这里有一个问题需要注意，就是需要找到一个可以点击的View
                     Log.i("demo", "Click" + ",isClick:" + info.isClickable());
                     info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -115,8 +119,8 @@ public class EnvelopeService extends AccessibilityService {
 
         } else {
 
-            for (int i = 0; i < info.getChildCount(); i++) {
-                if (info.getChild(i) != null) {
+            for (int i = info.getChildCount() - 1; i >= 0; i--) {
+                if (info.getChild(i) != null && !onGetBoolean) {
                     recycle(info.getChild(i));
                 }
             }
