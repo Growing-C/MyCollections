@@ -1,3 +1,12 @@
 
-屏幕适配时 values-xhdpi-1280x720应该是先匹配xhdpi再匹配后面的，是向下匹配的  比如1280x720的如果没有这个values则会匹配到下一级，
+1.屏幕适配时 values-xhdpi-1280x720应该是先匹配xhdpi再匹配后面的，是向下匹配的  比如1280x720的如果没有这个values则会匹配到下一级，
 例如values-1080x600
+
+string.xml中可以添加xliff标签来占位，可以在代码中添加字符或者数字
+<string name="info">
+your name is <xliff:g id="NAME">%1$s</xliff:g>, and your age is
+<xliff:g id="AGE">%2$s</xliff:g>
+   </string>
+   
+   
+2.listview中的textview如果设置了ellipsize="marquee"即跑马灯，滚动的时候会卡顿，而且可能有的item文字显示不出来！

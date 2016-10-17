@@ -1,0 +1,3 @@
+git 删除分支，打开git命令界面输入 git push origin ：分支名（分支名前无空格）
+
+git push 标签：git push origin --tags 
