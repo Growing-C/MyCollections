@@ -23,3 +23,6 @@ densityDpi    density    对应包
 						  x-hdpi
 						  xxhdpi
 						  xxxhdpi
+						  
+5.遇到不同jar包里面的类重复的时候，可以将其中一个jar包改成zip解压缩，删除掉重复的.class文件然后压缩成zip格式，
+再改成.jar导入即可，操作顺序必须按照上述顺序。				  
