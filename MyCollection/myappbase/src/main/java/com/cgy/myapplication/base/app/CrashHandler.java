@@ -16,13 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * TODO：这个类的内容和appframe中的合并
  * Created by RB-cgy on 2016/3/16.
  */
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = "CrashHandler";
     private static final boolean DEBUG = true;
 
-    private static final String PATH = Environment.getExternalStorageDirectory().getPath() + "/" + AppConfig.APP_NAME + "log/";
+    private static final String PATH = Environment.getExternalStorageDirectory().getPath() + "/" + "log/";
     private static final String FILE_NAME = "crash";
 
     //log文件的后缀名

@@ -11,6 +11,18 @@
     <string name="title_activity_red_envelope_demo">RedEnvelopeDemo</string>
     <string name="info_red_envelope_demo">"自动抢红包服务"</string>
 
+    <string name="title_activity_tts_demo">TTSDemo</string>
+    <string name="info_tts_demo">"安卓文字转语音"</string>
+
+    <string name="title_activity_simple_recycler_demo">SimpleRecyclerViewDemo</string>
+    <string name="info_simple_recycler_demo">简单的recyclerView的demo</string>
+
+    <string name="title_activity_data_binding_demo">DataBindingDemo</string>
+    <string name="info_data_binding_demo">简单的dataBinding的demo</string>
+
+    <string name="title_activity_status_bar_demo">StatusBarDemo</string>
+    <string name="info_status_bar_demo">简单的StatusBarDemo</string>
+
     <string name="red_envelope_label">"抢红包"</string>
     <string name="red_envelope_btn">"开启自动抢红包服务"</string>
     <string name="red_envelope_btn_close">"关闭自动抢红包服务"</string>

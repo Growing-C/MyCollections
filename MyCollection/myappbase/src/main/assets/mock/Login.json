@@ -1,0 +1,13 @@
+{
+  "responseCode": "success",
+  "responseMessage": "注册成功",
+  "responseToken": "32位随机字符串",
+  "responseData": {
+    "doctor_id": "12312323**********",
+    "photo": "http://*****************",
+    "phome": "1592100*********",
+    "department_name": "院长办公室",
+    "logon_name": "1592100****_d",
+    "h_token": "123**********",
+  }
+}

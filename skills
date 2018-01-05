@@ -25,4 +25,10 @@ densityDpi    density    对应包
 						  xxxhdpi
 						  
 5.遇到不同jar包里面的类重复的时候，可以将其中一个jar包改成zip解压缩，删除掉重复的.class文件然后压缩成zip格式，
-再改成.jar导入即可，操作顺序必须按照上述顺序。				  
+再改成.jar导入即可，操作顺序必须按照上述顺序。			
+
+6.dialog有个坑，当使用Theme.AppCompat.Light.Dialog 这个theme的时候（不一定是theme的问题） 如果dialog的xml中最外层是wrap_content,内部的layout设置的宽度
+超过一定的值就会显示不全，最外层也要设置为希望的宽度才行，原理暂时不明	  
+
+
+7.RecyclerView有个坑，其item的布局 根的高度不能用match_parent，不然会导致下面的数据都显示不出来，只显示一条

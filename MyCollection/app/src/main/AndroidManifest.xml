@@ -18,12 +18,12 @@
             </intent-filter>
         </activity>
 
-        <!-- 线程池-->
+        <!-- 线程池 -->
         <activity
             android:name=".functions.threadpool.ThreadPoolDemo"
-            android:label="@string/title_activity_thread_pool_demo"></activity>
+            android:label="@string/title_activity_thread_pool_demo" />
 
-        <!--抢红包-->
+        <!-- 抢红包 -->
         <service
             android:name=".functions.weixindemo.EnvelopeService"
             android:enabled="true"
@@ -41,8 +41,19 @@
 
         <activity
             android:name=".functions.weixindemo.RedEnvelopeDemo"
-            android:label="@string/title_activity_main"></activity>
+            android:label="@string/title_activity_main" />
 
+        <!-- 语音 -->
+        <activity android:name=".functions.tts.TTSDemo" />
+
+        <service android:name=".functions.tts.TTSService" />
+
+        <activity android:name=".functions.androiddesign.recyclerview.SimpleRecyclerViewDemo" />
+        <activity android:name=".functions.framework.databinding.DataBindingDemo" />
+        <activity android:name=".functions.systemui.statusbar.StatusBarDemo" />
+        <activity android:name=".functions.systemui.statusbar.SystemStatusActivity" />
+        <activity android:name=".functions.systemui.statusbar.DynamicStatusActivity" />
+        <activity android:name=".functions.systemui.statusbar.ThirdLibStatusActivity"></activity>
     </application>
 
 </manifest>

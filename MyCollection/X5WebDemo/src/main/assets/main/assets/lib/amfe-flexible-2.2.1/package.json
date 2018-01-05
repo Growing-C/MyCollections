@@ -1,0 +1,97 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "amfe-flexible",
+        "scope": null,
+        "escapedName": "amfe-flexible",
+        "name": "amfe-flexible",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\witontekGit\\witon_git_minipay_web2017\\dev\\app\\ng4"
+    ]
+  ],
+  "_cnpm_publish_time": 1503020295934,
+  "_from": "amfe-flexible@latest",
+  "_hasShrinkwrap": false,
+  "_id": "amfe-flexible@2.2.1",
+  "_inCache": true,
+  "_location": "/amfe-flexible",
+  "_nodeVersion": "4.8.3",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/amfe-flexible-2.2.1.tgz_1503020295848_0.13712441641837358"
+  },
+  "_npmUser": {
+    "name": "mingelz",
+    "email": "mingelz@gmail.com"
+  },
+  "_npmVersion": "2.15.11",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "amfe-flexible",
+    "scope": null,
+    "escapedName": "amfe-flexible",
+    "name": "amfe-flexible",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npm.taobao.org/amfe-flexible/download/amfe-flexible-2.2.1.tgz",
+  "_shasum": "353f00289e4d38ca88a21eb3854420308af0b559",
+  "_shrinkwrap": null,
+  "_spec": "amfe-flexible",
+  "_where": "D:\\witontekGit\\witon_git_minipay_web2017\\dev\\app\\ng4",
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/amfe/lib-flexible/issues"
+  },
+  "dependencies": {},
+  "description": "Build flexible page on mobile platform",
+  "devDependencies": {
+    "uglify-js": "^3.0.27"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "353f00289e4d38ca88a21eb3854420308af0b559",
+    "size": 2471,
+    "noattachment": false,
+    "tarball": "http://registry.npm.taobao.org/amfe-flexible/download/amfe-flexible-2.2.1.tgz"
+  },
+  "gitHead": "c483936430ab14e60fd7746b52a9def5e877fe5e",
+  "homepage": "https://github.com/amfe/lib-flexible",
+  "keywords": [
+    "lib",
+    "amfe",
+    "flexible",
+    "mobile",
+    "css",
+    "rem",
+    "vw"
+  ],
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "mingelz",
+      "email": "mingelz@gmail.com"
+    }
+  ],
+  "name": "amfe-flexible",
+  "optionalDependencies": {},
+  "publish_time": 1503020295934,
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/amfe/lib-flexible.git"
+  },
+  "scripts": {
+    "compress": "uglifyjs index.js -o index.min.js -c -m"
+  },
+  "version": "2.2.1"
+}

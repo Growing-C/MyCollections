@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cgy.mycollections.functions.systemui.statusbar.SystemStatusActivity">
+
+    <!-- android:fitsSystemWindows="true" 必须放在要沉浸的view里面，如果放在根布局里面 会导致状态栏为白色-->
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:background="@color/colorAccent"
+        android:clipToPadding="true"
+        android:fitsSystemWindows="true"
+        android:text="沉浸式状态栏"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</android.support.constraint.ConstraintLayout>

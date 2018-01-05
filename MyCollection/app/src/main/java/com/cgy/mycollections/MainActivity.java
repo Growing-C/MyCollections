@@ -1,56 +1,71 @@
 package com.cgy.mycollections;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
+import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
+import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
+import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
 public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);//butterKnife和dataBinding并不冲突
 
-        LinearLayout mContainer = (LinearLayout) findViewById(R.id.main_item_container);
-        int height = getResources().getDisplayMetrics().heightPixels;
+        setSupportActionBar(toolbar);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.set(10, 10, 10, 15);
+            }
+        });
 
-        //屏幕上加载10个item
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height / 10);
+        MainItemAdapter mainItemAdapter = new MainItemAdapter(demos);
+        mainItemAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                startActivity(new Intent(MainActivity.this, demos[position].c));
+            }
+        });
+        recyclerView.setAdapter(mainItemAdapter);
 
-        for (int i = 0, len = demos.length; i < len; i++) {
-            Demo demo = demos[i];
-            View v = View.inflate(MainActivity.this, R.layout.item_demos, null);
-            ((TextView) v.findViewById(R.id.tx_title)).setText(demo.titleId);
-            ((TextView) v.findViewById(R.id.tx_info)).setText(demo.infoId);
-
-            v.setId(i);
-            v.setOnClickListener(mClickListener);
-
-            mContainer.addView(v, params);
-        }
     }
 
     private Demo[] demos = {
             new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class),
-            new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, RedEnvelopeDemo.class)
-    };
-
-    private View.OnClickListener mClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int id = v.getId();
-            if (id < 0 || id >= demos.length)
-                return;
-            startActivity(new Intent(MainActivity.this, demos[id].c));
-        }
+            new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, RedEnvelopeDemo.class),
+            new Demo(R.string.title_activity_tts_demo, R.string.info_tts_demo, TTSDemo.class),
+            new Demo(R.string.title_activity_simple_recycler_demo, R.string.info_simple_recycler_demo, true, SimpleRecyclerViewDemo.class),
+            new Demo(R.string.title_activity_data_binding_demo, R.string.info_data_binding_demo, true, DataBindingDemo.class),
+            new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
     };
 
     @Override
