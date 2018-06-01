@@ -23,6 +23,12 @@
     <string name="title_activity_status_bar_demo">StatusBarDemo</string>
     <string name="info_status_bar_demo">简单的StatusBarDemo</string>
 
+    <string name="title_activity_net_demo">NetRequestDemo</string>
+    <string name="info_net_demo">简单的NetDemo</string>
+
+    <string name="title_text_demo">TextDemo</string>
+    <string name="info_text_demo">文字textView相关功能demo</string>
+
     <string name="red_envelope_label">"抢红包"</string>
     <string name="red_envelope_btn">"开启自动抢红包服务"</string>
     <string name="red_envelope_btn_close">"关闭自动抢红包服务"</string>

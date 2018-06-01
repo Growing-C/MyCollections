@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
+import com.cgy.mycollections.functions.net.NetRequestDemo;
 import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
+import com.cgy.mycollections.functions.textdemo.TextDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_activity_simple_recycler_demo, R.string.info_simple_recycler_demo, true, SimpleRecyclerViewDemo.class),
             new Demo(R.string.title_activity_data_binding_demo, R.string.info_data_binding_demo, true, DataBindingDemo.class),
             new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
+            new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, NetRequestDemo.class),
+            new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
     };
 
     @Override

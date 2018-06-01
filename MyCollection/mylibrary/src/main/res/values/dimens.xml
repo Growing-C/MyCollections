@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="px2_size">1dp</dimen>
+
+    <dimen name="px10_margin">5dp</dimen>
+    <dimen name="px18_margin">9dp</dimen>
+    <dimen name="px19_margin">9.5dp</dimen>
+    <dimen name="px25_common">12.5dp</dimen>
+    <dimen name="px26_margin">13dp</dimen>
+    <dimen name="px28_margin">14dp</dimen>
+    <dimen name="px30_common">15dp</dimen>
+    <dimen name="px38_margin">19dp</dimen>
+    <dimen name="px40_margin">20dp</dimen>
+    <dimen name="px44_common">22dp</dimen>
+    <dimen name="px50_margin">25dp</dimen>
+    <dimen name="px58_margin">29dp</dimen>
+    <dimen name="px80_size">40dp</dimen>
+    <dimen name="px85_common">42.5dp</dimen>
+    <dimen name="px87_size">43.5dp</dimen>
+
+    <dimen name="px240_size">120dp</dimen>
+    <dimen name="px384_height">192dp</dimen>
+    <dimen name="px519_dialog_width">259.5dp</dimen>
+
+    <!--tx size-->
+    <dimen name="px25_tx_size">12.5sp</dimen>
+    <dimen name="px27_tx_size">13.5sp</dimen>
+    <dimen name="px31_tx_size">15.5sp</dimen>
+    <dimen name="px33_tx_size">16.5sp</dimen>
+    <dimen name="px35_tx_size">17.5sp</dimen>
+</resources>

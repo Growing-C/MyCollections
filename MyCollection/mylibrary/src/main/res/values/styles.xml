@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <!--通用对话框样式-->
+    <style name="CommonDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <!-- 背景透明 -->
+        <item name="android:background">@android:color/transparent</item>
+        <!-- window透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="CommonTxStyle">
+        <item name="android:textSize">@dimen/px33_tx_size</item>
+        <item name="android:textColor">@color/tx_color_333333</item>
+    </style>
+
+    <style name="TxStyleColor666Size27">
+        <item name="android:textColor">@color/tx_color_666666</item>
+        <item name="android:textSize">@dimen/px27_tx_size</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+</resources>

@@ -6,3 +6,5 @@
 
 
 有的？attr/ 的内容可能不可以在app的theme 中定义 比如?android:attr/toastFrameBackground 这个Toast的背景，因为 toastFrameBackground没有设置为exported 没有写在public.xml中，意味着 非安卓平台自身的app无法自定义这个属性
+
+

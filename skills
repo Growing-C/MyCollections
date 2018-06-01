@@ -32,3 +32,5 @@ densityDpi    density    对应包
 
 
 7.RecyclerView有个坑，其item的布局 根的高度不能用match_parent，不然会导致下面的数据都显示不出来，只显示一条
+
+8.TabLayout有个坑，tabMode设置为fix的时候 即使设置了tabTextApearence也有可能字体会被压缩，因为一行放不下那么多，设置为scrollable或者 tabPadding修改一下可以解决

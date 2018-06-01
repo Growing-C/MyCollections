@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="divider_bg_e5e5e5">#E5E5E5</color>
+    <color name="blue_00A1FE">#00A1FE</color>
+
+    <color name="divider_grey_dfdfdf">#DFDFDF</color>
+
+    <color name="grey_loading_000e13">#000e13</color>
+
+    <color name="tx_color_888888">#888888</color>
+    <color name="tx_color_333333">#333333</color>
+    <color name="tx_color_666666">#666666</color>
+</resources>

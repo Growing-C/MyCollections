@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:id="@+id/dialog_root_ll"
+        android:layout_width="@dimen/px519_dialog_width"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:id="@+id/upper_scroll"
+            android:layout_width="match_parent"
+            android:background="@drawable/bg_common_dialog_top"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/dialog_upper_part"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/px28_margin"
+                android:paddingRight="@dimen/px28_margin">
+
+                <TextView
+                    android:id="@+id/dialog_title"
+                    style="@style/CommonTxStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/px18_margin"
+                    android:layout_marginTop="@dimen/px38_margin"
+                    android:includeFontPadding="false"
+                    android:text="Title" />
+
+                <TextView
+                    android:id="@+id/dialog_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/px19_margin"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/tx_color_333333"
+                    android:textSize="@dimen/px27_tx_size" />
+
+                <TextView
+                    android:id="@+id/dialog_sub_message"
+                    style="@style/TxStyleColor666Size27"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/px2_size"
+            android:background="@color/divider_bg_e5e5e5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/px87_size"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_negative"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector_dialog_btn_left"
+                android:text="I know"
+                android:textColor="@color/tx_color_888888"
+                android:textSize="@dimen/px33_tx_size" />
+
+            <View
+                android:id="@+id/btn_divider"
+                android:layout_width="@dimen/px2_size"
+                android:layout_height="match_parent"
+                android:background="@color/divider_bg_e5e5e5" />
+
+            <Button
+                android:id="@+id/btn_positive"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector_dialog_btn_right"
+                android:text="I know"
+                android:textColor="@color/blue_00A1FE"
+                android:textSize="@dimen/px33_tx_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

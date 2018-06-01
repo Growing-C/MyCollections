@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/px85_common"
+    android:background="?attr/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:minHeight="@dimen/px85_common"
+    android:theme="@style/AppTheme.AppBarOverlay">
+
+    <ImageView
+        android:id="@+id/back_img"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackground"
+        android:paddingLeft="@dimen/px28_margin"
+        android:paddingRight="@dimen/px28_margin"
+        android:scaleType="centerInside"
+        android:src="@drawable/nav_arrow"
+        />
+
+    <TextView
+        android:id="@+id/back_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/px28_margin"
+        android:text="@string/close"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/px31_tx_size"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxWidth="@dimen/px384_height"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/px35_tx_size" />
+
+        <ImageView
+            android:id="@+id/toolbar_headimg"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="3dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/head_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar_headimg"
+            android:layout_centerHorizontal="true"
+            android:textSize="@dimen/px35_tx_size"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="right">
+
+        <!--Padding是为了增大热区-->
+        <TextView
+            android:id="@+id/toolbar_right_tx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingLeft="@dimen/px26_margin"
+            android:paddingRight="@dimen/px26_margin"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/px35_tx_size" />
+
+        <ImageView
+            android:id="@+id/toolbar_right_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="@dimen/px50_margin"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside" />
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>
