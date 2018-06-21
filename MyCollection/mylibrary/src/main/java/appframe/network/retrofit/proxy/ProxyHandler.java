@@ -91,36 +91,36 @@ public class ProxyHandler implements InvocationHandler {
             invokeArguments.refreshTokenError = null;
             System.out.println("refreshTokenWhenTokenInvalid thread:" + Thread.currentThread().getName() + "--id:" + Thread.currentThread().getId());
             // call the refresh token api.
-            String loginName = SharedPreferencesUtils.getInstance(MyApplication.getInstance()).getString(Constants.USER_PHONE, "");
-            String loginPwd = SharedPreferencesUtils.getInstance(MyApplication.getInstance()).getString(Constants.USER_PASSWORD, "");
+//            String loginName = SharedPreferencesUtils.getInstance(MyApplication.getInstance()).getString(Constants.USER_PHONE, "");
+//            String loginPwd = SharedPreferencesUtils.getInstance(MyApplication.getInstance()).getString(Constants.USER_PASSWORD, "");
 
-            ApiWrapper.getInstance().syncLogin(loginName, loginPwd, "")
-                    .subscribe(new MyCallBack<LoginInfoBean>() {
-                        @Override
-                        public void onSuccess(LoginInfoBean model) {
-                            System.out.println("refresh token ->login thread:" + Thread.currentThread().getName() + "--id:" + Thread.currentThread().getId());
-                            if (model != null) {//token刷新操作在MyCallBack中
-                                invokeArguments.isTokenNeedRefresh = true;
-                                tokenChangedTime = new Date().getTime();
-                                System.out.println("Refresh token success, time = " + tokenChangedTime);
-                            }
-                        }
-                        @Override
-                        public void onError(Throwable e) {
-                            System.out.println("refresh token ->login onError");
-                            invokeArguments.refreshTokenError = e;
-                        }
-
-                        @Override
-                        public void onFailure(int code, String msg) {
-
-                        }
-
-                        @Override
-                        public void onFinish() {
-
-                        }
-                    });
+//            ApiWrapper.getInstance().syncLogin(loginName, loginPwd, "")
+//                    .subscribe(new MyCallBack<LoginInfoBean>() {
+//                        @Override
+//                        public void onSuccess(LoginInfoBean model) {
+//                            System.out.println("refresh token ->login thread:" + Thread.currentThread().getName() + "--id:" + Thread.currentThread().getId());
+//                            if (model != null) {//token刷新操作在MyCallBack中
+//                                invokeArguments.isTokenNeedRefresh = true;
+//                                tokenChangedTime = new Date().getTime();
+//                                System.out.println("Refresh token success, time = " + tokenChangedTime);
+//                            }
+//                        }
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            System.out.println("refresh token ->login onError");
+//                            invokeArguments.refreshTokenError = e;
+//                        }
+//
+//                        @Override
+//                        public void onFailure(int code, String msg) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onFinish() {
+//
+//                        }
+//                    });
             System.out.println("token refresh logic ok-------------------------------------");
             if (invokeArguments.refreshTokenError != null) {
                 return Observable.error(invokeArguments.refreshTokenError);
@@ -137,15 +137,15 @@ public class ProxyHandler implements InvocationHandler {
      * 若是 POST 请求，或者使用 Body ，自行替换。因为 参数数组已经知道，进行遍历找到相应的值，进行替换即可（更新为新的 token 值）。
      */
     private void updateMethodToken(InvokeArguments invokeArguments, Object[] args) {
-        if (invokeArguments.isTokenNeedRefresh && !TextUtils.isEmpty(MyApplication.getInstance().getToken())) {
-            for (int i = 0, len = args.length; i < len; i++) {
-                if (args[i] instanceof RequestParams) {
-                    System.out.println("updateMethodToken changed token:" + MyApplication.getInstance().getToken());
-                    ((RequestParams) args[i]).requestToken = MyApplication.getInstance().getToken();
-                }
-            }
-            invokeArguments.isTokenNeedRefresh = false;
-        }
+//        if (invokeArguments.isTokenNeedRefresh && !TextUtils.isEmpty(MyApplication.getInstance().getToken())) {
+//            for (int i = 0, len = args.length; i < len; i++) {
+//                if (args[i] instanceof RequestParams) {
+//                    System.out.println("updateMethodToken changed token:" + MyApplication.getInstance().getToken());
+//                    ((RequestParams) args[i]).requestToken = MyApplication.getInstance().getToken();
+//                }
+//            }
+//            invokeArguments.isTokenNeedRefresh = false;
+//        }
     }
 
     /**

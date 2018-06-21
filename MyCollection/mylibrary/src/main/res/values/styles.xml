@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <!--通用对话框样式-->
     <style name="CommonDialogTheme" parent="Theme.AppCompat.Light.Dialog">
@@ -11,9 +11,24 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <!--activity dialog风格-->
+    <style name="Theme.ActivityDialogStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
     <style name="CommonTxStyle">
         <item name="android:textSize">@dimen/px33_tx_size</item>
         <item name="android:textColor">@color/tx_color_333333</item>
+    </style>
+
+    <style name="ToastTxAppearanceCommon">
+        <item name="android:textSize">@dimen/px33_tx_size</item>
+        <item name="android:textColor">@color/tx_color_666666</item>
     </style>
 
     <style name="TxStyleColor666Size27">

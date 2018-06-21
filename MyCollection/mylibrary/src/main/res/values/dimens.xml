@@ -23,6 +23,9 @@
     <dimen name="px384_height">192dp</dimen>
     <dimen name="px519_dialog_width">259.5dp</dimen>
 
+    <dimen name="px36_common">18dp</dimen>
+    <dimen name="px24_margin">12dp</dimen>
+    <dimen name="cardPadding">2px</dimen>
     <!--tx size-->
     <dimen name="px25_tx_size">12.5sp</dimen>
     <dimen name="px27_tx_size">13.5sp</dimen>

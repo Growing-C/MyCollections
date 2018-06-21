@@ -6,7 +6,8 @@ import android.content.DialogInterface;
 import android.os.Environment;
 import android.os.Handler;
 
-import com.witon.jining.view.widget.CommonDialog;
+
+import com.witon.mylibrary.widget.CommonDialog;
 
 import java.io.BufferedInputStream;
 import java.io.File;

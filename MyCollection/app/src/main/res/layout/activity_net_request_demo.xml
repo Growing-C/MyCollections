@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".functions.net.NetRequestDemo">
 
+    <TextView
+        android:id="@+id/tag_http"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:text="http request"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/get"
         android:layout_width="0dp"
@@ -13,7 +23,8 @@
         android:onClick="get"
         android:text="Get"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tag_http" />
 
     <Button
         android:id="@+id/post"
@@ -35,4 +46,55 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/post" />
 
+    <TextView
+        android:id="@+id/tag_webservice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:text="webservice request"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/download" />
+
+    <Button
+        android:id="@+id/web_service_request"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:onClick="queryWeather"
+        android:text="query weather"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tag_webservice" />
+
+
+    <Button
+        android:id="@+id/create_order_json"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:onClick="createOrder"
+        android:text="1.create Order"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/web_service_request" />
+
+    <Button
+        android:id="@+id/create_order_xml"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:onClick="queryOrderStatus"
+        android:text="2.query Order status"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/create_order_json" />
+
+    <Button
+        android:id="@+id/reverse_order"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:onClick="reverseOrder"
+        android:text="3.reverse Order"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/create_order_xml" />
 </android.support.constraint.ConstraintLayout>

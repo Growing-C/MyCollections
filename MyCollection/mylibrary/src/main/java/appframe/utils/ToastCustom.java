@@ -11,7 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.witon.jining.R;
+
+import com.witon.mylibrary.R;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

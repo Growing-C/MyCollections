@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import java.io.IOException;
 
 import appframe.ProjectConfig;
-import appframe.app.NetPathConstants;
 import appframe.utils.LogUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -96,9 +95,9 @@ public class MockDataInterceptor implements Interceptor {
 //            } elseif (path.contains(NetPathConstants.URL_GET_APPRAISE_ITEMS)) {//查询门诊已缴费记录详情
 //                response = getMockResponse(request, "mock/GetAppraiseItems.json");
 //            }
-            if (path.contains(NetPathConstants.URL_QUERY_OUTPATIENT_FEE_DETAIL)) {//查询门诊缴费费用明细
-                response = getMockResponse(request, "mock/OutpatientFeeDetail.json");
-            }
+//            if (path.contains(NetPathConstants.URL_QUERY_OUTPATIENT_FEE_DETAIL)) {//查询门诊缴费费用明细
+//                response = getMockResponse(request, "mock/OutpatientFeeDetail.json");
+//            }
         }
         return response;
     }
@@ -112,7 +111,7 @@ public class MockDataInterceptor implements Interceptor {
     private Response getMockResponse(Request request, String path) {
         LogUtils.d("getMockResponse");
         Response response;
-        String data = MockDataGenerator.getMockDataFromJsonFile(path);
+        String data = MockDataGenerator.getMockDataFromJsonFile(null,path);
         response = getHttpSuccessResponse(request, data);
         return response;
     }

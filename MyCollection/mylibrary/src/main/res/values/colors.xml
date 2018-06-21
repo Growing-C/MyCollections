@@ -8,6 +8,16 @@
 
     <color name="grey_loading_000e13">#000e13</color>
 
+    <!--toast-->
+    <color name="cardShadowColor_1">#0a8c8c8c</color>
+    <color name="cardShadowColor_2">#0f898989</color>
+    <color name="cardShadowColor_3">#14898989</color>
+    <color name="cardShadowColor_4">#19898989</color>
+    <color name="cardShadowColor_5">#1e898989</color>
+    <color name="cardShadowColor_6">#23898989</color>
+    <color name="cardShadowColor_7">#28898989</color>
+    <color name="cardShadowColor_8">#2d898989</color>
+
     <color name="tx_color_888888">#888888</color>
     <color name="tx_color_333333">#333333</color>
     <color name="tx_color_666666">#666666</color>

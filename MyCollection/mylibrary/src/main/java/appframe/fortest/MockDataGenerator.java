@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import appframe.app.MyApplication;
 import appframe.utils.IOUtils;
 import appframe.utils.LogUtils;
 
@@ -25,7 +24,7 @@ public class MockDataGenerator {
     public static void testInstall(Context context, String fileName) {
         File file = new File(Environment.getExternalStorageDirectory()
                 + "/witon/", fileName + ".apk");
-        System.out.println("exists:"+file.exists()+"-->filePath:" + file.toString());
+        System.out.println("exists:" + file.exists() + "-->filePath:" + file.toString());
 
         //7.0 跳转到安装界面属于别的应用程序 没有权限执行解析操作 ，会出现解析程序包出错
         //解决方案：
@@ -58,11 +57,11 @@ public class MockDataGenerator {
         context.startActivity(intent);
     }
 
-    public static String getMockDataFromJsonFile(String path) {
+    public static String getMockDataFromJsonFile(Context context, String path) {
         String json = "";
         LogUtils.d("getMockDataFromJsonFile");
         try {
-            InputStream inputStream = MyApplication.getInstance().getAssets().open(path);
+            InputStream inputStream = context.getAssets().open(path);
             json = IOUtils.toString(inputStream);
 
 //            LogUtils.d("MockDataGenerator:json？？:" + json);//.json文件格式读取无法打印log,
