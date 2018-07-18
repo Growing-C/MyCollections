@@ -12,3 +12,6 @@
 /.idea/modules.xml
 /.idea/compiler.xml
 /.idea/
+/gradlew
+/gradlew.bat
+/MyCollection.iml
