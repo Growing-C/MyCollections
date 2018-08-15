@@ -1,12 +1,14 @@
-package appframe.permission;
+package com.linkstec.eagle.base.permission;
 
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +27,26 @@ import java.util.List;
  */
 public class PermissionManager {
     public static final int REQUEST_CAMERA_PERMISSION = 1;//requestCode of camera permission operation
+    public static final int REQUEST_CALL_PHONE_PERMISSION = 2;//requestCode of call  permission operation
+    public static final int REQUEST_EXTERNAL_PERMISSION = 3;//requestCode of EXTERNAL permission operation
+    public static final int REQUEST_PHONE_STATE_PERMISSION = 4;//requestCode of phone state  permission operation
+    public static final int REQUEST_INSTALL_PACKAGES = 5;//requestCode of phone state  permission operation
+    public static final int REQUEST_BLUETOOTH = 6;//requestCode of location  permission operation(for bluetooth)
 
+    public static String sRationale;
+    private static PermissionRationaleDialog sRationaleDialog;
+
+    /**
+     * convenient method to request bluetooth permission
+     *
+     * @param object should be instance of Activity or Fragment .
+     * @see #doRequestPermissions(Object, int, String...)
+     */
+    public static void requestBluetoothPermission(Object object, String rationale) {
+        PermissionManager.sRationale = rationale;
+
+        doRequestPermissions(object, REQUEST_BLUETOOTH, new String[]{Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION});
+    }
 
     /**
      * convenient method to request Camera permission
@@ -33,8 +54,37 @@ public class PermissionManager {
      * @param object should be instance of Activity or Fragment .
      * @see #doRequestPermissions(Object, int, String...)
      */
-    public static void requestCameraPermission(Object object) {
-        doRequestPermissions(object, REQUEST_CAMERA_PERMISSION, new String[]{Manifest.permission.CAMERA});
+    public static void requestCameraPermission(Object object, String rationale) {
+        PermissionManager.sRationale = rationale;
+        doRequestPermissions(object, REQUEST_CAMERA_PERMISSION, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
+    }
+
+    /**
+     * convenient method to request Call phone permission
+     *
+     * @param object should be instance of Activity or Fragment
+     * @see #doRequestPermissions(Object, int, String...)
+     */
+    public static void requestCallPhonePermission(Object object, String rationale) {
+        PermissionManager.sRationale = rationale;
+        doRequestPermissions(object, REQUEST_CALL_PHONE_PERMISSION, new String[]{Manifest.permission.CALL_PHONE});
+    }
+
+
+    public static void requestExternalPermission(Object object, String rationale) {
+        PermissionManager.sRationale = rationale;
+        doRequestPermissions(object, REQUEST_EXTERNAL_PERMISSION, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
+    }
+
+    /**
+     * convenient method to request phone state permission
+     *
+     * @param object should be instance of Activity or Fragment
+     * @see #doRequestPermissions(Object, int, String...)
+     */
+    public static void requestPhoneStatePermission(Object object, String rationale) {
+        PermissionManager.sRationale = rationale;
+        doRequestPermissions(object, REQUEST_PHONE_STATE_PERMISSION, new String[]{Manifest.permission.READ_PHONE_STATE});
     }
 
     /**
@@ -61,13 +111,14 @@ public class PermissionManager {
 
     /**
      * TODO:to be completed
+     * Gets whether you should show UI with rationale for requesting a permission.
      *
      * @param activity
      * @param permission
      * @param requestCode
      * @return
      */
-    public boolean shouldShowRequestPermissionRationale(Activity activity, String permission, int requestCode) {
+    public static boolean shouldShowRequestPermissionRationale(Activity activity, String permission, int requestCode) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                 permission)) {
             return true;
@@ -90,6 +141,7 @@ public class PermissionManager {
         }
         List<String> deniedPermissions = PermissionUtils.findDeniedPermissions(PermissionUtils.getActivity(object), permissions);
 
+//        System.out.println("deniedPermissions:"+deniedPermissions.size());
         if (deniedPermissions.size() > 0) {
             if (object instanceof Activity) {
                 ((Activity) object).requestPermissions(deniedPermissions.toArray(new String[deniedPermissions.size()]), requestCode);
@@ -175,7 +227,7 @@ public class PermissionManager {
         requestResult(fragment, requestCode, permissions, grantResults);
     }
 
-    private static void requestResult(Object obj, int requestCode, String[] permissions,
+    private static void requestResult(final Object obj, final int requestCode, final String[] permissions,
                                       int[] grantResults) {
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < grantResults.length; i++) {
@@ -183,8 +235,39 @@ public class PermissionManager {
                 deniedPermissions.add(permissions[i]);
             }
         }
-        if (deniedPermissions.size() > 0) {
-            doExecuteFail(obj, requestCode);
+        if (deniedPermissions.size() > 0) {//有权限被拒绝了
+            boolean shouldShowRationale;//需要显示权限说明
+            Context context;
+            if (obj instanceof Activity) {
+                context = (Activity) obj;
+                shouldShowRationale = shouldShowRequestPermissionRationale(((Activity) obj), deniedPermissions.get(0), requestCode);
+            } else if (obj instanceof Fragment) {
+                context = ((Fragment) obj).getActivity();
+                shouldShowRationale = shouldShowRequestPermissionRationale(((Fragment) obj).getActivity(), deniedPermissions.get(0), requestCode);
+            } else {
+                throw new IllegalArgumentException(obj.getClass().getName() + " is not supported!");
+            }
+
+            if (shouldShowRationale) {// showRationale
+                if (sRationaleDialog == null || !sRationaleDialog.isShowing()) {//activity和fragment中都使用的时候需要这么处理，不然会弹出两个框
+                    sRationaleDialog = new PermissionRationaleDialog(context, sRationale,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {//确定
+                                    doRequestPermissions(obj, requestCode, permissions);
+                                }
+                            },
+                            new DialogInterface.OnClickListener() {//取消
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    doExecuteFail(obj, requestCode);
+                                }
+                            });
+                    sRationaleDialog.show();
+                }
+            } else {
+                doExecuteFail(obj, requestCode);
+            }
         } else {
             doExecuteSuccess(obj, requestCode);
         }
