@@ -2,7 +2,7 @@
 
 buildscript {
     repositories {
-        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
+        jcenter()
         google()
 //        maven {
 //            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
@@ -20,7 +20,7 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter() { url 'http://jcenter.bintray.com/' }
+        jcenter()
         google()
 //        maven {
 //            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
