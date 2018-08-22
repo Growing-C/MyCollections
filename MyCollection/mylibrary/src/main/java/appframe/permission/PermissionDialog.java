@@ -32,9 +32,8 @@ public class PermissionDialog {
                         mContext.startActivity(localIntent);
                     }
                 })
-//                .setNegativeButton("取消", null)//可选
+                .setNegativeButton("取消", null)//可选
                 .create();
-        mDialog.setCancelable(false);
 
     }
 
@@ -42,7 +41,4 @@ public class PermissionDialog {
         mDialog.show();
     }
 
-    public boolean isShowing() {
-        return mDialog != null && mDialog.isShowing();
-    }
 }

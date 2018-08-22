@@ -36,4 +36,27 @@
     <string name="testaccessibility">accessibilityDemo</string>
     <string name="red_envelope_desc">WebChat Get RedMoney</string>
 
+
+
+
+    <!--icon fonts-->
+    <string name="icon_guanbi">&#xe62b;</string>
+    <string name="icon_shijain">&#xe6bc;</string>
+    <string name="icon_wifi">&#xe656;</string>
+    <string name="icon_riqi">&#xe604;</string>
+    <string name="icon_jiudian">&#xe7b9;</string>
+    <string name="icon_lanyalianjie">&#xe8e9;</string>
+    <string name="icon_fangjian">&#xe613;</string>
+    <string name="icon_gengduo">&#xed2e;</string>
+    <string name="icon_icon_unlock">&#xe61d;</string>
+    <string name="icon_ic_lock">&#xe61e;</string>
+    <string name="icon_icon_close">&#xe61f;</string>
+    <string name="icon_ic_passoword">&#xe620;</string>
+    <string name="icon_ic_open">&#xe621;</string>
+    <string name="icon_ic_detail">&#xe622;</string>
+    <string name="icon_ic_home">&#xe623;</string>
+    <string name="icon_ic_menu">&#xe624;</string>
+    <string name="icon_ic_back">&#xe625;</string>
+    <string name="icon_icon_unlock1">&#xe626;</string>
+    <string name="icon_close_bt">&#xe627;</string>
 </resources>

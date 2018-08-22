@@ -35,4 +35,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <!--貌似是RippleDrawable中使用的参数，原理不明，在view的theme中可以使用，搭配?attr/selectableItemBackgroundBorderless-->
+    <style name="RippleWhite">
+        <item name="android:colorControlHighlight">@android:color/holo_blue_light</item>
+        <item name="android:radius">60dp</item>
+    </style>
 </resources>

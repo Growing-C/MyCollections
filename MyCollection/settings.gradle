@@ -1,1 +1,1 @@
-include ':app', ':myappbase', ':X5WebDemo', ':mylibrary', ':testlibrarycontent'
+include ':app', ':X5WebDemo', ':mylibrary', ':testlibrarycontent'
