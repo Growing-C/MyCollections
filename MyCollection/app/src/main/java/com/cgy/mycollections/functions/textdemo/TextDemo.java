@@ -14,6 +14,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 1.该页面展示了iconFont  点击圆形效果  和波纹动画
+ * 2.svg作为background的使用。svg在5.x可以直接使用，5.0以下 如4.x直接使用可能会报错，需要适配一下，这里懒得适配
+ * Google在Android 5.X中提供了两个新API来帮助支持SVG:
+ * VectorDrawable
+ * AnimatedVectorDrawable
+ */
 public class TextDemo extends AppCompatActivity {
     @BindView(R.id.wave_view)
     WaveView mWaveView;
