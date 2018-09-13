@@ -1,12 +1,13 @@
-* 入门
+* 目录
 
-  * [快速开始](quickstart.md)
-
-* 指南
-
-  * [使用方式](usage.md) 
-  * [entryActivity设置](entry.md) 
-  * [界面流程](splash.md) 
+  * [studioGradle](studiogradle.md)
+  * [adb](adb.md) 
+  * [gitskills](gitskills.md) 
+  * [grunt](grunt.md) 
+  * [proguard](proguard.md) 
+  * [skills](skills.md) 
+  * [sql](sql.md) 
+  * [tips](tips.md) 
+  * [todos](todos.md) 
   
 <!-- * [注意事项](awesome.md) -->
-* [日志更新](changelog.md)
