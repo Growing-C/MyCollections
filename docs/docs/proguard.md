@@ -10,7 +10,9 @@
 2，反射用到的类不混淆(否则反射可能出现问题)；
 
 3，AndroidMainfest中的类不混淆，所以四大组件和Application的子类和Framework层下所有的类默认不会进行混淆。自定义的View默认也不会被混淆；所以像网上贴的很多排除自定义View，或四大组件被混淆的规则在Android Studio中是无需加入的；
+
 !>实际操作中发现Application子类 Activity子类之类的全都混淆了！所以可能还是需要加上的
+
 ```
 
 #继承activity,application,service,broadcastReceiver,contentprovider....不进行混淆

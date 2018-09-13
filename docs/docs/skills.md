@@ -3,15 +3,17 @@
 例如values-1080x600
 
 string.xml中可以添加xliff标签来占位，可以在代码中添加字符或者数字
+```
 <string name="info">
 your name is <xliff:g id="NAME">%1$s</xliff:g>, and your age is
 <xliff:g id="AGE">%2$s</xliff:g>
    </string>
-使用xliff时需要在resource标签里添加 xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2"  
+```
+使用xliff时需要在resource标签里添加 `xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" ` 
    
 2.listview中的textview如果设置了ellipsize="marquee"即跑马灯，滚动的时候会卡顿，而且可能有的item文字显示不出来！
 
-3.android studio查找所有中文  正则匹配表达式   ^((?!(\*|//)).)+[\u4e00-\u9fa5]
+3.android studio查找所有中文  正则匹配表达式  `^((?!(\*|//)).)+[\u4e00-\u9fa5]`
 
 4 Android屏幕密度density和分辨率的关系~  此处的density在Android中为densityDpi，即每英寸有多少个显示点
 px=dip*(dpi/160)  density=dpi/160
