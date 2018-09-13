@@ -28,3 +28,34 @@ jar://$USER_HOME$/.android/build-cache/9b5d2cfede5006242603af689c6c3dea44e4e644/
 然后 clean  build  sync来几下实在不行关了重开基本就能找到新的classes.jar了 工程中类也不会是红的了。
 新的 dependency 应该是缓存在  \.gradle\caches\modules-2\files-2.1这下面
 待研究 studio 如何把这个dependency和  .android下面的build-cache对应起来的
+
+
+5.多个support v7冲突的话 可以用exclude 也可以
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        def requested = details.requested
+       if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '27.1.1'
+            }
+        }
+    }
+}
+
+或者
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-v4:27.1.0'
+    }
+}
+
+
+6.引入aar
+在build.gradle的android 标签下增加
+ repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+把.aar文件放到lib中  dependency中添加   implementation(name: 'EagleBase-1.0.2', ext: 'aar') 即可

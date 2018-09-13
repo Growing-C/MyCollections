@@ -25,7 +25,9 @@ import appframe.ProjectConfig;
 import appframe.network.retrofit.converter.GsonConverterFactory;
 import appframe.network.retrofit.network.NetworkStateInterceptor;
 import appframe.network.retrofit.proxy.ProxyHandler;
+import appframe.utils.JsonFormatter;
 import appframe.utils.LogUtils;
+import appframe.utils.Logger;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -94,7 +96,7 @@ public class Api {
             builder.addInterceptor(mHeaderInterceptor);//添加请求头
             if (ProjectConfig.isDebugMode()) {
                 // Log信息拦截器
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLogger());
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//包含header，body数据
                 //设置 Debug Log 模式
                 builder.addInterceptor(loggingInterceptor);
@@ -216,5 +218,28 @@ public class Api {
             return message;
         }
 
+    }
+
+    public static class HttpLogger implements HttpLoggingInterceptor.Logger {
+        private StringBuilder mMessage = new StringBuilder();
+
+        @Override
+        public void log(String message) {
+            // 请求或者响应开始
+            if (message.startsWith("--> POST")) {
+                mMessage.setLength(0);
+            }
+            // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化
+            if ((message.startsWith("{") && message.endsWith("}"))
+                    || (message.startsWith("[") && message.endsWith("]"))) {
+                message = JsonFormatter.formatJson(JsonFormatter.decodeUnicode(message));
+            }
+            mMessage.append(message.concat("\n"));
+            // 响应结束，打印整条日志
+            if (message.startsWith("<-- END HTTP")) {
+                Logger.d(mMessage.toString());
+            }
+
+        }
     }
 }
