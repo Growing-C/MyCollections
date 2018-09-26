@@ -30,7 +30,7 @@ jar://$USER_HOME$/.android/build-cache/9b5d2cfede5006242603af689c6c3dea44e4e644/
 待研究 studio 如何把这个dependency和  .android下面的build-cache对应起来的
 
 
-5.多个support v7冲突的话 可以用exclude 也可以
+5.多个support v7冲突的话 可以用exclude 也可以（项目app build.grale 最外层加，和dependency平级）
 configurations.all {
     resolutionStrategy.eachDependency { details ->
         def requested = details.requested
