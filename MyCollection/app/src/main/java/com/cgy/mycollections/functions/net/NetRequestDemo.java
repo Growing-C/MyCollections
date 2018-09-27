@@ -18,6 +18,7 @@ import com.cgy.mycollections.functions.net.webservice.request.RequestModel;
 import com.cgy.mycollections.functions.net.webservice.response.ResponseEnvelope;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -199,7 +200,7 @@ public class NetRequestDemo extends AppCompatActivity {
         });
     }
 
-    public void get(View view) {
+    public void get(View view) {//http get
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -237,7 +238,7 @@ public class NetRequestDemo extends AppCompatActivity {
     private static final int TIME_OUT = 10 * 1000;// 超时时间
     private static String lock = new String();
 
-    public void post(View view) {
+    public void post(View view) {//http post
         new Thread() {
             public void run() {
                 synchronized (lock) {
@@ -280,7 +281,74 @@ public class NetRequestDemo extends AppCompatActivity {
         }.start();
     }
 
-    public void downLoad(View view) {
+    public void dingding(View view) {//http post
+        new Thread() {
+            public void run() {
+                synchronized (lock) {
+                    try {
+//                        {
+//                            "msgtype": "text",
+//                            "text": {
+//                                "content": "我就是我,  @1825718XXXX 是不一样的烟火"
+//                             },
+//                            "at": {
+//                              "atMobiles": [
+//                              "1825718XXXX"
+//                               ],
+//                              "isAtAll": false
+//                             }
+//                          }
+                        JSONObject requestData = new JSONObject();
+                        requestData.put("content", "我就是我, 是不一样的烟火");
+
+                        JSONObject atData = new JSONObject();
+                        atData.put("isAtAll", false);
+                        JSONArray atMobiles=new JSONArray();
+                        atMobiles.put(0,"15051286108");
+                        atData.put("atMobiles",atMobiles);
+
+                        JSONObject inputJson = new JSONObject();
+                        inputJson.put("text", requestData);
+                        inputJson.put("msgtype", "text");
+                        inputJson.put("at", atData);
+
+                        System.out.println("inputJson:" + inputJson.toString());
+
+//                        String textMsg = "{ \"msgtype\": \"text\", \"text\": {\"content\": \"我就是我, 是不一样的烟火\"}}";
+
+//                        System.out.println("inputJson:" + textMsg);
+                        URL url = new URL("https://oapi.dingtalk.com/robot/send?access_token=acd6eda87cfe17dcbf12863338787d3bd1dd7fa931b0a3a741f5ded5d6af34b4");
+                        HttpURLConnection conn = (HttpURLConnection) url
+                                .openConnection();
+
+                        conn.setRequestProperty("Content-type", "application/json;charset=utf-8");
+                        conn.setDoOutput(true);
+                        conn.setDoInput(true);
+                        conn.setRequestMethod("POST");
+                        conn.setConnectTimeout(TIME_OUT);
+
+                        conn.connect();
+                        OutputStream out = conn.getOutputStream();
+                        out.write(inputJson.toString().getBytes());
+                        out.flush();
+                        out.close();
+
+                        int code = conn.getResponseCode();
+                        if (code == HttpURLConnection.HTTP_OK) {
+                            byte[] bit = readInputStream(conn
+                                    .getInputStream());
+                            String string = new String(bit, CHARSET);
+                            System.out.println("outputString:" + string);
+                        } else {
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }.start();
+    }
+
+    public void downLoad(View view) {//http download data
         new Thread() {
             @Override
             public void run() {
