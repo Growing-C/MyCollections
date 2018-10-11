@@ -97,6 +97,19 @@
 -dontshrink     #不要删除未使用的类
 ```
 
+12.要成员内部类不被混淆
+```
+-keep class com.orhanobut.logger$*{*;}
+ 
+```
+其中 A$* 表示所有A的内部类都保留下来，也可以如下使用：
+```
+-keepattributes InnerClasses  （这行似乎必须？）
+-keep class com.xxx.A{ *; }
+-keep class com.xxx.A$B { *; }
+-keep class com.xxx.A$C { *; }
+```
+
 # 一些配置
 
 ```
