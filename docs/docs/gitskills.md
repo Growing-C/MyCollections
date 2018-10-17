@@ -30,7 +30,7 @@ git提交的时候总要输入用户名密码，很是麻烦
 ```
 git remote add origin https://username:password@github.com/Growing-C/MyCollections
 ```
-或者直接用gitextension  clone库的时候填写上述地址
+或者直接用gitextension  clone库的时候填写上述地址  
 
 如果已添加远程地址
 
