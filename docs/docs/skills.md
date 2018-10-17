@@ -15,7 +15,7 @@ your name is <xliff:g id="NAME">%1$s</xliff:g>, and your age is
 
 3.android studio查找所有中文  正则匹配表达式  `^((?!(\*|//)).)+[\u4e00-\u9fa5]`
 
-4 Android屏幕密度density和分辨率的关系~  此处的density在Android中为densityDpi，即每英寸有多少个显示点
+4.Android屏幕密度density和分辨率的关系~  此处的density在Android中为densityDpi，即每英寸有多少个显示点
 px=dip*(dpi/160)  density=dpi/160
 
 densityDpi    density    对应包
@@ -36,3 +36,7 @@ densityDpi    density    对应包
 7.RecyclerView有个坑，其item的布局 根的高度不能用match_parent，不然会导致下面的数据都显示不出来，只显示一条
 
 8.TabLayout有个坑，tabMode设置为fix的时候 即使设置了tabTextApearence也有可能字体会被压缩，因为一行放不下那么多，设置为scrollable或者 tabPadding修改一下可以解决
+
+9.fragment相关
+fragment嵌套的时候 ，在一个fragment的布局xml中嵌套一个 <fragment> 要获取这个fragment对象的时候 在宿主fragment中必须使用 getChildFragmentManager.findFragmentById才能找到，
+直接用 getFragmentManager是找不到的！   在childFragment中使用getParentFragment可以获取到parent fragment
