@@ -1,3 +1,3 @@
 # MyCollections
- a collection of android skills
+ a collection of android&other skills
 
