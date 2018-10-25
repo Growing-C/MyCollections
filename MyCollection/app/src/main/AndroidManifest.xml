@@ -63,7 +63,8 @@
         <activity android:name=".functions.systemui.statusbar.DynamicStatusActivity" />
         <activity android:name=".functions.systemui.statusbar.ThirdLibStatusActivity" />
         <activity android:name=".functions.net.NetRequestDemo" />
-        <activity android:name=".functions.textdemo.TextDemo"></activity>
+        <activity android:name=".functions.textdemo.TextDemo"/>
+        <activity android:name=".functions.anim.AnimDemo"/>
     </application>
 
 </manifest>

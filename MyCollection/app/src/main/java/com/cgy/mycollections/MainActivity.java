@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
+import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
 import com.cgy.mycollections.functions.net.NetRequestDemo;
 import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
             new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, NetRequestDemo.class),
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
+            new Demo(R.string.title_anim_demo, R.string.info_anim_demo, AnimDemo.class),
     };
 
     @Override

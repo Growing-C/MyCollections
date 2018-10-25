@@ -66,9 +66,9 @@ public class MainItemAdapter extends RecyclerView.Adapter<MainItemAdapter.Defaul
         public DefaultViewHolder(View itemView) {
             super(itemView);
 
-            tvTitle= (TextView) itemView.findViewById(R.id.tv_title);
-            tvDescription= (TextView) itemView.findViewById(R.id.tv_des);
-            hasChildArrow= (ImageView) itemView.findViewById(R.id.has_child_arrow);
+            tvTitle = itemView.findViewById(R.id.tv_title);
+            tvDescription = itemView.findViewById(R.id.tv_des);
+            hasChildArrow = itemView.findViewById(R.id.has_child_arrow);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
