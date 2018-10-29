@@ -65,6 +65,7 @@
         <activity android:name=".functions.net.NetRequestDemo" />
         <activity android:name=".functions.textdemo.TextDemo"/>
         <activity android:name=".functions.anim.AnimDemo"/>
+        <activity android:name=".functions.sqlite.DataBaseDemo"/>
     </application>
 
 </manifest>

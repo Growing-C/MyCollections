@@ -20,10 +20,6 @@ import butterknife.OnClick;
  * 1.airbnb/lottie-android 库动画
  */
 public class AnimDemo extends AppCompatActivity {
-    @BindView(R.id.wave_view)
-    WaveView mWaveView;
-    @BindView(R.id.tv_unlock)
-    View mTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +27,8 @@ public class AnimDemo extends AppCompatActivity {
         setContentView(R.layout.activity_anim_demo);
         ButterKnife.bind(this);
 
-        setUpWave();
     }
 
-    @OnClick({R.id.tv_unlock})
-    public void onClick(View v) {
-        mWaveView.start();
-        mWaveView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mWaveView.stop();
-            }
-        }, 5000);
 
-    }
 
-    public void setUpWave() {
-        mWaveView.setSpeed(700);
-        mWaveView.setOneWaveDuration(5000);
-        mWaveView.setMaxRadiusRate(2);
-        mWaveView.setStyle(Paint.Style.STROKE);//画圆环
-        mWaveView.setInitialRadius(120);//字体dp大小
-        mWaveView.setColor(Color.WHITE);
-        mWaveView.setInterpolator(new LinearOutSlowInInterpolator());
-    }
 }

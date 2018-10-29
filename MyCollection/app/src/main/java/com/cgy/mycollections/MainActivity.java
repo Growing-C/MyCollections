@@ -19,6 +19,7 @@ import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecycler
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
 import com.cgy.mycollections.functions.net.NetRequestDemo;
+import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
 import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.textdemo.TextDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, NetRequestDemo.class),
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_anim_demo, R.string.info_anim_demo, AnimDemo.class),
+            new Demo(R.string.title_database_demo, R.string.info_database_demo, DataBaseDemo.class),
     };
 
     @Override

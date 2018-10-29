@@ -32,6 +32,9 @@
     <string name="title_anim_demo">AnimDemo</string>
     <string name="info_anim_demo">安卓动画相关功能demo</string>
 
+    <string name="title_database_demo">DatabaseDemo</string>
+    <string name="info_database_demo">安卓sqlite数据库相关功能demo</string>
+
     <string name="red_envelope_label">"抢红包"</string>
     <string name="red_envelope_btn">"开启自动抢红包服务"</string>
     <string name="red_envelope_btn_close">"关闭自动抢红包服务"</string>
