@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="150dp"
+    android:layout_height="150dp"
+    android:alpha="0.65"
+    android:background="@drawable/shape_rec">
+
+    <Button
+        android:id="@+id/show_setting_table_item_common_use_button"
+        style="@style/PopBtnStyle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="暂停" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_screen_lock_button"
+        style="@style/PopBtnStyle"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:text="锁屏" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_notification_button"
+        style="@style/PopBtnStyle"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:text="退出" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_phone_button"
+        style="@style/PopBtnStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:text="打开" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_page_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_camera_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_home_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/show_setting_table_item_exit_touch_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+</RelativeLayout>
