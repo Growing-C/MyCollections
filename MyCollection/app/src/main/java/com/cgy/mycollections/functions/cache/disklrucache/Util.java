@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jakewharton.disklrucache;
+package com.cgy.mycollections.functions.cache.disklrucache;
 
 import java.io.Closeable;
 import java.io.File;
@@ -24,9 +24,9 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 
 /** Junk drawer of utility methods. */
-final class Util {
-  static final Charset US_ASCII = Charset.forName("US-ASCII");
-  static final Charset UTF_8 = Charset.forName("UTF-8");
+public final class Util {
+  public static final Charset US_ASCII = Charset.forName("US-ASCII");
+  public static final Charset UTF_8 = Charset.forName("UTF-8");
 
   private Util() {
   }

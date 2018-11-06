@@ -40,3 +40,12 @@ densityDpi    density    对应包
 9.fragment相关
 fragment嵌套的时候 ，在一个fragment的布局xml中嵌套一个 <fragment> 要获取这个fragment对象的时候 在宿主fragment中必须使用 getChildFragmentManager.findFragmentById才能找到，
 直接用 getFragmentManager是找不到的！   在childFragment中使用getParentFragment可以获取到parent fragment
+
+10.Gson相关，Gson无法解析匿名类
+如 ArrayList<String> arrayList =  new ArrayList<String>() {{
+            add("对");
+            add("不对");
+        }};
+        Gson gson = new Gson();
+        System.out.println("isAnonymousClass list to json is : "+gson.toJson(arrayList));
+输出的是：isAnonymousClass list to json is : null

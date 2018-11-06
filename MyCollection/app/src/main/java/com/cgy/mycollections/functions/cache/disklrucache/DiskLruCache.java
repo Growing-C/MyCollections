@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jakewharton.disklrucache;
+package com.cgy.mycollections.functions.cache.disklrucache;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -86,14 +86,14 @@ import java.util.regex.Pattern;
  * responding appropriately.
  */
 public final class DiskLruCache implements Closeable {
-  static final String JOURNAL_FILE = "journal";
-  static final String JOURNAL_FILE_TEMP = "journal.tmp";
-  static final String JOURNAL_FILE_BACKUP = "journal.bkp";
-  static final String MAGIC = "libcore.io.DiskLruCache";
-  static final String VERSION_1 = "1";
-  static final long ANY_SEQUENCE_NUMBER = -1;
-  static final String STRING_KEY_PATTERN = "[a-z0-9_-]{1,120}";
-  static final Pattern LEGAL_KEY_PATTERN = Pattern.compile(STRING_KEY_PATTERN);
+  public static final String JOURNAL_FILE = "journal";
+  public static final String JOURNAL_FILE_TEMP = "journal.tmp";
+  public static final String JOURNAL_FILE_BACKUP = "journal.bkp";
+  public static final String MAGIC = "libcore.io.DiskLruCache";
+  public static final String VERSION_1 = "1";
+  public static final long ANY_SEQUENCE_NUMBER = -1;
+  public static final String STRING_KEY_PATTERN = "[a-z0-9_-]{1,120}";
+  public static final Pattern LEGAL_KEY_PATTERN = Pattern.compile(STRING_KEY_PATTERN);
   private static final String CLEAN = "CLEAN";
   private static final String DIRTY = "DIRTY";
   private static final String REMOVE = "REMOVE";

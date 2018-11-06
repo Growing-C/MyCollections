@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.jakewharton.disklrucache;
+package com.cgy.mycollections;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import org.junit.Test;
+
+
+import  com.cgy.mycollections.functions.cache.disklrucache.StrictLineReader;
+import com.cgy.mycollections.functions.cache.disklrucache.Util;
 
 import static org.junit.Assert.fail;
 

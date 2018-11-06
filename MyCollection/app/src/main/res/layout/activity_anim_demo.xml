@@ -12,10 +12,18 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/lottie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="动画" />
+            android:onClick="onClick"
+            android:text="LOTTIE动画" />
 
+        <Button
+            android:id="@+id/other"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="other" />
 
 
     </LinearLayout>

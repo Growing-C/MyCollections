@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".functions.anim.LottieAnimActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <!--loop 是无限循环的意思-->
+    <!--autoPlay是自动播放-->
+    <!--fileName即json文件在asset中的文件名-->
+    <!--lottie_rawRes 即json文件在res/raw中的文件名(lottie官方更推荐这种方式)-->
+    <!--It is recommended to use lottie_rawRes because you can use static references to your animation through R instead of just using string names-->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="lottie/padlock_tick.json"
+        app:lottie_loop="true" />
+
+
+</LinearLayout>

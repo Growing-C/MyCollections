@@ -1,9 +1,8 @@
-package com.cgy.redenvelop.view;
+package com.cgy.mycollections.widgets;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,8 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
-import com.cgy.redenvelop.EnvelopeService;
-import com.cgy.redenvelop.R;
+import com.cgy.mycollections.R;
 
 import java.lang.reflect.Method;
 
@@ -27,7 +25,7 @@ import java.lang.reflect.Method;
 public class EasyTouchView {
     private Context mContext;
     private WindowManager mWManager;
-    private WindowManager.LayoutParams mWMParams;
+    private LayoutParams mWMParams;
     private View mTouchView;
     private ImageView mIconImageView = null;
     Button mPauseButton;
@@ -70,7 +68,7 @@ public class EasyTouchView {
         mTouchView.setBackgroundColor(Color.TRANSPARENT);
         mTouchView.setOnTouchListener(mTouchListener);
 
-        mWMParams = new WindowManager.LayoutParams();
+        mWMParams = new LayoutParams();
         mWMParams.type = LayoutParams.TYPE_SYSTEM_ALERT; // 这里的2002表示系统级窗口，你也可以试试2003。
         mWMParams.flags = 40; // 设置桌面可控
         mWMParams.width = LayoutParams.WRAP_CONTENT;
@@ -84,7 +82,7 @@ public class EasyTouchView {
     }
 
     private View getSettingTableView() {
-        View settingTable = LayoutInflater.from(mContext).inflate(R.layout.show_setting_table, null);
+        View settingTable = LayoutInflater.from(mContext).inflate(R.layout.easy_touch_setting_table, null);
         mPauseButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_common_use_button);
         Button screenLockButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_screen_lock_button);
         Button notificationButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_notification_button);
@@ -120,35 +118,28 @@ public class EasyTouchView {
             switch (v.getId()) {
                 case R.id.show_setting_table_item_common_use_button://暂停
                     mActionListener.onFloatingAction(ACTION_PAUSE);
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_screen_lock_button://锁屏
                     mActionListener.onFloatingAction(ACTION_LOCK);
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_notification_button://退出
                     mActionListener.onFloatingAction(ACTION_EXIT);
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_phone_button://打开抢红包服务
                     mActionListener.onFloatingAction(ACTION_OPEN);
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_page_button:
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_camera_button:
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_back_button:
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_home_button:
-                    hideSettingTable();
                     break;
                 case R.id.show_setting_table_item_exit_touch_button:
                     break;
             }
+            hideSettingTable();
 
         }
     };

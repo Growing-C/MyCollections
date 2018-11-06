@@ -1,7 +1,17 @@
 package com.cgy.mycollections;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,9 +24,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.anim.AnimDemo;
+import com.cgy.mycollections.functions.cache.CacheDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
 import com.cgy.mycollections.functions.net.NetRequestDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
@@ -28,6 +40,9 @@ import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.cgy.mycollections.FloatingService.ACTION_CHANGE_FLOATING_STATE;
+import static com.cgy.mycollections.FloatingService.KEY_SHOW_FLOATING;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -61,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(mainItemAdapter);
 
+        addNotification();//添加通知栏，没啥意义
+
+        //打开悬浮球
+        Intent serviceIt = new Intent(MainActivity.this, FloatingService.class);
+        startService(serviceIt);
     }
 
     private Demo[] demos = {
@@ -74,7 +94,23 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_anim_demo, R.string.info_anim_demo, AnimDemo.class),
             new Demo(R.string.title_database_demo, R.string.info_database_demo, DataBaseDemo.class),
+            new Demo(R.string.title_cache_demo, R.string.info_cache_demo, CacheDemo.class),
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(MainActivity.this, FloatingService.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        //返回即home键
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addCategory(Intent.CATEGORY_HOME);
+        startActivity(i);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,9 +128,96 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            openFloatingBtn();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //添加通知栏
+    public void addNotification() {
+        // 将AutoCancel设为true后，当你点击通知栏的notification后，它会自动被取消消失
+        // 将Ongoing设为true 那么notification将不能滑动删除
+//        Intent notificationIntent = new Intent(this,TestActivity.class); //点击该通知后要跳转的Activity
+//        PendingIntent contentIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("自动抢红包").setContentText("保持通知栏显示可以防止进程结束").setTicker("aaa").setWhen(System.currentTimeMillis())
+                .setPriority(Notification.PRIORITY_MAX)
+                .setDefaults(Notification.DEFAULT_SOUND).setOngoing(true).setAutoCancel(false)
+                .setContentIntent(null).build();
+//        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        notificationManager.notify(0x100, notification);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (Build.VERSION.SDK_INT >= 23)
+                if (!Settings.canDrawOverlays(this)) {
+                    Toast.makeText(MainActivity.this, "权限授予失败，无法开启悬浮窗", Toast.LENGTH_SHORT).show();
+                    getSharedPreferences("mm", MODE_PRIVATE).edit().putBoolean("no_permission", true).commit();
+                } else {
+                    Toast.makeText(MainActivity.this, "权限授予成功！", Toast.LENGTH_SHORT).show();
+                    openFloatingBtn();
+                }
+
+        }
+    }
+
+    /**
+     * 打开悬浮窗口
+     */
+    public void openFloatingBtn() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(MainActivity.this)) {
+                SharedPreferences sp = getSharedPreferences("mm", MODE_PRIVATE);
+                boolean no_permission = sp.getBoolean("no_permission", false);
+                SharedPreferences.Editor editor = sp.edit();
+                if (no_permission) {
+                    showDialog();
+                    editor.putBoolean("no_permission", false).apply();
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getPackageName()));
+                    startActivityForResult(intent, 1);
+                }
+
+                return;
+            }
+        }
+
+        //设备sdk23以下似乎可以直接打开悬浮窗
+        Intent floatingIntent = new Intent(ACTION_CHANGE_FLOATING_STATE);
+        floatingIntent.putExtra(KEY_SHOW_FLOATING, true);
+//            openFloat.setText("关闭悬浮控制球");
+        sendBroadcast(floatingIntent);
+    }
+
+    /**
+     * 打开悬浮窗口权限
+     */
+    private void showDialog() {
+        AlertDialog mDialog = null;
+        if (mDialog == null)
+            mDialog = new AlertDialog.Builder(MainActivity.this).setTitle("需要权限")
+                    .setMessage("没有显示悬浮窗权限，\n请点击设置进入权限管理打开悬浮窗权限\n\n" +
+                            "设置>权限管理>悬浮窗>允许")
+                    .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent localIntent = new Intent();
+                            localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                            localIntent.setData(Uri.fromParts("package", getPackageName(), null));
+                            startActivity(localIntent);
+                        }
+                    }).setNegativeButton("取消", null).create();
+        if (!mDialog.isShowing())
+            mDialog.show();
     }
 }

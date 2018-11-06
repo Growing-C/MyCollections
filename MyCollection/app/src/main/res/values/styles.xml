@@ -41,4 +41,14 @@
         <item name="android:colorControlHighlight">@android:color/holo_blue_light</item>
         <item name="android:radius">60dp</item>
     </style>
+
+
+    <!--悬浮点使用-->
+    <style name="PopBtnStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/shape_circle</item>
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>
