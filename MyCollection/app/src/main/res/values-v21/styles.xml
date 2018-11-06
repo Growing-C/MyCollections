@@ -1,0 +1,34 @@
+<resources>
+
+    <!--在Toobar中设置app:popupTheme="@style/AppTheme.PopupOverlay"时 好多属性不起作用，不明原因-->
+    <!--通过在AppTheme.Base中设置actionOverflowMenuStyle有效-->
+    <!--猜测是不是默认的app theme中有这些属性 覆盖了导致？-->
+    <style name="AppTheme.PopupOverlay" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownWidth">wrap_content</item>
+        <item name="android:paddingRight">0dp</item>
+        <!-- 弹出层背景颜色 -->
+        <item name="android:popupBackground">@android:color/holo_blue_dark</item>
+        <!--<item name="android:background">@android:color/black</item>-->
+        <!-- 弹出层垂直方向上的偏移，即在竖直方向上距离Toolbar的距离，值为负则会盖住Toolbar -->
+        <item name="android:dropDownVerticalOffset">4dp</item>
+        <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
+        <item name="android:dropDownHorizontalOffset">0dp</item>
+        <!-- 设置弹出菜单文字颜色 似乎无效!!，需使用toolbar_pop_theme-->
+        <!--<item name="android:actionMenuTextColor">@android:color/holo_red_dark</item>-->
+        <!--<item name="android:dropDownListViewStyle">@style/AppDropDownListViewStyle</item>-->
+
+    </style>
+
+    <style name="toolbar_pop_theme">
+        <!--文字颜色-->
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <!--文字大小-->
+        <item name="android:textSize">18sp</item>
+        <!--文字风格-->
+        <item name="android:textStyle">bold|italic</item>
+        <!--图标与文字的间距-->
+        <item name="android:drawablePadding">10dp</item>
+    </style>
+</resources>
