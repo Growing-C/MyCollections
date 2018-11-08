@@ -281,6 +281,7 @@ public class NetRequestDemo extends AppCompatActivity {
         }.start();
     }
 
+    //测试钉钉webhook自定义机器人
     public void dingding(View view) {//http post
         new Thread() {
             public void run() {
@@ -307,16 +308,17 @@ public class NetRequestDemo extends AppCompatActivity {
                         atMobiles.put(0,"15051286108");
                         atData.put("atMobiles",atMobiles);
 
+                        //text类型
                         JSONObject inputJson = new JSONObject();
                         inputJson.put("text", requestData);
                         inputJson.put("msgtype", "text");
                         inputJson.put("at", atData);
 
+                        //link类型
+//                        String testLink="{\"msgtype\":\"link\",\"link\":{\"text\":\"tttttttt\",\"title\":\"testTitle\",\"picUrl\":\"\",\"messageUrl\": \"https://open-doc.dingtalk.com/docs/doc.htm?spm=a219a.7629140.0.0.Rqyvqo&treeId=257&articleId=105735&docType=1\"}}";
+//                        inputJson=new JSONObject(testLink);
                         System.out.println("inputJson:" + inputJson.toString());
 
-//                        String textMsg = "{ \"msgtype\": \"text\", \"text\": {\"content\": \"我就是我, 是不一样的烟火\"}}";
-
-//                        System.out.println("inputJson:" + textMsg);
                         URL url = new URL("https://oapi.dingtalk.com/robot/send?access_token=acd6eda87cfe17dcbf12863338787d3bd1dd7fa931b0a3a741f5ded5d6af34b4");
                         HttpURLConnection conn = (HttpURLConnection) url
                                 .openConnection();
