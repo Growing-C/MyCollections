@@ -1,25 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
     tools:context=".functions.anim.LottieAnimActivity">
 
-    <!--loop 是无限循环的意思-->
-    <!--autoPlay是自动播放-->
-    <!--fileName即json文件在asset中的文件名-->
-    <!--lottie_rawRes 即json文件在res/raw中的文件名(lottie官方更推荐这种方式)-->
-    <!--It is recommended to use lottie_rawRes because you can use static references to your animation through R instead of just using string names-->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="lottie/padlock_tick.json"
-        app:lottie_loop="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <!--loop 是无限循环的意思-->
+        <!--autoPlay是自动播放-->
+        <!--fileName即json文件在asset中的文件名-->
+        <!--lottie_rawRes 即json文件在res/raw中的文件名(lottie官方更推荐这种方式)-->
+        <!--It is recommended to use lottie_rawRes because you can use static references to your animation through R instead of just using string names-->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="lottie/padlock_tick.json"
+            app:lottie_loop="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="click to start repeat 2" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/logo1"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                app:lottie_autoPlay="false"
+                app:lottie_fileName="lottie/LottieLogo1.json"
+                app:lottie_loop="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="click to start INFINITE" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/logo2"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/holo_orange_light"
+                app:lottie_autoPlay="false"
+                app:lottie_fileName="lottie/LottieLogo2.json"
+                app:lottie_loop="false" />
+        </LinearLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/bull"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/bullseye" />
 
 
-</LinearLayout>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/hamburger"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/hamburger_arrow" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/heart"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/heart" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/material_wave"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/material_wave_loading" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/name" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/walk"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/walkthrough" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/android_wave"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="lottie/AndroidWave.json"
+            app:lottie_loop="true" />
+
+
+    </LinearLayout>
+
+</ScrollView>
