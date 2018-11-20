@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
+import com.cgy.mycollections.utils.DisplayHelperUtils;
+
 /**
  * Created by RB-cgy on 2015/11/9.
  */
@@ -15,6 +17,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+
+
+        DisplayHelperUtils.init(this);
     }
 
     public static MyApplication getInstance() {

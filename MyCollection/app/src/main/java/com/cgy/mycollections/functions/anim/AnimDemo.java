@@ -26,6 +26,9 @@ public class AnimDemo extends AppCompatActivity {
             case R.id.lottie:
                 startActivity(new Intent(AnimDemo.this, LottieAnimActivity.class));
                 break;
+            case R.id.android_anim:
+                startActivity(new Intent(AnimDemo.this, AndroidAnimActivity.class));
+                break;
             default:
                 break;
         }

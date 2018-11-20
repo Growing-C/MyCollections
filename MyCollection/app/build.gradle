@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 27
@@ -56,4 +58,5 @@ dependencies {
     implementation 'com.airbnb.android:lottie:2.7.0'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
