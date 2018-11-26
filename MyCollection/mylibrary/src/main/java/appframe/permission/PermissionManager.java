@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,8 +34,26 @@ public class PermissionManager {
     public static final int REQUEST_INSTALL_PACKAGES = 5;//requestCode of phone state  permission operation
     public static final int REQUEST_BLUETOOTH = 6;//requestCode of location  permission operation(for bluetooth)
 
-    public static String sRationale;
+    public static final int REQUEST_LOCATION = 7;//requestCode of location  permission operation(for map)
+    public static final int REQUEST_READ_CONTACT = 8;//requestCode of read contact  permission operation(for map)
+
+    //    public static String sRationale;//权限说明文字（说明为啥需要这个权限 ）
     private static PermissionRationaleDialog sRationaleDialog;
+    private static HashMap<Integer, String> rationaleMap = new HashMap<>();
+
+    /**
+     * convenient method to request location permission
+     *
+     * @param object should be instance of Activity or Fragment .
+     * @see #doRequestPermissions(Object, int, String...)
+     */
+    public static void requestLocationPermission(Object object, String rationale) {
+        rationaleMap.put(REQUEST_LOCATION, rationale);
+//        PermissionManager.sRationale = rationale;
+
+        doRequestPermissions(object, REQUEST_LOCATION, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION});
+
+    }
 
     /**
      * convenient method to request bluetooth permission
@@ -43,7 +62,8 @@ public class PermissionManager {
      * @see #doRequestPermissions(Object, int, String...)
      */
     public static void requestBluetoothPermission(Object object, String rationale) {
-        PermissionManager.sRationale = rationale;
+        rationaleMap.put(REQUEST_BLUETOOTH, rationale);
+//        PermissionManager.sRationale = rationale;
 
         doRequestPermissions(object, REQUEST_BLUETOOTH, new String[]{Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_COARSE_LOCATION});
     }
@@ -55,7 +75,8 @@ public class PermissionManager {
      * @see #doRequestPermissions(Object, int, String...)
      */
     public static void requestCameraPermission(Object object, String rationale) {
-        PermissionManager.sRationale = rationale;
+        rationaleMap.put(REQUEST_CAMERA_PERMISSION, rationale);
+//        PermissionManager.sRationale = rationale;
         doRequestPermissions(object, REQUEST_CAMERA_PERMISSION, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
     }
 
@@ -66,13 +87,15 @@ public class PermissionManager {
      * @see #doRequestPermissions(Object, int, String...)
      */
     public static void requestCallPhonePermission(Object object, String rationale) {
-        PermissionManager.sRationale = rationale;
+        rationaleMap.put(REQUEST_CALL_PHONE_PERMISSION, rationale);
+//        PermissionManager.sRationale = rationale;
         doRequestPermissions(object, REQUEST_CALL_PHONE_PERMISSION, new String[]{Manifest.permission.CALL_PHONE});
     }
 
 
     public static void requestExternalPermission(Object object, String rationale) {
-        PermissionManager.sRationale = rationale;
+        rationaleMap.put(REQUEST_EXTERNAL_PERMISSION, rationale);
+//        PermissionManager.sRationale = rationale;
         doRequestPermissions(object, REQUEST_EXTERNAL_PERMISSION, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE});
     }
 
@@ -83,8 +106,20 @@ public class PermissionManager {
      * @see #doRequestPermissions(Object, int, String...)
      */
     public static void requestPhoneStatePermission(Object object, String rationale) {
-        PermissionManager.sRationale = rationale;
+        rationaleMap.put(REQUEST_PHONE_STATE_PERMISSION, rationale);
+//        PermissionManager.sRationale = rationale;
         doRequestPermissions(object, REQUEST_PHONE_STATE_PERMISSION, new String[]{Manifest.permission.READ_PHONE_STATE});
+    }
+
+    /**
+     * convenient method to request read contacts permission
+     *
+     * @param object should be instance of Activity or Fragment
+     * @see #doRequestPermissions(Object, int, String...)
+     */
+    public static void requestReadContactPermission(Object object, String rationale) {
+        rationaleMap.put(REQUEST_READ_CONTACT, rationale);
+        doRequestPermissions(object, REQUEST_READ_CONTACT, new String[]{Manifest.permission.READ_CONTACTS});
     }
 
     /**
@@ -250,7 +285,7 @@ public class PermissionManager {
 
             if (shouldShowRationale) {// showRationale
                 if (sRationaleDialog == null || !sRationaleDialog.isShowing()) {//activity和fragment中都使用的时候需要这么处理，不然会弹出两个框
-                    sRationaleDialog = new PermissionRationaleDialog(context, sRationale,
+                    sRationaleDialog = new PermissionRationaleDialog(context, rationaleMap.get(requestCode),
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {//确定
@@ -273,3 +308,4 @@ public class PermissionManager {
         }
     }
 }
+

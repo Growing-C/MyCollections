@@ -8,6 +8,7 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:paddingLeft="@dimen/px24"
         android:background="@android:color/holo_blue_bright"
         android:gravity="center_vertical"
         android:text="233"

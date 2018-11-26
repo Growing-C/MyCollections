@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
+    <!-- 允许程序读取通讯录权限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -75,7 +76,8 @@
         <activity
             android:name=".KotlinActivity"
             android:label="@string/title_activity_kotlin"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".functions.androiddesign.recyclerview.ContactListActivity" />
     </application>
 
 </manifest>

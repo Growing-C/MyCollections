@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.androiddesign.recyclerview;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.cgy.mycollections.OnItemClickListener;
 import com.cgy.mycollections.R;
 
 public class SimpleRecyclerViewDemo extends AppCompatActivity {
@@ -28,6 +30,14 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
         recyclerView.addItemDecoration(new SpaceItemDecoration(10));//设置item间隔
 
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter();
+        adapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                if (position == 0) {
+                    startActivity(new Intent(SimpleRecyclerViewDemo.this, ContactListActivity.class));
+                }
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -35,14 +45,25 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
     class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecyclerViewAdapter.SimpleRecyclerViewHolder> {
 
 
+        private OnItemClickListener mOnItemClickListener;
+
         @Override
         public SimpleRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new SimpleRecyclerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_simple_recycler_view, parent, false));
         }
 
+        public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+            this.mOnItemClickListener = onItemClickListener;
+        }
+
         @Override
         public void onBindViewHolder(SimpleRecyclerViewHolder holder, int position) {
-            holder.setData("位置：" + position);
+            if (position == 0) {//通讯录
+                holder.setData("通讯录 ");
+            } else if (position == 1) {
+                holder.setData("位置：" + position);
+            } else
+                holder.setData("位置：" + position);
         }
 
         @Override
@@ -56,12 +77,20 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
             public SimpleRecyclerViewHolder(View itemView) {
                 super(itemView);
                 mText = (TextView) itemView.findViewById(R.id.text);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(getAdapterPosition());
+                        }
+                    }
+                });
             }
 
             public void setData(String data) {
                 mText.setText(data);
             }
-
         }
     }
 }
