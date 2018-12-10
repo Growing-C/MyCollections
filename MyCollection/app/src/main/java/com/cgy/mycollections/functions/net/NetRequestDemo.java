@@ -23,6 +23,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,7 +53,7 @@ public class NetRequestDemo extends AppCompatActivity {
         setContentView(R.layout.activity_net_request_demo);
     }
 
-    //1.创建订单
+    //1.创建订单 retrofit+webservice
     public void createOrder(View v) {
         MyRequestEnvelope requestEnvelope = new MyRequestEnvelope();
         MyRequestBody requestBody = new MyRequestBody();
@@ -96,6 +100,11 @@ public class NetRequestDemo extends AppCompatActivity {
         });
     }
 
+    /**
+     * 查询订单状态  retrofit+webservice
+     *
+     * @param v
+     */
     public void queryOrderStatus(View v) {
         MyRequestEnvelope requestEnvelope = new MyRequestEnvelope();
         MyRequestBody requestBody = new MyRequestBody();
@@ -137,7 +146,7 @@ public class NetRequestDemo extends AppCompatActivity {
         });
     }
 
-    //订单撤销
+    //订单撤销 retrofit+webservice
     public void reverseOrder(View v) {
         MyRequestEnvelope requestEnvelope = new MyRequestEnvelope();
         MyRequestBody requestBody = new MyRequestBody();
@@ -174,6 +183,11 @@ public class NetRequestDemo extends AppCompatActivity {
         });
     }
 
+    /**
+     * 查询天气 retrofit+webservice
+     *
+     * @param v
+     */
     public void queryWeather(View v) {
         RequestEnvelope requestEnvelop = new RequestEnvelope();
         RequestBody requestBody = new RequestBody();
@@ -200,6 +214,11 @@ public class NetRequestDemo extends AppCompatActivity {
         });
     }
 
+    /**
+     * 测试连接  http get  使用 HttpURLConnection
+     *
+     * @param view
+     */
     public void get(View view) {//http get
         new Thread(new Runnable() {
             @Override
@@ -304,9 +323,9 @@ public class NetRequestDemo extends AppCompatActivity {
 
                         JSONObject atData = new JSONObject();
                         atData.put("isAtAll", false);
-                        JSONArray atMobiles=new JSONArray();
-                        atMobiles.put(0,"15051286108");
-                        atData.put("atMobiles",atMobiles);
+                        JSONArray atMobiles = new JSONArray();
+                        atMobiles.put(0, "15051286108");
+                        atData.put("atMobiles", atMobiles);
 
                         //text类型
                         JSONObject inputJson = new JSONObject();
@@ -394,6 +413,92 @@ public class NetRequestDemo extends AppCompatActivity {
                 }
             }
         }.start();
+    }
+
+    /**
+     * 禅道上传图片
+     *
+     * @param imgPath
+     * @return
+     */
+    public static synchronized String uploadImage(String imgPath) {
+        String msg;
+        File file = new File(imgPath);
+        if (!file.exists()) {
+            msg = "文件不存在！";
+            return msg;
+        }
+
+        try {
+            String end = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "*****";//边界 可以自定义
+
+            URL url = new URL("http://192.168.32.116/zentao/index.php?m=file&f=ajaxUpload&t=json&uid=odts3hcdp9l5fjng1p874t0082&dir=image");
+            HttpURLConnection conn = (HttpURLConnection) url
+                    .openConnection();
+
+//            conn.setRequestProperty("Cookie", ZentaoAccountKeeper.sZentaoCookie);//提交bug必须有cookie
+//            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            conn.setUseCaches(false);
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setRequestMethod("POST");
+            // 设置字符编码连接参数
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("Charset", CHARSET);
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(TIME_OUT);
+
+            conn.connect();
+
+            //上传文件 这里面的 boundary必须有，不过可以自定义
+            DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+            DataInputStream in = new DataInputStream(new FileInputStream(file));
+            int bytes = 0;
+            out.writeBytes(twoHyphens + boundary + end);
+            out.writeBytes("Content-Disposition: form-data; name=\"imgFile\"; filename=\""
+                    + file.getName() + "\"\r\n");// 这里的name由接口给出  可变
+
+            out.writeBytes(end);
+            byte[] bufferOut = new byte[2048];
+            while ((bytes = in.read(bufferOut)) != -1) {
+                out.write(bufferOut, 0, bytes);
+            }
+            out.writeBytes(end);
+            out.writeBytes("--" + boundary + "\r\n");
+
+            in.close();
+
+            out.flush();
+            out.close();
+
+            int code = conn.getResponseCode();
+            if (code == HttpURLConnection.HTTP_OK) {
+                byte[] bit = readInputStream(conn
+                        .getInputStream());
+                String string = new String(bit, CHARSET);
+
+                JSONObject response = new JSONObject(string);
+                int result = response.optInt("error");
+                if (result == 0) {
+                    msg = "上传成功";
+                    String urla = response.optString("url");
+                    return urla;
+                } else {
+                    JSONObject message = response.optJSONObject("message");
+
+                    msg = "上传失败" + message.toString();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        msg = "上传图片失败";
+        return msg;
     }
 
     /**

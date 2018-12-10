@@ -9,5 +9,8 @@
   * [sql](sql.md) 
   * [tips](tips.md) 
   * [todos](todos.md) 
+  * [curl](curl.md) 
+  * [view](view.md) 
+  * [Ethereum](Ethereum_Infura.md) 
   
 <!-- * [注意事项](awesome.md) -->
