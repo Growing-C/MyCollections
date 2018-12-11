@@ -73,6 +73,7 @@
         <activity android:name=".functions.anim.LottieAnimActivity" />
         <activity android:name=".functions.anim.AndroidAnimActivity" />
         <activity android:name=".functions.cache.CacheDemo" />
+        <activity android:name=".functions.ethereum.EthereumDemo" />
         <activity
             android:name=".KotlinActivity"
             android:label="@string/title_activity_kotlin"

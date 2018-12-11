@@ -38,6 +38,9 @@
     <string name="title_cache_demo">cacheDemo</string>
     <string name="info_cache_demo">安卓缓存相关功能demo</string>
 
+    <string name="title_ethereum_demo">EthereumDemo</string>
+    <string name="info_ethereum_demo">以太坊区块链相关功能Demo</string>
+
     <string name="red_envelope_label">"抢红包"</string>
     <string name="red_envelope_btn">"开启自动抢红包服务"</string>
     <string name="red_envelope_btn_close">"关闭自动抢红包服务"</string>

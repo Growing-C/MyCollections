@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.cache.CacheDemo;
+import com.cgy.mycollections.functions.ethereum.EthereumDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
 import com.cgy.mycollections.functions.net.NetRequestDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_anim_demo, R.string.info_anim_demo, AnimDemo.class),
             new Demo(R.string.title_database_demo, R.string.info_database_demo, DataBaseDemo.class),
             new Demo(R.string.title_cache_demo, R.string.info_cache_demo, CacheDemo.class),
+            new Demo(R.string.title_ethereum_demo, R.string.info_ethereum_demo, EthereumDemo.class),
     };
 
     @Override
