@@ -21,6 +21,7 @@ import org.web3j.abi.datatypes.DynamicBytes;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.ens.contracts.generated.ENS;
@@ -222,7 +223,12 @@ public class EthereumDemo extends AppCompatActivity {
             IOUtils.createNewFile(walletFile);
 
             //walletName: UTC--2018-12-10T16-48-07.024--5f914405dc399d77d1a573658f3a193926fe25e6.json
-            walletFileName0 = WalletUtils.generateNewWalletFile("123456", walletFile, false);//useFullScrypt为false说明是轻量级钱包
+//            walletFileName0 = WalletUtils.generateNewWalletFile("123456", walletFile, false);//useFullScrypt为false说明是轻量级钱包
+
+            MemoryUtil.injectWordList();//Bip39Wallet中的MnemonicUtils中的WORD_LIST为空，未读取到数据，此处反射读取赋值
+            Bip39Wallet bip39Wallet = WalletUtils.generateBip39Wallet("123456", walletFile);//含有助记词的wallet
+            L.e("getMnemonic:" + bip39Wallet.getMnemonic());
+            walletFileName0 = bip39Wallet.getFilename();
             //WalletUtils.generateFullNewWalletFile("password1",new File(walleFilePath1));
             //WalletUtils.generateLightNewWalletFile("password2",new File(walleFilePath2));
             L.e("walletName: " + walletFileName0);
