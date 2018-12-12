@@ -1,5 +1,6 @@
-package com.cgy.mycollections.functions.ethereum;
+package com.cgy.mycollections.functions.ethereum.contract;
 
+import com.cgy.mycollections.functions.ethereum.contract.ContractWrapper;
 import com.cgy.mycollections.utils.L;
 
 import java.math.BigInteger;

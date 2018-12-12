@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ethereum;
+package com.cgy.mycollections.functions.ethereum.contract;
 
 import android.text.TextUtils;
 
