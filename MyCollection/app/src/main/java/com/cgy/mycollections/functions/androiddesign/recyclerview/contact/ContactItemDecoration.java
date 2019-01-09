@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.androiddesign.recyclerview;
+package com.cgy.mycollections.functions.androiddesign.recyclerview.contact;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,9 +1,10 @@
 package com.cgy.mycollections.functions.androiddesign.recyclerview;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.OnItemClickListener;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.androiddesign.recyclerview.contact.ContactListActivity;
 
 public class SimpleRecyclerViewDemo extends AppCompatActivity {
 
@@ -27,7 +29,7 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
 //        recyclerView.setLayoutManager(new LinearLayoutManager(SimpleRecyclerViewDemo.this, LinearLayoutManager.HORIZONTAL, false));//设置水平布局的线性布局
 //        recyclerView.setLayoutManager(new GridLayoutManager(SimpleRecyclerViewDemo.this, 3, GridLayoutManager.VERTICAL, false));//设置网格布局
 
-        recyclerView.addItemDecoration(new SpaceItemDecoration(10));//设置item间隔
+        recyclerView.addItemDecoration(new SpaceItemDecoration(3));//设置item间隔
 
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter();
         adapter.setOnItemClickListener(new OnItemClickListener() {
@@ -59,11 +61,11 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
         @Override
         public void onBindViewHolder(SimpleRecyclerViewHolder holder, int position) {
             if (position == 0) {//通讯录
-                holder.setData("通讯录 ");
+                holder.setData("通讯录 ",R.color.colorAccent);
             } else if (position == 1) {
-                holder.setData("位置：" + position);
+                holder.setData("位置：" + position,-1);
             } else
-                holder.setData("位置：" + position);
+                holder.setData("位置：" + position,-1);
         }
 
         @Override
@@ -88,8 +90,13 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
                 });
             }
 
-            public void setData(String data) {
+            public void setData(String data, int colorRes) {
                 mText.setText(data);
+                if (colorRes != -1) {
+                    mText.setTextColor(ContextCompat.getColor(mText.getContext(), colorRes));
+                } else {
+                    mText.setTextColor(Color.WHITE);
+                }
             }
         }
     }

@@ -1,8 +1,6 @@
-package com.cgy.mycollections.functions.androiddesign.recyclerview;
+package com.cgy.mycollections.functions.androiddesign.recyclerview.contact;
 
-import android.content.ContentResolver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.L;
@@ -18,9 +15,7 @@ import com.cgy.mycollections.widgets.WaveSideBarView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionGranted;

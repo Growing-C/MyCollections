@@ -78,7 +78,7 @@
             android:name=".KotlinActivity"
             android:label="@string/title_activity_kotlin"
             android:theme="@style/AppTheme" />
-        <activity android:name=".functions.androiddesign.recyclerview.ContactListActivity" />
+        <activity android:name=".functions.androiddesign.recyclerview.contact.ContactListActivity" />
     </application>
 
 </manifest>

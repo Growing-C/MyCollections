@@ -4,13 +4,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:paddingLeft="@dimen/px24"
-        android:background="@android:color/holo_blue_bright"
-        android:gravity="center_vertical"
-        android:text="233"
-        android:textColor="@android:color/white" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/holo_green_light"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/px24"
+            android:text="233"
+            android:textColor="@android:color/white" />
+
+    </android.support.v7.widget.CardView>
 </LinearLayout>
