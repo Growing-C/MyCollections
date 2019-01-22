@@ -13,8 +13,8 @@ import android.widget.Toast;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.DisplayHelperUtils;
 
+import appframe.utils.DisplayHelperUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

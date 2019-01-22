@@ -11,4 +11,5 @@
     <dimen name="px456">228dp</dimen>
     <dimen name="px4">2dp</dimen>
     <dimen name="px24">12dp</dimen>
+    <dimen name="px1">1dp</dimen>
 </resources>
