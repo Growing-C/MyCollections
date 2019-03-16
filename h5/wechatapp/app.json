@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/ble/blepage",
+    "pages/index/index",
+    "pages/bledemo/bledemo",
+    "pages/logs/logs",
+    "pages/netdevice/netdevice"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#a9b7b7",
+    "selectedColor": "#00B9F2",
+    "borderStyle": "black",
+    "list": [
+      {
+        "selectedIconPath": "images/teb_home_pre.png",
+        "iconPath": "images/teb_home.png",
+        "pagePath": "pages/ble/blepage",
+        "text": "首页"
+      },
+      {
+        "selectedIconPath": "images/teb_chat_pre.png",
+        "iconPath": "images/teb_chat.png",
+        "pagePath": "pages/bledemo/bledemo",
+        "text": "订单"
+      },
+      {
+        "selectedIconPath": "images/teb_me_pre.png",
+        "iconPath": "images/teb_me.png",
+        "pagePath": "pages/logs/logs",
+        "text": "我的"
+      }
+    ]
+  }
+}

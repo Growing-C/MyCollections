@@ -1,0 +1,37 @@
+<!--pages/ble/blepage.wxml-->
+<view class='container'>
+  <view>
+    <text>{{blename}}</text>
+  </view>
+  <view class='bletext'>
+    <text bindtap='clickScan'>{{scan}}</text>
+  </view>
+  <view class='bletext'>
+    <text bindtap='clickConnect'>{{connect}}</text>
+  </view>
+  <view class='bletext'>
+    <text bindtap='clickOpen'>{{open}}</text>
+  </view>
+
+  <view class='bletext'>
+    <text id='logtext'>{{log}}</text>
+  </view>
+
+  <view class='bletext'>
+    <text bindtap='clickNet'>netdevice</text>
+  </view>
+  <!-- <view class="btn-area">
+    <navigator url="/page/index/index" open-type="switchTab" hover-class="other-navigator-hover">
+      跳转到新页面
+    </navigator>
+    <navigator url="/page/index/index" open-type="switchTab" hover-class="other-navigator-hover">
+      在当前页打开
+    </navigator>
+    <navigator url="/page/index/index" open-type="switchTab" hover-class="other-navigator-hover">
+      切换 Tab
+    </navigator>
+    <navigator url="/page/index/index" open-type="switchTab" hover-class="other-navigator-hover">
+      打开绑定的小程序
+    </navigator>
+  </view> -->
+</view>

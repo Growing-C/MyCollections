@@ -1,0 +1,11 @@
+/* pages/ble/blepage.wxss */
+.bletext {
+  margin-top: 20px;
+}
+.navigator-hover {
+  color: blue;
+}
+/** 自定义其他点击态样式类 **/
+.other-navigator-hover {
+  color: red;
+}
