@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.textdemo;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -36,15 +37,24 @@ public class TextDemo extends AppCompatActivity {
         setUpWave();
     }
 
-    @OnClick({R.id.tv_unlock})
+    @OnClick({R.id.tv_unlock, R.id.edit_demo})
     public void onClick(View v) {
-        mWaveView.start();
-        mWaveView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mWaveView.stop();
-            }
-        }, 5000);
+        switch (v.getId()) {
+            case R.id.edit_demo:
+                startActivity(new Intent(this,EditTextActivity.class));
+                break;
+            case R.id.tv_unlock:
+                mWaveView.start();
+                mWaveView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWaveView.stop();
+                    }
+                }, 5000);
+                break;
+            default:
+                break;
+        }
 
     }
 

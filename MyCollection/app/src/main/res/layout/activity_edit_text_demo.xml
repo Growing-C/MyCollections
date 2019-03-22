@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="只能输入数字"
+            android:inputType="number" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+            android:hint="输入数字和字母"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/limit_in_code"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="代码中限制"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/limit_in_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="按钮中限制"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/filter_unique_characters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="过滤特殊字符" />
+
+        <Button
+            android:id="@+id/open_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="打开软键盘" />
+
+        <Button
+            android:id="@+id/close_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="关闭软键盘" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -46,7 +46,7 @@ public class AndroidAnimActivity extends AppCompatActivity {
 
     //<editor-fold desc="菜单参数">
     @BindView(R.id.lock_menu)
-    LockMenuView mMenu;
+    LockMenuView mMenu;//属性动画
 
     //</editor-fold>
 

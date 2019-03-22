@@ -68,6 +68,7 @@
         <activity android:name=".functions.systemui.statusbar.ThirdLibStatusActivity" />
         <activity android:name=".functions.net.NetRequestDemo" />
         <activity android:name=".functions.textdemo.TextDemo" />
+        <activity android:name=".functions.textdemo.EditTextActivity" />
         <activity android:name=".functions.anim.AnimDemo" />
         <activity android:name=".functions.sqlite.DataBaseDemo" />
         <activity android:name=".functions.anim.LottieAnimActivity" />
