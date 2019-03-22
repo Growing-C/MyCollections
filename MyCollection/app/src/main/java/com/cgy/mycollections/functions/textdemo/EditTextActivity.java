@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.utils.HookViewClickUtil;
 import com.cgy.mycollections.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -29,6 +31,8 @@ public class EditTextActivity extends AppCompatActivity {
     @BindView(R.id.limit_in_btn)
     EditText mLimitInBtnV;
 
+    @BindView(R.id.filter_unique_characters)
+    Button mHookBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,13 @@ public class EditTextActivity extends AppCompatActivity {
 
         mLimitInCodeV.setKeyListener(DigitsKeyListener.getInstance("1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM@."));
         mLimitInCodeV.setInputType(InputType.TYPE_CLASS_TEXT);//弹出英文
+
+        getWindow().getDecorView().post(new Runnable() {
+            @Override
+            public void run() {
+                HookViewClickUtil.hookView(mHookBtn);
+            }
+        });
     }
 
     @OnClick({R.id.filter_unique_characters, R.id.open_input, R.id.close_input})

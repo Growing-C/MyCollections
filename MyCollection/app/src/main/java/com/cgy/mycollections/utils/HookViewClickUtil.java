@@ -74,17 +74,5 @@ public class HookViewClickUtil {
         }
     }
 
-    public static void hookWebView() {
-        try {
-            Class<?> eagleWebViewActivity = Class.forName("com.linkstec.eagle.base.web.EagleWebViewActivity");
 
-            Field component = eagleWebViewActivity.getDeclaredField("component");
-            component.setAccessible(true);
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
 }
