@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_selected="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+
+                    <solid android:color="@android:color/white" />
+                </shape>
+            </item>
+            <item android:left="@dimen/dimen_1">
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+                    <solid android:color="?attr/colorPrimary" />
+                </shape>
+            </item>
+            <item android:bottom="@dimen/dimen_1" android:left="@dimen/dimen_1" android:right="@dimen/dimen_1" android:top="@dimen/dimen_1">
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+
+                    <solid android:color="@color/light_blue_C0F0FF" />
+                </shape>
+            </item>
+            <item android:bottom="@dimen/dimen_1" android:left="@dimen/dimen_1" android:right="@dimen/dimen_1" android:top="@dimen/dimen_1">
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+
+                    <solid android:color="@color/grey_26818181" />
+                </shape>
+            </item>
+        </layer-list>
+
+    </item>
+    <item android:state_selected="false">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+
+                    <solid android:color="@android:color/white" />
+                </shape>
+            </item>
+            <item android:left="@dimen/dimen_1">
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+                    <solid android:color="?attr/colorPrimary" />
+                </shape>
+            </item>
+            <item android:bottom="@dimen/dimen_1" android:left="@dimen/dimen_1" android:right="@dimen/dimen_1" android:top="@dimen/dimen_1">
+                <shape android:shape="rectangle">
+                    <corners android:bottomRightRadius="@dimen/dimen_22" android:topRightRadius="@dimen/dimen_22" />
+
+                    <solid android:color="@color/light_blue_C0F0FF" />
+                </shape>
+            </item>
+        </layer-list>
+
+
+    </item>
+</selector>

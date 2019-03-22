@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <com.cgy.mycollections.functions.textdemo.fonttext.IconFontTextView
+        android:id="@+id/close_menu"
+        android:layout_width="45dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_circle_add_n"
+        android:gravity="center"
+        android:text="O"
+        android:textColor="@android:color/white"
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_menu_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+
+        <com.cgy.mycollections.functions.textdemo.fonttext.IconFontTextView
+            android:id="@+id/wifi"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_rec_btn"
+            android:gravity="center"
+            android:text="W"
+            android:textColor="@color/selector_lock_mode"
+            android:textSize="18dp" />
+
+        <com.cgy.mycollections.functions.textdemo.fonttext.IconFontTextView
+            android:id="@+id/ble"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_rec_btn"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="@color/selector_lock_mode"
+            android:textSize="20dp" />
+
+        <com.cgy.mycollections.functions.textdemo.fonttext.IconFontTextView
+            android:id="@+id/normal"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_rec_btn_light"
+            android:gravity="center"
+            android:text="普通"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="10dp" />
+
+        <com.cgy.mycollections.functions.textdemo.fonttext.IconFontTextView
+            android:id="@+id/fast"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_circle_btn_right_light"
+            android:gravity="center"
+            android:text="极速"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="10dp" />
+
+    </LinearLayout>
+</LinearLayout>
+

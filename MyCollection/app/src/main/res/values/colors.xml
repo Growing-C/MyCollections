@@ -6,5 +6,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="divider_grey">#c0c0c0</color>
+    <color name="light_blue_C0F0FF">#C0F0FF</color>
+    <color name="grey_26818181">#26818181</color>
+    <color name="grey_CCCCCC">#CCCCCC</color>
 
 </resources>

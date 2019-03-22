@@ -43,5 +43,11 @@
                 android:paddingRight="@dimen/px24" />
 
         </FrameLayout>
+
+        <com.cgy.mycollections.widgets.LockMenuView
+            android:id="@+id/lock_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"/>
+
     </LinearLayout>
 </ScrollView>

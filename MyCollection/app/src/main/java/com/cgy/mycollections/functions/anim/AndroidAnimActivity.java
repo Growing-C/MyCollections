@@ -13,12 +13,15 @@ import android.widget.Toast;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.widgets.LockMenuView;
 
 import appframe.utils.DisplayHelperUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+
+import static com.cgy.mycollections.widgets.LockMenuView.LOCK_MODE_BLE_FAST;
 
 /**
  */
@@ -41,6 +44,12 @@ public class AndroidAnimActivity extends AppCompatActivity {
     //--------------------------
     //</editor-fold>
 
+    //<editor-fold desc="菜单参数">
+    @BindView(R.id.lock_menu)
+    LockMenuView mMenu;
+
+    //</editor-fold>
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +60,11 @@ public class AndroidAnimActivity extends AppCompatActivity {
 
         setAnimators();
         setCameraDistance();
+
+        mMenu.selectMenu(LOCK_MODE_BLE_FAST, false);
     }
+
+
 
     //<editor-fold desc="卡片翻转">
 

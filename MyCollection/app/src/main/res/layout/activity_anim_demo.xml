@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".functions.anim.AnimDemo">
 
     <LinearLayout
@@ -24,13 +25,19 @@
             android:layout_height="wrap_content"
             android:onClick="onClick"
             android:text="Android Anim" />
+
         <Button
-            android:id="@+id/other"
+            android:id="@+id/start_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClick"
-            android:text="other" />
+            android:text="start Video" />
 
+        <com.cgy.mycollections.widgets.FullScreenVideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_blue_bright" />
 
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
