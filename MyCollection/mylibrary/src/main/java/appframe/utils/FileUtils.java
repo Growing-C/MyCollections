@@ -68,7 +68,6 @@ public class FileUtils {
      * 读取文件，返回一个byte数组
      *
      * @return
-     * @throws Exception
      */
     public static byte[] readFile(File file) throws Exception {
         if (file == null || !file.isFile()) {
@@ -92,9 +91,8 @@ public class FileUtils {
      * read file
      *
      * @param filePath
-     * @param charsetName The name of a supported {@link java.nio.charset.Charset </code>charset<code>}
+     * @param charsetName The name of a supported {@link java.nio.charset </code>charset<code>}
      * @return if file not exist, return null, else return content of file
-     * @throws RuntimeException if an error occurs while operator BufferedReader
      */
     public static StringBuilder readFile(String filePath, String charsetName) {
         File file = new File(filePath);

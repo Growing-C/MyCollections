@@ -1,0 +1,51 @@
+1.grunt是web前段使用的一个重要的工具
+  要使用grunt  首先安装nodejs  和grunt-cli
+
+2.Grunt是应用于实际项目的，所以我们得有一个简单的测试网站来演示grunt的安装、使用。
+
+在一个文件夹中建立  Gruntfile.js和package.json两个文件
+Gruntfile.js为空  
+package.json内容为
+{
+  "name": "my-project-name",
+  "version": "0.1.0",
+  "devDependencies": {
+    }
+}
+
+
+然后 用cmd进入该文件夹目录 输入以下命令：
+
+npm install grunt --save-dev
+这条命令将安装Grunt最新版本到项目目录中，并将其添加到devDependencies内 
+
+同样，grunt插件和其它node模块都可以按相同的方式安装。下面展示的实例就是安装 JSHint 任务模块：
+npm install grunt-contrib-jshint --save-dev
+
+以下为常用插件 基本都需要安装
+Contrib-jshint——javascript语法错误检查； 
+Contrib-watch——实时监控文件变化、调用相应的任务重新执行； 
+Contrib-clean——清空文件、文件夹； 
+Contrib-uglify——压缩javascript代码 
+Contrib-copy——复制文件、文件夹 
+Contrib-concat——合并多个文件的代码到一个文件中 
+karma——前端自动化测试工具 
+
+3.配置Gruntfile.js
+输入以下内容
+//包装函数
+module.exports = function(grunt){
+	
+	//任务配置，所有插件的配置信息
+	grunt.initConfig({
+		
+		//获取package.json的信息
+		pkg: grunt.file.readJSON('package.json')
+	});
+	
+	//告诉grunt当我们在终端中输入grunt时需要做些什么（注意先后顺序）
+	grunt.registerTask('default',[]);
+	
+};
+
+然后运行 cmd命令 grunt  运行结果告诉我们  Done
