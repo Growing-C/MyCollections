@@ -26,17 +26,29 @@ git push origin newname
 ## 4 项目免输密码------------------------
 git提交的时候总要输入用户名密码，很是麻烦
 这里提供一个单独对某个项目免密的方式（因为有的情况电脑上会使用多个git账号）
-如果还未添加远程地址，可以输入一下命令：
+(1)如果还未添加远程地址，可以输入一下命令：
 ```
 git remote add origin https://username:password@github.com/Growing-C/MyCollections
 ```
 或者直接用gitextension  clone库的时候填写上述地址  
 
-如果已添加远程地址
+(2)如果已添加远程地址
 
 最为简单的方式就是，直接在.git/config文件中进行修改（在项目目录下），按如上格式，添加用户名和密码
+```
+[remote "origin"]
+	url = https://Growing-C:password@github.com/Growing-C/MyCollections.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[user]
+	name = Growing-C
+	email = xxx@xxx,com
+```
 
-还有一种方式
+
+(3)还有一种方式
 在工程文件夹下的.git下打开config文件
 添加   
 ```
