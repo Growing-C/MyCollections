@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".functions.net.NetRequestDemo">
+
+    <RadioGroup
+        android:id="@+id/type_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:text="服务端" />
+
+        <RadioButton
+            android:id="@+id/client"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="客户端" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:text="log"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/type_group" />
+
+    <LinearLayout
+        android:id="@+id/client_op"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/log">
+
+        <Button
+            android:id="@+id/start_scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开始搜索" />
+
+        <Button
+            android:id="@+id/stop_scan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="停止搜索" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/server_op"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/log">
+
+        <Button
+            android:id="@+id/open_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开启服务端" />
+
+        <Button
+            android:id="@+id/start_broad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="开始广播" />
+
+        <Button
+            android:id="@+id/stop_broad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="结束广播" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/ble_device_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/server_op" />
+</android.support.constraint.ConstraintLayout>

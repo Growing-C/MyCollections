@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cgy.mycollections;
+package com.cgy.mycollections.listeners;
 
-/**
- * Created by Yan Zhenjie on 2016/7/27.
- */
-public interface OnItemClickListener {
+public interface OnTItemClickListener<T> {
 
-    void onItemClick(int position);
+    void onItemClickOne(int position, T data);
+
+    void onItemClickTwo(int position, T data);
 
 }

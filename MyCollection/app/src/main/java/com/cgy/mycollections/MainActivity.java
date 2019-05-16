@@ -2,7 +2,6 @@ package com.cgy.mycollections;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,29 +16,28 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.anim.AnimDemo;
+import com.cgy.mycollections.functions.ble.BleDemo;
 import com.cgy.mycollections.functions.cache.CacheDemo;
 import com.cgy.mycollections.functions.dialogdemo.DialogDemo;
 import com.cgy.mycollections.functions.ethereum.EthereumDemo;
 import com.cgy.mycollections.functions.file.FileDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
-import com.cgy.mycollections.functions.net.NetRequestDemo;
+import com.cgy.mycollections.functions.net.NetDemos;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
 import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.textdemo.TextDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
+import com.cgy.mycollections.listeners.OnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_activity_simple_recycler_demo, R.string.info_simple_recycler_demo, true, SimpleRecyclerViewDemo.class),
             new Demo(R.string.title_activity_data_binding_demo, R.string.info_data_binding_demo, true, DataBindingDemo.class),
             new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
-            new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, NetRequestDemo.class),
+            new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, true, NetDemos.class),
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_anim_demo, R.string.info_anim_demo, AnimDemo.class),
             new Demo(R.string.title_database_demo, R.string.info_database_demo, DataBaseDemo.class),
@@ -101,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_ethereum_demo, R.string.info_ethereum_demo, EthereumDemo.class),
             new Demo(R.string.title_file, R.string.info_file, FileDemo.class),
             new Demo(R.string.title_dialog, R.string.info_dialog, DialogDemo.class),
+            new Demo(R.string.title_ble, R.string.info_ble, BleDemo.class),
     };
 
     @Override
@@ -152,8 +151,11 @@ public class MainActivity extends AppCompatActivity {
         Notification notification = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("自动抢红包").setContentText("保持通知栏显示可以防止进程结束").setTicker("aaa").setWhen(System.currentTimeMillis())
                 .setPriority(Notification.PRIORITY_MAX)
-                .setDefaults(Notification.DEFAULT_SOUND).setOngoing(true).setAutoCancel(false)
-                .setContentIntent(null).build();
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setOngoing(true)
+                .setAutoCancel(true)
+                .setContentIntent(null)
+                .build();
 //        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
         notificationManager.notify(0x100, notification);
     }

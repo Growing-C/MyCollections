@@ -23,8 +23,11 @@
     <string name="title_activity_status_bar_demo">StatusBarDemo</string>
     <string name="info_status_bar_demo">简单的StatusBarDemo</string>
 
-    <string name="title_activity_net_demo">NetRequestDemo</string>
-    <string name="info_net_demo">简单的NetDemo</string>
+    <string name="title_activity_net_demo">NetDemos</string>
+    <string name="info_net_demo">网络相关的各种demo集合</string>
+
+    <string name="title_activity_wifi_p2p_demo">WifiP2PDemo</string>
+    <string name="info_wifi_p2p_demo">简单的WifiP2PDemo</string>
 
     <string name="title_text_demo">TextDemo</string>
     <string name="info_text_demo">文字textView相关功能demo</string>
@@ -54,6 +57,8 @@
     <string name="testaccessibility">accessibilityDemo</string>
     <string name="red_envelope_desc">WebChat Get RedMoney</string>
 
+    <string name="title_ble">BLEDemo</string>
+    <string name="info_ble">设备间蓝牙通信</string>
 
     <!--icon fonts-->
     <string name="icon_guanbi">&#xe62b;</string>

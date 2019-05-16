@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cgy.mycollections.listeners.OnItemClickListener;
+
 
 /**
  * Created by YOLANDA on 2016/7/22.

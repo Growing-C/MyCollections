@@ -21,6 +21,19 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <!--loading对话框样式-->
+    <style name="LoadingStyle" parent="CommonDialogTheme">
+        <item name="android:windowNoTitle">true</item>
+        <!-- window透明-->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 背景透明 -->
+        <item name="android:background">@android:color/transparent</item>
+        <!-- window透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 蒙版,是否显示背景蒙版 -->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="CommonTxStyle">
         <item name="android:textSize">@dimen/px33_tx_size</item>
         <item name="android:textColor">@color/tx_color_333333</item>
