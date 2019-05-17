@@ -80,4 +80,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hotpot_toggle" />
 
+    <Button
+        android:id="@+id/connect_hotpot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="连接指定热点"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/get_wifi_state" />
+
 </android.support.constraint.ConstraintLayout>

@@ -71,6 +71,7 @@ public class BleDeviceAdapter extends RecyclerView.Adapter<BleDeviceAdapter.BLED
         public void setData(BluetoothDevice device) {
             String nameWithStatus = device.getName() + " address:" + device.getAddress();
             deviceName.setText(nameWithStatus);
+            disconnectBtn.setVisibility(View.GONE);
 //            if (device.status == WifiP2pDevice.AVAILABLE) {//可连接
 //                connectBtn.setVisibility(View.VISIBLE);
 //                disconnectBtn.setVisibility(View.GONE);

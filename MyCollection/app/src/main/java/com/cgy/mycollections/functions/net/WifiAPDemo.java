@@ -63,7 +63,7 @@ public class WifiAPDemo extends BaseActivity {
 //        WifiInfo wifiInfo  = mWifiManager.getConnectionInfo(); 
     }
 
-    @OnClick({R.id.open_hotpot, R.id.close_hotpot, R.id.get_wifi_state})
+    @OnClick({R.id.open_hotpot, R.id.close_hotpot, R.id.get_wifi_state, R.id.connect_hotpot})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.open_hotpot:
@@ -73,12 +73,19 @@ public class WifiAPDemo extends BaseActivity {
 //                close();
 //                mWifiManager.getWifiState()
                 break;
-            case R.id.get_wifi_state:
+            case R.id.get_wifi_state://获取wifi状态
                 getWifiAPState();
+                break;
+            case R.id.connect_hotpot://连接指定热点
+
                 break;
             default:
                 break;
         }
+    }
+
+    public void connectHotpot() {
+
     }
 
     @Override

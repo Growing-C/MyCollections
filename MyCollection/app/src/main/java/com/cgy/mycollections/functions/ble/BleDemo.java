@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.L;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,6 +51,8 @@ public class BleDemo extends BaseActivity {
     View mServerOpsV;
     @BindView(R.id.log)
     TextView mLogV;
+    @BindView(R.id.server_log)
+    TextView mServerLogV;
 
 
     @Override
@@ -82,7 +86,7 @@ public class BleDemo extends BaseActivity {
 
             @Override
             public void onItemClickTwo(int position, BluetoothDevice data) {
-
+//                closeDevice();
             }
         });
         mBleDeviceListV.setAdapter(mDeviceAdapter);
@@ -97,7 +101,7 @@ public class BleDemo extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.start_scan, R.id.stop_scan, R.id.open_server, R.id.start_broad, R.id.stop_broad})
+    @OnClick({R.id.start_scan, R.id.stop_scan, R.id.open_server, R.id.start_broad, R.id.stop_broad, R.id.close_device})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_scan:
@@ -107,6 +111,9 @@ public class BleDemo extends BaseActivity {
             case R.id.stop_scan:
                 if (mScanner != null)
                     mScanner.stopScan(false);
+                break;
+            case R.id.close_device:
+                closeDevice();
                 break;
 
             case R.id.open_server://开启蓝牙服务端
@@ -134,7 +141,7 @@ public class BleDemo extends BaseActivity {
         String log = "设备名：" + mBluetoothServer.getDeviceName()
                 + "\n设备蓝牙地址:" + mBluetoothServer.getDeviceMac();
         L.e(log);
-        mLogV.setText(log);
+        mServerLogV.setText(log);
         showToast("蓝牙服务端已开启");
     }
 
@@ -142,12 +149,17 @@ public class BleDemo extends BaseActivity {
         if (mBluetoothServer != null) {
             mBluetoothServer.startAdvertising();
         }
+        String log = mServerLogV.getText().toString() + "\n开始广播";
+        mServerLogV.setText(log);
     }
 
     public void stopAdvertise() {//结束广播
         if (mBluetoothServer != null) {
             mBluetoothServer.stopAdvertising();
         }
+
+        String log = mServerLogV.getText().toString() + "\n结束广播";
+        mServerLogV.setText(log);
     }
 
     //</editor-fold>
@@ -220,6 +232,7 @@ public class BleDemo extends BaseActivity {
 
                 }
             });
+            mScanner.setScanBle(false);
         }
         mScanner.stopScan(false);
         mScanner.startScan(-1);
@@ -231,13 +244,48 @@ public class BleDemo extends BaseActivity {
         }
     }
 
+    public void closeDevice() {
+        if (mWriteCharacteristic != null) {
+            mWriteCharacteristic = null;
+        }
+
+        if (mBluetoothGatt != null) {
+            mBluetoothGatt.disconnect();
+            refreshDeviceCache();
+            mBluetoothGatt.close();//据说直接在disconnect后面close会导致STATE_DISCONNECTED收不到，确实是这样 待实验
+            mBluetoothGatt = null;
+        }
+    }
+
+    /**
+     * Clears the device cache. After uploading new hello4 the DFU target will have other services than before.
+     */
+    public boolean refreshDeviceCache() {
+        L.e("refreshDeviceCache");
+        /*
+         * There is a refresh() method in BluetoothGatt class but for now it's hidden. We will call it using reflections.
+         */
+        try {
+            final Method refresh = BluetoothGatt.class.getMethod("refresh");
+            if (refresh != null) {
+                final boolean success = (Boolean) refresh.invoke(mBluetoothGatt);
+                L.e("Refreshing result: " + success);
+                return success;
+            }
+        } catch (Exception e) {
+            L.e("An exception occured while refreshing device");
+        }
+        return false;
+    }
+
     BluetoothGatt mBluetoothGatt;
+    BluetoothGattCharacteristic mWriteCharacteristic;//写入
     BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             switch (newState) {
                 case BluetoothProfile.STATE_CONNECTED:
-                    L.e("connect success -->cost  :");
+                    L.e("onConnectionStateChange -->  connect success :");
                     mBluetoothGatt.discoverServices();
                     break;
                 case BluetoothProfile.STATE_DISCONNECTED:
@@ -249,6 +297,7 @@ public class BleDemo extends BaseActivity {
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            L.e("onServicesDiscovered:" + status);
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 //枚举所有服务：
                 L.d("-------------------");
@@ -258,10 +307,15 @@ public class BleDemo extends BaseActivity {
                     L.d("S size:" + s.getCharacteristics().size() + " uuid:" + s.getUuid());
                     for (BluetoothGattCharacteristic c : s.getCharacteristics()) {
                         L.d("--character:" + c.getUuid());
-                        if (c.getUuid().toString().toUpperCase().equals(BluetoothServer.UUID_LOCK_SERVICE.toString())) {
-                            L.d("UUID_LOCK_READ des:");
+                        if (c.getUuid().toString().toUpperCase().contains("b001".toUpperCase())) {
+                            L.d("b001 raw uuid:" + c.getUuid().toString());
+                            L.d("b001 tar uuid:" + BluetoothServer.UUID_LOCK_READ.toString());
+                            L.d("equals? :" + (c.getUuid().toString().equals(BluetoothServer.UUID_LOCK_READ.toString())));
                             try {
-                                setCharacteristicNotification(s.getUuid(), c.getUuid(), null, true);
+                                if (mWriteCharacteristic == null) {
+                                    mWriteCharacteristic = s.getCharacteristic(BluetoothServer.UUID_LOCK_WRITE);//这个uuid选里面的
+                                }
+                                setCharacteristicNotification(s.getUuid(), c.getUuid(), BluetoothServer.UUID_DESCRIPTOR, true);
                             } catch (Exception e) {
                                 L.e(e);
                             }
@@ -271,6 +325,8 @@ public class BleDemo extends BaseActivity {
 
                 }
                 L.d("-------------------");
+            } else {
+
             }
 
         }
@@ -278,13 +334,46 @@ public class BleDemo extends BaseActivity {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            L.e("onCharacteristicChanged");
+            L.e("onCharacteristicChanged UUID:" + characteristic.getUuid().toString());
+            final byte[] dealBytes = characteristic.getValue();
+
+            String result = CHexConverter.byte2HexStr(dealBytes, dealBytes.length);
+            L.e("收到蓝牙服务端数据 onCharacteristicChanged value：" + result);
+
+//            byte[] command = new byte[]{11, 22, 33, 44, 55, 66, 77, 88, 99, 10};//永远发第一个
+//
+//            L.e("给设备发送了消息，内容：" + CHexConverter.byte2HexStr(command, command.length));
+//            mWriteCharacteristic.setValue(command);
+//            mWriteCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+//            boolean writeSuccess = mBluetoothGatt.writeCharacteristic(mWriteCharacteristic);
+//            L.e("mSendCommandRunnable writeSuccess?= " + writeSuccess);  //如果isBoolean返回的是true则写入成功
+
         }
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
             L.e("onDescriptorWrite");
+
+
+            byte[] command = new byte[]{11, 22, 33, 44, 55, 66};//永远发第一个
+            L.e("onDescriptorWrite 给设备发送了消息，内容：" + CHexConverter.byte2HexStr(command));
+            mWriteCharacteristic.setValue(command);
+            mWriteCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+            boolean writeSuccess = mBluetoothGatt.writeCharacteristic(mWriteCharacteristic);
+            L.e("onDescriptorWrite writeSuccess?= " + writeSuccess);  //如果isBoolean返回的是true则写入成功
+        }
+
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicWrite(gatt, characteristic, status);
+
+            L.e("onCharacteristicWrite UUID:" + characteristic.getUuid().toString());
+            final byte[] dealBytes = characteristic.getValue();
+
+            String result = CHexConverter.byte2HexStr(dealBytes, dealBytes.length);
+            L.e(String.format(" onCharacteristicWrite： result = %s", "收到蓝牙服务端数据 onCharacteristicChanged value：" + result));
+
         }
     };
 
@@ -298,22 +387,22 @@ public class BleDemo extends BaseActivity {
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(descriptorUuid);
             descriptor.setValue(enable ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor); //descriptor write operation successfully started?
+
+            L.e("setCharacteristicNotification  writeDescriptor ");
         } else {//未指定descriptor
             for (BluetoothGattDescriptor dp : characteristic.getDescriptors()) {
-//                Log.e(TAG, "setCharacteristicNotification BluetoothGattDescriptor:" + dp.getUuid());
-                if (dp != null) {
-                    if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
-                        L.e("1...ENABLE_NOTIFICATION_VALUE");
-                        dp.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                    } else if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
-                        L.e("2...ENABLE_INDICATION_VALUE");
-                        dp.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);//测试中发现大锁使用ENABLE_INDICATION_VALUE的话就没下文了，所以基本还是用ENABLE_NOTIFICATION_VALUE
-                    }
-                    mBluetoothGatt.writeDescriptor(dp);
+                L.e("setCharacteristicNotification BluetoothGattDescriptor:" + dp.getUuid());
+                if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                    L.e("1...ENABLE_NOTIFICATION_VALUE");
+                    dp.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                } else if ((characteristic.getProperties() & BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0) {
+                    L.e("2...ENABLE_INDICATION_VALUE");
+                    dp.setValue(BluetoothGattDescriptor.ENABLE_INDICATION_VALUE);//测试中发现大锁使用ENABLE_INDICATION_VALUE的话就没下文了，所以基本还是用ENABLE_NOTIFICATION_VALUE
                 }
+                mBluetoothGatt.writeDescriptor(dp);
             }
         }
-//        Log.e(TAG, "setCharacteristicNotification  end ");
+        L.e("setCharacteristicNotification  end ");
         return true;
     }
 
