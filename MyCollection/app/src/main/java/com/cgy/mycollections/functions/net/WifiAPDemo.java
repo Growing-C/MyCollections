@@ -15,6 +15,8 @@ import android.os.Message;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -22,10 +24,12 @@ import android.widget.ToggleButton;
 
 import com.cgy.mycollections.BaseActivity;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionGranted;
@@ -41,6 +45,12 @@ import butterknife.OnClick;
 public class WifiAPDemo extends BaseActivity {
     @BindView(R.id.hotpot_toggle)
     ToggleButton mHotpotToggle;
+    @BindView(R.id.wifi_ssid)
+    TextInputEditText mSsidV;
+    @BindView(R.id.wifi_password)
+    TextInputEditText mPwdV;
+
+
     WifiManager mWifiManager;
 
     @Override
@@ -77,7 +87,7 @@ public class WifiAPDemo extends BaseActivity {
                 getWifiAPState();
                 break;
             case R.id.connect_hotpot://连接指定热点
-
+                connectHotpot();
                 break;
             default:
                 break;
@@ -85,7 +95,60 @@ public class WifiAPDemo extends BaseActivity {
     }
 
     public void connectHotpot() {
+        if (mWifiManager != null) {
+            List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
+            for (WifiConfiguration existingConfig : existingConfigs) {
+                if (existingConfig == null) continue;
+                L.e("已有的ssid:" + existingConfig.SSID + "  密码：" + existingConfig.preSharedKey);
+            }
+        }
 
+        String SSID = mSsidV.getText().toString();
+        String key = mPwdV.getText().toString();
+        if (TextUtils.isEmpty(SSID) || TextUtils.isEmpty(key)) {
+            showToast("请输入ssid/密码！");
+            return;
+        }
+        WifiConfiguration wc = new WifiConfiguration();
+
+//        SSID = "qvtest";
+//
+//        key = "12345678";
+
+        wc.SSID = "\"" + SSID + "\""; // wifi名称
+
+        wc.preSharedKey = "\"" + key + "\""; // wifi密码
+
+        wc.hiddenSSID = true;
+
+        wc.status = WifiConfiguration.Status.ENABLED;
+
+        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+
+        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+
+        wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+
+        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+
+        wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+
+        int res = mWifiManager.addNetwork(wc);
+
+        boolean b = mWifiManager.enableNetwork(res, false);
+
+//        for (WifiConfiguration i : list) {
+//            if (i.SSID != null && i.SSID.equals(ssid)) {
+//                wifiManager.disconnect();
+//                wifiManager.enableNetwork(i.networkId, true);
+//                wifiManager.reconnect();
+//                break;
+//            }
+//        }
+
+        showToast("res = " + res + "\n" + b + "");
     }
 
     @Override
