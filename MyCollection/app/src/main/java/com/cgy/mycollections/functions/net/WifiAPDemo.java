@@ -5,7 +5,9 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -30,6 +32,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionGranted;
@@ -37,6 +40,9 @@ import appframe.permission.PermissionManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -53,6 +59,8 @@ public class WifiAPDemo extends BaseActivity {
 
     WifiManager mWifiManager;
 
+    Disposable mD;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,9 +76,49 @@ public class WifiAPDemo extends BaseActivity {
                 toggleWifi();
             }
         });
+        if (!mWifiManager.isWifiEnabled()) {
+            L.e("wifi 未打开，打开wifi，结果：" + mWifiManager.setWifiEnabled(true));
+        }
+
+        L.e("开始扫描wifi");
+        mWifiManager.startScan();
+        mD = Observable.interval(5000, 5000, TimeUnit.MILLISECONDS).subscribe(new Consumer<Long>() {
+            @Override
+            public void accept(Long aLong) throws Exception {
+                L.e("轮询：" + aLong);
+
+                List<ScanResult> results = mWifiManager.getScanResults();
+                if (results == null || results.isEmpty()) {
+                    L.e("未扫描到网络：");
+                } else {
+                    for (int i = 0; i < results.size(); i++) {
+                        L.e("网络 " + i + " :" + results.get(i).toString());
+                    }
+
+                    if (mD != null) {
+                        mD.dispose();
+                        mD = null;
+                    }
+                }
+
+            }
+        });
+
+        WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
+        if (wifiInfo != null) {
+            L.e("cur wifi = " + wifiInfo.getSSID());
+            L.e("cur getNetworkId = " + wifiInfo.getNetworkId());
+        }
 //        WifiConfiguration mWifiConfig  = mWifiManager.getWifiApConfiguration();
-//
-//        WifiInfo wifiInfo  = mWifiManager.getConnectionInfo(); 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mD != null) {
+            mD.dispose();
+            mD = null;
+        }
     }
 
     @OnClick({R.id.open_hotpot, R.id.close_hotpot, R.id.get_wifi_state, R.id.connect_hotpot})
@@ -94,12 +142,59 @@ public class WifiAPDemo extends BaseActivity {
         }
     }
 
+    public void connectNet(WifiConfiguration netConfig) {
+
+//        int res = mWifiManager.addNetwork(netConfig);
+        int netId = netConfig.networkId;
+        if (netId == -1) {
+            netId = mWifiManager.addNetwork(netConfig);
+            L.e("new net  addNetwork:" + netId);
+        }
+//        mWifiManager.disconnect();
+        boolean b = mWifiManager.enableNetwork(netId, true);
+        mWifiManager.reconnect();
+
+        showToast("connectNet networkId : " + netId + " 连接结果：" + b);
+    }
+
+    /**
+     * 创建 WifiConfiguration，这里创建的是wpa2加密方式的wifi
+     *
+     * @param ssid     wifi账号
+     * @param password wifi密码
+     * @return
+     */
+    private WifiConfiguration createWifiInfo(String ssid, String password) {
+        WifiConfiguration config = new WifiConfiguration();
+        config.allowedAuthAlgorithms.clear();
+        config.allowedGroupCiphers.clear();
+        config.allowedKeyManagement.clear();
+        config.allowedPairwiseCiphers.clear();
+        config.allowedProtocols.clear();
+        config.SSID = "\"" + ssid + "\"";
+        config.preSharedKey = "\"" + password + "\"";
+        config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        config.status = WifiConfiguration.Status.ENABLED;
+        return config;
+    }
+
     public void connectHotpot() {
         if (mWifiManager != null) {
             List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
             for (WifiConfiguration existingConfig : existingConfigs) {
                 if (existingConfig == null) continue;
                 L.e("已有的ssid:" + existingConfig.SSID + "  密码：" + existingConfig.preSharedKey);
+                if (existingConfig.SSID.contains("NO8")) {
+                    connectNet(existingConfig);
+                    return;
+                }
             }
         }
 
@@ -109,46 +204,14 @@ public class WifiAPDemo extends BaseActivity {
             showToast("请输入ssid/密码！");
             return;
         }
-        WifiConfiguration wc = new WifiConfiguration();
-
-//        SSID = "qvtest";
+//        SSID: NO8, BSSID: 8c:a6:df:90:3f:91, capabilities: [WPA2-PSK-CCMP+TKIP][WPA-PSK-CCMP+TKIP][ESS], level: -42, frequency: 2472, timestamp: 358238073085, distance: ?(cm), distanceSd: ?(cm), passpoint: no, ChannelBandwidth: 0, centerFreq0: 0, centerFreq1: 0,
+        //        SSID = "qvtest";
 //
 //        key = "12345678";
+        WifiConfiguration wc = createWifiInfo(SSID, key);
 
-        wc.SSID = "\"" + SSID + "\""; // wifi名称
+        connectNet(wc);
 
-        wc.preSharedKey = "\"" + key + "\""; // wifi密码
-
-        wc.hiddenSSID = true;
-
-        wc.status = WifiConfiguration.Status.ENABLED;
-
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-
-        wc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-
-        wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-
-        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-
-        wc.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-
-        wc.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-
-        int res = mWifiManager.addNetwork(wc);
-
-        boolean b = mWifiManager.enableNetwork(res, false);
-
-//        for (WifiConfiguration i : list) {
-//            if (i.SSID != null && i.SSID.equals(ssid)) {
-//                wifiManager.disconnect();
-//                wifiManager.enableNetwork(i.networkId, true);
-//                wifiManager.reconnect();
-//                break;
-//            }
-//        }
-
-        showToast("res = " + res + "\n" + b + "");
     }
 
     @Override
