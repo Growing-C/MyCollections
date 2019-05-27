@@ -47,18 +47,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="打开随机热点（ssid密码随机）"
+        android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/connect_hotpot"
         app:layout_constraintTop_toBottomOf="@id/hotpot_password_layout" />
 
     <Button
-        android:id="@+id/close_hotpot"
+        android:id="@+id/connect_hotpot"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="关闭热点"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="连接指定热点"
+        app:layout_constraintLeft_toRightOf="@+id/open_hotpot"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/open_hotpot" />
+        app:layout_constraintTop_toBottomOf="@id/hotpot_password_layout" />
 
     <ToggleButton
         android:id="@+id/hotpot_toggle"
@@ -69,24 +70,24 @@
         android:textOn="热点已开启(点击关闭)"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/close_hotpot" />
+        app:layout_constraintTop_toBottomOf="@id/open_hotpot" />
 
     <Button
         android:id="@+id/get_wifi_state"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="获取wifi状态"
+        android:text="获取wifi状态+扫描网络"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hotpot_toggle" />
 
-    <Button
-        android:id="@+id/connect_hotpot"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/scan_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="连接指定热点"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/get_wifi_state" />
+
 
 </android.support.constraint.ConstraintLayout>
