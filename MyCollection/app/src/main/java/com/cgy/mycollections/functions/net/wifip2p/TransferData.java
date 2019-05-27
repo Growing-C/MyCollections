@@ -1,13 +1,14 @@
 package com.cgy.mycollections.functions.net.wifip2p;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Description :
  * Author :cgy
  * Date :2019/5/15
  */
-public class TransferData {
+public class TransferData implements Serializable {
     public int dataType;//数据类型  1 -string  2-file
     public String transferContent;//string类型的传输输入内容
     public String transferFilePath;//传输文件路径

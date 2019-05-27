@@ -102,6 +102,8 @@ public class WifiP2PDemo extends BaseActivity {
                     });
                 }
             });
+
+            startService(new Intent(WifiP2PDemo.this, WifiServerService.class));
         }
 
         @Override
@@ -199,9 +201,6 @@ public class WifiP2PDemo extends BaseActivity {
 
             @Override
             public void onDisconnection() {
-                L.e("onDisconnection");
-//                btn_disconnect.setEnabled(false);
-//                btn_chooseFile.setEnabled(false);
                 showToast("已断开连接");
                 mWifiP2pDeviceList.clear();
                 mDeviceAdapter.notifyDataSetChanged();
@@ -218,6 +217,7 @@ public class WifiP2PDemo extends BaseActivity {
                 sb.append("Status: " + wifiP2pDevice.status);
                 mCurrentDeviceInfoV.setText(sb.toString());
                 mCurrentDevice = wifiP2pDevice;
+                L.e("onSelfDeviceAvailable:" + sb.toString());
             }
 
             @Override
@@ -249,7 +249,7 @@ public class WifiP2PDemo extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.create_group:
-                createroup();
+                createGroup();
                 break;
             case R.id.remove_group:
                 removeGroup();
@@ -268,21 +268,19 @@ public class WifiP2PDemo extends BaseActivity {
         }
     }
 
-    private void createroup() {
+    private void createGroup() {
         showLoadingDialog("正在创建群组");
         mWifiP2pManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                L.e("createGroup onSuccess");
                 dismissLoadingDialog();
-                showToast("onSuccess");
+                showToast("createGroup onSuccess");
             }
 
             @Override
             public void onFailure(int reason) {
-                L.e("createGroup onFailure: " + reason);
                 dismissLoadingDialog();
-                showToast("onFailure");
+                showToast("createGroup onFailure" + reason);
             }
         });
     }
@@ -372,7 +370,7 @@ public class WifiP2PDemo extends BaseActivity {
         }
         removeGroup();
         stopService(new Intent(this, WifiServerService.class));
-
+        stopDiscover();
     }
 
     /**

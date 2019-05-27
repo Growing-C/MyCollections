@@ -73,10 +73,9 @@ public class BaseActivity extends AppCompatActivity {
 
     private void showDialog(String msg) {
         AlertDialog mDialog = null;
-        if (mDialog == null)
-            mDialog = new AlertDialog.Builder(BaseActivity.this)
-                    .setMessage(msg)
-                    .setNegativeButton("取消", null).create();
+        mDialog = new AlertDialog.Builder(BaseActivity.this)
+                .setMessage(msg)
+                .setNegativeButton("取消", null).create();
         if (!mDialog.isShowing())
             mDialog.show();
     }

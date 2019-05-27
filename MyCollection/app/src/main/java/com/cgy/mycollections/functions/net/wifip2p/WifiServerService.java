@@ -30,7 +30,6 @@ public class WifiServerService extends IntentService {
     private static final String TAG = "WifiServerService";
 
 
-
     private ServerSocket serverSocket;
 
     private InputStream inputStream;
@@ -41,8 +40,6 @@ public class WifiServerService extends IntentService {
 
     private OnProgressChangListener progressChangListener;
 
-    private static final int PORT = 4786;
-
     public class MyBinder extends Binder {
         public WifiServerService getService() {
             return WifiServerService.this;
@@ -51,7 +48,7 @@ public class WifiServerService extends IntentService {
 
     public WifiServerService() {
         super("WifiServerService");
-        L.e(TAG, "WifiServerService");
+        L.e(TAG, "new WifiServerService");
     }
 
     @Override
@@ -68,6 +65,12 @@ public class WifiServerService extends IntentService {
     }
 
     @Override
+    public boolean onUnbind(Intent intent) {
+        L.e(TAG, "onUnbind");
+        return super.onUnbind(intent);
+    }
+
+    @Override
     protected void onHandleIntent(Intent intent) {
         L.e(TAG, "onHandleIntent");
         clean();
@@ -75,9 +78,14 @@ public class WifiServerService extends IntentService {
         try {
             serverSocket = new ServerSocket();
             serverSocket.setReuseAddress(true);
-            serverSocket.bind(new InetSocketAddress(PORT));
+            serverSocket.bind(new InetSocketAddress(WifiSendTask.PORT));
+
+//            serverSocket = new ServerSocket(WifiSendTask.PORT);
+//            serverSocket.setReuseAddress(true);
+//            serverSocket.bind(new InetSocketAddress(WifiSendTask.PORT));
             Socket client = serverSocket.accept();
-            L.e(TAG, "客户端IP地址 : " + client.getInetAddress().getHostAddress());
+            L.e(TAG, "客户端IP地址 : " + client.getRemoteSocketAddress());
+//            L.e(TAG, "客户端IP地址 : " + client.getInetAddress().getHostAddress());
             inputStream = client.getInputStream();
             objectInputStream = new ObjectInputStream(inputStream);
             /**如果你写的是2个程序，尽管FileTransfer一样，但是也要注意包名，其实只要Socket 连接通，客户端IP 拿到，就达到了目标。**/
@@ -101,6 +109,7 @@ public class WifiServerService extends IntentService {
             int progress;
             long dataLen = data.getSendDataLen();
 
+            L.e(TAG, "开始接收数据 总长度: " + dataLen);
             while ((len = inputStream.read(buf)) != -1) {
                 mOutputStream.write(buf, 0, len);
                 total += len;
@@ -110,7 +119,7 @@ public class WifiServerService extends IntentService {
                     progressChangListener.onProgressChanged(data, progress);
                 }
             }
-            L.e(TAG, "数据接收成功");
+            L.e(TAG, "数据接收成功:" + mOutputStream.toString());
         } catch (Exception e) {
             L.e(TAG, "数据接收 Exception: " + e.getMessage());
         } finally {

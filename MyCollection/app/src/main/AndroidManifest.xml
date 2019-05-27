@@ -75,6 +75,7 @@
         <activity android:name=".functions.tts.TTSDemo" />
 
         <service android:name=".functions.tts.TTSService" />
+        <service android:name=".functions.net.wifip2p.WifiServerService" />
 
         <activity android:name=".functions.androiddesign.recyclerview.SimpleRecyclerViewDemo" />
         <activity android:name=".functions.framework.databinding.DataBindingDemo" />

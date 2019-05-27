@@ -95,7 +95,7 @@ public class DirectBroadcastReceiver extends BroadcastReceiver {
                 case WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION://搜索状态改变
                     int discoveryState = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED);
                     boolean isDiscover = discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED;
-                    L.e("discoveryState:" + discoveryState);
+                    L.e("discoveryState:" + discoveryState + (isDiscover ? "  开始扫描" : "其他"));
                     mDirectActionListener.onDiscoverStateChange(isDiscover);
                     //2是开始搜索  1是结束搜索
                     break;

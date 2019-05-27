@@ -27,7 +27,7 @@ public class WifiSendTask extends AsyncTask<String, Integer, Boolean> {
 
     private TransferData mSendData;
 
-    private static final int PORT = 4786;
+    public static final int PORT = 10010;
 
     private static final String TAG = "linkstec";
 
@@ -49,15 +49,22 @@ public class WifiSendTask extends AsyncTask<String, Integer, Boolean> {
     @Override
     protected Boolean doInBackground(String... strings) {
 //        fileTransfer.setMd5(Md5Util.getMd5(new File(fileTransfer.getFilePath())));
-        L.e(TAG, "准备发送给 group owner， address:" + strings[0]);
+
+        String hostName = strings[0];
+        L.e(TAG, "准备发送给 group owner， address:" + hostName);
+
         Socket socket = null;
         OutputStream outputStream = null;
         ObjectOutputStream objectOutputStream = null;
         InputStream inputStream = null;
         try {
+//            socket = new Socket(hostName, PORT);
             socket = new Socket();
-            socket.bind(null);
-            socket.connect((new InetSocketAddress(strings[0], PORT)), 10000);
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(hostName, PORT);
+            socket.connect(inetSocketAddress);
+//            socket.bind(null);
+//            socket.connect((new InetSocketAddress(hostName, PORT)), 10000);
+            L.e("发送数据 连接成功 端口：" + PORT);
             outputStream = socket.getOutputStream();
             objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(mSendData);
@@ -96,6 +103,7 @@ public class WifiSendTask extends AsyncTask<String, Integer, Boolean> {
             L.e(TAG, "发送成功！！！");
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             L.e(TAG, "文件发送异常 Exception: " + e.getMessage());
         } finally {
             if (outputStream != null) {
