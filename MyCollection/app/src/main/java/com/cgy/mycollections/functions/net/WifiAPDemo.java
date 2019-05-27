@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -22,6 +23,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -168,13 +170,24 @@ public class WifiAPDemo extends BaseActivity {
         mWifiAdapter = new WifiAdapter();
         mWifiAdapter.setOnItemClickListener(new OnTItemClickListener<ScanResult>() {
             @Override
-            public void onItemClickOne(int position, ScanResult data) {
+            public void onItemClickOne(int position, final ScanResult data) {
                 L.e("click connect:" + data.toString());
-                if (data.SSID.contains("NO8")) {
-                    mWifiAdmin.test();
-                } else {
-                    mWifiAdmin.connectNet(data, "123456");
-                }
+                final String pwd = mPwdV.getText().toString();
+                new AlertDialog.Builder(WifiAPDemo.this)
+                        .setMessage("准备连接wifi  \n名称：" + data.SSID + "\n密码：" + pwd)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (data.SSID.contains("NO8")) {
+                                    mWifiAdmin.test();
+                                } else {
+                                    mWifiAdmin.connectNet(data, pwd);
+                                }
+                            }
+                        }).setNegativeButton("取消", null)
+                        .create()
+                        .show();
+
             }
 
             @Override

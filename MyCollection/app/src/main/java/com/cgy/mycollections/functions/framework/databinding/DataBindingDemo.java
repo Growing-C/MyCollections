@@ -17,7 +17,5 @@ public class DataBindingDemo extends AppCompatActivity {
 
         Demo demo = new Demo(R.string.title_activity_data_binding_demo, R.string.info_data_binding_demo, true, DataBindingDemo.class);
         binding.setDemo(demo);
-
-
     }
 }

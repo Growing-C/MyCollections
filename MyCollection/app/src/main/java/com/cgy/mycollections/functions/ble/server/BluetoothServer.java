@@ -19,7 +19,7 @@ import android.os.ParcelUuid;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import com.cgy.mycollections.functions.ble.CHexConverter;
+import com.cgy.mycollections.utils.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Field;

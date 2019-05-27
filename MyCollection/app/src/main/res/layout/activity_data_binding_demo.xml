@@ -2,7 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     tools:context="com.cgy.mycollections.functions.framework.databinding.DataBindingDemo">
 
     <data>
@@ -21,23 +20,23 @@
             android:id="@+id/top_ll"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_25"
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{demo.titleId}"
-                app:layout_constraintLeft_toLeftOf="parent" />
+                android:text="@{demo.titleId}" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@{demo.infoId}"
-                app:layout_constraintLeft_toLeftOf="parent" />
+                android:text="@{demo.infoId}" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

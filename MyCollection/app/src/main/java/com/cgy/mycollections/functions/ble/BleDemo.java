@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -23,6 +22,7 @@ import com.cgy.mycollections.functions.ble.scan.BLEScanner;
 import com.cgy.mycollections.functions.ble.scan.IBLEScanObserver;
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
+import com.cgy.mycollections.utils.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Method;

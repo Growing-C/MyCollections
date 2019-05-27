@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ble;
+package com.cgy.mycollections.utils;
 
 /**
  * Created by zhouzd on 2018/6/3.
@@ -142,10 +142,8 @@ public class CHexConverter {
      *
      * @param strText String 全角字符串
      * @return String 每个unicode之间无分隔符
-     * @throws Exception
      */
-    public static String strToUnicode(String strText)
-            throws Exception {
+    public static String strToUnicode(String strText) throws Exception {
         char c;
         StringBuilder str = new StringBuilder();
         int intAsc;
