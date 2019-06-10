@@ -35,6 +35,7 @@ import static android.content.Context.BLUETOOTH_SERVICE;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class BluetoothServer {
+    private final String TAG = "BluetoothServer";
     private BluetoothManager mBluetoothManager;
     private BluetoothGattServer mBluetoothGattServer;
     private BluetoothAdapter mBluetoothAdapter;
@@ -45,12 +46,12 @@ public class BluetoothServer {
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
             L.e(String.format("1.onConnectionStateChange：device name = %s, address = %s", device.getName(), device.getAddress()));
-            L.e(String.format("1.onConnectionStateChange：status = %s, newState =%s ", status, newState));
+            L.e(String.format("1.onConnectionStateChange：status = %s, newState =%s ,0是断开连接，2是连接成功", status, newState));
         }
 
         @Override
         public void onServiceAdded(int status, BluetoothGattService service) {
-            L.e(String.format("onServiceAdded：status = %s", status));
+            L.e(String.format("onServiceAdded：status = %s ，0是成功", status));
         }
 
         @Override
@@ -77,7 +78,7 @@ public class BluetoothServer {
         @Override
         public void onDescriptorReadRequest(BluetoothDevice device, int requestId,
                                             int offset, BluetoothGattDescriptor descriptor) {
-            Log.e("DescriptorReadReq", "远程设备请求写入描述器");
+            Log.e("DescriptorReadReq", "远程设备请求read描述器 onDescriptorReadRequest!");
             mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, new byte[]{10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
         }
 
@@ -85,7 +86,7 @@ public class BluetoothServer {
         public void onDescriptorWriteRequest(BluetoothDevice device,
                                              int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite,
                                              boolean responseNeeded, int offset, byte[] value) {
-            Log.e("DescriptorReadReq", "远程设备请求写入描述器");
+            Log.e(TAG, "远程设备请求Write描述器 onDescriptorWriteRequest");
 
             L.e(String.format("2.onDescriptorWriteRequest：device name = %s, address = %s", device.getName(), device.getAddress()));
             L.e(String.format("2.onDescriptorWriteRequest：requestId = %s, preparedWrite = %s, responseNeeded = %s, offset = %s, value = %s,", requestId, preparedWrite, responseNeeded, offset, CHexConverter.byte2HexStr(value, value.length)));
@@ -102,7 +103,7 @@ public class BluetoothServer {
 
         @Override
         public void onNotificationSent(BluetoothDevice device, int status) {
-            Log.e("onNotificationSent", "通知发送：" + status);
+            Log.e("onNotificationSent", "通知发送 status = " + status);
         }
 
         @Override

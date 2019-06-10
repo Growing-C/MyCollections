@@ -19,6 +19,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
+import com.cgy.mycollections.utils.L;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +77,7 @@ public class BLEScanner {
     Runnable mTimeOutRunnable = new Runnable() {
         @Override
         public void run() {
+            L.e("扫描超时");
             stopScan(true);
         }
     };

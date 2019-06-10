@@ -66,6 +66,7 @@
                 android:resource="@xml/accessibility" />
         </service>
         <service android:name=".FloatingService" />
+        <service android:name=".BackgroundService" />
 
         <activity
             android:name=".functions.weixindemo.RedEnvelopeDemo"

@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
         //打开悬浮球
         Intent serviceIt = new Intent(MainActivity.this, FloatingService.class);
         startService(serviceIt);
+
+        //打开背景服务
+//        Intent bgService = new Intent(MainActivity.this, BackgroundService.class);
+//        startService(bgService);
     }
 
     private Demo[] demos = {

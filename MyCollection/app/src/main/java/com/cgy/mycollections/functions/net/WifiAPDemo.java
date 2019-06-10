@@ -39,9 +39,6 @@ import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.L;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;
@@ -52,8 +49,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 
-import static com.cgy.mycollections.functions.net.wifiap.WifiAdmin.WIFI_AP_STATE_ENABLED;
-import static com.cgy.mycollections.functions.net.wifiap.WifiAdmin.WIFI_AP_STATE_ENABLING;
 
 
 /**
