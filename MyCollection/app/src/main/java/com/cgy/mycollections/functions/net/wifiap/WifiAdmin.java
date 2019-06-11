@@ -2,6 +2,7 @@ package com.cgy.mycollections.functions.net.wifiap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.wifi.ScanResult;
@@ -47,9 +48,11 @@ public class WifiAdmin {
     public static final int WIFI_AP_STATE_FAILED = 14;
 
     /**
-     *      * 构造器，获取wifi信息和管理对象
-     *      * @param context
-     *      
+     * 构造器，获取wifi信息和管理对象
+     * 注意！！！
+     * location权限必须要，不然 扫描扫不到wifi，连接也连不上！！
+     *
+     * @param context      
      */
     public WifiAdmin(Context context) {
         this.mContext = context;
@@ -66,6 +69,12 @@ public class WifiAdmin {
             L.e("wifi 未打开，打开wifi，结果：" + mWifiManager.setWifiEnabled(true));
         }
         getWifiIP();
+
+//        LocationManager locManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+//
+//        if(!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+//            // 未打开位置开关，可能导致定位失败或定位不准，提示用户或做相应处理
+//        }
     }
 
     /**
@@ -79,8 +88,10 @@ public class WifiAdmin {
      *   如果capabilities也相同就没办法了，系统设置里面也不显示同名的
      */
     public void startScan() {
+        L.e("开始扫描wifi");
         //开始扫描
-        mWifiManager.startScan();
+        //貌似必须有权限以及打开GPS才能扫到  不然一直为空
+        mWifiManager.startScan();//startScan之后直接.getScanResults()可能拿到上次的扫描结果，需要在广播里面接收本次结果
     }
 
     public WifiManager getWifiManager() {
@@ -93,16 +104,28 @@ public class WifiAdmin {
             if (existingConfig == null) continue;
             L.e("已有的ssid:" + existingConfig.SSID + "  密码：" + existingConfig.preSharedKey);
             if (existingConfig.SSID.contains("NO8")) {
-                connectNet(existingConfig);
-                return;
+//                connectNet(existingConfig);
+//                return;
             }
+        }
+    }
+
+    /**
+     * 断开所有已经配置过的网络
+     */
+    public void disableAllConfigedNetwork() {
+        List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();
+        for (WifiConfiguration existingConfig : existingConfigs) {
+            if (existingConfig == null) continue;
+            L.e(existingConfig.networkId + "--断开已有的ssid:" + existingConfig.SSID + "  密码：" + existingConfig.preSharedKey);
+            mWifiManager.disableNetwork(existingConfig.networkId);
         }
     }
 
     public boolean connectNet(ScanResult result, String password) {
         WifiConfiguration configuration = createWifiInfo(result, password);
         L.e("连接扫描到的网络 ：" + result);
-        L.e("连接扫描到的网络 配置：" + configuration);
+//        L.e("连接扫描到的网络 配置：" + configuration);
         return connectNet(configuration);
     }
 
@@ -111,7 +134,7 @@ public class WifiAdmin {
         //        SSID = "qvtest";
 //
 //        key = "12345678";
-        WifiConfiguration wc = createWifiInfo(SSID, pwd);
+        WifiConfiguration wc = createWifiInfo(SSID, pwd, "[WPA2-PSK-CCMP][ESS]");
 
         return connectNet(wc);
     }
@@ -126,12 +149,62 @@ public class WifiAdmin {
         }
         mWifiManager.disconnect();
         boolean b = mWifiManager.enableNetwork(netId, true);
+//        boolean b = connectWifiByReflectMethod(netId);
         mWifiManager.reconnect();
 
         L.e("connectNet networkId : " + netId + " 连接结果：" + b);
+
+//        mWifiInfo = mWifiManager.getConnectionInfo();
+//        if (mWifiInfo != null) {
+//            L.e("cur wifi = " + mWifiInfo.getSSID());
+//            L.e("cur getNetworkId = " + mWifiInfo.getNetworkId());
+//        }
         return b;
     }
 
+    /**
+     * 由于存在 已经连接其他wifi的情况,此时断开wifi 再连接指定wifi的时候 系统也会自动连接优先级高的wifi，可能导致连接指定wifi失败
+     * 所以
+     * 通过反射出不同版本的connect方法来连接Wifi
+     * 似乎依然无法解决问题！！
+     *
+     * @param netId
+     * @return
+     * @author jiangping.li
+     * @since MT 1.0
+     */
+    private boolean connectWifiByReflectMethod(int netId) {
+        Method connectMethod = null;
+        L.e("connectWifiByReflectMethod road 1");
+        // 反射方法： connect(int, listener) , 4.2 <= phone's android version
+        for (Method methodSub : mWifiManager.getClass()
+                .getDeclaredMethods()) {
+            if ("connect".equalsIgnoreCase(methodSub.getName())) {
+                Class<?>[] types = methodSub.getParameterTypes();
+                if (types != null && types.length > 0) {
+                    if ("int".equalsIgnoreCase(types[0].getName())) {
+                        connectMethod = methodSub;
+                    }
+                }
+            }
+        }
+        if (connectMethod != null) {
+            try {
+                L.e("调用系统 connect方法 netId：" + netId);
+                connectMethod.invoke(mWifiManager, netId, null);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                L.e("connectWifiByReflectMethod Android "
+                        + Build.VERSION.SDK_INT + " error!");
+                return false;
+            }
+        } else {
+            L.e("connect wifi by enableNetwork method, Add by jiangping.li");
+            // 通用API
+            return mWifiManager.enableNetwork(netId, true);
+        }
+    }
 
     /**
      * 创建 WifiConfiguration，这里创建的是wpa2加密方式的wifi
@@ -140,34 +213,67 @@ public class WifiAdmin {
      * @param password wifi密码
      * @return
      */
-    private WifiConfiguration createWifiInfo(String ssid, String password) {
-        WifiConfiguration config = new WifiConfiguration();
-        config.allowedAuthAlgorithms.clear();
-        config.allowedGroupCiphers.clear();
-        config.allowedKeyManagement.clear();
-        config.allowedPairwiseCiphers.clear();
-        config.allowedProtocols.clear();
-        config.SSID = "\"" + ssid + "\"";
-        config.preSharedKey = "\"" + password + "\"";
-        config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
-        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-        config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-        config.status = WifiConfiguration.Status.ENABLED;
+    private WifiConfiguration createWifiInfo(String ssid, String password, String capabilities) {
+        WifiConfiguration config = null;
+        config = getExistingConfig(ssid);
+        if (config != null)
+            return config;
 
+        config = new WifiConfiguration();
+        config.hiddenSSID = false;
+        config.status = WifiConfiguration.Status.ENABLED;
+        L.e("capabilities:" + capabilities);
+//        capabilities:[WPA2-PSK-CCMP][ESS]
+        if (capabilities.contains("WEP")) {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+            config.SSID = "\"" + ssid + "\"";
+            config.wepTxKeyIndex = 0;
+            config.wepKeys[0] = password;
+        } else if (capabilities.contains("PSK")) {
+            config.SSID = "\"" + ssid + "\"";
+            config.preSharedKey = "\"" + password + "\"";
+        } else if (capabilities.contains("EAP")) {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_EAP);
+            config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            config.SSID = "\"" + ssid + "\"";
+            config.preSharedKey = "\"" + password + "\"";
+        } else {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            config.SSID = "\"" + ssid + "\"";
+            config.preSharedKey = null;
+            config.wepKeys[0] = "\"" + "\"";
+            config.wepTxKeyIndex = 0;
+        }
         //据说不加这句经常连不上
         config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
         return config;
+    }
+
+    private WifiConfiguration getExistingConfig(String SSID) {
+        if (mWifiManager != null) {
+            List<WifiConfiguration> existingConfigs = mWifiManager
+                    .getConfiguredNetworks();
+            for (WifiConfiguration existingConfig : existingConfigs) {
+                if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
+                    L.e("已经连接过这个网络，直接获取存在的配置");
+                    return existingConfig;
+                }
+            }
+        }
+        return null;
     }
 
     private WifiConfiguration createWifiInfo(ScanResult scan, String Password) {
         WifiConfiguration config = new WifiConfiguration();
         config.hiddenSSID = false;
         config.status = WifiConfiguration.Status.ENABLED;
+        L.e("capabilities:" + scan.capabilities);
+//        capabilities:[WPA2-PSK-CCMP][ESS]
         if (scan.capabilities.contains("WEP")) {
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);

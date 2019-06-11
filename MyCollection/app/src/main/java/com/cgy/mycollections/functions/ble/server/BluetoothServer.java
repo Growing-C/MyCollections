@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -19,6 +20,7 @@ import android.os.ParcelUuid;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.cgy.mycollections.functions.ble.client.DataCallback;
 import com.cgy.mycollections.utils.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
@@ -42,11 +44,23 @@ public class BluetoothServer {
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
 
     private Context mContext;
+    DataCallback mCallback;
+
+    public static UUID UUID_LOCK_SERVICE = UUID.fromString("0000484a-ff4d-414e-5349-4f4e5f534552");//文档上的
+    //                                                          5245535f-4e4f-4953-4e41-4dff4a480000
+    public static UUID UUID_LOCK_WRITE = UUID.fromString("0000b002-ff4d-414e-5349-4f4e5f534552");
+    public static UUID UUID_LOCK_READ = UUID.fromString("0000b001-ff4d-414e-5349-4f4e5f534552");
+    public static UUID UUID_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    BluetoothGattCharacteristic characteristicRead;
+
     private BluetoothGattServerCallback mGattServerCallback = new BluetoothGattServerCallback() {
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
             L.e(String.format("1.onConnectionStateChange：device name = %s, address = %s", device.getName(), device.getAddress()));
             L.e(String.format("1.onConnectionStateChange：status = %s, newState =%s ,0是断开连接，2是连接成功", status, newState));
+            if (newState == BluetoothProfile.STATE_CONNECTED && mCallback != null) {
+                mCallback.onConnected();
+            }
         }
 
         @Override
@@ -71,6 +85,9 @@ public class BluetoothServer {
 
 //            mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, new byte[]{0, 9, 8, 7, 6, 5, 4, 3, 2, 1});
             mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value);
+            if (mCallback != null)
+                mCallback.onGetBleResponse(new String(value), value);
+
             //4.处理响应内容
             onResponseToClient(value, device, requestId, characteristic);
         }
@@ -148,8 +165,9 @@ public class BluetoothServer {
         return mBluetoothAdapter.getName();
     }
 
-    public BluetoothServer(Context context) {
+    public BluetoothServer(Context context, DataCallback callback) {
         this.mContext = context;
+        this.mCallback = callback;
         mBluetoothManager = (BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE);
 //        mBluetoothGattServer = mBluetoothManager.openGattServer(context, mGattServerCallback);
 
@@ -167,13 +185,6 @@ public class BluetoothServer {
 
     }
 
-    public static UUID UUID_LOCK_SERVICE = UUID.fromString("0000484a-ff4d-414e-5349-4f4e5f534552");//文档上的
-    //                                                          5245535f-4e4f-4953-4e41-4dff4a480000
-    public static UUID UUID_LOCK_WRITE = UUID.fromString("0000b002-ff4d-414e-5349-4f4e5f534552");
-    public static UUID UUID_LOCK_READ = UUID.fromString("0000b001-ff4d-414e-5349-4f4e5f534552");
-
-    public static UUID UUID_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-    BluetoothGattCharacteristic characteristicRead;
 
     private void initServices(Context context) {
         mBluetoothGattServer = mBluetoothManager.openGattServer(context, mGattServerCallback);

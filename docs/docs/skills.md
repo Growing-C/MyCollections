@@ -49,13 +49,8 @@ fragment嵌套的时候 ，在一个fragment的布局xml中嵌套一个 <fragmen
         Gson gson = new Gson();
         System.out.println("isAnonymousClass list to json is : "+gson.toJson(arrayList));
 输出的是：isAnonymousClass list to json is : null
-
-11.curl post
-两种方式都可以（注意post的json不知道需要不需要转义，转义的测试过没问题，不转义待测试）
-curl https://oapi.dingtalk.com/robot/send?access_token=acd6eda87cfe17dcbf12863338787d3bd1dd7fa931b0a3a741f5ded5d6af34b4 -X POST -H "Content-Type:application/json;charset=UTF-8" --data "{\"msgtype\":\"link\",\"link\":{\"text\":\"tttttttt\",\"title\":\"testTitle\",\"picUrl\":\"\",\"messageUrl\":\"[图片]https://www.baidu.com\"}}" -v
-curl --request POST --header "Content-Type:application/json;charset=UTF-8" --data "{\"msgtype\":\"link\",\"link\":{\"text\":\"tttttttt\",\"title\":\"testTitle\",\"picUrl\":\"\",\"messageUrl\":\"[图片]https://www.baidu.com\"}}" "https://oapi.dingtalk.com/robot/send?access_token=acd6eda87cfe17dcbf12863338787d3bd1dd7fa931b0a3a741f5ded5d6af34b4"
-
-12.EditTExt限制输入字符方便的xml方式 
+ 
+11.EditTExt限制输入字符方便的xml方式 
 android:digits="1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
             
  

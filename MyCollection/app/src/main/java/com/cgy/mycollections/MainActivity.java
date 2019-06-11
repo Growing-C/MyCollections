@@ -31,6 +31,7 @@ import com.cgy.mycollections.functions.ethereum.EthereumDemo;
 import com.cgy.mycollections.functions.file.FileDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
 import com.cgy.mycollections.functions.net.NetDemos;
+import com.cgy.mycollections.functions.netconfig.NetConfigDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
 import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.textdemo.TextDemo;
@@ -83,9 +84,6 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIt = new Intent(MainActivity.this, FloatingService.class);
         startService(serviceIt);
 
-        //打开背景服务
-//        Intent bgService = new Intent(MainActivity.this, BackgroundService.class);
-//        startService(bgService);
     }
 
     private Demo[] demos = {
@@ -104,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_file, R.string.info_file, FileDemo.class),
             new Demo(R.string.title_dialog, R.string.info_dialog, DialogDemo.class),
             new Demo(R.string.title_ble, R.string.info_ble, BleDemo.class),
+            new Demo(R.string.title_net_config, R.string.info_net_config, NetConfigDemo.class),
     };
 
     @Override

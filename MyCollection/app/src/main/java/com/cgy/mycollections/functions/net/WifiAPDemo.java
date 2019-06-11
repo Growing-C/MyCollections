@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.net;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -23,6 +24,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +41,7 @@ import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.L;
 
+import java.util.Iterator;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;
@@ -48,7 +51,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
-
 
 
 /**
@@ -115,7 +117,18 @@ public class WifiAPDemo extends BaseActivity {
                     L.e("wifi正在连接:" + info.toString());
                 }
             } else if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                L.e("网络列表变化了");
+                L.e("网络列表变化了:" + intent.toString());
+//                Bundle bd = intent.getExtras();
+//                if (bd != null) {
+//                    Iterator it = bd.keySet().iterator();
+//                    L.e("size:" + bd.size());
+//                    while (it.hasNext()) {
+//                        String key = (String) it.next();
+//                        L.e("key:" + key);
+//                        L.e("value:" + bd.get(key));
+//                    }
+//                }
+
                 List<ScanResult> results = mWifiAdmin.getWifiManager().getScanResults();
 
                 mWifiAdapter.setData(results);
@@ -191,6 +204,10 @@ public class WifiAPDemo extends BaseActivity {
             }
         });
         mScanListV.setAdapter(mWifiAdapter);
+
+        L.e("有 ACCESS_FINE_LOCATION   权限？" + (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == 0));
+        L.e("有 ACCESS_COARSE_LOCATION 权限？" + (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == 0));
+
     }
 
     @Override
@@ -212,7 +229,6 @@ public class WifiAPDemo extends BaseActivity {
             case R.id.get_wifi_state://获取wifi状态
                 mWifiAdmin.getWifiAPState();
 
-                L.e("开始扫描wifi");
                 mWifiAdmin.startScan();//startScan之后直接.getScanResults()可能拿到上次的扫描结果，需要在广播里面接收本次结果
                 break;
             case R.id.connect_hotpot://连接指定热点

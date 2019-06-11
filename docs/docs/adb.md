@@ -10,3 +10,20 @@ mount 查看权限
 
 3.adb 打开app
 adb shell am start -n com.android.chrome/com.google.android.apps.chrome.Main
+
+## 权限相关
+1.adb获取所有权限
+```
+adb shell pm list permissions
+```
+
+2.adb赋予app 某个权限
+权限 xml路径 ： （详见/data/system/users/0/runtime-permissions.xml）
+
+
+EDIT: It turns out that adb shell pm grant only works on emulators. Production devices do not allow shell to grant and revoke optional permissions.
+```
+adb shell pm grant com.cgy.mycollections android.permission.READ_LOGS
+```
+这个可能会报错
+Operation not allowed: java.lang.SecurityException: grantRuntimePermission: Neither user 2000 nor current process has android.permission.GRANT_RUNTIME_PERMISSIONS.

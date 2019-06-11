@@ -42,3 +42,8 @@ infura查询最近的区块number
 
  curl -X POST -H "Content-Type:application/json;charset=UTF-8" --data "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eth_blockNumber\",\"params\":[]}" "https://mainnet.infura.io/v3/503f328f3e104b87aa3cbb77c0d1205a"
 ```
+
+##curl post
+两种方式都可以（注意post的json不知道需要不需要转义，转义的测试过没问题，不转义待测试）
+curl https://oapi.dingtalk.com/robot/send?access_token=acd6eda87cfe17dcbf12863338787d3bd1dd7fa931b0a3a741f5ded5d6af34b4 -X POST -H "Content-Type:application/json;charset=UTF-8" --data "{\"msgtype\":\"link\",\"link\":{\"text\":\"tttttttt\",\"title\":\"testTitle\",\"picUrl\":\"\",\"messageUrl\":\"[图片]https://www.baidu.com\"}}" -v
+curl --request POST --header "Content-Type:application/json;charset=UTF-8" --data "{\"msgtype\":\"link\",\"link\":{\"text\":\"tttttttt\",\"title\":\"testTitle\",\"picUrl\":\"\",\"messageUrl\":\"[图片]https://www.baidu.com\"}}" "https://oapi.dingtalk.com/robot/send?access_token=acd6eda87cfe17dcbf12863338787d3bd1dd7fa931b0a3a741f5ded5d6af34b4"

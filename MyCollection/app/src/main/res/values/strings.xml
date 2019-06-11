@@ -60,6 +60,9 @@
     <string name="title_ble">BLEDemo</string>
     <string name="info_ble">设备间蓝牙通信</string>
 
+    <string name="title_net_config">NetConfigDemo</string>
+    <string name="info_net_config">配网解决方案</string>
+
     <!--icon fonts-->
     <string name="icon_guanbi">&#xe62b;</string>
     <string name="icon_shijain">&#xe6bc;</string>

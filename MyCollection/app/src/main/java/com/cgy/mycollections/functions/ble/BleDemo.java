@@ -95,6 +95,9 @@ public class BleDemo extends BaseActivity {
             }
         });
         mBleDeviceListV.setAdapter(mDeviceAdapter);
+
+        String demoBle = "SSID:mxi,PWD:88888888";
+        mBleData.setText(demoBle);
     }
 
     @Override
@@ -149,7 +152,18 @@ public class BleDemo extends BaseActivity {
 
     public void openServer() {//开启蓝牙服务端
         if (mBluetoothServer == null)
-            mBluetoothServer = new BluetoothServer(this);
+            mBluetoothServer = new BluetoothServer(this, new DataCallback() {
+                @Override
+                public void onGetBleResponse(final String data, final byte[] rawData) {
+                    String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
+                    L.e("收到客户端发送数据：" + data);
+                }
+
+                @Override
+                public void onConnected() {
+                    L.e("客户端连接成功，可以发送数据");
+                }
+            });
 
         String log = "设备名：" + mBluetoothServer.getDeviceName()
                 + "\n设备蓝牙地址:" + mBluetoothServer.getDeviceMac();
