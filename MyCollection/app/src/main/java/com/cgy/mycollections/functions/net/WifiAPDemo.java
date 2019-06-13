@@ -238,7 +238,7 @@ public class WifiAPDemo extends BaseActivity {
                     showToast("请输入ssid/密码！");
                     return;
                 }
-                mWifiAdmin.connectHotpot(SSID, key);
+                mWifiAdmin.connectHotpot(SSID, key,false);
                 break;
             default:
                 break;

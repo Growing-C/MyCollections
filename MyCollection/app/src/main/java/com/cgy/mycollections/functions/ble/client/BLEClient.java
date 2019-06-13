@@ -8,9 +8,11 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Build;
 import android.widget.Toast;
 
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
+import com.cgy.mycollections.utils.BinaryUtil;
 import com.cgy.mycollections.utils.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
@@ -57,10 +59,34 @@ public class BLEClient {
 
         byte[] command = raw.getBytes();//永远发第一个
         L.e("writeData 给设备发送了消息，内容：" + CHexConverter.byte2HexStr(command));
+
+        String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, command); //转成字符串
+        L.e("发送消息内容：" + lockModuleStr);
+
         mWriteCharacteristic.setValue(command);
         mWriteCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
         boolean writeSuccess = mBluetoothGatt.writeCharacteristic(mWriteCharacteristic);
         L.e("writeData writeSuccess?= " + writeSuccess);  //如果isBoolean返回的是true则写入成功
+    }
+
+    /**
+     * 设置传输数据长度
+     *
+     * @param mtu
+     * @return
+     */
+    public boolean setMTU(int mtu) {
+        L.e("BLE", "setMTU " + mtu);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (mtu > 20) {
+                boolean ret = mBluetoothGatt.requestMtu(mtu);
+                L.e("BLE", "requestMTU " + mtu + " ret=" + ret);
+                return ret;
+            }
+        }
+
+        return false;
     }
 
     public void closeDevice() {
@@ -153,7 +179,7 @@ public class BLEClient {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            L.e("onCharacteristicChanged UUID:" + characteristic.getUuid().toString());
+            L.e("特征值数据改变-->onCharacteristicChanged UUID:" + characteristic.getUuid().toString());
             final byte[] dealBytes = characteristic.getValue();
 
             String result = CHexConverter.byte2HexStr(dealBytes, dealBytes.length);
@@ -176,7 +202,7 @@ public class BLEClient {
             super.onDescriptorWrite(gatt, descriptor, status);
             L.e("onDescriptorWrite");
 
-            if (callback!=null)
+            if (callback != null)
                 callback.onConnected();
 //            new ToastCustom(mContext, "onDescriptorWrite 连接成功，可以发送数据！", Toast.LENGTH_LONG).show();
 
@@ -196,8 +222,9 @@ public class BLEClient {
             L.e("onCharacteristicWrite UUID:" + characteristic.getUuid().toString());
             final byte[] dealBytes = characteristic.getValue();
 
-            String result = CHexConverter.byte2HexStr(dealBytes, dealBytes.length);
-            L.e(String.format(" onCharacteristicWrite： result = %s", "收到蓝牙服务端数据 onCharacteristicChanged value：" + result));
+//            String result = CHexConverter.byte2HexStr(dealBytes, dealBytes.length);
+            String result = BinaryUtil.bytesToASCIIStr(true, dealBytes);
+            L.e(String.format(" onCharacteristicWrite： result = %s", "收到蓝牙服务端确认数据 onCharacteristicChanged value：" + result));
 
         }
     };

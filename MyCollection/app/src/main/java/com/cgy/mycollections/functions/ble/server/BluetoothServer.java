@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.ble.server;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -21,10 +22,13 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.cgy.mycollections.functions.ble.client.DataCallback;
+import com.cgy.mycollections.utils.BinaryUtil;
 import com.cgy.mycollections.utils.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
@@ -51,15 +55,20 @@ public class BluetoothServer {
     public static UUID UUID_LOCK_WRITE = UUID.fromString("0000b002-ff4d-414e-5349-4f4e5f534552");
     public static UUID UUID_LOCK_READ = UUID.fromString("0000b001-ff4d-414e-5349-4f4e5f534552");
     public static UUID UUID_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-    BluetoothGattCharacteristic characteristicRead;
+    BluetoothGattCharacteristic characteristicRead;//用于给设备发送指令
+    BluetoothDevice mConnectedDevice;//连接上的设备
 
     private BluetoothGattServerCallback mGattServerCallback = new BluetoothGattServerCallback() {
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
             L.e(String.format("1.onConnectionStateChange：device name = %s, address = %s", device.getName(), device.getAddress()));
             L.e(String.format("1.onConnectionStateChange：status = %s, newState =%s ,0是断开连接，2是连接成功", status, newState));
-            if (newState == BluetoothProfile.STATE_CONNECTED && mCallback != null) {
-                mCallback.onConnected();
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                if (mCallback != null)
+                    mCallback.onConnected();
+                mConnectedDevice = device;//目前只支持和一个client通信
+            } else {
+                mConnectedDevice = null;
             }
         }
 
@@ -89,7 +98,11 @@ public class BluetoothServer {
                 mCallback.onGetBleResponse(new String(value), value);
 
             //4.处理响应内容
-            onResponseToClient(value, device, requestId, characteristic);
+//            onResponseToClient(value, device, requestId, characteristic);
+
+//            L.d(String.format("4.onResponseToClient：requestId = %s", requestId));
+//            byte[] responseBytes = (new String(value) + " ok").getBytes();
+//            sendCommand2Client(responseBytes);
         }
 
         @Override
@@ -120,41 +133,40 @@ public class BluetoothServer {
 
         @Override
         public void onNotificationSent(BluetoothDevice device, int status) {
-            Log.e("onNotificationSent", "通知发送 status = " + status);
+            Log.e("onNotificationSent", "通知发送 status = " + status + "   ,0表示成功");
         }
 
-        @Override
         public void onMtuChanged(BluetoothDevice device, int mtu) {
             Log.e("onMtuChanged", "mtu改变");
             L.e(String.format("onMtuChanged：mtu = %s", mtu));
         }
 
-        /**
-         * 4.处理响应内容
-         *
-         * @param reqeustBytes
-         * @param device
-         * @param requestId
-         * @param characteristic
-         */
-        private void onResponseToClient(byte[] reqeustBytes, BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic) {
-            L.e(String.format("4.onResponseToClient：device name = %s, address = %s", device.getName(), device.getAddress()));
-            L.e(String.format("4.onResponseToClient：requestId = %s", requestId));
-//            String msg = OutputStringUtil.transferForPrint(reqeustBytes);
-//            println("4.收到:" + msg);
-//            showText("4.收到:" + msg);
-            BluetoothGattCharacteristic characteristicRead = mBluetoothGattServer.getService(UUID_LOCK_SERVICE).getCharacteristic(UUID_LOCK_READ);
-
-            L.e("onResponseToClient characteristicRead:" + characteristicRead.getUuid().toString());
-
-            String str = new String(reqeustBytes) + " hello>";
-            characteristicRead.setValue(str.getBytes());
-            mBluetoothGattServer.notifyCharacteristicChanged(device, characteristicRead, false);
-
-            L.e("onResponseToClient:" + str);
-//            println("4.响应:" + str);
-//            showText("4.响应:" + str);
-        }
+//        /**
+//         * 4.处理响应内容
+//         *
+//         * @param reqeustBytes
+//         * @param device
+//         * @param requestId
+//         * @param characteristic
+//         */
+//        private void onResponseToClient(byte[] reqeustBytes, BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic) {
+//            L.d(String.format("4.onResponseToClient：device name = %s, address = %s", device.getName(), device.getAddress()));
+//            L.d(String.format("4.onResponseToClient：requestId = %s", requestId));
+////            String msg = OutputStringUtil.transferForPrint(reqeustBytes);
+////            println("4.收到:" + msg);
+////            showText("4.收到:" + msg);
+//            BluetoothGattCharacteristic characteristicRead = mBluetoothGattServer.getService(UUID_LOCK_SERVICE).getCharacteristic(UUID_LOCK_READ);
+//
+//            L.d("onResponseToClient characteristicRead:" + characteristicRead.getUuid().toString());
+//
+//            String str = new String(reqeustBytes) + " ok";
+//            characteristicRead.setValue(str.getBytes());
+//            mBluetoothGattServer.notifyCharacteristicChanged(device, characteristicRead, false);
+//
+//            L.d("onResponseToClient:" + str);
+////            println("4.响应:" + str);
+////            showText("4.响应:" + str);
+//        }
     };
 
     public String getDeviceMac() {
@@ -165,6 +177,7 @@ public class BluetoothServer {
         return mBluetoothAdapter.getName();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BluetoothServer(Context context, DataCallback callback) {
         this.mContext = context;
         this.mCallback = callback;
@@ -191,7 +204,7 @@ public class BluetoothServer {
         BluetoothGattService service = new BluetoothGattService(UUID_LOCK_SERVICE, BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
         //add a read characteristic.
-        characteristicRead = new BluetoothGattCharacteristic(UUID_LOCK_READ, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
+        BluetoothGattCharacteristic characteristicRead = new BluetoothGattCharacteristic(UUID_LOCK_READ, BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ);
         //add a descriptor
         BluetoothGattDescriptor descriptor = new BluetoothGattDescriptor(UUID_DESCRIPTOR, BluetoothGattCharacteristic.PERMISSION_WRITE);
         characteristicRead.addDescriptor(descriptor);
@@ -313,6 +326,36 @@ public class BluetoothServer {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * 发送指令给客户端
+     *
+     * @param command
+     */
+    public void sendCommand2Client(byte[] command) {
+        if (mConnectedDevice == null) {
+            L.e("没有连接的设备，无法发送指令");
+            return;
+        }
+        L.d(String.format("!!!sendCommand2Client：device name = %s, address = %s", mConnectedDevice.getName(), mConnectedDevice.getAddress()));
+
+        if (characteristicRead == null)
+            characteristicRead = mBluetoothGattServer.getService(UUID_LOCK_SERVICE).getCharacteristic(UUID_LOCK_READ);
+
+        L.d("!!!sendCommand2Client characteristicRead:" + characteristicRead.getUuid().toString());
+
+        byte[] head = BinaryUtil.strToBytes(false, "FEFE");
+        List<byte[]> bts = new ArrayList<>();
+        bts.add(head);
+        bts.add(command);
+
+        byte[] finalCommand = BinaryUtil.mergeBytes(bts);
+
+        characteristicRead.setValue(finalCommand);
+        mBluetoothGattServer.notifyCharacteristicChanged(mConnectedDevice, characteristicRead, false);
+
+        L.d("!!!sendCommand2Client command:" + CHexConverter.byte2HexStr(finalCommand));
     }
 
     public static void main(String[] args) {

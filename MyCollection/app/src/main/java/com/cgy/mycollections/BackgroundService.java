@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -38,6 +39,7 @@ import io.reactivex.observers.DisposableObserver;
 public class BackgroundService extends Service {
 
     Handler mHandler = new Handler();
+    String mTargetNetSSID;//连接目标网络
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -46,25 +48,24 @@ public class BackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("cgy", "BackgroundService service onStartCommand");
+        Log.e("cgy", "BackgroundService service onStartCommand");
+
+        String phoneModel = Build.MANUFACTURER;
+        Log.e("cgy", "手机型号：" + phoneModel);
+        Log.e("cgy", "设备安卓版本号：" + Build.VERSION.SDK_INT);
 
         BluetoothAdapter bleAd = BluetoothAdapter.getDefaultAdapter();
         if (bleAd == null) {
-            L.e("cgy", "设备不支持蓝牙");
+            Log.e("cgy", "设备不支持蓝牙");
             return super.onStartCommand(intent, flags, startId);
         } else if (!bleAd.isEnabled()) {
-            L.e("cgy", "设备 蓝牙未打开");
+            Log.e("cgy", "设备 蓝牙未打开");
             bleAd.enable();
+        } else {
+            openServer();
         }
-        Log.e("cgy", "address：" + bleAd.getAddress());
 
-        Log.e("cgy", "name：" + bleAd.getName());
-        String phoneModel = Build.MANUFACTURER;
-        Log.e("cgy", "手机型号：" + phoneModel);
-        Log.e("cgy", "SDK_INT：" + Build.VERSION.SDK_INT);
-
-        openServer();
-
+//        Log.e("cgy", "address：" + bleAd.getAddress());
         openWifi();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -72,7 +73,7 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("cgy", "BackgroundService service onCreate");
+        Log.e("cgy", "BackgroundService service onCreate");
     }
 
     @Override
@@ -81,7 +82,7 @@ public class BackgroundService extends Service {
         if (mWifiScanReceiver != null)
             unregisterReceiver(mWifiScanReceiver);
         mWifiScanReceiver = null;
-        Log.d("cgy", "BackgroundService Service onDestroy");
+        Log.e("cgy", "BackgroundService Service onDestroy");
     }
 
     //<editor-fold desc="蓝牙服务端 ">
@@ -100,11 +101,28 @@ public class BackgroundService extends Service {
                         if (strs.length > 1) {
 //                            SSID:mxi,PWD:88888888
                             String ssid = strs[0].replace("SSID:", "");
-                            String pwd = strs[0].replace("PWD:", "");
-                            L.e("SSID:" + ssid);
-                            L.e("PWD:" + pwd);
+                            String pwd = strs[1].replace("PWD:", "");
+                            boolean ssidHidden = false;
+                            if (lockModuleStr.contains("SSIDHidden")) {
+                                //隐藏ssid
+                                ssidHidden = true;
+                            }
+                            Log.e("test", "SSID:" + ssid);
+                            Log.e("test", "PWD:" + pwd);
                             if (!TextUtils.isEmpty(ssid) && !TextUtils.isEmpty(pwd)) {
-                                connectWifi(ssid, pwd);
+                                mTargetNetSSID = ssid;
+                                WifiInfo wifiInfo = mWifiAdmin.getConnectionInfo();
+                                if (wifiInfo != null && wifiInfo.getNetworkId() != -1 &&
+                                        wifiInfo.getSSID().contains(mTargetNetSSID)) {
+                                    //已有连接网络且和目标网络一致
+                                    L.e("已连接网络 ssid= " + wifiInfo.getSSID());
+                                    L.e("已连接网络 getNetworkId = " + wifiInfo.getNetworkId());
+                                    L.e("不重连了，直接通知设备网络连接成功 ");
+                                    sendWifiConnectSuccess(wifiInfo.getSSID());
+                                    return;
+                                }
+//                                mWifiAdmin.disableConfigedNetwork(ssid);//先清除可能存在的当前网络
+                                connectWifi(ssid, pwd, ssidHidden);//连接指定wifi
                             }
                         }
                     }
@@ -112,14 +130,14 @@ public class BackgroundService extends Service {
 
                 @Override
                 public void onConnected() {
-                    L.e("客户端连接成功，可以发送数据");
+                    Log.e("test", "客户端连接成功，可以发送数据");
                 }
             });
 
 
         String log = "设备名：" + mBluetoothServer.getDeviceName()
                 + "\n设备蓝牙地址:" + mBluetoothServer.getDeviceMac();
-        L.e(log);
+        Log.e("test", log);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +153,7 @@ public class BackgroundService extends Service {
             mBluetoothServer.startAdvertising();
         }
 //        String log = mServerLogV.getText().toString() + "\n开始广播";
-        L.e("\n开始广播");
+        Log.e("test", "\n开始广播");
 //        mServerLogV.setText(log);
     }
 
@@ -143,9 +161,30 @@ public class BackgroundService extends Service {
         if (mBluetoothServer != null) {
             mBluetoothServer.stopAdvertising();
         }
-        L.e("\n结束广播");
+        Log.e("test", "\n结束广播");
 //        String log = mServerLogV.getText().toString() + "\n结束广播";
 //        mServerLogV.setText(log);
+    }
+
+    public void sendCommand(String commandContent) {
+        if (mBluetoothServer != null && !TextUtils.isEmpty(commandContent)) {
+            mBluetoothServer.sendCommand2Client(commandContent.getBytes());
+        }
+    }
+
+    public void sendWifiConnectSuccess(String currentNet) {
+        if (!TextUtils.isEmpty(mTargetNetSSID) &&
+                !TextUtils.isEmpty(currentNet) && currentNet.contains(mTargetNetSSID)) {
+            L.e("sendWifiConnectSuccess ");
+            sendCommand(mTargetNetSSID + " connect success");
+        }
+    }
+
+    public void sendWifiConnectFail(String currentNet) {
+        if (!TextUtils.isEmpty(mTargetNetSSID) &&
+                !TextUtils.isEmpty(currentNet) && currentNet.contains(mTargetNetSSID)) {
+            sendCommand(mTargetNetSSID + " connect fail");
+        }
     }
 
     //</editor-fold>
@@ -157,8 +196,8 @@ public class BackgroundService extends Service {
     BroadcastReceiver mWifiScanReceiver;
 
     public void openWifi() {
-        L.e("有 ACCESS_FINE_LOCATION   权限？" + (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == 0));
-        L.e("有 ACCESS_COARSE_LOCATION 权限？" + (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == 0));
+//        Log.e("test",("有 ACCESS_FINE_LOCATION   权限？" + (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == 0));
+//        Log.e("test",("有 ACCESS_COARSE_LOCATION 权限？" + (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == 0));
         if (mWifiScanReceiver == null) {
             mWifiScanReceiver = new BroadcastReceiver() {
                 @Override
@@ -174,46 +213,63 @@ public class BackgroundService extends Service {
                              * WIFI_STATE_UNKNOWN     未知
                              */
                             case WifiManager.WIFI_STATE_DISABLED: {
-                                L.e("WIFI已经关闭");
+                                Log.e("test", "WIFI已经关闭");
                                 break;
                             }
                             case WifiManager.WIFI_STATE_DISABLING: {
-                                L.e("WIFI正在关闭");
+                                Log.e("test", "WIFI正在关闭");
                                 break;
                             }
                             case WifiManager.WIFI_STATE_ENABLED: {
-                                L.e("WIFI已经打开");
+                                Log.e("test", "WIFI已经打开");
 //                        sortScaResult();
                                 break;
                             }
                             case WifiManager.WIFI_STATE_ENABLING: {
-                                L.e("WIFI正在打开");
+                                Log.e("test", "WIFI正在打开");
                                 break;
                             }
                             case WifiManager.WIFI_STATE_UNKNOWN: {
-                                L.e("未知状态");
+                                Log.e("test", "未知状态");
                                 break;
                             }
                         }
                     } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                         NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                         if (NetworkInfo.State.DISCONNECTED == info.getState()) {//wifi没连接上
-                            L.e("wifi没连接上:" + info.toString());
+                            Log.e("test", "wifi没连接上:" + info.toString());
                         } else if (NetworkInfo.State.CONNECTED == info.getState()) {//wifi连接上了
-                            L.e("wifi连接上了:" + info.toString());
-                        } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
-                            L.e("wifi正在连接:" + info.toString());
+                            Log.e("test", "a.wifi连接上了:" + info.toString());
+                            final WifiInfo wifiInfo = mWifiAdmin.getConnectionInfo();
+                            Log.e("test", "a.已连接到网络:" + wifiInfo.getSSID());
+                            sendWifiConnectSuccess(wifiInfo.getSSID());
+
+                        } else {
+                            if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
+                                Log.e("test", "b.wifi正在连接:" + info.toString());
+                            }
+                            NetworkInfo.DetailedState state = info.getDetailedState();
+                            if (state == state.CONNECTING) {
+                                Log.e("test", "b.连接中...");
+                            } else if (state == state.AUTHENTICATING) {
+                                Log.e("test", "b.正在验证身份信息...");
+                            } else if (state == state.OBTAINING_IPADDR) {
+                                Log.e("test", "b.正在获取IP地址...");
+                            } else if (state == state.FAILED) {
+                                Log.e("test", "b.连接失败");
+                                sendWifiConnectFail(mTargetNetSSID);
+                            }
                         }
                     } else if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                        L.e("网络列表变化了");
+                        Log.e("test", "网络列表变化了");
                         List<ScanResult> results = mWifiAdmin.getWifiManager().getScanResults();
 
                         if (results == null || results.isEmpty()) {
-                            L.e("未扫描到网络：");
+                            Log.e("test", "未扫描到网络：");
                         } else {
-                            L.e("扫描到网络数量: " + results.size());
+                            Log.e("test", "扫描到网络数量: " + results.size());
                             for (int i = 0; i < results.size(); i++) {
-                                L.e("网络 " + i + " :" + results.get(i).toString());
+                                Log.e("test", "网络 " + i + " :" + results.get(i).toString());
 //                                if (results.get(i).SSID.contains("mxi")) {
 //                                    mWifiAdmin.connectNet(results.get(i), "88888888");
 //                                }
@@ -231,41 +287,49 @@ public class BackgroundService extends Service {
         if (mWifiAdmin == null)
             mWifiAdmin = new WifiAdmin(this);
 
-        Observable.interval(5000, 5000, TimeUnit.MILLISECONDS).subscribe(new DisposableObserver<Long>() {
-            @Override
-            public void onNext(Long aLong) {
-                L.e("onNext:" + aLong);
-//                mWifiAdmin.disableAllConfigedNetwork();
-//                connectWifi("NO8", "88888888");
-                mWifiAdmin.startScan();
-//                if (aLong >= 10)
-                dispose();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+////                mWifiAdmin.startScan();
+////                mWifiAdmin.disableAllConfigedNetwork();
+//                connectWifi("mxi", "88888888", false);
+//            }
+//        }, 5000);
+//        Observable.interval(5000, 5000, TimeUnit.MILLISECONDS).subscribe(new DisposableObserver<Long>() {
+//            @Override
+//            public void onNext(Long aLong) {
+//                Log.e("test",("onNext:" + aLong);
+////                mWifiAdmin.disableAllConfigedNetwork();
+////                connectWifi("NO8", "88888888");
+//                mWifiAdmin.startScan();
+////                if (aLong >= 10)
+//                dispose();
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//
+//            }
+//        });
     }
 
 
-    public void connectWifi(String SSID, String key) {
+    public void connectWifi(String SSID, String key, boolean ssidHidden) {
         if (TextUtils.isEmpty(SSID) || TextUtils.isEmpty(key)) {
-            L.e("请输入ssid/密码！");
+            Log.e("test", "请输入ssid/密码！");
             return;
         }
         if (mWifiAdmin == null)
             return;
 
-        L.e(String.format("开始连接wifi ssid = %s ,pwd = %s", SSID, key));
+        Log.e("test", String.format("开始连接wifi ssid = %s ,pwd = %s", SSID, key));
         //TODO:直接连 三星连不上，需要扫描后连能连上
-        mWifiAdmin.connectHotpot(SSID, key);
+        mWifiAdmin.connectHotpot(SSID, key, ssidHidden);
     }
 
     //</editor-fold>

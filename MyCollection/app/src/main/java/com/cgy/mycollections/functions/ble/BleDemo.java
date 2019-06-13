@@ -96,7 +96,8 @@ public class BleDemo extends BaseActivity {
         });
         mBleDeviceListV.setAdapter(mDeviceAdapter);
 
-        String demoBle = "SSID:mxi,PWD:88888888";
+//        String demoBle = "SSID:mxi,PWD:88888888";
+        String demoBle = "SSID:NO8,PWD:linkage@12345,SSIDHidden";
         mBleData.setText(demoBle);
     }
 
@@ -271,6 +272,8 @@ public class BleDemo extends BaseActivity {
 
     public void connect(BluetoothDevice device) {
         closeDevice();
+        if (mScanner != null)
+            mScanner.stopScan(false);
         if (device != null) {
             mBLEClient = new BLEClient(BleDemo.this);
             mBLEClient.connect(device, mCallback);
@@ -285,8 +288,12 @@ public class BleDemo extends BaseActivity {
                 @Override
                 public void run() {
                     String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
-                    showToast("收到设备回调数据：" + data);
+                    showToast("收到设备回调数据 raw：" + data);
+                    showToast("收到设备回调数据 解析：" + lockModuleStr);
                     mLogV.setText("收到设备回调数据：" + lockModuleStr);
+                    if (!TextUtils.isEmpty(lockModuleStr) && lockModuleStr.contains("connect success")) {
+                        L.e("网关设备 网络连接成功！");
+                    }
                 }
             });
         }
@@ -298,6 +305,7 @@ public class BleDemo extends BaseActivity {
                 public void run() {
                     showToast("连接成功，可以发送数据");
                     mLogV.setText("连接成功，可以发送数据");
+                    mBLEClient.setMTU(50);
                 }
             });
         }
