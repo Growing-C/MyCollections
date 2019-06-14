@@ -1,4 +1,4 @@
-package com.cgy.mycollections;
+package com.cgy.mycollections.functions.netconfig;
 
 import android.Manifest;
 import android.app.Service;
@@ -35,6 +35,7 @@ import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by user on 2016/10/2.
+ * 需要配网的设备端使用的service（实现无界面配网）
  */
 public class BackgroundService extends Service {
 

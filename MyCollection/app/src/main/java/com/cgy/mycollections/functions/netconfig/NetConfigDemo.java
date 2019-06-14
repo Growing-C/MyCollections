@@ -5,28 +5,27 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ToggleButton;
 
-import com.cgy.mycollections.BackgroundService;
 import com.cgy.mycollections.BaseActivity;
-import com.cgy.mycollections.MainActivity;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.net.NetRequestDemo;
-import com.cgy.mycollections.functions.net.WifiAPDemo;
-import com.cgy.mycollections.functions.net.WifiP2PDemo;
 import com.cgy.mycollections.utils.L;
-import com.cgy.mycollections.utils.ShellUtil;
 import com.cgy.mycollections.utils.SystemUtil;
 
 import appframe.permission.PermissionDenied;
+import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 
@@ -35,11 +34,19 @@ import butterknife.OnClick;
  * 包含权限检查等
  */
 public class NetConfigDemo extends BaseActivity {
+    @BindView(R.id.wifi_ssid)
+    TextInputEditText mSsidV;
+    @BindView(R.id.wifi_password)
+    TextInputEditText mPwdV;
+    @BindView(R.id.ssid_hidden)
+    ToggleButton mSsidHiddenStateV;
+
+    NetConfigOperator mOperator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_net_demos);
+        setContentView(R.layout.activity_net_config_demo);
         ButterKnife.bind(this);
 
         try {
@@ -53,7 +60,83 @@ public class NetConfigDemo extends BaseActivity {
             e.printStackTrace();
         }
         PermissionManager.requestLocationPermission(this, "ness");
+
+        mSsidV.setText("NO8");
+        mPwdV.setText("linkage@12345");
+
+        mOperator = new NetConfigOperator(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mOperator.close();
+    }
+
+    @OnClick({R.id.config_net, R.id.open_config_service})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.config_net:
+                //开启蓝牙服务
+                PermissionManager.requestBluetoothPermission(this, "打开蓝牙权限啦！");
+                configNet();
+                break;
+            case R.id.open_config_service:
+                //打开背景服务
+                Intent bgService = new Intent(NetConfigDemo.this, BackgroundService.class);
+                startService(bgService);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void configNet() {
+        String ssid = mSsidV.getText().toString();
+        String pwd = mPwdV.getText().toString();
+        boolean ssidHidden = mSsidHiddenStateV.isChecked();
+        L.e("准备配网 ssid:" + ssid + "   pwd:" + pwd + "  ssid隐藏？" + ssidHidden);
+
+        if (TextUtils.isEmpty(ssid) || TextUtils.isEmpty(pwd)) {
+            showToast("ssid/pwd为空！");
+            return;
+        }
+
+        mOperator.startConfig(ssid, pwd, ssidHidden, new IConfigCallback() {
+            @Override
+            public void onError(int errorCode, String errorMsg) {
+                L.e("IConfigCallback", errorCode + ">onError>" + errorMsg);
+            }
+
+            @Override
+            public void onProcessChange(int process, String msg) {
+
+                L.e("IConfigCallback", process + ">onProcessChange>" + msg);
+            }
+
+            @Override
+            public void onSuccess() {
+
+                L.e("IConfigCallback", ">onSuccess>");
+            }
+        });
+    }
+
+
+    @PermissionGranted(requestCode = PermissionManager.REQUEST_BLUETOOTH)
+    public void bluetoothPermissionGranted() {
+        L.e("test", "bluetoothPermissionGranted");
+        configNet();
+    }
+
+    @PermissionDenied(requestCode = PermissionManager.REQUEST_BLUETOOTH)
+    public void bluetoothPermissionDenied() {
+        L.e("bluetoothPermissionDenied");
+
+        PermissionDialog mPermissionDialog = new PermissionDialog(this, "打开蓝牙权限嘛");
+        mPermissionDialog.show();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -65,9 +148,6 @@ public class NetConfigDemo extends BaseActivity {
     @PermissionGranted(requestCode = PermissionManager.REQUEST_LOCATION)
     public void onLocationPermissionGranted() {
         Log.e("NetConfigDemo", "获取到了location 权限");
-        //打开背景服务
-        Intent bgService = new Intent(NetConfigDemo.this, BackgroundService.class);
-        startService(bgService);
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_LOCATION)

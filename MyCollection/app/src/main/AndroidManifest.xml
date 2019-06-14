@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MyApplication"
@@ -47,6 +48,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--开机启动-->
+        <receiver
+            android:name=".boot.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <!--注册开机广播地址-->
+                <!--<action android:name="android.intent.action.QUICKBOOT_POWERON" />-->
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
 
         <!-- 线程池 -->
         <activity
@@ -69,7 +86,7 @@
                 android:resource="@xml/accessibility" />
         </service>
         <service android:name=".FloatingService" />
-        <service android:name=".BackgroundService" />
+        <service android:name=".functions.netconfig.BackgroundService" />
 
         <activity
             android:name=".functions.weixindemo.RedEnvelopeDemo"
