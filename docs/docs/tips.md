@@ -27,3 +27,8 @@ String[] command = {"chmod", "777", apkFile.getPath()};
 此时可能还是无法安装 ，可能是因为  设置- 安全中 允许未知来源的应用 权限 未打开！！  需要打开才能正常安装
 
 
+## 打开谷歌play
+1.通过 链接在浏览器中打开googleplay网址
+http://play.google.com/store/apps/details?id=com.truecaller&hl=en
+2.通过 链接 在浏览器中打开googlePlay app
+https://play.app.goo.gl/?link=https://play.google.com/store/apps/details?id=io.blockchainlock.bclgo
