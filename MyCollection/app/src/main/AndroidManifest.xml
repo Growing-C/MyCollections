@@ -122,6 +122,7 @@
         <activity android:name=".functions.ethereum.EthereumDemo" />
         <activity android:name=".functions.file.FileDemo" />
         <activity android:name=".functions.dialogdemo.DialogDemo" />
+        <activity android:name=".functions.mediamanager.MediaManagerDemo" />
         <activity
             android:name=".KotlinActivity"
             android:label="@string/title_activity_kotlin"

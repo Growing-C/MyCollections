@@ -63,6 +63,9 @@
     <string name="title_net_config">NetConfigDemo</string>
     <string name="info_net_config">配网解决方案</string>
 
+    <string name="title_media_manager">MediaManager</string>
+    <string name="info_media_manager">媒体文件管理</string>
+
     <!--icon fonts-->
     <string name="icon_guanbi">&#xe62b;</string>
     <string name="icon_shijain">&#xe6bc;</string>

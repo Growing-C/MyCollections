@@ -1,1 +1,1 @@
-include ':app', ':X5WebDemo', ':mylibrary'
+include ':app', ':X5WebDemo', ':mylibrary', ':NetConf'

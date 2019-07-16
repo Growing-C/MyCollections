@@ -9,8 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.anim.AndroidAnimActivity;
-import com.cgy.mycollections.functions.anim.LottieAnimActivity;
+import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.utils.L;
 
 import appframe.permission.PermissionDenied;

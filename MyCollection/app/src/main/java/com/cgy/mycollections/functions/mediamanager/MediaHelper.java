@@ -1,7 +1,8 @@
-package com.cgy.mycollections.functions.file;
+package com.cgy.mycollections.functions.mediamanager;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,8 @@ import android.util.Base64;
 import android.widget.Toast;
 
 
+import com.cgy.mycollections.utils.L;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +30,128 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+
+/**
+ * Images表：主要存储images信息。可以看一下这个表的结构：
+ * <p>
+ * CREATE TABLE images (_id INTEGER PRIMARY KEY,_data TEXT,_size INTEGER,_display_name TEXT,mime_type TEXT,title
+ * <p>
+ * TEXT,date_added INTEGER,date_modified INTEGER,description TEXT,picasa_id TEXT,isprivate INTEGER,latitude DOUBL
+ * <p>
+ * E,longitude DOUBLE,datetaken INTEGER,orientation INTEGER,mini_thumb_magic INTEGER,bucket_id TEXT,bucket_displa
+ * <p>
+ * y_name TEXT);
+ * ---------------------
+ * Thumbnails表：这个表和images表是有直接关系的。主要存储图片的缩略图，Android为每一张保存进系统的图片文件都会自动生成一张缩略图文件。关于这一点还有一些特殊的技巧后面再讲。我们可以看一下这个表的结构：
+ * <p>
+ * CREATE TABLE thumbnails (_id INTEGER PRIMARY KEY,_data TEXT,image_id INTEGER,kind INTEGER,width INTEGER,height INTEGER);
+ * <p>
+ * 每一张image对应一条thumbnail记录。
+ * ---------------------
+ * 原文：https://blog.csdn.net/fengye810130/article/details/11522741
+ * <p>
+ * mediaStore的数据库中存储图片的columns
+ * total:20--column name:->_id
+ * total:20--column name:->_data   内容是文件路径 如：/storage/emulated/0/xxx/.20190619_070221.gif
+ * total:20--column name:->_size
+ * total:20--column name:->_display_name
+ * total:20--column name:->mime_type
+ * total:20--column name:->title
+ * total:20--column name:->date_added
+ * total:20--column name:->date_modified
+ * total:20--column name:->description
+ * total:20--column name:->picasa_id
+ * total:20--column name:->isprivate
+ * total:20--column name:->latitude
+ * total:20--column name:->longitude
+ * total:20--column name:->datetaken
+ * total:20--column name:->orientation
+ * total:20--column name:->mini_thumb_magic
+ * total:20--column name:->bucket_id
+ * total:20--column name:->bucket_display_name
+ * total:20--column name:->width
+ * total:20--column name:->height
+ */
 public class MediaHelper {
+    /**
+     * 媒体存储服务是否在扫描
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isMediaScannerScanning(Context context) {
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(MediaStore.getMediaScannerUri(), new String[]{
+                    MediaStore.MEDIA_SCANNER_VOLUME}, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                return "external".equals(cursor.getString(0));
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 删除图片文件
+     *
+     * @param imageFilePath
+     */
+    public static void deleteMediaImage(String imageFilePath) {
+
+    }
+
+    /**
+     * 获取 目标文件夹下面的所有图片（目标文件夹为空则是手机中的所有图片）
+     *
+     * @param context
+     * @param targetFileDir
+     * @return
+     */
+    public static List<String> getMediaImages(Context context, String targetFileDir) {
+        List<String> imageFilePathList = new ArrayList<>();
+
+        //获取cursor
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // URI,可以有多种形式
+                null,
+                null,
+                null,
+                null);
+        if (cursor != null) {
+            //图片路径所在列的索引
+            int indexPhotoPath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//            int columnCount = cursor.getColumnCount();
+//            String[] columns = cursor.getColumnNames();
+//            for (String column : columns) {
+//                L.e("total:" + columnCount + "--column name:->" + column);
+//            }
+            while (cursor.moveToNext()) {
+                //打印图片的路径
+                String uri = cursor.getString(indexPhotoPath);
+//            L.e("uri", uri);
+                if (!TextUtils.isEmpty(uri)) {
+                    if (!TextUtils.isEmpty(targetFileDir)) {
+                        if (uri.contains(targetFileDir))
+                            imageFilePathList.add(uri);
+                    } else {
+                        imageFilePathList.add(uri);
+                    }
+                }
+            }
+            cursor.close();
+        }
+        return imageFilePathList;
+    }
 
 //    /**
 //     * 打开相机

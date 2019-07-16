@@ -30,6 +30,7 @@ import com.cgy.mycollections.functions.dialogdemo.DialogDemo;
 import com.cgy.mycollections.functions.ethereum.EthereumDemo;
 import com.cgy.mycollections.functions.file.FileDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
+import com.cgy.mycollections.functions.mediamanager.MediaManagerDemo;
 import com.cgy.mycollections.functions.net.NetDemos;
 import com.cgy.mycollections.functions.netconfig.NetConfigDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             new Demo(R.string.title_dialog, R.string.info_dialog, DialogDemo.class),
             new Demo(R.string.title_ble, R.string.info_ble, BleDemo.class),
             new Demo(R.string.title_net_config, R.string.info_net_config, NetConfigDemo.class),
+            new Demo(R.string.title_media_manager, R.string.info_media_manager, MediaManagerDemo.class),
     };
 
     @Override
