@@ -76,6 +76,8 @@ import java.util.List;
  * total:20--column name:->height
  */
 public class MediaHelper {
+    public static final String REPLACE_DOT = "_+_";//用于替换文件扩展名中的. 用于图片隐藏
+
     /**
      * 媒体存储服务是否在扫描
      *
@@ -102,12 +104,18 @@ public class MediaHelper {
     }
 
     /**
-     * 删除图片文件
+     * 删除图片文件,并且通知mediaStore
      *
-     * @param imageFilePath
+     * @param imageFile
      */
-    public static void deleteMediaImage(String imageFilePath) {
+    public static void deleteMediaImage(Context context, File imageFile) {
+        //Update media provider if necessary
+        context.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                MediaStore.Images.Media.DATA + "=?", new String[]{imageFile.getAbsolutePath()});
 
+        Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        it.setData(Uri.fromFile(imageFile));
+        context.sendBroadcast(it);
     }
 
     /**

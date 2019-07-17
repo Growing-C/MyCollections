@@ -86,6 +86,8 @@ public class MediaManagerDemo extends AppCompatActivity {
             if (uri != null && "file".equals(uri.getScheme())) {
                 if (Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
                     String filePath = uri.getPath();
+                    File file = new File(filePath);
+                    L.e("Receiver", "ACTION_MEDIA_SCANNER_SCAN_FILE： " + filePath + "--->exist?" + file.exists());
                     // TODO: filePath 文件已改变，APP 刷新界面
                 } else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)) {
                     // TODO: 整个磁盘扫描完成，APP 刷新界面
@@ -94,16 +96,27 @@ public class MediaManagerDemo extends AppCompatActivity {
         }
     };
 
-    @OnClick({R.id.get_recent_files, R.id.add_file})
+    @OnClick({R.id.get_recent_files, R.id.add_file, R.id.hide_files, R.id.show_files})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.get_recent_files:
-//                batchRename(new File("/storage/emulated/0/CLImages/"));
                 List<String> imageList = MediaHelper.getMediaImages(this, "CLImages");
                 L.e("getMediaImages 文件总数:" + imageList.size());
                 for (int i = 0, len = imageList.size(); i < len; i++) {
                     L.e("getMediaImages:" + imageList.get(i));
+
+                    File file = new File(imageList.get(i));
+
+                    Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    it.setData(Uri.fromFile(file));
+                    sendBroadcast(it);
                 }
+                break;
+            case R.id.hide_files://隐藏文件
+                batchHideImage(new File("/storage/emulated/0/CLImages/"));
+                break;
+            case R.id.show_files://显示文件
+                batchRecoverImage(new File("/storage/emulated/0/CLImages/"));
                 break;
             case R.id.add_file:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -152,10 +165,11 @@ public class MediaManagerDemo extends AppCompatActivity {
     /**
      * 批量重命名 前面加个.可以隐藏文件 ，但是小米手机依然会扫描出来
      * 所以把文件名中的.jpg等后缀 的. 改成 _+_
+     * xxx/xxff.jpg -> xxx/.xxff_+_jpg
      *
      * @param directory
      */
-    public void batchRename(File directory) {
+    public void batchHideImage(File directory) {
         Preconditions.checkNotNull(directory);
 
         if (directory.isDirectory()) {
@@ -164,12 +178,41 @@ public class MediaManagerDemo extends AppCompatActivity {
                 for (int i = 0, len = files.length; i < len; i++) {
                     File file = files[i];
                     if (!file.getName().startsWith(".")) {
-                        File targetFile = new File(directory.getPath() + "/." + file.getName());
+                        File targetFile = new File(directory.getPath() + "/." + file.getName().replace(".", MediaHelper.REPLACE_DOT));
                         L.e(file.getPath() + "-->to:" + targetFile.getPath());
 //                        20190619_070221.gif
                         FileUtils.rename(file, targetFile);
                     } else {
                         L.e("已隐藏,跳过：" + file.getPath());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 批量恢复图片  xxx/.xxff_+_jpg -> xxx/xxff.jpg
+     *
+     * @param directory
+     */
+    public void batchRecoverImage(File directory) {
+        Preconditions.checkNotNull(directory);
+
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            try {
+                for (int i = 0, len = files.length; i < len; i++) {
+                    File file = files[i];
+                    String fileName = file.getName();
+                    if (fileName.startsWith(".") && fileName.length() > 1) {
+                        File targetFile = new File(directory.getPath() + "/" + fileName.substring(1).replace(MediaHelper.REPLACE_DOT, "."));
+                        L.e(file.getPath() + "-->to:" + targetFile.getPath());
+//                        20190619_070221.gif
+                        FileUtils.rename(file, targetFile);
+                    } else {
+                        L.e("不符合隐藏特征,跳过：" + file.getPath());
                     }
                 }
             } catch (Exception e) {

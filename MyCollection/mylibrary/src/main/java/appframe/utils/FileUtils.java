@@ -207,7 +207,7 @@ public class FileUtils {
     public static String getSDCardPath() {
         String path = null;
         if (isSdcardExits()) {
-            path = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
+            path = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
         return path;
     }
@@ -215,7 +215,7 @@ public class FileUtils {
     public static String getSDCardPath(Context context) {
         String path = null;
         if (isSdcardExits()) {
-            path = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
+            path = Environment.getExternalStorageDirectory().getAbsolutePath();
         } else {
             path = context.getFilesDir().toString();
         }
