@@ -33,6 +33,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import appframe.utils.TimeUtils;
+
 
 /**
  * Images表：主要存储images信息。可以看一下这个表的结构：
@@ -134,19 +136,25 @@ public class MediaHelper {
                 null,
                 null,
                 null,
-                null);
+                MediaStore.Images.Media.DATE_MODIFIED + " DESC");//按照修改时间降序排列
         if (cursor != null) {
             //图片路径所在列的索引
             int indexPhotoPath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int modifyDate = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
 //            int columnCount = cursor.getColumnCount();
 //            String[] columns = cursor.getColumnNames();
 //            for (String column : columns) {
 //                L.e("total:" + columnCount + "--column name:->" + column);
 //            }
+            L.e("getMediaImages 图片数目：" + cursor.getCount());
             while (cursor.moveToNext()) {
                 //打印图片的路径
                 String uri = cursor.getString(indexPhotoPath);
-//            L.e("uri", uri);
+                long modifyTime = cursor.getInt(modifyDate);
+//                L.e("uri", uri);
+                if (modifyTime > 0) {
+//                    L.e("modifyTime", modifyTime+"-modifyTime：" + TimeUtils.getTime(modifyTime * 1000));
+                }
                 if (!TextUtils.isEmpty(uri)) {
                     if (!TextUtils.isEmpty(targetFileDir)) {
                         if (uri.contains(targetFileDir))

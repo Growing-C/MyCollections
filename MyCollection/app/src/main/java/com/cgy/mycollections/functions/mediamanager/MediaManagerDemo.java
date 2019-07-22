@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,6 +21,8 @@ import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;
@@ -100,23 +103,27 @@ public class MediaManagerDemo extends AppCompatActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.get_recent_files:
-                List<String> imageList = MediaHelper.getMediaImages(this, "CLImages");
-                L.e("getMediaImages 文件总数:" + imageList.size());
-                for (int i = 0, len = imageList.size(); i < len; i++) {
-                    L.e("getMediaImages:" + imageList.get(i));
-
-                    File file = new File(imageList.get(i));
-
-                    Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    it.setData(Uri.fromFile(file));
-                    sendBroadcast(it);
-                }
+//                scanFiles("CLImages");
+                scanFiles("Twitter");
+//                List<String> imageList = MediaHelper.getMediaImages(this, "CLImages");
+//                L.e("getMediaImages 文件总数:" + imageList.size());
+//                for (int i = 0, len = imageList.size(); i < len; i++) {
+//                    L.e("getMediaImages:" + imageList.get(i));
+//
+//                    File file = new File(imageList.get(i));
+//
+//                    Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                    it.setData(Uri.fromFile(file));
+//                    sendBroadcast(it);
+//                }
                 break;
             case R.id.hide_files://隐藏文件
                 batchHideImage(new File("/storage/emulated/0/CLImages/"));
+                batchHideImage(new File("/storage/emulated/0/Pictures/Twitter/"));
                 break;
             case R.id.show_files://显示文件
                 batchRecoverImage(new File("/storage/emulated/0/CLImages/"));
+                batchHideImage(new File("/storage/emulated/0/Pictures/Twitter/"));
                 break;
             case R.id.add_file:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -134,6 +141,46 @@ public class MediaManagerDemo extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    /**
+     * 扫描某个目录下的文件
+     *
+     * @param dirName
+     */
+    //"CLImages"
+    public void scanFiles(String dirName) {
+        List<String> imageList = MediaHelper.getMediaImages(this, dirName);
+        L.e("getMediaImages 文件夹名：" + dirName + "-->文件总数:" + imageList.size());
+        if (imageList.isEmpty())
+            return;
+
+        String[] pathList = new String[imageList.size()];
+        for (int i = 0, len = imageList.size(); i < len; i++) {
+            L.d("getMediaImages:" + imageList.get(i));
+            pathList[i] = imageList.get(i);
+
+
+            //通过广播 也可以实现扫描 不过可能需要在BroadcastReceiver中接收扫描完成事件，不太方便
+//            File file = new File(imageList.get(i));
+//
+//            Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//            it.setData(Uri.fromFile(file));
+//            sendBroadcast(it);
+        }
+        try {
+            //直接全部扫描
+            MediaScannerConnection.scanFile(this, pathList,
+                    null, new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            L.e("onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void handlerGetFile(String filePath) {
@@ -174,18 +221,29 @@ public class MediaManagerDemo extends AppCompatActivity {
 
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
+            String[] pathList = new String[files.length];
             try {
                 for (int i = 0, len = files.length; i < len; i++) {
                     File file = files[i];
                     if (!file.getName().startsWith(".")) {
                         File targetFile = new File(directory.getPath() + "/." + file.getName().replace(".", MediaHelper.REPLACE_DOT));
-                        L.e(file.getPath() + "-->to:" + targetFile.getPath());
+                        L.e("batchHideImage", file.getPath() + "-->to:" + targetFile.getPath());
 //                        20190619_070221.gif
                         FileUtils.rename(file, targetFile);
+                        pathList[i] = file.getPath();
                     } else {
-                        L.e("已隐藏,跳过：" + file.getPath());
+                        L.e("batchHideImage", "已隐藏,跳过：" + file.getPath());
                     }
                 }
+
+                //直接全部扫描，用于把系统记录的图片记录全部干掉
+                MediaScannerConnection.scanFile(this, pathList,
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                L.e("batchHideImage", "onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                            }
+                        });
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -194,6 +252,7 @@ public class MediaManagerDemo extends AppCompatActivity {
 
     /**
      * 批量恢复图片  xxx/.xxff_+_jpg -> xxx/xxff.jpg
+     * 并且添加到系统的最近图片中
      *
      * @param directory
      */
@@ -202,19 +261,30 @@ public class MediaManagerDemo extends AppCompatActivity {
 
         if (directory.isDirectory()) {
             File[] files = directory.listFiles();
+            String[] pathList = new String[files.length];
             try {
                 for (int i = 0, len = files.length; i < len; i++) {
                     File file = files[i];
                     String fileName = file.getName();
                     if (fileName.startsWith(".") && fileName.length() > 1) {
                         File targetFile = new File(directory.getPath() + "/" + fileName.substring(1).replace(MediaHelper.REPLACE_DOT, "."));
-                        L.e(file.getPath() + "-->to:" + targetFile.getPath());
+                        L.e("batchRecoverImage", file.getPath() + "-->to:" + targetFile.getPath());
 //                        20190619_070221.gif
                         FileUtils.rename(file, targetFile);
+                        pathList[i] = targetFile.getPath();
                     } else {
-                        L.e("不符合隐藏特征,跳过：" + file.getPath());
+                        L.e("batchRecoverImage", "不符合隐藏特征,跳过：" + file.getPath());
                     }
                 }
+
+                //直接全部扫描，用于将图片添加到系统的最近文件中
+                MediaScannerConnection.scanFile(this, pathList,
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                L.e("batchRecoverImage", "onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                            }
+                        });
             } catch (Exception e) {
                 e.printStackTrace();
             }

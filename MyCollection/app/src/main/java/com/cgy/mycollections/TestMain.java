@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import appframe.utils.IOUtils;
+import appframe.utils.TimeUtils;
 import dalvik.system.DexFile;
 
 /**
@@ -25,8 +26,14 @@ import dalvik.system.DexFile;
  */
 public class TestMain {
     public static void main(String[] args) {
-        testGetResources();
-        testPinyin();
+        long currentTime = System.currentTimeMillis();
+        System.out.println(currentTime+"t:" + TimeUtils.getTime(currentTime));
+        System.out.println("t:" + TimeUtils.getTime(1496079745L * 1000));
+//        1563791685827
+//        1563186616
+//        1496079745
+//        testGetResources();
+//        testPinyin();
     }
 
     public static void testPinyin() {
