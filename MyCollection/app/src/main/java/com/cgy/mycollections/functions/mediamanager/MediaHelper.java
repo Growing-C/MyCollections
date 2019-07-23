@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 
 import com.cgy.mycollections.utils.L;
+import com.cgy.mycollections.utils.RxUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appframe.utils.TimeUtils;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 
 /**
@@ -120,6 +124,80 @@ public class MediaHelper {
         context.sendBroadcast(it);
     }
 
+    public static Observable<List<MediaInfo>> getMediaImageInfos(final Context context, final String targetFileDir) {
+//          String id;
+//          String data;//内容是文件路径 如：/storage/emulated/0/xxx/.20190619_070221.gif
+//          String size;
+//          String display_name;
+//          String mime_type;
+//          String title;
+//          String date_added;//添加日期  单位s
+//          String date_modified;//修改日期 单位s
+//          String description;
+//          String picasa_id;
+//          String isprivate;
+//          String latitude;
+//          String longitude;
+//          String datetaken;
+//          String orientation;
+//          String mini_thumb_magic;
+//          String bucket_id;
+//          String bucket_display_name;
+//          String width;
+//          String height;
+        return Observable.create(new ObservableOnSubscribe<List<MediaInfo>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<MediaInfo>> e) throws Exception {
+                List<MediaInfo> imageInfoList = new ArrayList<>();
+
+                //获取cursor
+                Cursor cursor = context.getContentResolver().query(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // URI,可以有多种形式
+                        null,
+                        null,
+                        null,
+                        MediaStore.Images.Media.DATE_MODIFIED + " DESC");//按照修改时间降序排列
+                if (cursor != null) {
+                    //图片路径所在列的索引
+                    int idIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                    int photoPathIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    int sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE);
+                    int displayNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+                    int titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
+                    int addDateIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED);
+                    int modifyDateIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
+                    int mimeTypeIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.MIME_TYPE);
+
+                    L.e("getMediaImages 图片数目：" + cursor.getCount());
+                    while (cursor.moveToNext()) {
+                        MediaInfo info = new MediaInfo();
+                        //打印图片的路径
+                        info.id = cursor.getString(idIndex);
+                        info.data = cursor.getString(photoPathIndex);
+                        info.size = cursor.getInt(sizeIndex);
+                        info.display_name = cursor.getString(displayNameIndex);
+                        info.title = cursor.getString(titleIndex);
+                        info.date_added = cursor.getInt(addDateIndex);
+                        info.date_modified = cursor.getInt(modifyDateIndex);
+                        info.mime_type = cursor.getString(mimeTypeIndex);
+
+
+                        if (!TextUtils.isEmpty(info.data)) {
+                            if (!TextUtils.isEmpty(targetFileDir)) {
+                                if (info.data.contains(targetFileDir)) {
+                                    imageInfoList.add(info);
+                                }
+                            } else {
+                                imageInfoList.add(info);
+                            }
+                        }
+                    }
+                    cursor.close();
+                }
+            }
+        }).compose(RxUtil.<List<MediaInfo>>applySchedulersJobUI());
+    }
+
     /**
      * 获取 目标文件夹下面的所有图片（目标文件夹为空则是手机中的所有图片）
      *
@@ -169,136 +247,6 @@ public class MediaHelper {
         return imageFilePathList;
     }
 
-//    /**
-//     * 打开相机
-//     *
-//     * @param activity    mActivity
-//     * @param bundle      传参数，需要传拒绝权限后显示在对话框中的内容
-//     * @param requestCode 请求码
-//     */
-//    public static void openCamera(Activity activity, Bundle bundle, int requestCode) {
-//        final String dinieDialogMsg = bundle.getString(Constants.DENIED_MSG);
-//        if (PermissionUtil.checkPermissions(activity, 0, new PermissionUtil.PermissionDeniedMsg() {
-//            @Override
-//            public String setDenieDialog() {
-//                /**
-//                 * param 拒绝权限后的dialog显示的内容
-//                 */
-//                return dinieDialogMsg;
-//            }
-//        }, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)) {
-//            mCameraPath = PathUtils.getLocalImgPath();
-//            if (TextUtils.isEmpty(mCameraPath)) {
-//                ToastUtil.error(activity.getString(R.string.external_storage_not_exist), Toast.LENGTH_LONG);
-//                return;
-//            }
-//
-//            String status = Environment.getExternalStorageState();
-//            //存储媒体已经挂载，并且挂载点可读/写。
-//            if (status.equals(Environment.MEDIA_MOUNTED)) {
-//
-//                File dir = new File(mCameraPath);
-//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                Uri u = null;
-//                if (Build.VERSION.SDK_INT >= 24) {
-//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//                    u = FileProvider.getUriForFile(activity, SystemUtil.getPackageName(activity) + ".fileprovider", dir);
-//                } else {
-//                    u = Uri.fromFile(dir);
-//                }
-//
-//                intent.putExtra(MediaStore.Images.ImageColumns.ORIENTATION, 0);
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
-//                activity.startActivityForResult(intent, requestCode);
-//            }
-//        }
-//    }
-//
-//    /**
-//     * 打开相册
-//     *
-//     * @param activity    mActivity
-//     * @param bundle      传参数，需要传拒绝权限后显示在对话框中的内容
-//     * @param requestCode 请求码
-//     */
-//    public static void openAlbum(Activity activity, Bundle bundle, int requestCode) {
-//        final String dinieDialogMsg = bundle.getString(Constants.DENIED_MSG);
-//        if (PermissionUtil.checkPermissions(activity, 0, new PermissionUtil.PermissionDeniedMsg() {
-//            @Override
-//            public String setDenieDialog() {
-//                /**
-//                 * param 拒绝权限后的dialog显示的内容
-//                 */
-//                return dinieDialogMsg;
-//            }
-//        }, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//
-//            // 从本地相册选取图片作为头像
-//            Intent intentFromGallery = new Intent();
-//            // 设置文件类型
-//            intentFromGallery.setType("image/*");
-//            intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
-//            activity.startActivityForResult(intentFromGallery, requestCode);
-//        }
-//    }
-
-
-//    /**
-//     * 打开裁剪
-//     *
-//     * @param activity    mActivity
-//     * @param bundle      传参数
-//     * @param requestCode 请求码
-//     *                    bundle可传的数据如下，一般out的xy比例和aspect的xy比例一样
-//     *                    cropPath 裁剪的图片保存的路径，用来通过onActivityResult拿到裁剪后的图片
-//     *                    cropOutX 控制最终输出的图片的形状，X的大小
-//     *                    cropOutY 控制最终输出的图片的形状，Y的大小
-//     *                    cropAspectX 控制裁剪窗口的比例，X的比例
-//     *                    cropAspectY 控制裁剪窗口的比例，Y的比例
-//     */
-//    public static void openCrop(Activity activity, Bundle bundle, int requestCode) {
-//        final String cropPath = bundle.getString(Constants.CROP_PATH);
-//        final int cropOutX = bundle.getInt(Constants.CROP_OUT_X, 240);
-//        final int cropOutY = bundle.getInt(Constants.CROP_OUT_Y, 240);
-//        final int cropAspectX = bundle.getInt(Constants.CROP_ASPECT_X, 1);
-//        final int cropAspectY = bundle.getInt(Constants.CROP_ASPECT_Y, 1);
-//        Intent intent = new Intent("com.android.camera.action.CROP");
-//        Uri uri;
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//            uri = FileProvider.getUriForFile(activity, SystemUtil.getPackageName(activity) + ".fileprovider", new File(cropPath));
-//        } else {
-//            uri = Uri.fromFile(new File(cropPath));
-//        }
-//        intent.setDataAndType(uri, "image/*");
-//
-//        // 设置裁剪
-//        intent.putExtra("crop", "true");
-//
-//        // aspectX , aspectY :宽高的比例
-//        intent.putExtra("aspectX", cropAspectX);
-//        intent.putExtra("aspectY", cropAspectY);
-//
-//        // outputX , outputY : 裁剪图片宽高
-//        intent.putExtra("outputX", cropOutX);
-//        intent.putExtra("outputY", cropOutY);
-//        intent.putExtra("return-data", false);
-//        intent.putExtra("scale", true);
-//        intent.putExtra("scaleUpIfNeeded", true);
-//        mCropPath = PathUtils.getTailorImgPath();
-//        if (TextUtils.isEmpty(mCropPath)) {
-//            return;
-//        }
-//        File file = new File(mCropPath);
-////        Uri uri_output = CommonUtils.getFileUri(getContext(),file);
-//        Uri uri_output = Uri.fromFile(file);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri_output);
-//        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
-//        intent.putExtra("noFaceDetection", true);
-//        activity.startActivityForResult(intent, requestCode);
-//    }
 
     /**
      * bitmap转为base64
@@ -481,3 +429,134 @@ public class MediaHelper {
         return bitmap;
     }
 }
+
+//    /**
+//     * 打开相机
+//     *
+//     * @param activity    mActivity
+//     * @param bundle      传参数，需要传拒绝权限后显示在对话框中的内容
+//     * @param requestCode 请求码
+//     */
+//    public static void openCamera(Activity activity, Bundle bundle, int requestCode) {
+//        final String dinieDialogMsg = bundle.getString(Constants.DENIED_MSG);
+//        if (PermissionUtil.checkPermissions(activity, 0, new PermissionUtil.PermissionDeniedMsg() {
+//            @Override
+//            public String setDenieDialog() {
+//                /**
+//                 * param 拒绝权限后的dialog显示的内容
+//                 */
+//                return dinieDialogMsg;
+//            }
+//        }, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)) {
+//            mCameraPath = PathUtils.getLocalImgPath();
+//            if (TextUtils.isEmpty(mCameraPath)) {
+//                ToastUtil.error(activity.getString(R.string.external_storage_not_exist), Toast.LENGTH_LONG);
+//                return;
+//            }
+//
+//            String status = Environment.getExternalStorageState();
+//            //存储媒体已经挂载，并且挂载点可读/写。
+//            if (status.equals(Environment.MEDIA_MOUNTED)) {
+//
+//                File dir = new File(mCameraPath);
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                Uri u = null;
+//                if (Build.VERSION.SDK_INT >= 24) {
+//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//                    u = FileProvider.getUriForFile(activity, SystemUtil.getPackageName(activity) + ".fileprovider", dir);
+//                } else {
+//                    u = Uri.fromFile(dir);
+//                }
+//
+//                intent.putExtra(MediaStore.Images.ImageColumns.ORIENTATION, 0);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
+//                activity.startActivityForResult(intent, requestCode);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * 打开相册
+//     *
+//     * @param activity    mActivity
+//     * @param bundle      传参数，需要传拒绝权限后显示在对话框中的内容
+//     * @param requestCode 请求码
+//     */
+//    public static void openAlbum(Activity activity, Bundle bundle, int requestCode) {
+//        final String dinieDialogMsg = bundle.getString(Constants.DENIED_MSG);
+//        if (PermissionUtil.checkPermissions(activity, 0, new PermissionUtil.PermissionDeniedMsg() {
+//            @Override
+//            public String setDenieDialog() {
+//                /**
+//                 * param 拒绝权限后的dialog显示的内容
+//                 */
+//                return dinieDialogMsg;
+//            }
+//        }, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//            // 从本地相册选取图片作为头像
+//            Intent intentFromGallery = new Intent();
+//            // 设置文件类型
+//            intentFromGallery.setType("image/*");
+//            intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
+//            activity.startActivityForResult(intentFromGallery, requestCode);
+//        }
+//    }
+
+
+//    /**
+//     * 打开裁剪
+//     *
+//     * @param activity    mActivity
+//     * @param bundle      传参数
+//     * @param requestCode 请求码
+//     *                    bundle可传的数据如下，一般out的xy比例和aspect的xy比例一样
+//     *                    cropPath 裁剪的图片保存的路径，用来通过onActivityResult拿到裁剪后的图片
+//     *                    cropOutX 控制最终输出的图片的形状，X的大小
+//     *                    cropOutY 控制最终输出的图片的形状，Y的大小
+//     *                    cropAspectX 控制裁剪窗口的比例，X的比例
+//     *                    cropAspectY 控制裁剪窗口的比例，Y的比例
+//     */
+//    public static void openCrop(Activity activity, Bundle bundle, int requestCode) {
+//        final String cropPath = bundle.getString(Constants.CROP_PATH);
+//        final int cropOutX = bundle.getInt(Constants.CROP_OUT_X, 240);
+//        final int cropOutY = bundle.getInt(Constants.CROP_OUT_Y, 240);
+//        final int cropAspectX = bundle.getInt(Constants.CROP_ASPECT_X, 1);
+//        final int cropAspectY = bundle.getInt(Constants.CROP_ASPECT_Y, 1);
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        Uri uri;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            uri = FileProvider.getUriForFile(activity, SystemUtil.getPackageName(activity) + ".fileprovider", new File(cropPath));
+//        } else {
+//            uri = Uri.fromFile(new File(cropPath));
+//        }
+//        intent.setDataAndType(uri, "image/*");
+//
+//        // 设置裁剪
+//        intent.putExtra("crop", "true");
+//
+//        // aspectX , aspectY :宽高的比例
+//        intent.putExtra("aspectX", cropAspectX);
+//        intent.putExtra("aspectY", cropAspectY);
+//
+//        // outputX , outputY : 裁剪图片宽高
+//        intent.putExtra("outputX", cropOutX);
+//        intent.putExtra("outputY", cropOutY);
+//        intent.putExtra("return-data", false);
+//        intent.putExtra("scale", true);
+//        intent.putExtra("scaleUpIfNeeded", true);
+//        mCropPath = PathUtils.getTailorImgPath();
+//        if (TextUtils.isEmpty(mCropPath)) {
+//            return;
+//        }
+//        File file = new File(mCropPath);
+////        Uri uri_output = CommonUtils.getFileUri(getContext(),file);
+//        Uri uri_output = Uri.fromFile(file);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri_output);
+//        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+//        intent.putExtra("noFaceDetection", true);
+//        activity.startActivityForResult(intent, requestCode);
+//    }
