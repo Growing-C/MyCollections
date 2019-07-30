@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="InputPasswordView">
+    <declare-styleable name="BlinkInputPasswordView">
         <attr name="maxCount" format="integer" />
         <attr name="circleColor" format="color" />
         <attr name="bottomLineColor" format="color" />

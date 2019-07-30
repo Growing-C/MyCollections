@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.widgets.InputPasswordView;
 
 import appframe.utils.DisplayHelperUtils;
 import butterknife.BindView;

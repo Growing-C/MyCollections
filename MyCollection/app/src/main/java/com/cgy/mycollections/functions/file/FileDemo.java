@@ -1,8 +1,5 @@
 package com.cgy.mycollections.functions.file;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,11 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.androiddesign.recyclerview.SpaceItemDecoration;
-import com.cgy.mycollections.functions.mediamanager.MediaHelper;
+import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.utils.L;
 
@@ -62,12 +57,13 @@ public class FileDemo extends AppCompatActivity {
                 if (fileInfo.file.isDirectory()) {
                     mCurrentDir = fileInfo.file;
                     mFileList = getSortedChildFiles(fileInfo.file);
+                    L.e(mCurrentDir.getName() + "-->mFileList size:" + mFileList.size());
                     mFileAdapter.setData(mFileList);
                 }
             }
         });
         mFileListV.setAdapter(mFileAdapter);
-        mFileListV.addItemDecoration(new SpaceItemDecoration(1));
+        mFileListV.addItemDecoration(new SpaceItemDecoration(3));
 
         PermissionManager.requestExternalPermission(FileDemo.this, "for test");
 

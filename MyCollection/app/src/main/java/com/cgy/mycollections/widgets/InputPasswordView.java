@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.dialogdemo.dialogs;
+package com.cgy.mycollections.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -134,17 +134,17 @@ public class InputPasswordView extends AppCompatEditText {
     }
 
     private void getAtt(AttributeSet attrs) {
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.InputPasswordView);
-        maxCount = typedArray.getInt(R.styleable.InputPasswordView_maxCount, maxCount);
-        circleColor = typedArray.getColor(R.styleable.InputPasswordView_circleColor, circleColor);
-        bottomLineColor = typedArray.getColor(R.styleable.InputPasswordView_bottomLineColor, bottomLineColor);
-        radius = typedArray.getDimensionPixelOffset(R.styleable.InputPasswordView_radius, radius);
+        TypedArray typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.BlinkInputPasswordView);
+        maxCount = typedArray.getInt(R.styleable.BlinkInputPasswordView_maxCount, maxCount);
+        circleColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_circleColor, circleColor);
+        bottomLineColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_bottomLineColor, bottomLineColor);
+        radius = typedArray.getDimensionPixelOffset(R.styleable.BlinkInputPasswordView_radius, radius);
 
-        divideLineWidth = typedArray.getDimensionPixelSize(R.styleable.InputPasswordView_divideLineWidth, divideLineWidth);
-        divideLineColor = typedArray.getColor(R.styleable.InputPasswordView_divideLineColor, divideLineColor);
-        psdType = typedArray.getInt(R.styleable.InputPasswordView_psdType, psdType);
-        rectAngle = typedArray.getDimensionPixelOffset(R.styleable.InputPasswordView_rectAngle, rectAngle);
-        focusedColor = typedArray.getColor(R.styleable.InputPasswordView_focusedColor, focusedColor);
+        divideLineWidth = typedArray.getDimensionPixelSize(R.styleable.BlinkInputPasswordView_divideLineWidth, divideLineWidth);
+        divideLineColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_divideLineColor, divideLineColor);
+        psdType = typedArray.getInt(R.styleable.BlinkInputPasswordView_psdType, psdType);
+        rectAngle = typedArray.getDimensionPixelOffset(R.styleable.BlinkInputPasswordView_rectAngle, rectAngle);
+        focusedColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_focusedColor, focusedColor);
 
         typedArray.recycle();
     }
