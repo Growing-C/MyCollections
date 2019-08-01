@@ -1,14 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/px50_margin">
+
+    <LinearLayout
+        android:id="@+id/media_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/media_audio"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/file" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="图片" />
+
+        <TextView
+            android:id="@+id/image_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/media_audio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toRightOf="@+id/media_image"
+        app:layout_constraintRight_toLeftOf="@+id/media_video"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/file" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="音乐" />
+
+        <TextView
+            android:id="@+id/audio_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/media_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toRightOf="@+id/media_audio"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/file" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="视频" />
+
+        <TextView
+            android:id="@+id/video_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/protect_files"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/px50_margin"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/media_audio"
+        app:layout_constraintTop_toBottomOf="@+id/media_image">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/file" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="文件保护" />
+
+        <TextView
+            android:id="@+id/protect_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/get_recent_files"
@@ -39,4 +150,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-</ScrollView>
+</android.support.constraint.ConstraintLayout>
