@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".functions.anim.AnimDemo">
 
     <LinearLayout
+        android:id="@+id/file_path"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -25,5 +25,35 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/file_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@id/file_path" />
+
+    <LinearLayout
+        android:id="@+id/operate_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/px18_margin"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/px18_margin"
+        android:paddingRight="@dimen/px18_margin"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/px10_margin"
+            android:onClick="onClick"
+            android:layout_weight="1"
+            android:text="取消" />
+
+        <Button
+            android:id="@+id/confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:layout_weight="1"
+            android:text="确定" />
+    </LinearLayout>
+</RelativeLayout>

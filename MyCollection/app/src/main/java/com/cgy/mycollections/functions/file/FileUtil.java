@@ -6,10 +6,17 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.cgy.mycollections.functions.mediamanager.MediaHelper;
+import com.cgy.mycollections.utils.L;
+import com.facebook.common.file.FileUtils;
+import com.facebook.common.internal.Preconditions;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -30,6 +37,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -44,6 +52,255 @@ public class FileUtil {
 
     private FileUtil() {
     }
+
+    //--------------------新增-------------------------------
+
+    /**
+     * 扫描某个目录下的文件，目标是让系统 图册中 刷新该文件夹中的图片
+     *
+     * @param dirName
+     */
+    public static void scanImageFiles(@NonNull Context context, String dirName) {
+        List<String> imageList = MediaHelper.getMediaImages(context, dirName);
+        L.e("getMediaImages 文件夹名：" + dirName + "-->文件总数:" + imageList.size());
+        if (imageList.isEmpty())
+            return;
+
+        String[] pathList = new String[imageList.size()];
+        for (int i = 0, len = imageList.size(); i < len; i++) {
+            L.d("getMediaImages:" + imageList.get(i));
+            pathList[i] = imageList.get(i);
+            //通过广播 也可以实现扫描 不过可能需要在BroadcastReceiver中接收扫描完成事件，不太方便
+//            File file = new File(imageList.get(i));
+//
+//            Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//            it.setData(Uri.fromFile(file));
+//            sendBroadcast(it);
+        }
+        try {
+            //直接全部扫描
+            MediaScannerConnection.scanFile(context, pathList,
+                    null, new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            L.e("onScanCompleted path:" + path + "    ---uri:" + uri);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void handlerGetFile(String filePath) {
+        if (!TextUtils.isEmpty(filePath)) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                listFile(file);
+                listFile(file.getParentFile());
+            } else {
+                L.e("文件不存在：" + filePath);
+            }
+        }
+    }
+
+    public static void listFile(File file) {
+        Preconditions.checkNotNull(file);
+
+        if (file.isDirectory()) {
+            L.e("listFile，这是文件夹，路径为：" + file.getPath());
+            File[] files = file.listFiles();
+            for (int i = 0, len = files.length; i < len; i++) {
+                L.e("路径" + files[i].getPath());
+            }
+        } else {
+            L.e("listFile，这是文件，路径为：" + file.getPath());
+        }
+    }
+
+    /**
+     * 将单个文件或者文件夹由可见改成隐藏
+     *
+     * @param context
+     * @param file
+     * @return
+     */
+    public static boolean hideSingleFile(@NonNull Context context, File file) {
+        Preconditions.checkNotNull(file);
+
+        String[] pathList = new String[1];
+        try {
+            if (!file.getName().startsWith(".")) {
+                File targetFile = new File(file.getParentFile().getPath() + "/." + file.getName().replace(".", MediaHelper.REPLACE_DOT));
+                L.e("hideSingleFile", file.getPath() + "-->to:" + targetFile.getPath());
+//                        20190619_070221.gif
+                if (!file.exists()) {
+                    if (targetFile.exists()) {
+                        L.e("hideSingleFile", "源文件不存在，隐藏文件存在，说明已隐藏,跳过：" + file.getPath());
+                    } else {
+                        return false;//都不存在说明这个文件没了
+                    }
+                } else {
+                    FileUtils.rename(file, targetFile);
+                }
+                pathList[0] = file.getPath();
+            } else {
+                L.e("hideSingleFile", "已隐藏,跳过：" + file.getPath());
+            }
+
+            //直接全部扫描，用于把系统记录的图片记录全部干掉
+            MediaScannerConnection.scanFile(context, pathList,
+                    null, new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            L.e("hideSingleFile", "onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                        }
+                    });
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 将单个文件或者文件夹 由隐藏改成可见
+     *
+     * @param context
+     * @param file
+     * @return
+     */
+    public static boolean showSingleFile(@NonNull Context context, File file) {
+        Preconditions.checkNotNull(file);
+
+        String fileName = file.getName();
+        if (fileName.startsWith(".") && fileName.length() > 1) {
+            File targetFile = new File(file.getParentFile().getPath() + "/" + fileName.substring(1).replace(MediaHelper.REPLACE_DOT, "."));
+            L.e("showSingleFile", file.getPath() + "-->to:" + targetFile.getPath());
+//                        20190619_070221.gif
+            try {
+                if (!file.exists()) {
+                    if (targetFile.exists()) {
+                        L.e("showSingleFile", "源文件不存在，恢复文件存在，说明已恢复,跳过：" + file.getPath());
+                    } else {
+                        return false;//都不存在说明这个文件没了
+                    }
+                } else {
+                    FileUtils.rename(file, targetFile);
+                }
+
+                String[] pathList = new String[1];
+                pathList[0] = targetFile.getPath();
+                //直接全部扫描，用于要求系统显示 该文件
+                MediaScannerConnection.scanFile(context, pathList,
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                L.e("showSingleFile", "onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                            }
+                        });
+                return true;
+            } catch (Exception e) {
+                L.e("showSingleFile", "Exception：" + e.getMessage());
+            }
+        } else {
+            //TODO:有隐患，如果有多个点的话会有问题
+            File hideFile = new File(file.getParentFile().getPath() + "/." + file.getName().replace(".", MediaHelper.REPLACE_DOT));
+            if (!file.exists()) {
+                if (hideFile.exists()) {
+                    L.e("showSingleFile", "源文件不存在，隐藏文件存在，说明已隐藏,需要对隐藏文件执行恢复：" + file.getPath());
+                    showSingleFile(context, hideFile);
+                } else {
+                    return false;//都不存在说明这个文件没了
+                }
+            } else {
+                L.e("showSingleFile", "不符合隐藏特征,跳过：" + file.getPath());
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 批量重命名 前面加个.可以隐藏文件 ，但是小米手机依然会扫描出来
+     * 所以把文件名中的.jpg等后缀 的. 改成 _+_
+     * xxx/xxff.jpg -> xxx/.xxff_+_jpg
+     *
+     * @param directory
+     */
+    public static void hideFilesUnderDir(@NonNull Context context, File directory) {
+        Preconditions.checkNotNull(directory);
+
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            String[] pathList = new String[files.length];
+            try {
+                for (int i = 0, len = files.length; i < len; i++) {
+                    File file = files[i];
+                    if (!file.getName().startsWith(".")) {
+                        File targetFile = new File(directory.getPath() + "/." + file.getName().replace(".", MediaHelper.REPLACE_DOT));
+                        L.e("hideFilesUnderDir", file.getPath() + "-->to:" + targetFile.getPath());
+//                        20190619_070221.gif
+                        FileUtils.rename(file, targetFile);
+                        pathList[i] = file.getPath();
+                    } else {
+                        L.e("hideFilesUnderDir", "已隐藏,跳过：" + file.getPath());
+                    }
+                }
+
+                //直接全部扫描，用于把系统记录的图片记录全部干掉
+                MediaScannerConnection.scanFile(context, pathList,
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                L.e("hideFilesUnderDir", "onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                            }
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 批量恢复图片  xxx/.xxff_+_jpg -> xxx/xxff.jpg
+     * 并且添加到系统的最近图片中
+     *
+     * @param directory
+     */
+    public static void showFilesUnderDir(@NonNull Context context, File directory) {
+        Preconditions.checkNotNull(directory);
+
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            String[] pathList = new String[files.length];
+            try {
+                for (int i = 0, len = files.length; i < len; i++) {
+                    File file = files[i];
+                    String fileName = file.getName();
+                    if (fileName.startsWith(".") && fileName.length() > 1) {
+                        File targetFile = new File(directory.getPath() + "/" + fileName.substring(1).replace(MediaHelper.REPLACE_DOT, "."));
+                        L.e("showFilesUnderDir", file.getPath() + "-->to:" + targetFile.getPath());
+//                        20190619_070221.gif
+                        FileUtils.rename(file, targetFile);
+                        pathList[i] = targetFile.getPath();
+                    } else {
+                        L.e("showFilesUnderDir", "不符合隐藏特征,跳过：" + file.getPath());
+                    }
+                }
+
+                //直接全部扫描，用于将图片添加到系统的最近文件中
+                MediaScannerConnection.scanFile(context, pathList,
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                L.e("showFilesUnderDir", "onScanCompleted path:" + path + "    ---uri:" + uri);
+
+                            }
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //---------------------------------------------------
 
     /**
      * 获取文件夹大小
@@ -602,7 +859,7 @@ public class FileUtil {
      * 读取文件，返回一个byte数组
      *
      * @return
-     * @throws Exception
+     * @throws
      */
     public static byte[] readFile(File file) throws Exception {
         if (file == null || !file.isFile()) {
@@ -627,7 +884,7 @@ public class FileUtil {
      *
      * @param
      * @return
-     * @throws Exception
+     * @throws
      */
     private static long getFileSize(File file) throws Exception {
         long size = 0;
@@ -647,7 +904,7 @@ public class FileUtil {
      *
      * @param f
      * @return
-     * @throws Exception
+     * @throws
      */
     private static long getFileSizes(File f) throws Exception {
         long size = 0;

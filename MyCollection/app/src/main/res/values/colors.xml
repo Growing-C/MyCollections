@@ -10,4 +10,14 @@
     <color name="grey_26818181">#26818181</color>
     <color name="grey_CCCCCC">#CCCCCC</color>
 
+
+
+    <color name="color_light_red_FBF0EE">#FBF0EE</color>
+    <color name="color_dark_red_D75F61">#D75F61</color>
+    <color name="color_red">#ff0000</color><!--红点，版本更新 -->
+    <color name="color_041133">#041133</color><!--普通深色字体 -->
+    <color name="color_1c2949">#1c2949</color><!--普通深色箭头 -->
+    <color name="color_093B6F">#093B6F</color><!--item1 -->
+    <color name="color_DE5D26">#DE5D26</color><!--item2 -->
+    <color name="color_A9C010">#A9C010</color><!--item3 -->
 </resources>

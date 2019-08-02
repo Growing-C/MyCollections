@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.file;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.cgy.mycollections.utils.PinYinUtils;
@@ -16,8 +17,26 @@ import appframe.utils.TimeUtils;
 public class FileInfo {
     public File file;
     public String fileName;
+    public String filePath;
 
     public String fileFirstLetter;
+
+    public int protectState = 0;
+    public long addProtectDate = 0;
+
+    public FileInfo(@NonNull File file) {
+        this.file = file;
+        this.fileName = file.getName();
+        this.filePath = file.getPath();
+    }
+
+
+    public String getFileType() {
+        if (file.isDirectory())
+            return FileConstants.FILE_TYPE_DIR;
+
+        return FileConstants.FILE_TYPE_FILE;
+    }
 
     /**
      * 文件名拼音首字母
@@ -43,15 +62,23 @@ public class FileInfo {
         return "";
     }
 
-    public String getInfo() {
-        String info = "";
+    public int getDirChildCount(boolean containHideFiles) {
+        int childCount = 0;
         if (file.isDirectory()) {
-            info += file.list().length + "项  ";
-        } else {
-            info += file.length() + "B  ";
-        }
-        info += getLastModifyTime();
+            String[] children = file.list();
 
-        return info;
+            if (children != null) {
+                childCount = children.length;
+                if (!containHideFiles) {
+                    for (String childName : children) {
+                        if (childName.startsWith(".")) {//文件名会为空吗？
+                            childCount--;
+                        }
+                    }
+                }
+            }
+        }
+        return childCount;
     }
+
 }

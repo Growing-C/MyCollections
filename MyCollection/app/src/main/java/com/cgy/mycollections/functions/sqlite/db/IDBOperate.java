@@ -1,6 +1,8 @@
 package com.cgy.mycollections.functions.sqlite.db;
 
 
+import com.cgy.mycollections.functions.file.FileInfo;
+
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -11,6 +13,34 @@ import io.reactivex.Observable;
  * Date :2018/10/16
  */
 public interface IDBOperate {
+
+
+    //--------------------文件操作----------------------
+
+    /**
+     * 添加受保护的文件
+     *
+     * @param fileInfo
+     * @return
+     */
+    Observable<Boolean> addProtectedFile(String userId, FileInfo fileInfo);
+
+    Observable<Boolean> addProtectedFiles(String userId, List<FileInfo> fileList);
+
+    /**
+     * 移除某个文件的保护
+     *
+     * @param fileInfo
+     * @return
+     */
+    Observable<Boolean> removeProtectedFile(String userId, FileInfo fileInfo);
+
+    Observable<Boolean> removeProtectedFiles(String userId, List<FileInfo> fileList);
+
+    Observable<List<FileInfo>> getProtectedFiles(String userId);
+
+    //--------------------文件操作----------------------
+
 
     //--------------------用户账户操作----------------------
 

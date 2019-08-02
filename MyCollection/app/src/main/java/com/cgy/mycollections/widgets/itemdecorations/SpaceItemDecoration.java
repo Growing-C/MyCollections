@@ -21,7 +21,7 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     public SpaceItemDecoration(int spacePixel) {
         mSpace = spacePixel;
         mPaint = new Paint();
-        mPaint.setColor(Color.GRAY);
+        mPaint.setColor(Color.parseColor("#c0c0c0"));
         mPaint.setAntiAlias(true);
     }
 

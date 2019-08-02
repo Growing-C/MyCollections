@@ -15,7 +15,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cgy.mycollections.BaseActivity;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.file.FileInfo;
+import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
+import com.cgy.mycollections.functions.sqlite.db.DBOperator;
+import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.L;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
@@ -33,17 +38,20 @@ import appframe.utils.Logger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * 媒体文件管理,用于管理安卓系统的 媒体存储功能
  * 隐藏图片，获取最近的媒体文件等功能
  * https://www.cnblogs.com/imouto/p/how-do-apps-interact-with-media-storage-service.html
  */
-public class MediaManagerDemo extends AppCompatActivity {
+public class MediaManagerDemo extends BaseActivity {
     private final int REQUEST_FILE = 2;
 
     @BindView(R.id.log)
     TextView mLogV;
+    @BindView(R.id.protect_amount)
+    TextView mProtectAmountV;
 
     String mUploadFilePath = null;//
 
@@ -58,6 +66,24 @@ public class MediaManagerDemo extends AppCompatActivity {
 
         L.e("isMediaScannerScanning:" + MediaHelper.isMediaScannerScanning(this));
         L.e("MediaStore.getVersion:" + MediaStore.getVersion(this));
+
+        DBOperator.getInstance().getProtectedFiles(CommonUtils.getUserId(this)).subscribe(new DisposableObserver<List<FileInfo>>() {
+            @Override
+            public void onNext(List<FileInfo> files) {
+                L.e("getProtectedFiles onNext size:" + files.size());
+                mProtectAmountV.setText(String.valueOf(files.size()));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showToast("onError:" + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     @Override
@@ -99,9 +125,13 @@ public class MediaManagerDemo extends AppCompatActivity {
         }
     };
 
-    @OnClick({R.id.get_recent_files, R.id.add_file, R.id.hide_files, R.id.show_files})
+    @OnClick({R.id.get_recent_files, R.id.add_file, R.id.hide_files, R.id.show_files, R.id.file_protect_image})
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.file_protect_image:
+                Intent it = new Intent(this, ProtectedFilesActivity.class);
+                startActivity(it);
+                break;
             case R.id.get_recent_files:
 //                scanFiles("CLImages");
                 scanFiles("Twitter");

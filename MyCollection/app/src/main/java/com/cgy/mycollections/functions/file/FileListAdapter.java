@@ -4,12 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,6 +26,9 @@ import butterknife.ButterKnife;
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHolder> {
     private OnItemClickListener mOnItemClickListener;
     private List<FileInfo> mFileList;
+    private List<FileInfo> mSelectedFileList = new ArrayList<>();
+
+    private boolean mIsSelect = false;
 
     public FileListAdapter() {
     }
@@ -32,8 +38,16 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
         notifyDataSetChanged();
     }
 
+    public void setIsSelect(boolean isSelect) {
+        this.mIsSelect = isSelect;
+    }
+
     public FileInfo getItem(int position) {
         return mFileList.get(position);
+    }
+
+    public List<FileInfo> getSelectedFiles() {
+        return mSelectedFileList;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -59,10 +73,16 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
         @BindView(R.id.file_name)
         TextView fileName;
         @BindView(R.id.file_info)
-        TextView fileInfo;
+        TextView fileInfoV;
+        @BindView(R.id.right_arrow)
+        View rightArrow;
+        @BindView(R.id.select)
+        CheckBox selectBox;
 
         @BindView(R.id.file_image)
         ImageView fileImage;
+        @BindView(R.id.file_protected)
+        View protectedV;
 
         public FileHolder(View itemView) {
             super(itemView);
@@ -76,16 +96,55 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
                     }
                 }
             });
+            selectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    int position = getAdapterPosition();
+                    FileInfo fileInfo = getItem(position);
+                    if (isChecked) {
+                        mSelectedFileList.add(fileInfo);
+                    } else {
+                        mSelectedFileList.remove(fileInfo);
+                    }
+                }
+            });
         }
 
         public void setData(FileInfo info) {
+            if (mIsSelect) {
+                rightArrow.setVisibility(View.INVISIBLE);
+                selectBox.setVisibility(View.VISIBLE);
+            } else {
+                if (info.file.isDirectory())
+                    rightArrow.setVisibility(View.VISIBLE);
+                else {
+                    rightArrow.setVisibility(View.INVISIBLE);
+                }
+                selectBox.setVisibility(View.INVISIBLE);
+            }
+
+            if (info.protectState == FileConstants.STATE_PROTECTED) {
+                protectedV.setVisibility(View.VISIBLE);
+            } else {
+                protectedV.setVisibility(View.GONE);
+            }
+
             fileName.setText(info.fileName);
             if (info.file.isDirectory()) {
                 fileImage.setImageResource(R.drawable.dir);
             } else {
                 fileImage.setImageResource(R.drawable.file);
             }
-            fileInfo.setText(info.getInfo());
+
+            String fileInfo = "";
+            if (info.file.isDirectory()) {
+                fileInfo += info.getDirChildCount(false) + "项  ";
+            } else {
+                fileInfo += info.file.length() + "B  ";
+            }
+            fileInfo += info.getLastModifyTime();
+//
+            fileInfoV.setText(fileInfo);
 //            mText.setText(data);
 //            if (colorRes != -1) {
 //                mText.setTextColor(ContextCompat.getColor(mText.getContext(), colorRes));

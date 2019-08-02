@@ -8,8 +8,13 @@ import android.text.TextUtils;
 
 
 import com.cgy.mycollections.MyApplication;
+import com.cgy.mycollections.functions.file.FileInfo;
 import com.cgy.mycollections.utils.L;
 
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -17,6 +22,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.cgy.mycollections.functions.sqlite.db.DBHelper.TABLE_NAME_PROTECTED_FILES;
 import static com.cgy.mycollections.functions.sqlite.db.DBHelper.TABLE_NAME_USER_ACCOUNT;
 import static com.cgy.mycollections.functions.sqlite.db.DBHelper.TABLE_NAME_USER_KEY;
 
@@ -26,6 +32,7 @@ import static com.cgy.mycollections.functions.sqlite.db.DBHelper.TABLE_NAME_USER
  * Date :2018/10/16
  */
 public class DBOperator implements IDBOperate {
+    private static final String TAG = DBOperator.class.getSimpleName();
     private static DBOperator mInstance;
 
     public static DBOperator getInstance() {
@@ -41,6 +48,171 @@ public class DBOperator implements IDBOperate {
         mDBHelper = new DBHelper(context);
     }
 
+
+    @Override
+    public Observable<Boolean> addProtectedFile(final String userId, final FileInfo fileInfo) {
+        return applySchedulers(Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                if (TextUtils.isEmpty(userId) || fileInfo == null) {
+                    e.onError(new NullPointerException("userid/fileInfo is null"));
+                    return;
+                }
+                L.d("start addProtectedFile");
+                mDBHelper.startUsingDatabase();
+                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
+                        userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");//先删除 再添加，实现更新
+                String[] strData = new String[DBHelper.ENUM_PROTECTED_FILES.values().length];
+
+
+                strData[0] = userId;
+                strData[1] = fileInfo.filePath;
+                strData[2] = fileInfo.getFileType();
+                strData[3] = String.valueOf(System.currentTimeMillis());
+                strData[4] = String.valueOf(fileInfo.protectState);
+
+                String sql = getInsertSql(TABLE_NAME_PROTECTED_FILES, strData);
+                db.execSQL(sql);
+                mDBHelper.closeDatabase();
+
+                e.onNext(true);
+                e.onComplete();
+            }
+        }));
+    }
+
+    @Override
+    public Observable<Boolean> addProtectedFiles(final String userId, final List<FileInfo> fileList) {
+        return applySchedulers(Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                L.d(TAG, "start addProtectedFiles");
+                mDBHelper.startUsingDatabase();
+                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                try {
+                    db.beginTransaction();
+                    for (FileInfo fileInfo : fileList) {
+                        db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
+                                userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
+
+                        String[] strData = new String[DBHelper.ENUM_PROTECTED_FILES.values().length];
+
+                        strData[0] = userId;
+                        strData[1] = fileInfo.filePath;
+                        strData[2] = fileInfo.getFileType();
+                        strData[3] = String.valueOf(System.currentTimeMillis());
+                        strData[4] = String.valueOf(fileInfo.protectState);
+
+                        String sql = getInsertSql(TABLE_NAME_PROTECTED_FILES, strData);
+                        db.execSQL(sql);
+                    }
+                    db.setTransactionSuccessful();
+                    db.endTransaction();
+                } catch (Exception ex) {
+                    e.onError(ex);
+                }
+                mDBHelper.closeDatabase();
+
+                e.onNext(true);
+                e.onComplete();
+            }
+        }));
+    }
+
+    @Override
+    public Observable<Boolean> removeProtectedFile(final String userId, final FileInfo fileInfo) {
+        return applySchedulers(Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                L.d("start removeProtectedFile");
+                mDBHelper.startUsingDatabase();
+                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
+                        userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
+                mDBHelper.closeDatabase();
+
+                e.onNext(true);
+                e.onComplete();
+            }
+        }));
+    }
+
+    @Override
+    public Observable<Boolean> removeProtectedFiles(final String userId, final List<FileInfo> fileList) {
+        return applySchedulers(Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                if (TextUtils.isEmpty(userId) || fileList == null) {
+                    e.onError(new NullPointerException("userid/fileInfo is null"));
+                    return;
+                }
+                L.d(TAG, "start addLockList");
+                mDBHelper.startUsingDatabase();
+                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                try {
+                    db.beginTransaction();
+                    for (FileInfo fileInfo : fileList) {
+                        db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
+                                userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
+                    }
+                    db.setTransactionSuccessful();
+                    db.endTransaction();
+                    e.onNext(true);
+                } catch (Exception ex) {
+                    e.onError(ex);
+                }
+                mDBHelper.closeDatabase();
+
+                e.onComplete();
+            }
+        }));
+    }
+
+    @Override
+    public Observable<List<FileInfo>> getProtectedFiles(final String userId) {
+        return applySchedulers(Observable.create(new ObservableOnSubscribe<List<FileInfo>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<FileInfo>> e) throws Exception {
+                L.d(TAG, "start getAllLockInfo");
+                mDBHelper.startUsingDatabase();
+                SQLiteDatabase db = mDBHelper.getReadableDatabase();
+                String querySql = "select * from " + TABLE_NAME_PROTECTED_FILES;
+
+                if (!TextUtils.isEmpty(userId)) {//不为空则添加查询条件
+                    querySql += " where USER_ID = \"" + userId + "\"";
+                }
+                querySql += ";";
+
+                List<FileInfo> fileList = new ArrayList<>();
+                Cursor c = null;
+                try {
+                    c = db.rawQuery(querySql, null);
+                    L.d(TAG, "getProtectedFiles   count:" + c.getCount());
+                    while (c.moveToNext()) {
+                        String filePath = c.getString(1);
+
+                        File file = new File(filePath);
+                        FileInfo fileInfo = new FileInfo(file);
+                        fileInfo.addProtectDate = c.getLong(3);
+                        fileInfo.protectState = c.getInt(4);
+
+                        fileList.add(fileInfo);
+                    }
+                } catch (Exception ex) {
+                    e.onError(ex);
+                } finally {
+                    if (c != null) {
+                        c.close();
+                    }
+                }
+                mDBHelper.closeDatabase();
+
+                e.onNext(fileList);
+                e.onComplete();
+            }
+        }));
+    }
 
     @Override
     public Observable<Boolean> addUserAccount(@NonNull final UserAccount account) {
