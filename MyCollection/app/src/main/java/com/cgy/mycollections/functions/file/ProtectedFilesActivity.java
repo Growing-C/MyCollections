@@ -63,6 +63,7 @@ public class ProtectedFilesActivity extends BaseActivity {
         mProtectedFileListV.setAdapter(mFileAdapter);
         mProtectedFileListV.addItemDecoration(new SpaceItemDecoration(2));
 
+        mFileAdapter.setShowHideFiles(true);
         userId = CommonUtils.getUserId(this);
 
         getProtectedFiles();

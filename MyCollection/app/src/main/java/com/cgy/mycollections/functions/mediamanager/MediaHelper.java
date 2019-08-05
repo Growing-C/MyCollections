@@ -1,8 +1,6 @@
 package com.cgy.mycollections.functions.mediamanager;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -11,16 +9,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.widget.Toast;
 
 
+import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
+import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
 import com.cgy.mycollections.utils.L;
 import com.cgy.mycollections.utils.RxUtil;
 
@@ -34,7 +31,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import appframe.utils.TimeUtils;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -107,6 +103,50 @@ public class MediaHelper {
         }
 
         return false;
+    }
+
+    public static Observable<List<ThumbnailInfo>> getThumbnailsInfo(final Context context) {
+        return Observable.create(new ObservableOnSubscribe<List<ThumbnailInfo>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<ThumbnailInfo>> e) throws Exception {
+                List<ThumbnailInfo> thumbInfoList = new ArrayList<>();
+
+                //获取cursor
+                Cursor cursor = context.getContentResolver().query(
+                        MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, // URI,可以有多种形式
+                        null,
+                        null,
+                        null,
+                        null);//按照修改时间降序排列
+                if (cursor != null) {
+                    //图片路径所在列的索引
+
+                    int idIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
+                    int thumbPathIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
+                    int imageIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
+                    int kindIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.KIND);
+                    int widthIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.WIDTH);
+                    int heightIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.HEIGHT);
+//
+                    L.e("getThumbnailsInfo 图片数目：" + cursor.getCount());
+                    while (cursor.moveToNext()) {
+                        ThumbnailInfo info = new ThumbnailInfo();
+                        //打印图片的路径
+                        info.id = cursor.getString(idIndex);
+                        info.data = cursor.getString(thumbPathIndex);
+                        info.imageId = cursor.getString(imageIdIndex);
+                        info.kind = cursor.getInt(kindIndex);
+                        info.width = cursor.getInt(widthIndex);
+                        info.height = cursor.getInt(heightIndex);
+                        L.e(info.toString());
+                        thumbInfoList.add(info);
+                    }
+                    cursor.close();
+                }
+                e.onNext(thumbInfoList);
+                e.onComplete();
+            }
+        }).compose(RxUtil.<List<ThumbnailInfo>>applySchedulersJobUI());
     }
 
     /**
@@ -194,6 +234,8 @@ public class MediaHelper {
                     }
                     cursor.close();
                 }
+                e.onNext(imageInfoList);
+                e.onComplete();
             }
         }).compose(RxUtil.<List<MediaInfo>>applySchedulersJobUI());
     }
@@ -247,6 +289,7 @@ public class MediaHelper {
         return imageFilePathList;
     }
 
+    //------------------------------------------------------------------------------------------------
 
     /**
      * bitmap转为base64

@@ -176,4 +176,7 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_media_images">MediaImagesActivity</string>
+    <string name="tab_text_all_images">全部图片</string>
+    <string name="tab_text_image_files">相册</string>
 </resources>

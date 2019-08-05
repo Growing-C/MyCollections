@@ -29,8 +29,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
     private List<FileInfo> mSelectedFileList = new ArrayList<>();
 
     private boolean mIsSelect = false;
+    private boolean mShowHide = false;
 
     public FileListAdapter() {
+    }
+
+    public void setShowHideFiles(boolean showHide) {
+        this.mShowHide = showHide;
+        notifyDataSetChanged();
     }
 
     public void setData(List<FileInfo> list) {
@@ -138,7 +144,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
 
             String fileInfo = "";
             if (info.file.isDirectory()) {
-                fileInfo += info.getDirChildCount(false) + "项  ";
+                fileInfo += info.getDirChildCount(mShowHide) + "项  ";
             } else {
                 fileInfo += info.file.length() + "B  ";
             }

@@ -52,6 +52,8 @@ public class MediaManagerDemo extends BaseActivity {
     TextView mLogV;
     @BindView(R.id.protect_amount)
     TextView mProtectAmountV;
+    @BindView(R.id.image_amount)
+    TextView mImageAmountV;
 
     String mUploadFilePath = null;//
 
@@ -61,7 +63,7 @@ public class MediaManagerDemo extends BaseActivity {
         setContentView(R.layout.activity_media_manager_demo);
         ButterKnife.bind(this);
 
-        registerReceiver(this);
+//        registerReceiver(this);
         PermissionManager.requestExternalPermission(MediaManagerDemo.this, "for test");
 
         L.e("isMediaScannerScanning:" + MediaHelper.isMediaScannerScanning(this));
@@ -84,52 +86,59 @@ public class MediaManagerDemo extends BaseActivity {
 
             }
         });
+        int imageCount = MediaHelper.getMediaImages(this, null).size();
+        mImageAmountV.setText(String.valueOf(imageCount));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+//        unregisterReceiver(mReceiver);
     }
 
-    /**
-     * 注册媒体存储监听的广播
-     *
-     * @param context
-     */
-    private void registerReceiver(Context context) {
-        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
-        filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
-        filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        filter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
-        filter.addDataScheme("file");
-        context.registerReceiver(mReceiver, filter);
-    }
+//    /**
+//     * 注册媒体存储监听的广播
+//     *
+//     * @param context
+//     */
+//    private void registerReceiver(Context context) {
+//        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
+//        filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+//        filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        filter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
+//        filter.addDataScheme("file");
+//        context.registerReceiver(mReceiver, filter);
+//    }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Uri uri = intent.getData();
-            L.e("Receiver", "BroadcastReceiver action = " + action + ", uri = " + uri);
-            if (uri != null && "file".equals(uri.getScheme())) {
-                if (Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
-                    String filePath = uri.getPath();
-                    File file = new File(filePath);
-                    L.e("Receiver", "ACTION_MEDIA_SCANNER_SCAN_FILE： " + filePath + "--->exist?" + file.exists());
-                    // TODO: filePath 文件已改变，APP 刷新界面
-                } else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)) {
-                    // TODO: 整个磁盘扫描完成，APP 刷新界面
-                }
-            }
-        }
-    };
+//    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            Uri uri = intent.getData();
+//            L.e("Receiver", "BroadcastReceiver action = " + action + ", uri = " + uri);
+//            if (uri != null && "file".equals(uri.getScheme())) {
+//                if (Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
+//                    String filePath = uri.getPath();
+//                    File file = new File(filePath);
+//                    L.e("Receiver", "ACTION_MEDIA_SCANNER_SCAN_FILE： " + filePath + "--->exist?" + file.exists());
+//                    // TODO: filePath 文件已改变，APP 刷新界面
+//                } else if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)) {
+//                    // TODO: 整个磁盘扫描完成，APP 刷新界面
+//                }
+//            }
+//        }
+//    };
 
-    @OnClick({R.id.get_recent_files, R.id.add_file, R.id.hide_files, R.id.show_files, R.id.file_protect_image})
+    @OnClick({R.id.get_recent_files, R.id.add_file, R.id.hide_files, R.id.show_files, R.id.file_protect_image, R.id.media_images})
     public void onClick(View v) {
+        Intent it;
         switch (v.getId()) {
             case R.id.file_protect_image:
-                Intent it = new Intent(this, ProtectedFilesActivity.class);
+                it = new Intent(this, ProtectedFilesActivity.class);
+                startActivity(it);
+                break;
+            case R.id.media_images:
+                it = new Intent(this, MediaImagesActivity.class);
                 startActivity(it);
                 break;
             case R.id.get_recent_files:

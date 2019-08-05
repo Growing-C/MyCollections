@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.mediamanager;
+package com.cgy.mycollections.functions.mediamanager.images;
 
 /**
  * Description :媒体信息

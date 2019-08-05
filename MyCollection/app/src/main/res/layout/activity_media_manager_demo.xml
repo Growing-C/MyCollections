@@ -17,8 +17,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/media_images"
             android:layout_width="@dimen/px150"
             android:layout_height="@dimen/px150"
+            android:theme="@style/RippleWhite"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:layout_marginBottom="@dimen/px10_margin"
             android:background="@drawable/shape_circle_add_n"
             android:scaleType="centerInside"
@@ -117,9 +120,9 @@
             android:layout_width="@dimen/px150"
             android:layout_height="@dimen/px150"
             android:layout_marginBottom="@dimen/px10_margin"
-            android:theme="@style/RippleWhite"
             android:background="@drawable/shape_circle_add_n"
             android:backgroundTint="@color/color_A9C010"
+            android:theme="@style/RippleWhite"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerInside"
             android:src="@drawable/baohu"
