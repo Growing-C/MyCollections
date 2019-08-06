@@ -33,6 +33,5 @@ public class MediaImagesActivity extends AppCompatActivity {
             }
         });
 
-        MediaHelper.getThumbnailsInfo(this).subscribe();
     }
 }

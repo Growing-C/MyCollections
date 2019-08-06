@@ -105,45 +105,49 @@ public class MediaHelper {
         return false;
     }
 
-    public static Observable<List<ThumbnailInfo>> getThumbnailsInfo(final Context context) {
+    public static List<ThumbnailInfo> getThumbnailsList(final Context context) {
+        List<ThumbnailInfo> thumbInfoList = new ArrayList<>();
+
+        //获取cursor
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, // URI,可以有多种形式
+                null,
+                null,
+                null,
+                null);//按照修改时间降序排列
+        if (cursor != null) {
+            //图片路径所在列的索引
+
+            int idIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
+            int thumbPathIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
+            int imageIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
+            int kindIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.KIND);
+            int widthIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.WIDTH);
+            int heightIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.HEIGHT);
+//
+            L.e("getThumbnailsInfo 图片数目：" + cursor.getCount());
+            while (cursor.moveToNext()) {
+                ThumbnailInfo info = new ThumbnailInfo();
+                //打印图片的路径
+                info.id = cursor.getString(idIndex);
+                info.data = cursor.getString(thumbPathIndex);
+                info.imageId = cursor.getString(imageIdIndex);
+                info.kind = cursor.getInt(kindIndex);
+                info.width = cursor.getInt(widthIndex);
+                info.height = cursor.getInt(heightIndex);
+                L.e(info.toString());
+                thumbInfoList.add(info);
+            }
+            cursor.close();
+        }
+        return thumbInfoList;
+    }
+
+    public static Observable<List<ThumbnailInfo>> getThumbnailInfoList(final Context context) {
         return Observable.create(new ObservableOnSubscribe<List<ThumbnailInfo>>() {
             @Override
             public void subscribe(ObservableEmitter<List<ThumbnailInfo>> e) throws Exception {
-                List<ThumbnailInfo> thumbInfoList = new ArrayList<>();
-
-                //获取cursor
-                Cursor cursor = context.getContentResolver().query(
-                        MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, // URI,可以有多种形式
-                        null,
-                        null,
-                        null,
-                        null);//按照修改时间降序排列
-                if (cursor != null) {
-                    //图片路径所在列的索引
-
-                    int idIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
-                    int thumbPathIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
-                    int imageIdIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.IMAGE_ID);
-                    int kindIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.KIND);
-                    int widthIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.WIDTH);
-                    int heightIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.HEIGHT);
-//
-                    L.e("getThumbnailsInfo 图片数目：" + cursor.getCount());
-                    while (cursor.moveToNext()) {
-                        ThumbnailInfo info = new ThumbnailInfo();
-                        //打印图片的路径
-                        info.id = cursor.getString(idIndex);
-                        info.data = cursor.getString(thumbPathIndex);
-                        info.imageId = cursor.getString(imageIdIndex);
-                        info.kind = cursor.getInt(kindIndex);
-                        info.width = cursor.getInt(widthIndex);
-                        info.height = cursor.getInt(heightIndex);
-                        L.e(info.toString());
-                        thumbInfoList.add(info);
-                    }
-                    cursor.close();
-                }
-                e.onNext(thumbInfoList);
+                e.onNext(getThumbnailsList(context));
                 e.onComplete();
             }
         }).compose(RxUtil.<List<ThumbnailInfo>>applySchedulersJobUI());
