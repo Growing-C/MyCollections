@@ -1,21 +1,17 @@
 package com.cgy.mycollections.functions.mediamanager;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cgy.mycollections.BaseActivity;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.file.FileInfo;
 import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
@@ -26,8 +22,6 @@ import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;

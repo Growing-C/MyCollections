@@ -2,21 +2,16 @@ package com.cgy.mycollections.functions.file;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
-import com.cgy.mycollections.BaseActivity;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.mediamanager.MediaManagerDemo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.L;
-import com.cgy.mycollections.utils.SharePreUtil;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 
 import java.util.ArrayList;
@@ -30,7 +25,6 @@ import appframe.utils.Logger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 
 /**

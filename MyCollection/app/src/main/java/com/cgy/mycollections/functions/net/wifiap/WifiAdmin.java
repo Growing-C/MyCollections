@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -75,6 +76,40 @@ public class WifiAdmin {
 //        if(!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 //            // 未打开位置开关，可能导致定位失败或定位不准，提示用户或做相应处理
 //        }
+    }
+
+    public String getWifiConnectedSsid() {
+        WifiInfo mWifiInfo = getConnectionInfo();
+        String ssid = null;
+        if (mWifiInfo != null && isWifiConnected()) {
+            int len = mWifiInfo.getSSID().length();
+            if (mWifiInfo.getSSID().startsWith("\"")
+                    && mWifiInfo.getSSID().endsWith("\"")) {
+                ssid = mWifiInfo.getSSID().substring(1, len - 1);
+            } else {
+                ssid = mWifiInfo.getSSID();
+            }
+
+        }
+        return ssid;
+    }
+
+    private boolean isWifiConnected() {
+        NetworkInfo mWiFiNetworkInfo = getWifiNetworkInfo();
+        boolean isWifiConnected = false;
+        if (mWiFiNetworkInfo != null) {
+            isWifiConnected = mWiFiNetworkInfo.isConnected();
+        }
+        return isWifiConnected;
+    }
+
+    private NetworkInfo getWifiNetworkInfo() {
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) mContext
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (mConnectivityManager != null)
+            return mConnectivityManager
+                    .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return null;
     }
 
     public WifiInfo getConnectionInfo() {

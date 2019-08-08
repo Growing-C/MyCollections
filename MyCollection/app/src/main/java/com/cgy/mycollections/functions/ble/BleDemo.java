@@ -2,12 +2,6 @@ package com.cgy.mycollections.functions.ble;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +11,7 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.cgy.mycollections.BaseActivity;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ble.client.BLEClient;
 import com.cgy.mycollections.functions.ble.client.DataCallback;
@@ -26,13 +20,10 @@ import com.cgy.mycollections.functions.ble.scan.IBLEScanObserver;
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.BinaryUtil;
-import com.cgy.mycollections.utils.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;

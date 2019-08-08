@@ -20,7 +20,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.cgy.mycollections.BaseActivity;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.net.wifip2p.DirectActionListener;
 import com.cgy.mycollections.functions.net.wifip2p.DirectBroadcastReceiver;

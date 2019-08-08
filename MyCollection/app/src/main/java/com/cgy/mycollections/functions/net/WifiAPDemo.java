@@ -1,26 +1,16 @@
 package com.cgy.mycollections.functions.net;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
@@ -34,14 +24,13 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.cgy.mycollections.BaseActivity;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdapter;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.L;
 
-import java.util.Iterator;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;

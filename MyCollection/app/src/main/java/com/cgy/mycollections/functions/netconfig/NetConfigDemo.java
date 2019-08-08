@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import com.cgy.mycollections.BaseActivity;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.L;
 import com.cgy.mycollections.utils.SystemUtil;
@@ -25,7 +25,6 @@ import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 
