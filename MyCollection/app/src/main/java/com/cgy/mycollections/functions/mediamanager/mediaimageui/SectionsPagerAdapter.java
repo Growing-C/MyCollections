@@ -29,7 +29,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a ImageFilesFragment (defined as a static inner class below).
-        return ImageFilesFragment.newInstance(position + 1);
+        if (position == 0)
+            return AllImagesFragment.newInstance(0);
+
+        return ImageFilesFragment.newInstance(1);
     }
 
     @Nullable

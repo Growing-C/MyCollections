@@ -7,20 +7,31 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
  * 用于显示所有图片，仅根据thumbnail来查询
  */
 public class AllImagesFragment extends Fragment {
-
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    @BindView(R.id.image_list)
+    RecyclerView mImageListV;
+
+    MediaImageAdapter mImageAdapter;
 
     private PageViewModel pageViewModel;
 
@@ -48,12 +59,26 @@ public class AllImagesFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_media_images, container, false);
+        ButterKnife.bind(this, root);
+
         final TextView textView = root.findViewById(R.id.section_label);
-        final RecyclerView imageListV = root.findViewById(R.id.image_list);
+//        final RecyclerView imageListV = root.findViewById(R.id.image_list);
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
+            }
+        });
+
+        mImageAdapter = new MediaImageAdapter();
+
+        mImageListV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mImageListV.setAdapter(mImageAdapter);
+
+        pageViewModel.getThumbnails(getContext()).observe(this, new Observer<List<ThumbnailInfo>>() {
+            @Override
+            public void onChanged(@Nullable List<ThumbnailInfo> thumbnailInfoList) {
+                mImageAdapter.setData(thumbnailInfoList);
             }
         });
         return root;
