@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.dialogdemo.dialogs;
+package com.cgy.mycollections.functions.ui.dialogdemo.dialogs;
 
 /**
  * 社保支付输入密码

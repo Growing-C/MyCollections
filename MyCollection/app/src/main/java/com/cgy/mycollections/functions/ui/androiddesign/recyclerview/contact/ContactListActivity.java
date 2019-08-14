@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.androiddesign.recyclerview.contact;
+package com.cgy.mycollections.functions.ui.androiddesign.recyclerview.contact;
 
 import android.database.Cursor;
 import android.provider.ContactsContract;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cgy.mycollections.functions.systemui.statusbar.SystemStatusActivity">
+    tools:context=".functions.ui.systemui.statusbar.SystemStatusActivity">
 
     <!-- android:fitsSystemWindows="true" 必须放在要沉浸的view里面，如果放在根布局里面 会导致状态栏为白色-->
     <TextView

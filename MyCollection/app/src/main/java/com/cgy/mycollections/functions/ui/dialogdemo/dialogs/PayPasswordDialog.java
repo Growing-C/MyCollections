@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.dialogdemo.dialogs;
+package com.cgy.mycollections.functions.ui.dialogdemo.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;

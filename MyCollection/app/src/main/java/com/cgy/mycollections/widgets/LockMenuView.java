@@ -12,7 +12,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.textdemo.fonttext.IconFontTextView;
+import com.cgy.mycollections.functions.ui.textdemo.fonttext.IconFontTextView;
 import com.cgy.mycollections.utils.L;
 
 

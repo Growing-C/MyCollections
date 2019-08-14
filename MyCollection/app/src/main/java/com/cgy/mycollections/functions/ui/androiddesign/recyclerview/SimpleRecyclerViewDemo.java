@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.androiddesign.recyclerview;
+package com.cgy.mycollections.functions.ui.androiddesign.recyclerview;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.androiddesign.recyclerview.contact.ContactListActivity;
+import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.contact.ContactListActivity;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 
 public class SimpleRecyclerViewDemo extends AppCompatActivity {

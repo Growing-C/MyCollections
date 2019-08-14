@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.textdemo;
+package com.cgy.mycollections.functions.ui.textdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

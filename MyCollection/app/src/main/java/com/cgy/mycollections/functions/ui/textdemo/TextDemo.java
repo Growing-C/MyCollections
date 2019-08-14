@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.textdemo;
+package com.cgy.mycollections.functions.ui.textdemo;
 
 import android.content.Intent;
 import android.graphics.Color;

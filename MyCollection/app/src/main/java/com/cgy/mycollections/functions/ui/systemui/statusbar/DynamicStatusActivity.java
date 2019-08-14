@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.systemui.statusbar;
+package com.cgy.mycollections.functions.ui.systemui.statusbar;
 
 import android.os.Build;
 import android.support.constraint.ConstraintLayout;
@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 import com.cgy.mycollections.R;
 

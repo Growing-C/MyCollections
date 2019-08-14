@@ -1,17 +1,12 @@
-package com.cgy.mycollections.functions.dialogdemo;
+package com.cgy.mycollections.functions.ui.dialogdemo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.LruCache;
 import android.view.View;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.anim.LottieAnimActivity;
-import com.cgy.mycollections.functions.dialogdemo.dialogs.OnPasswordInputListener;
-import com.cgy.mycollections.functions.dialogdemo.dialogs.PayPasswordDialog;
-
-import okhttp3.internal.cache.DiskLruCache;
+import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.OnPasswordInputListener;
+import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.PayPasswordDialog;
 
 /**
  * 该页面展示了对话框

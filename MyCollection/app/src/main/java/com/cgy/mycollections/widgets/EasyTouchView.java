@@ -3,6 +3,7 @@ package com.cgy.mycollections.widgets;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -69,7 +70,13 @@ public class EasyTouchView {
         mTouchView.setOnTouchListener(mTouchListener);
 
         mWMParams = new LayoutParams();
-        mWMParams.type = LayoutParams.TYPE_SYSTEM_ALERT; // 这里的2002表示系统级窗口，你也可以试试2003。
+//        mWMParams.type = LayoutParams.TYPE_SYSTEM_ALERT; // 这里的2002表示系统级窗口，你也可以试试2003。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0
+            mWMParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            mWMParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
+
         mWMParams.flags = 40; // 设置桌面可控
         mWMParams.width = LayoutParams.WRAP_CONTENT;
         mWMParams.height = LayoutParams.WRAP_CONTENT;
@@ -265,7 +272,14 @@ public class EasyTouchView {
             try {
                 Method method = c.getMethod("setWindowLayoutType", int.class);
                 method.setAccessible(true);
-                method.invoke(mPop, LayoutParams.TYPE_SYSTEM_ALERT);
+
+                int windowType;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0
+                    windowType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+                } else {
+                    windowType = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+                }
+                method.invoke(mPop, windowType);
             } catch (Exception e) {
                 e.printStackTrace();
             }

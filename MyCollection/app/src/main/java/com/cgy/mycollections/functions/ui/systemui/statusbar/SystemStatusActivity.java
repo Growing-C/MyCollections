@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.systemui.statusbar;
+package com.cgy.mycollections.functions.ui.systemui.statusbar;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

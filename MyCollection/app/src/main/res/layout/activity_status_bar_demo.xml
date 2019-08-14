@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo">
+    tools:context=".functions.ui.systemui.statusbar.StatusBarDemo">
 
     <Button
         android:id="@+id/system_method"

@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Description : 圆形波纹  demo见{@link com.cgy.mycollections.functions.textdemo.TextDemo}
+ * Description : 圆形波纹  demo见{@link com.cgy.mycollections.functions.ui.textdemo.TextDemo}
  * Author :cgy
  * Date :2018/7/18
  */

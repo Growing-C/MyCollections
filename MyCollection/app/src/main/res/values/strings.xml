@@ -66,6 +66,9 @@
     <string name="title_media_manager">MediaManager</string>
     <string name="info_media_manager">媒体文件管理</string>
 
+    <string name="title_ui">UiDemo</string>
+    <string name="info_ui">所有ui相关的demo</string>
+
     <!--icon fonts-->
     <string name="icon_guanbi">&#xe62b;</string>
     <string name="icon_shijain">&#xe6bc;</string>

@@ -22,11 +22,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.cgy.mycollections.functions.androiddesign.recyclerview.SimpleRecyclerViewDemo;
+import com.cgy.mycollections.functions.ui.UiDemos;
+import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.ble.BleDemo;
 import com.cgy.mycollections.functions.cache.CacheDemo;
-import com.cgy.mycollections.functions.dialogdemo.DialogDemo;
+import com.cgy.mycollections.functions.ui.dialogdemo.DialogDemo;
 import com.cgy.mycollections.functions.ethereum.EthereumDemo;
 import com.cgy.mycollections.functions.file.FileDemo;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
@@ -34,8 +35,8 @@ import com.cgy.mycollections.functions.mediamanager.MediaManagerDemo;
 import com.cgy.mycollections.functions.net.NetDemos;
 import com.cgy.mycollections.functions.netconfig.NetConfigDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
-import com.cgy.mycollections.functions.systemui.statusbar.StatusBarDemo;
-import com.cgy.mycollections.functions.textdemo.TextDemo;
+import com.cgy.mycollections.functions.ui.systemui.statusbar.StatusBarDemo;
+import com.cgy.mycollections.functions.ui.textdemo.TextDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
@@ -88,20 +89,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Demo[] demos = {
+            new Demo(R.string.title_ui, R.string.info_ui, true,UiDemos.class),
             new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class),
             new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, RedEnvelopeDemo.class),
             new Demo(R.string.title_activity_tts_demo, R.string.info_tts_demo, TTSDemo.class),
-            new Demo(R.string.title_activity_simple_recycler_demo, R.string.info_simple_recycler_demo, true, SimpleRecyclerViewDemo.class),
             new Demo(R.string.title_activity_data_binding_demo, R.string.info_data_binding_demo, true, DataBindingDemo.class),
-            new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
             new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, true, NetDemos.class),
-            new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_anim_demo, R.string.info_anim_demo, AnimDemo.class),
             new Demo(R.string.title_database_demo, R.string.info_database_demo, DataBaseDemo.class),
             new Demo(R.string.title_cache_demo, R.string.info_cache_demo, CacheDemo.class),
             new Demo(R.string.title_ethereum_demo, R.string.info_ethereum_demo, EthereumDemo.class),
             new Demo(R.string.title_file, R.string.info_file, FileDemo.class),
-            new Demo(R.string.title_dialog, R.string.info_dialog, DialogDemo.class),
             new Demo(R.string.title_ble, R.string.info_ble, BleDemo.class),
             new Demo(R.string.title_net_config, R.string.info_net_config, NetConfigDemo.class),
             new Demo(R.string.title_media_manager, R.string.info_media_manager, MediaManagerDemo.class),
