@@ -3,6 +3,7 @@ package com.cgy.mycollections.functions.net;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.wifi.WpsInfo;
@@ -397,7 +398,12 @@ public class WifiP2PDemo extends BaseActivity {
     }
 
     public void startDiscover() {
-        showLoadingDialog("正在搜索附近设备");
+        showLoadingDialog("正在搜索附近设备", new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                stopDiscover();
+            }
+        });
 
         mWifiP2pDeviceList.clear();
         mDeviceAdapter.notifyDataSetChanged();
@@ -424,26 +430,26 @@ public class WifiP2PDemo extends BaseActivity {
         showToast("取消搜索");
     }
 
-    /**
-     * 读取输入流数据，返回一个byte数组
-     *
-     * @param inStream
-     * @return
-     */
-    public static byte[] readInputStream(InputStream inStream) throws Exception {
-        byte[] buffer = new byte[1024];
-        int len = -1;
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        while ((len = inStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, len);// 把buffer里的数据写入流中
-
-        }
-        byte[] data = outStream.toByteArray();
-        outStream.close();
-        inStream.close();
-
-        return data;
-    }
+//    /**
+//     * 读取输入流数据，返回一个byte数组
+//     *
+//     * @param inStream
+//     * @return
+//     */
+//    public static byte[] readInputStream(InputStream inStream) throws Exception {
+//        byte[] buffer = new byte[1024];
+//        int len = -1;
+//        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+//        while ((len = inStream.read(buffer)) != -1) {
+//            outStream.write(buffer, 0, len);// 把buffer里的数据写入流中
+//
+//        }
+//        byte[] data = outStream.toByteArray();
+//        outStream.close();
+//        inStream.close();
+//
+//        return data;
+//    }
 
 
 }

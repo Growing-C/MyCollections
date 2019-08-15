@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -59,12 +60,19 @@ public class WifiAPDemo extends BaseActivity {
 
     WifiAdmin mWifiAdmin;
 
-    Disposable mD;
+//    Disposable mD;
 
     BroadcastReceiver mWifiScanReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
+            if (LocationManager.PROVIDERS_CHANGED_ACTION.equals(intent.getAction())) {
+                L.e("gps状态变化了:" + intent.toString());
+                if (WifiAdmin.isGPSOPen(WifiAPDemo.this)) {
+                    L.e("gps 打开了");
+                    mWifiAdmin.startScan();//startScan之后直接.getScanResults()可能拿到上次的扫描结果，需要在广播里面接收本次结果
+                    showLoadingDialog("扫描中");
+                }
+            } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
                 switch (state) {
                     /**
@@ -105,8 +113,9 @@ public class WifiAPDemo extends BaseActivity {
                 } else if (NetworkInfo.State.CONNECTING == info.getState()) {//正在连接
                     L.e("wifi正在连接:" + info.toString());
                 }
-            } else if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+            } else if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 L.e("网络列表变化了:" + intent.toString());
+                dismissLoadingDialog();
 //                Bundle bd = intent.getExtras();
 //                if (bd != null) {
 //                    Iterator it = bd.keySet().iterator();
@@ -144,6 +153,7 @@ public class WifiAPDemo extends BaseActivity {
         IntentFilter filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
         registerReceiver(mWifiScanReceiver, filter);
 
         mWifiAdmin = new WifiAdmin(this);
@@ -202,10 +212,10 @@ public class WifiAPDemo extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mD != null) {
-            mD.dispose();
-            mD = null;
-        }
+//        if (mD != null) {
+//            mD.dispose();
+//            mD = null;
+//        }
         unregisterReceiver(mWifiScanReceiver);
     }
 
@@ -218,7 +228,13 @@ public class WifiAPDemo extends BaseActivity {
             case R.id.get_wifi_state://获取wifi状态
                 mWifiAdmin.getWifiAPState();
 
-                mWifiAdmin.startScan();//startScan之后直接.getScanResults()可能拿到上次的扫描结果，需要在广播里面接收本次结果
+                if (!WifiAdmin.isGPSOPen(this)) {//gps 没打开 先打开gps
+                    L.e("gps 关着 需要打开");
+                    WifiAdmin.openGPS(this);
+                } else {
+                    mWifiAdmin.startScan();//startScan之后直接.getScanResults()可能拿到上次的扫描结果，需要在广播里面接收本次结果
+                    showLoadingDialog("扫描中");
+                }
                 break;
             case R.id.connect_hotpot://连接指定热点
                 String SSID = mSsidV.getText().toString();
@@ -227,13 +243,12 @@ public class WifiAPDemo extends BaseActivity {
                     showToast("请输入ssid/密码！");
                     return;
                 }
-                mWifiAdmin.connectHotpot(SSID, key,false);
+                mWifiAdmin.connectHotpot(SSID, key, false);
                 break;
             default:
                 break;
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.utils.L;
 
 
 /**
@@ -29,6 +30,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a ImageFilesFragment (defined as a static inner class below).
+//        L.e("getItem:" + position);
         if (position == 0)
             return AllImagesFragment.newInstance(0);
 

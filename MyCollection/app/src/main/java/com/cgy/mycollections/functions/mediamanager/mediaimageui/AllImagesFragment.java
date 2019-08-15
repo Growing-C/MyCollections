@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -14,7 +16,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
+import com.cgy.mycollections.utils.L;
 
 import java.util.List;
 
@@ -52,12 +56,14 @@ public class AllImagesFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
+//        L.e("AllImagesFragment onCreate");
     }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+//        L.e("AllImagesFragment onCreateView");
         View root = inflater.inflate(R.layout.fragment_media_images, container, false);
         ButterKnife.bind(this, root);
 
@@ -66,16 +72,19 @@ public class AllImagesFragment extends Fragment {
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                textView.setText("显示所有图片" + s);
+                textView.setVisibility(View.GONE);
             }
         });
 
         mImageAdapter = new MediaImageAdapter();
 
-        mImageListV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+//        mImageListV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+//        mImageListV.setLayoutManager(new LinearLayoutManager(getContext()));
+        mImageListV.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mImageListV.setAdapter(mImageAdapter);
 
-        pageViewModel.getThumbnails(getContext()).observe(this, new Observer<List<ThumbnailInfo>>() {
+        pageViewModel.getThumbnails().observe(this, new Observer<List<ThumbnailInfo>>() {
             @Override
             public void onChanged(@Nullable List<ThumbnailInfo> thumbnailInfoList) {
                 mImageAdapter.setData(thumbnailInfoList);
@@ -83,4 +92,5 @@ public class AllImagesFragment extends Fragment {
         });
         return root;
     }
+
 }

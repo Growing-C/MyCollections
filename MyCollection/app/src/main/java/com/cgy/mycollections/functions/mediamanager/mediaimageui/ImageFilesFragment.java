@@ -12,6 +12,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.utils.L;
 
 
 /**
@@ -51,7 +52,7 @@ public class ImageFilesFragment extends Fragment {
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+                textView.setText("???:"+s);
             }
         });
         return root;

@@ -135,7 +135,7 @@ public class MediaHelper {
                 info.kind = cursor.getInt(kindIndex);
                 info.width = cursor.getInt(widthIndex);
                 info.height = cursor.getInt(heightIndex);
-                L.e(info.toString());
+//                L.e(info.toString());
                 thumbInfoList.add(info);
             }
             cursor.close();

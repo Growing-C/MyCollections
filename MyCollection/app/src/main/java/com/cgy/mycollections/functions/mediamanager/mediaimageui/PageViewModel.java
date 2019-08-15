@@ -7,8 +7,10 @@ import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 
+import com.cgy.mycollections.MyApplication;
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
+import com.cgy.mycollections.utils.L;
 
 import org.web3j.abi.datatypes.Bool;
 
@@ -26,6 +28,18 @@ public class PageViewModel extends ViewModel {
         }
     });
 
+    private LiveData<List<ThumbnailInfo>> mThumbnails = Transformations.map(mIndex, new Function<Integer, List<ThumbnailInfo>>() {
+        @Override
+        public List<ThumbnailInfo> apply(Integer input) {
+            L.e("getThumbnails apply:" + input);
+            if (input != null && input == 0) {
+                List<ThumbnailInfo> infoList = MediaHelper.getThumbnailsList(MyApplication.getInstance());
+                mThumbnailsInfo.setValue(infoList);
+            }
+            return mThumbnailsInfo.getValue();
+        }
+    });
+
     public void setIndex(int index) {
         mIndex.setValue(index);
     }
@@ -34,16 +48,18 @@ public class PageViewModel extends ViewModel {
         return mText;
     }
 
-    public LiveData<List<ThumbnailInfo>> getThumbnails(final Context context) {
-        return Transformations.map(mThumbnailsInfo, new Function<List<ThumbnailInfo>, List<ThumbnailInfo>>() {
+    public LiveData<List<ThumbnailInfo>> getThumbnails() {
+        return mThumbnails;
+    }
+
+    public LiveData<List<ThumbnailInfo>> test() {
+        return  Transformations.map(mThumbnailsInfo, new Function<List<ThumbnailInfo>, List<ThumbnailInfo>>() {
             @Override
             public List<ThumbnailInfo> apply(List<ThumbnailInfo> input) {
-                if (input == null || input.isEmpty()) {
-                    List<ThumbnailInfo> infoList = MediaHelper.getThumbnailsList(context);
-                    mThumbnailsInfo.setValue(infoList);
-                }
+                L.e("test  apply:" + (input == null));
                 return mThumbnailsInfo.getValue();
             }
         });
     }
+
 }

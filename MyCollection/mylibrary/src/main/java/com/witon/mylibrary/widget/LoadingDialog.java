@@ -32,7 +32,7 @@ public class LoadingDialog extends ProgressDialog {
         mLoadingTextV = findViewById(R.id.loading_tx);
 
         setCanceledOnTouchOutside(false);//点击外部是否可以取消
-        setCancelable(false);//是否可以返回取消
+//        setCancelable(false);//是否可以返回取消
     }
 
     public void show(String msg) {

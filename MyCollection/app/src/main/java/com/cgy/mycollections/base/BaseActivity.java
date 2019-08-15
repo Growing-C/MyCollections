@@ -1,5 +1,6 @@
 package com.cgy.mycollections.base;
 
+import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -13,11 +14,20 @@ public class BaseActivity extends AppCompatActivity {
     private LoadingDialog loadingDialog;
 
     protected void showLoadingDialog(String message) {
+        showLoadingDialog(message, null);
+    }
+
+    protected void showLoadingDialog(String message, DialogInterface.OnCancelListener listener) {
         if (loadingDialog == null) {
             loadingDialog = new LoadingDialog(this);
+            loadingDialog.setCancelable(true);
         }
+        if (listener != null)
+            loadingDialog.setOnCancelListener(listener);
+
         loadingDialog.show(message);
     }
+
 
     protected void dismissLoadingDialog() {
         if (loadingDialog != null && loadingDialog.isShowing()) {
