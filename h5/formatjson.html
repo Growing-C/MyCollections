@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>原生js格式化json的方法</title>
+
+    <style type="text/css">
+        body,
+        html {
+            padding: 0px;
+            margin: 0px;
+            /* overflow: hidden; */
+        }
+
+        #wai {
+            display: flex;
+            position: absolute;
+            /* //必须有，不然上下会挤到一起 无法充满 */
+            width: 100%;
+            height: 100%;
+        }
+
+        .divleft {
+            flex: 3;
+            height: 100%;
+            padding-left: 5%;
+            /* background: red; */
+        }
+
+        .divCenter {
+            flex: 1;
+            height: 100%;
+            padding: 0;
+            /* background: yellow; */
+            text-align: center;
+            margin: 0px;
+            position: relative;
+        }
+
+        .divright {
+            flex: 3;
+            height: 100%;
+            padding-right: 5%;
+            /* background: green; */
+        }
+
+        .btnTrans {
+            width: 100px;
+            height: 50px;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        .btnClear {
+            width: 100px;
+            height: 50px;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 200px;
+            right: 0;
+        }
+    </style>
+
+
+    <script type="text/javascript" charset="utf-8">
+        function clearJs() {
+            document.getElementById("rawJson").value = "";
+            document.getElementById("format").value = "";
+        };
+    </script>
+</head>
+
+<body>
+
+    <div id="wai">
+
+        <div class="divleft">
+
+            --原始Json--
+
+            <br />
+            <textarea id="rawJson" style="height:  100%; width: 99%; border:1px solid #060"></textarea>
+        </div>
+
+        <div class="divCenter">
+            <button class="btnTrans" onClick="formatJson()">TransformJson</button>
+            <!-- clear 貌似是js保留的字段，onclick用clear无效 -->
+            <button class="btnClear" onClick="clearJs()">Clear</button>
+        </div>
+
+        <div class="divright">
+
+            --格式化后的json写入的位置--
+
+            <br />
+            <textarea id="format" style="height:  100%; width: 100%; border:1px solid #00F"></textarea>
+        </div>
+    </div>
+
+
+    <!--格式化后的json写入的位置-->
+    <!-- <div id="writePlace"></div> -->
+    <script>
+        //格式化代码函数,已经用原生方式写好了不需要改动,直接引用就好
+        function formatJson(json, options) {
+            var reg = null,
+                formatted = '',
+                pad = 0,
+                PADDING = '    ';
+
+            json = document.getElementById("rawJson").value;
+            if (typeof json == "undefined" || json == null || json == "") {
+                alert("请输入json");
+                return;
+            }
+            console.log("json:" + json);
+
+            options = options || {};
+            options.newlineAfterColonIfBeforeBraceOrBracket = (options.newlineAfterColonIfBeforeBraceOrBracket ===
+                true) ? true : false;
+            options.spaceAfterColon = (options.spaceAfterColon === false) ? false : true;
+
+
+            try {
+                if (typeof json !== 'string') {
+                    json = JSON.stringify(json);
+                } else {
+                    json = JSON.parse(json);
+                    json = JSON.stringify(json);
+                }
+            } catch (error) {
+                alert("json 格式错误");
+                return;
+            }
+
+            reg = /([\{\}])/g;
+            json = json.replace(reg, '\r\n$1\r\n');
+            reg = /([\[\]])/g;
+            json = json.replace(reg, '\r\n$1\r\n');
+            reg = /(\,)/g;
+            json = json.replace(reg, '$1\r\n');
+            reg = /(\r\n\r\n)/g;
+            json = json.replace(reg, '\r\n');
+            reg = /\r\n\,/g;
+            json = json.replace(reg, ',');
+            if (!options.newlineAfterColonIfBeforeBraceOrBracket) {
+                reg = /\:\r\n\{/g;
+                json = json.replace(reg, ':{');
+                reg = /\:\r\n\[/g;
+                json = json.replace(reg, ':[');
+            }
+            if (options.spaceAfterColon) {
+                reg = /\:/g;
+                json = json.replace(reg, ':');
+            }
+            (json.split('\r\n')).forEach(function (node, index) {
+                var i = 0,
+                    indent = 0,
+                    padding = '';
+
+                if (node.match(/\{$/) || node.match(/\[$/)) {
+                    indent = 1;
+                } else if (node.match(/\}/) || node.match(/\]/)) {
+                    if (pad !== 0) {
+                        pad -= 1;
+                    }
+                } else {
+                    indent = 0;
+                }
+
+                for (i = 0; i < pad; i++) {
+                    padding += PADDING;
+                }
+
+                formatted += padding + node + '\r\n';
+                pad += indent;
+            });
+            document.getElementById("format").value = formatted;
+            return formatted;
+        };
+        // //引用示例部分
+        // //(1)创建json格式或者从后台拿到对应的json格式
+        var originalJson = {
+            "name": "binginsist",
+            "sex": "男",
+            "age": "25"
+        };
+    </script>
+</body>
+
+</html>

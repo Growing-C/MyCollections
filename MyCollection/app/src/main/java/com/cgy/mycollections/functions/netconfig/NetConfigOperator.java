@@ -26,7 +26,7 @@ import com.cgy.mycollections.utils.L;
  */
 public class NetConfigOperator {
 
-    private final String DEVICE_BLE_NAME = "tro";
+    private final String DEVICE_BLE_NAME = "ChargeSPOT";
     Context mContext;
 
     BLEScanner mScanner;
@@ -164,7 +164,7 @@ public class NetConfigOperator {
             if (mConfigCallback != null) {
                 mConfigCallback.onProcessChange(1, "连接成功，可以发送数据");
             }
-            mBLEClient.setMTU(50);
+//            mBLEClient.setMTU(50);
 //        String sendData = "SSID:mxi,PWD:88888888";
 //            String sendData = "SSID:NO8,PWD:linkage@12345,SSIDHidden";
             String sendData = "SSID:" + mSSID + ",PWD:" + mPwd + (mSsidHidden ? ",SSIDHidden" : "");

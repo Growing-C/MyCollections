@@ -202,8 +202,7 @@ public class BLEClient {
             super.onDescriptorWrite(gatt, descriptor, status);
             L.e("onDescriptorWrite");
 
-            if (callback != null)
-                callback.onConnected();
+            setMTU(50);
 //            new ToastCustom(mContext, "onDescriptorWrite 连接成功，可以发送数据！", Toast.LENGTH_LONG).show();
 
 
@@ -214,6 +213,15 @@ public class BLEClient {
 //            boolean writeSuccess = mBluetoothGatt.writeCharacteristic(mWriteCharacteristic);
 //            L.e("onDescriptorWrite writeSuccess?= " + writeSuccess);  //如果isBoolean返回的是true则写入成功
         }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            super.onMtuChanged(gatt, mtu, status);
+            L.e("onMtuChanged");
+            if (callback != null)
+                callback.onConnected();
+        }
+
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
