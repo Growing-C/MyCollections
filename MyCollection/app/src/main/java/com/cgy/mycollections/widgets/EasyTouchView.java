@@ -240,14 +240,14 @@ public class EasyTouchView {
 //                        mOldOffsetY = -midY;
 //                    }
 //                }
-                showPop(0, 0);
+                showPop();
             } else {
                 mTag = 0;
             }
         }
     };
 
-    private void showPop(int x, int y) {
+    private void showPop() {
         if (mPop == null) {
 
             mPop = new PopupWindow(getSettingTableView(), dip2px(mContext, 200), dip2px(mContext, 200));

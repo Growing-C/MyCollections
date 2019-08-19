@@ -96,6 +96,7 @@ public class OfficialHolder {
 
         //狙击组
         sAllOfficials.add(new Official("能天使", "6", FEMALE, PROFESSION_SNIPER, POSITION_RANGED, SENIORITY_HIGH, EXTERNAL_ATTACK));
+        sAllOfficials.add(new Official("蓝毒", "5", FEMALE, PROFESSION_SNIPER, POSITION_RANGED, SENIORITY_SENIOR, EXTERNAL_ATTACK));
 
 
         //重装组
@@ -111,5 +112,110 @@ public class OfficialHolder {
         //辅助组
     }
 
+    public static List<SearchOfficialResult> findOfficialsByTags(String... tags) {
+        List<SearchOfficialResult> results = new ArrayList<>();
+        if (tags == null || tags.length == 0)
+            return results;
+
+        for (int i = 1; i < 6; i++) {
+            List<List<String>> conditionList = getConditionListWithCount(i, tags);
+            if (conditionList == null || conditionList.isEmpty()) {
+                continue;
+            }
+            for (int j = 0, len = conditionList.size(); j < len; j++) {
+                SearchOfficialResult result = new SearchOfficialResult();
+                List<String> condition = conditionList.get(j);//其中的一种tag组合
+                result.searchConditionList = condition;
+                for (int k = 0, allOfficialCount = sAllOfficials.size(); k < allOfficialCount; k++) {
+                    Official official = sAllOfficials.get(k);
+                    if (official.satisfy(condition)) {
+                        result.addOfficial(official);
+                    }
+                }
+                if (result.hasSatisfiedOfficials()) {
+                    results.add(result);//只加有满足条件的
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * @param selectConditionCount
+     * @param tags
+     * @return
+     */
+    public static List<List<String>> getConditionListWithCount(int selectConditionCount, String... tags) {
+        if (tags == null || tags.length < selectConditionCount || selectConditionCount > 5 || selectConditionCount <= 0)
+            return null;
+
+        List<List<String>> conditionsList = new ArrayList<>();
+
+        int len = tags.length;
+        if (selectConditionCount == 1) {
+            for (int i = 0; i < len; i++) {
+                List<String> oneConditionList = new ArrayList<>();
+                oneConditionList.add(tags[i]);
+                conditionsList.add(oneConditionList);
+            }
+        } else if (selectConditionCount == 2) {
+            for (int i = 0; i < len - 1; i++) {
+                for (int j = i + 1; j < len; j++) {
+                    List<String> twoConditionList = new ArrayList<>();
+                    twoConditionList.add(tags[i]);
+                    twoConditionList.add(tags[j]);
+                    conditionsList.add(twoConditionList);
+                }
+            }
+        } else if (selectConditionCount == 3) {
+            for (int i = 0; i < len - 2; i++) {
+                for (int j = i + 1; j < len - 1; j++) {
+                    for (int k = j + 1; k < len; k++) {
+                        List<String> threeConditionList = new ArrayList<>();
+                        threeConditionList.add(tags[i]);
+                        threeConditionList.add(tags[j]);
+                        threeConditionList.add(tags[k]);
+                        conditionsList.add(threeConditionList);
+                    }
+                }
+            }
+        } else if (selectConditionCount == 4) {
+            for (int i = 0; i < len - 3; i++) {
+                for (int j = i + 1; j < len - 2; j++) {
+                    for (int k = j + 1; k < len - 1; k++) {
+                        for (int l = k + 1; l < len; l++) {
+                            List<String> fourConditionList = new ArrayList<>();
+                            fourConditionList.add(tags[i]);
+                            fourConditionList.add(tags[j]);
+                            fourConditionList.add(tags[k]);
+                            fourConditionList.add(tags[l]);
+                            conditionsList.add(fourConditionList);
+                        }
+                    }
+                }
+            }
+        } else if (selectConditionCount == 5) {
+            for (int i = 0; i < len - 4; i++) {
+                for (int j = i + 1; j < len - 3; j++) {
+                    for (int k = j + 1; k < len - 2; k++) {
+                        for (int l = k + 1; l < len - 1; l++) {
+                            for (int m = 0; m < len; m++) {
+                                List<String> fiveConditionList = new ArrayList<>();
+                                fiveConditionList.add(tags[i]);
+                                fiveConditionList.add(tags[j]);
+                                fiveConditionList.add(tags[k]);
+                                fiveConditionList.add(tags[l]);
+                                fiveConditionList.add(tags[m]);
+                                conditionsList.add(fiveConditionList);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return conditionsList;
+    }
 
 }

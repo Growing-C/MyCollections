@@ -17,7 +17,7 @@
         style="@style/PopBtnStyle"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:text="锁屏" />
+        android:text="公招" />
 
     <Button
         android:id="@+id/show_setting_table_item_notification_button"
