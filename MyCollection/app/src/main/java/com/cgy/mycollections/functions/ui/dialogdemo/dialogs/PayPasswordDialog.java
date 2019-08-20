@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -50,6 +51,7 @@ public class PayPasswordDialog extends Dialog {
 //        int height = getContext().getResources().getDimensionPixelOffset(R.dimen.px107);
         int width = (DisplayHelperUtils.getScreenWidth() - getContext().getResources().getDimensionPixelOffset(R.dimen.px2_size)) / 3;
 
+        mPasswordView.setInputType(InputType.TYPE_NULL);//禁止弹出软键盘
 //        System.out.println("height:" + height);
         System.out.println("width:" + width);
         setUpInputView(R.id.btn_0, width);

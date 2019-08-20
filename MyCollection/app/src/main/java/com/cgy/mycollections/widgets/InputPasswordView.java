@@ -11,6 +11,8 @@ import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
 
 import com.cgy.mycollections.R;
@@ -24,14 +26,22 @@ import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 public class InputPasswordView extends AppCompatEditText {
 
     private Context mContext;
+    private Blink mBlink;
+    boolean shouldBlink = true;//默认光标闪
+    boolean cursorIsVisible = false;//默认光标没有显示
+
+    static final int BLINK = 500;
     /**
      * 第一个圆开始绘制的圆心坐标
      */
-    private float startX;
+    private float startCenterX;
+    /**
+     * 第一个格子中心的y坐标
+     */
     private float startY;
 
 
-    private float cX;
+//    private float cX;
 
 
     /**
@@ -52,7 +62,7 @@ public class InputPasswordView extends AppCompatEditText {
     /**
      * 最大输入位数
      */
-    private int maxCount = 6;
+    private int maxCount = 10;
     /**
      * 圆的颜色   默认BLACK
      */
@@ -65,13 +75,13 @@ public class InputPasswordView extends AppCompatEditText {
     /**
      * 分割线的颜色
      */
-    private int borderColor = Color.GRAY;
+//    private int borderColor = Color.GRAY;
     /**
      * 分割线的画笔
      */
     private Paint borderPaint;
     /**
-     * 分割线开始的坐标x
+     * 第一个分割线开始的坐标x
      */
     private int divideLineWStartX;
 
@@ -79,13 +89,21 @@ public class InputPasswordView extends AppCompatEditText {
      * 分割线的宽度  默认2
      */
     private int divideLineWidth = 2;
+
+    /**
+     * 默认的两个文字之间的距离，默认为0
+     */
+    private int textMargin = 0;
     /**
      * 竖直分割线的颜色
      */
     private int divideLineColor = Color.GRAY;
     private int focusedColor = Color.BLUE;
+    /**
+     * view的外边框
+     */
     private RectF rectF = new RectF();
-    private RectF focusedRecF = new RectF();
+    //    private RectF focusedRecF = new RectF();
     private int psdType = 0;
     private final static int psdType_weChat = 0;
     private final static int psdType_bottomLine = 1;
@@ -97,28 +115,25 @@ public class InputPasswordView extends AppCompatEditText {
     /**
      * 竖直分割线的画笔
      */
-    private Paint divideLinePaint;
+//    private Paint divideLinePaint;
     /**
      * 圆的画笔
      */
-    private Paint circlePaint;
+//    private Paint circlePaint;
+    /**
+     * 文字画笔
+     */
+    private Paint textPaint;
     /**
      * 底部线的画笔
      */
     private Paint bottomLinePaint;
-
-    /**
-     * 需要对比的密码  一般为上次输入的
-     */
-    private String mComparePassword = null;
 
 
     /**
      * 当前输入的位置索引
      */
     private int position = 0;
-
-//    private onPasswordListener mListener;
 
     public InputPasswordView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -130,21 +145,34 @@ public class InputPasswordView extends AppCompatEditText {
         this.setBackgroundColor(Color.TRANSPARENT);
         this.setCursorVisible(false);
         this.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxCount)});
-        this.setInputType(InputType.TYPE_NULL);//禁止弹出软键盘
+
+        setShouldBlink(shouldBlink);//默认闪动光标
+    }
+
+    /**
+     * 手动设置最大输入数目
+     *
+     * @param maxCount
+     */
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
+        this.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxCount)});
     }
 
     private void getAtt(AttributeSet attrs) {
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.BlinkInputPasswordView);
-        maxCount = typedArray.getInt(R.styleable.BlinkInputPasswordView_maxCount, maxCount);
-        circleColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_circleColor, circleColor);
-        bottomLineColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_bottomLineColor, bottomLineColor);
-        radius = typedArray.getDimensionPixelOffset(R.styleable.BlinkInputPasswordView_radius, radius);
+        TypedArray typedArray = mContext.obtainStyledAttributes(attrs, R.styleable.InputPasswordView);
+        maxCount = typedArray.getInt(R.styleable.InputPasswordView_maxCount, maxCount);
+        circleColor = typedArray.getColor(R.styleable.InputPasswordView_circleColor, circleColor);
+        bottomLineColor = typedArray.getColor(R.styleable.InputPasswordView_bottomLineColor, Color.GRAY);
+        radius = typedArray.getDimensionPixelOffset(R.styleable.InputPasswordView_radius, radius);
 
-        divideLineWidth = typedArray.getDimensionPixelSize(R.styleable.BlinkInputPasswordView_divideLineWidth, divideLineWidth);
-        divideLineColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_divideLineColor, divideLineColor);
-        psdType = typedArray.getInt(R.styleable.BlinkInputPasswordView_psdType, psdType);
-        rectAngle = typedArray.getDimensionPixelOffset(R.styleable.BlinkInputPasswordView_rectAngle, rectAngle);
-        focusedColor = typedArray.getColor(R.styleable.BlinkInputPasswordView_focusedColor, focusedColor);
+        divideLineWidth = typedArray.getDimensionPixelSize(R.styleable.InputPasswordView_divideLineWidth, divideLineWidth);
+        divideLineColor = typedArray.getColor(R.styleable.InputPasswordView_divideLineColor, divideLineColor);
+        psdType = typedArray.getInt(R.styleable.InputPasswordView_psdType, psdType);
+        rectAngle = typedArray.getDimensionPixelOffset(R.styleable.InputPasswordView_rectAngle, rectAngle);
+        focusedColor = typedArray.getColor(R.styleable.InputPasswordView_focusedColor, focusedColor);
+        shouldBlink = typedArray.getBoolean(R.styleable.InputPasswordView_blink, true);
+        textMargin = typedArray.getDimensionPixelOffset(R.styleable.InputPasswordView_textMargin, 0);
 
         typedArray.recycle();
     }
@@ -154,15 +182,19 @@ public class InputPasswordView extends AppCompatEditText {
      */
     private void initPaint() {
 
-        borderColor = ContextCompat.getColor(mContext, android.R.color.black);
+//        borderColor = ContextCompat.getColor(mContext, android.R.color.black);
 
-        circlePaint = getPaint(5, Paint.Style.FILL, circleColor);
+//        circlePaint = getPaint(5, Paint.Style.FILL, circleColor);
 
+        textPaint = getPaint(5, Paint.Style.FILL, circleColor);
+        textPaint.setTextSize(getTextSize());
+
+//        bottomLineColor = ContextCompat.getColor(getContext(), R.color.grey_5A6978);
         bottomLinePaint = getPaint(2, Paint.Style.FILL, bottomLineColor);
 
-        borderPaint = getPaint(divideLineWidth, Paint.Style.STROKE, borderColor);//必须用stroke空心
+        borderPaint = getPaint(divideLineWidth, Paint.Style.STROKE, divideLineColor);//必须用stroke空心
 
-        divideLinePaint = getPaint(divideLineWidth, Paint.Style.FILL, borderColor);
+//        divideLinePaint = getPaint(divideLineWidth, Paint.Style.FILL, divideLineColor);
 
     }
 
@@ -190,10 +222,10 @@ public class InputPasswordView extends AppCompatEditText {
         height = h;
         width = w;
 
-        divideLineWStartX = w / maxCount;
+        divideLineWStartX = (w - (maxCount - 1) * textMargin) / maxCount;
 
-        startX = w / maxCount / 2;
-        startY = h / 2;
+        startCenterX = (float) divideLineWStartX / 2;
+        startY = (float) h / 2;
 
         bottomLineLength = w / (maxCount + 2);
 
@@ -201,22 +233,26 @@ public class InputPasswordView extends AppCompatEditText {
 
     }
 
+    private float getCenterX(int index) {
+        return startCenterX + textMargin * index + index * 2 * startCenterX;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         //不删除的画会默认绘制输入的文字
-//       super.onDraw(canvas);
+//        super.onDraw(canvas);
 
         switch (psdType) {
             case psdType_weChat:
                 drawWeChatBorder(canvas);
-//                drawItemFocused(canvas, position);
                 break;
             case psdType_bottomLine:
                 drawBottomBorder(canvas);
                 break;
         }
 
-        drawPsdCircle(canvas);
+//        drawItemFocused(canvas, position);
+        drawPsd(canvas);
     }
 
     /**
@@ -225,27 +261,23 @@ public class InputPasswordView extends AppCompatEditText {
      * @param canvas
      */
     private void drawWeChatBorder(Canvas canvas) {
+        //一个个画框
+        for (int i = 0; i < maxCount; i++) {
+            int leftX = i * divideLineWStartX + i * textMargin;
+            int rightX = leftX + divideLineWStartX;
 
-        canvas.drawRoundRect(rectF, rectAngle, rectAngle, borderPaint);
+            RectF cellRect = new RectF();
+            cellRect.set(leftX, 0, rightX, height);
 
-        for (int i = 0; i < maxCount - 1; i++) {
-            canvas.drawLine((i + 1) * divideLineWStartX,
-                    0,
-                    (i + 1) * divideLineWStartX,
-                    height,
-                    divideLinePaint);
+            canvas.drawRoundRect(cellRect, rectAngle, rectAngle, borderPaint);
+//                canvas.drawLine(x,
+//                        0,
+//                        x,
+//                        height,
+//                        divideLinePaint);
         }
-
     }
 
-    private void drawItemFocused(Canvas canvas, int position) {
-        if (position > maxCount - 1) {
-            return;
-        }
-        focusedRecF.set(position * divideLineWStartX, 0, (position + 1) * divideLineWStartX,
-                height);
-        canvas.drawRoundRect(focusedRecF, rectAngle, rectAngle, getPaint(3, Paint.Style.STROKE, focusedColor));
-    }
 
     /**
      * 画底部显示的分割线
@@ -253,27 +285,67 @@ public class InputPasswordView extends AppCompatEditText {
      * @param canvas
      */
     private void drawBottomBorder(Canvas canvas) {
-
-        for (int i = 0; i < maxCount; i++) {
-            cX = startX + i * 2 * startX;
-            canvas.drawLine(cX - bottomLineLength / 2,
-                    height,
-                    cX + bottomLineLength / 2,
-                    height, bottomLinePaint);
-        }
+        canvas.drawLine(0,
+                height,
+                getWidth(),
+                height, bottomLinePaint);
     }
 
+
     /**
-     * 画密码实心圆
+     * 画密码实心圆,从中间开始画
+     * 或者直接画密码文字
      *
      * @param canvas
      */
-    private void drawPsdCircle(Canvas canvas) {
-        for (int i = 0; i < textLength; i++) {
-            canvas.drawCircle(startX + i * 2 * startX,
-                    startY,
-                    radius,
-                    circlePaint);
+    private void drawPsd(Canvas canvas) {
+
+        if (isPasswordInputType(getInputType()))//密码模式，画圆
+            for (int i = 0; i < textLength; i++) {
+                //画密码圆点
+                canvas.drawCircle(getCenterX(i),
+                        startY,
+                        radius,
+                        textPaint);
+            }
+        else {//其他模式 画文字
+            String text = getText().toString();
+            float baselineToCenterY = getBaselineToCenterY(textPaint);
+
+            for (int i = 0; i < textLength; i++) {
+                String textInPlaceI = String.valueOf(text.charAt(i));
+                float textWidthInPlaceI = textPaint.measureText(textInPlaceI);
+                //画密码圆点
+                canvas.drawText(textInPlaceI, getCenterX(i) - textWidthInPlaceI / 2,
+                        startY + baselineToCenterY,
+                        textPaint);
+            }
+        }
+
+        //模拟光标
+        if (shouldBlink) {
+            if (!cursorIsVisible) {
+                float cursorOffset;
+                float cursorLeftX;
+                if (textLength > 0) {
+                    cursorOffset = textPaint.measureText(String.valueOf(getText().charAt(textLength - 1))) / 2 + 5;
+                    cursorLeftX = getCenterX(textLength - 1) + cursorOffset;//文字偏右一点画光标
+                } else {
+                    cursorLeftX = getCenterX(0);
+                }
+
+                if (cursorLeftX > width)
+                    return;
+                float offset = height / 4f;
+                float cursorBottom = height - offset;
+                canvas.drawLine(cursorLeftX,
+                        offset,
+                        cursorLeftX,
+                        cursorBottom, bottomLinePaint);
+                cursorIsVisible = true;
+            } else {
+                cursorIsVisible = false;
+            }
         }
     }
 
@@ -284,30 +356,64 @@ public class InputPasswordView extends AppCompatEditText {
         textLength = text.toString().length();
 
         if (textLength == maxCount) {
-//            if (mListener != null) {
-//                if (TextUtils.isEmpty(mComparePassword)) {
-//                    mListener.inputFinished(getPasswordString());
-//                } else {
-//                    if (TextUtils.equals(mComparePassword, getPasswordString())) {
-//                        mListener.onEqual(getPasswordString());
-//                    } else {
-//                        mListener.onDifference(mComparePassword, getPasswordString());
-//                    }
-//                }
-//            }
         }
 
         invalidate();
 
     }
 
-    @Override
-    protected void onSelectionChanged(int selStart, int selEnd) {
-        super.onSelectionChanged(selStart, selEnd);
+    /**
+     * 设置是否显示 光标
+     *
+     * @param shouldBlink
+     */
+    public void setShouldBlink(boolean shouldBlink) {
+        this.shouldBlink = shouldBlink;
+        if (shouldBlink)
+            makeBlink();//text change的时候makeBlink
+        else
+            suspendBlink();
+    }
 
-        //保证光标始终在最后
-        if (selStart == selEnd) {
-            setSelection(getText().length());
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        suspendBlink();
+    }
+
+    @Override
+    public void onScreenStateChanged(int screenState) {
+        super.onScreenStateChanged(screenState);
+        switch (screenState) {
+            case View.SCREEN_STATE_ON:
+                resumeBlink();
+                break;
+            case View.SCREEN_STATE_OFF:
+                suspendBlink();
+                break;
+        }
+    }
+
+    private void suspendBlink() {
+        if (mBlink != null) {
+            mBlink.cancel();
+        }
+    }
+
+    private void resumeBlink() {
+        if (mBlink != null) {
+            mBlink.unCancel();
+            makeBlink();
+        }
+    }
+
+    public void makeBlink() {
+        if (shouldBlink) {
+            if (mBlink == null) mBlink = new Blink();
+            removeCallbacks(mBlink);
+            postDelayed(mBlink, BLINK);
+        } else {
+            if (mBlink != null) removeCallbacks(mBlink);
         }
     }
 
@@ -320,34 +426,54 @@ public class InputPasswordView extends AppCompatEditText {
         return getText().toString().trim();
     }
 
-//    public void setComparePassword(String comparePassword, onPasswordListener listener) {
-//        mComparePassword = comparePassword;
-//        mListener = listener;
-//    }
-//
-//    public void setComparePassword(onPasswordListener listener) {
-//        mListener = listener;
-//    }
-//
-//    public void setComparePassword(String psd) {
-//        mComparePassword = psd;
-//    }
-//
-//    /**
-//     * 清空密码
-//     */
-//    public void cleanPsd() {
-//        setText("");
-//    }
-//
-//    /**
-//     * 密码比较监听
-//     */
-//    public interface onPasswordListener {
-//        void onDifference(String oldPsd, String newPsd);
-//
-//        void onEqual(String psd);
-//
-//        void inputFinished(String inputPsd);
-//    }
+    private class Blink implements Runnable {
+        private boolean mCancelled;
+
+        public void run() {
+            if (mCancelled) {
+                return;
+            }
+
+            InputPasswordView.this.removeCallbacks(this);
+
+            if (InputPasswordView.this.getLayout() != null) {
+                InputPasswordView.this.invalidate();
+            }
+
+            InputPasswordView.this.postDelayed(this, BLINK);
+        }
+
+        void cancel() {
+            if (!mCancelled) {
+                InputPasswordView.this.removeCallbacks(this);
+                mCancelled = true;
+            }
+        }
+
+        void unCancel() {
+            mCancelled = false;
+        }
+    }
+
+    static boolean isPasswordInputType(int inputType) {
+        final int variation =
+                inputType & (EditorInfo.TYPE_MASK_CLASS | EditorInfo.TYPE_MASK_VARIATION);
+        return variation
+                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD)
+                || variation
+                == (EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD)
+                || variation
+                == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
+    }
+
+    /**
+     * 计算绘制文字时的基线到中轴线的距离
+     *
+     * @param p
+     * @return 基线和centerY的距离
+     */
+    public static float getBaselineToCenterY(Paint p) {
+        Paint.FontMetrics fontMetrics = p.getFontMetrics();
+        return (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent;
+    }
 }
