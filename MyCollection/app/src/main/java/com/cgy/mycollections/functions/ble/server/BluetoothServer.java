@@ -50,7 +50,7 @@ public class BluetoothServer {
     private Context mContext;
     DataCallback mCallback;
 
-    public static String DEVICE_NAME = "BCL-BCC1";
+    public static String DEVICE_NAME = "BCL-TEST";
 
     public static UUID UUID_LOCK_SERVICE = UUID.fromString("0000484a-ff4d-414e-5349-4f4e5f534552");//文档上的
     //                                                          5245535f-4e4f-4953-4e41-4dff4a480000

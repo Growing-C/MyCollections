@@ -26,7 +26,7 @@ import com.cgy.mycollections.utils.L;
  */
 public class NetConfigOperator {
 
-    private final String DEVICE_BLE_NAME = "ChargeSPOT";
+    private final String DEVICE_BLE_NAME = "BCL-TEST";
     Context mContext;
 
     BLEScanner mScanner;

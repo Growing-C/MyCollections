@@ -145,7 +145,7 @@ public class WifiAdmin {
      * @param context
      * @return true 表示开启
      */
-    public static  boolean isGPSOPen(final Context context) {
+    public static boolean isGPSOPen(final Context context) {
         LocationManager locationManager
                 = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null)
@@ -166,7 +166,7 @@ public class WifiAdmin {
      *
      * @param context
      */
-    public static  void openGPS(Context context) {
+    public static void openGPS(Context context) {
         Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(settingsIntent);//此处如果用startActivityForResult会立即返回，所以其实没啥用和打开蓝牙相似
@@ -241,6 +241,7 @@ public class WifiAdmin {
         //        SSID = "qvtest";
 //
 //        key = "12345678";
+//        disableAllConfigedNetwork();
         WifiConfiguration wc = createWifiInfo(SSID, pwd, ssidHidden, "[WPA2-PSK-CCMP][ESS]");
 
         return connectNet(wc);
@@ -340,7 +341,7 @@ public class WifiAdmin {
 
         config = new WifiConfiguration();
         config.hiddenSSID = ssidHidden;
-        config.SSID = ssid;//手机型号：Quectel 设备安卓版本号：25 设备名：ChargeSPOT ssid不知道为啥不用加引号,不加引号能连上，加引号就连不上
+        config.SSID = "\"" + ssid + "\""; //手机型号：Quectel 设备安卓版本号：25 设备名：ChargeSPOT ssid不知道为啥不用加引号,不加引号能连上，加引号就连不上
         config.status = WifiConfiguration.Status.ENABLED;
         if (capabilities.contains("WEP")) {
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
@@ -400,7 +401,7 @@ public class WifiAdmin {
         L.e("从扫描结果连接网络：" + scan.SSID);
         Log.e("test", "capabilities:" + scan.capabilities);
         config.hiddenSSID = false;
-        config.SSID = scan.SSID;//手机型号：Quectel 设备安卓版本号：25 设备名：ChargeSPOT ssid不知道为啥不用加引号,不加引号能连上，加引号就连不上
+        config.SSID = "\"" + scan.SSID + "\"";//手机型号：Quectel 设备安卓版本号：25 设备名：ChargeSPOT ssid不知道为啥不用加引号,不加引号能连上，加引号就连不上
         config.status = WifiConfiguration.Status.ENABLED;
         if (scan.capabilities.contains("WEP")) {
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);

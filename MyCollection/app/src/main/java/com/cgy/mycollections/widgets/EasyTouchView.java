@@ -126,7 +126,7 @@ public class EasyTouchView {
                 case R.id.show_setting_table_item_common_use_button://暂停
                     mActionListener.onFloatingAction(ACTION_PAUSE);
                     break;
-                case R.id.show_setting_table_item_screen_lock_button://锁屏
+                case R.id.show_setting_table_item_screen_lock_button://公招
                     mActionListener.onFloatingAction(ACTION_LOCK);
                     break;
                 case R.id.show_setting_table_item_notification_button://退出
@@ -299,6 +299,10 @@ public class EasyTouchView {
         if (null != mPop) {
             mPop.dismiss();
         }
+    }
+
+    public View getTouchView() {
+        return mTouchView;
     }
 
     /**
