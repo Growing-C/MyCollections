@@ -9,13 +9,39 @@
         android:orientation="vertical"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/title"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/px80_size"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:text="dddd" />
+            android:orientation="horizontal"
+            android:layout_height="@dimen/px80_size">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/px30_common"
+                android:paddingLeft="@dimen/px10_margin"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/nav_arrow" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:text="dddd" />
+
+            <ImageView
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/px10_margin"
+                android:paddingLeft="@dimen/px24"
+                android:layout_gravity="center_vertical"
+                android:src="@android:drawable/ic_menu_rotate" />
+        </LinearLayout>
+
 
         <WebView
             android:id="@+id/webview"

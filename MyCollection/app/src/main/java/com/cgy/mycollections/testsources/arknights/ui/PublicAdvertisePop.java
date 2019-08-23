@@ -42,6 +42,8 @@ public class PublicAdvertisePop implements View.OnClickListener {
 
     private View getSettingTableView() {
         View settingTable = LayoutInflater.from(mContext).inflate(R.layout.pop_arknights, null);
+        settingTable.findViewById(R.id.back).setOnClickListener(this);
+        settingTable.findViewById(R.id.refresh).setOnClickListener(this);
         TextView titleV = settingTable.findViewById(R.id.title);
 
         titleV.setText("http://http://wiki.joyme.com/arknights/公开招募工具");
@@ -146,6 +148,13 @@ public class PublicAdvertisePop implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title:
+//                mWebView.loadUrl(url);
+                break;
+            case R.id.back:
+                if (mWebView.canGoBack())
+                    mWebView.goBack();
+                break;
+            case R.id.refresh:
                 mWebView.loadUrl(url);
                 break;
             default:
