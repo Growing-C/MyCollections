@@ -11,10 +11,15 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class ObservableTest {
     public static void main(String[] args) {
-        test();
+        testPublishSubject();
     }
 
-    public static void test() {
+    public static void testZip(){
+
+
+    }
+
+    public static void testPublishSubject() {
         PublishSubject<Integer> publishSubject = PublishSubject.create();
 
         DisposableObserver<Integer> disposableObserver1 = new DisposableObserver<Integer>() {

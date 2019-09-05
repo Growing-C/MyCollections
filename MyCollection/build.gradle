@@ -12,6 +12,18 @@ buildscript {
 //        }
 
 //        maven{ url 'http://maven.oschina.net/content/groups/public/'}
+
+
+//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+//        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
+////        mavenCentral()
+//        maven { url "http://192.168.2.94:10080/repertory/maven/dependency/raw/master/" }
+//        maven { url 'https://jitpack.io' }
+//        maven { url 'https://mobile-sdk.jumio.com' }
+//        maven {
+//            url 'https://maven.google.com/'
+//            name 'Google'
+//        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
@@ -31,5 +43,18 @@ allprojects {
 //        }
 
 //        maven{ url 'http://maven.oschina.net/content/groups/public/'}
+
+
+
+//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+//        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
+////        mavenCentral()
+//        maven { url "http://192.168.2.94:10080/repertory/maven/dependency/raw/master/" }
+//        maven { url 'https://jitpack.io' }
+//        maven { url 'https://mobile-sdk.jumio.com' }
+//        maven {
+//            url 'https://maven.google.com/'
+//            name 'Google'
+//        }
     }
 }
