@@ -1,6 +1,6 @@
 package com.cgy.mycollections.functions.ethereum;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.cgy.mycollections.functions.ethereum.contract.ContractDto;
 import com.cgy.mycollections.utils.L;
@@ -40,7 +40,6 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.internal.functions.ObjectHelper;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 /**

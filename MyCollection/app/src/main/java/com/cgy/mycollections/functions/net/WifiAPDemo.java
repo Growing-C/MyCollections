@@ -12,13 +12,18 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+//import android.support.design.widget.TextInputEditText;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+//import androidx.appcompat.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,7 +45,6 @@ import appframe.permission.PermissionManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.disposables.Disposable;
 
 
 /**

@@ -3,8 +3,8 @@ package com.cgy.mycollections.functions.ui.textdemo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v7.app.AppCompatActivity;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 

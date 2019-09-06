@@ -67,7 +67,7 @@ public class Api {
         return mService;
     }
 
-    public ApiService getProxy(@android.support.annotation.NonNull ApiService apiService) {
+    public ApiService getProxy(@androidx.annotation.NonNull ApiService apiService) {
         if (mProxyService == null) {
             mProxyService = (ApiService) Proxy.newProxyInstance(ApiService.class.getClassLoader(), new Class<?>[]{ApiService.class}, new ProxyHandler(apiService));
         }

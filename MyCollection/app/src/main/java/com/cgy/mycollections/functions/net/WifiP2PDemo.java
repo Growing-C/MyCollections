@@ -13,9 +13,13 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+//import android.support.design.widget.TextInputEditText;
+import com.google.android.material.textfield.TextInputEditText;
+//import androidx.appcompat.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -33,8 +37,6 @@ import com.cgy.mycollections.functions.net.wifip2p.WifiServerService;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.L;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

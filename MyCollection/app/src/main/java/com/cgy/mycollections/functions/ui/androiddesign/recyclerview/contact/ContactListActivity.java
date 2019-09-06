@@ -2,12 +2,16 @@ package com.cgy.mycollections.functions.ui.androiddesign.recyclerview.contact;
 
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+//import androidx.appcompat.widget.DividerItemDecoration;
+//import androidx.appcompat.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.L;

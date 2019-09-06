@@ -1,7 +1,7 @@
 package com.cgy.mycollections.functions.ui.textdemo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.view.View;

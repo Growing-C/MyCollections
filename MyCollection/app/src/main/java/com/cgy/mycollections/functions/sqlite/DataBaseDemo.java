@@ -1,10 +1,8 @@
 package com.cgy.mycollections.functions.sqlite;
 
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -14,7 +12,6 @@ import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.functions.sqlite.db.UserAccount;
 import com.cgy.mycollections.utils.L;
-import com.cgy.mycollections.widgets.WaveView;
 
 import java.util.UUID;
 

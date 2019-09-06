@@ -3,16 +3,18 @@ package com.cgy.mycollections.functions.file;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.View;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
-import com.cgy.mycollections.utils.SharePreUtil;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.utils.L;
@@ -31,7 +33,6 @@ import appframe.utils.Logger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableObserver;
 
 /**
  * 文件操作 读取等

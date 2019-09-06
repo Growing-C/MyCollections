@@ -1,15 +1,12 @@
 package com.cgy.mycollections.functions.net.wifiap;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -19,19 +16,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ResultReceiver;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.text.TextUtils;
+import androidx.annotation.RequiresApi;
+
 import android.text.format.Formatter;
 import android.util.Log;
 
-import com.cgy.mycollections.functions.net.WifiAPDemo;
 import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**

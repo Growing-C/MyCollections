@@ -1,18 +1,15 @@
 package com.cgy.mycollections.functions.mediamanager.mediaimageui;
 
-import android.arch.core.util.Function;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
-import android.arch.lifecycle.ViewModel;
-import android.content.Context;
+import androidx.arch.core.util.Function;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+import androidx.lifecycle.ViewModel;
 
 import com.cgy.mycollections.MyApplication;
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
 import com.cgy.mycollections.utils.L;
-
-import org.web3j.abi.datatypes.Bool;
 
 import java.util.List;
 

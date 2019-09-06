@@ -1,55 +1,31 @@
 package com.cgy.mycollections.functions.ui;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+//import androidx.appcompat.widget.DefaultItemAnimator;
+//import androidx.appcompat.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.cgy.mycollections.Demo;
-import com.cgy.mycollections.FloatingService;
 import com.cgy.mycollections.MainItemAdapter;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.anim.AnimDemo;
-import com.cgy.mycollections.functions.ble.BleDemo;
-import com.cgy.mycollections.functions.cache.CacheDemo;
-import com.cgy.mycollections.functions.ethereum.EthereumDemo;
-import com.cgy.mycollections.functions.file.FileDemo;
-import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
-import com.cgy.mycollections.functions.mediamanager.MediaManagerDemo;
-import com.cgy.mycollections.functions.net.NetDemos;
-import com.cgy.mycollections.functions.netconfig.NetConfigDemo;
-import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
-import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
-import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.ui.dialogdemo.DialogDemo;
 import com.cgy.mycollections.functions.ui.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.ui.textdemo.TextDemo;
-import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.cgy.mycollections.FloatingService.ACTION_CHANGE_FLOATING_STATE;
-import static com.cgy.mycollections.FloatingService.KEY_SHOW_FLOATING;
 
 
 public class UiDemos extends AppCompatActivity {

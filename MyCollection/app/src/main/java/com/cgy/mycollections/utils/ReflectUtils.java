@@ -2,7 +2,7 @@ package com.cgy.mycollections.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.lang.reflect.Field;
 

@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -13,7 +13,6 @@ import android.widget.VideoView;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.L;
 
-import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

@@ -5,20 +5,16 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieDrawable;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.widgets.LockMenuView;
 
 import appframe.utils.DisplayHelperUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnTouch;
 
 import static com.cgy.mycollections.widgets.LockMenuView.LOCK_MODE_BLE_FAST;

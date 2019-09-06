@@ -1,14 +1,15 @@
 package com.cgy.mycollections.functions.mediamanager.mediaimageui;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+
+import androidx.fragment.app.Fragment;
+//import androidx.core.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.L;
 
 
 /**

@@ -6,10 +6,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatEditText;
+
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;

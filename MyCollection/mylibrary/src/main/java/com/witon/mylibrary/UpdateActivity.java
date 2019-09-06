@@ -1,6 +1,6 @@
 package com.witon.mylibrary;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class UpdateActivity extends AppCompatActivity {

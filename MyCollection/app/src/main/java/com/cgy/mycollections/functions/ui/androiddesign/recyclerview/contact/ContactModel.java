@@ -1,6 +1,6 @@
 package com.cgy.mycollections.functions.ui.androiddesign.recyclerview.contact;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.cgy.mycollections.utils.PinYinUtils;

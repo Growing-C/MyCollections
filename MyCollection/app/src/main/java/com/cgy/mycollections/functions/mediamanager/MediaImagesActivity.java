@@ -1,11 +1,17 @@
 package com.cgy.mycollections.functions.mediamanager;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+//import android.support.design.widget.FloatingActionButton;
+//import android.support.design.widget.Snackbar;
+//import android.support.design.widget.TabLayout;
+//import androidx.core.view.ViewPager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.View;
 
 import com.cgy.mycollections.R;

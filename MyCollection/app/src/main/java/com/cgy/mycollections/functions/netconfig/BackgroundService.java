@@ -1,6 +1,5 @@
 package com.cgy.mycollections.functions.netconfig;
 
-import android.Manifest;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -14,8 +13,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Process;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,13 +21,8 @@ import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
 import com.cgy.mycollections.utils.BinaryUtil;
 import com.cgy.mycollections.utils.L;
-import com.cgy.mycollections.widgets.EasyTouchView;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.observers.DisposableObserver;
 
 
 /**
