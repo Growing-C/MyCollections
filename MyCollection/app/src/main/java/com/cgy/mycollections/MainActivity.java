@@ -10,8 +10,10 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 //import androidx.appcompat.widget.DefaultItemAnimator;
 //import androidx.appcompat.widget.LinearLayoutManager;
@@ -22,11 +24,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cgy.mycollections.functions.jetpack.JetPackDemos;
 import com.cgy.mycollections.functions.ui.UiDemos;
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.ble.BleDemo;
@@ -90,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Demo[] demos = {
-            new Demo(R.string.title_ui, R.string.info_ui, true,UiDemos.class),
+            new Demo(R.string.title_ui, R.string.info_ui, true, UiDemos.class),
+            new Demo(R.string.title_jetpack, R.string.info_jetpack, JetPackDemos.class),
             new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class),
             new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, RedEnvelopeDemo.class),
             new Demo(R.string.title_activity_tts_demo, R.string.info_tts_demo, TTSDemo.class),

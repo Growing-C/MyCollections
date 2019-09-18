@@ -69,6 +69,9 @@
     <string name="title_ui">UiDemo</string>
     <string name="info_ui">所有ui相关的demo</string>
 
+    <string name="title_jetpack">jetPackDemo</string>
+    <string name="info_jetpack">所有jetPack相关的demo</string>
+
     <!--icon fonts-->
     <string name="icon_guanbi">&#xe62b;</string>
     <string name="icon_shijain">&#xe6bc;</string>

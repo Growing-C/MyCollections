@@ -30,6 +30,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".functions.mediamanager.MediaImagesActivity"
@@ -118,6 +119,7 @@
         <activity android:name=".functions.ble.BleDemo" />
         <activity android:name=".functions.file.ProtectedFilesActivity" />
         <activity android:name=".functions.ui.UiDemos" />
+        <activity android:name=".functions.jetpack.JetPackDemos" />
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.cgy.mycollections.testsources.arknights.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.L;
+import com.cgy.mycollections.utils.SharePreUtil;
 
 import java.lang.reflect.Method;
 
@@ -30,11 +32,15 @@ import appframe.utils.DisplayHelperUtils;
  */
 public class PublicAdvertisePop implements View.OnClickListener {
 
+    private final String PREF = "arknights";
+    private final String URL_KEY = "url";
+
     private PopupWindow mPop;
     Context mContext;
     WebView mWebView;
+    TextView mUrlV;
 
-    public final String url = "http://wiki.joyme.com/arknights/%E5%85%AC%E5%BC%80%E6%8B%9B%E5%8B%9F%E5%B7%A5%E5%85%B7";
+    public String url;
 
     public PublicAdvertisePop(Context context) {
         mContext = context;
@@ -44,10 +50,17 @@ public class PublicAdvertisePop implements View.OnClickListener {
         View settingTable = LayoutInflater.from(mContext).inflate(R.layout.pop_arknights, null);
         settingTable.findViewById(R.id.back).setOnClickListener(this);
         settingTable.findViewById(R.id.refresh).setOnClickListener(this);
-        TextView titleV = settingTable.findViewById(R.id.title);
+        mUrlV = settingTable.findViewById(R.id.title);
 
-        titleV.setText("http://http://wiki.joyme.com/arknights/公开招募工具");
-        titleV.setOnClickListener(this);
+        url = SharePreUtil.getString(PREF, mContext, URL_KEY);
+        if (TextUtils.isEmpty(url)) {
+            url = "http://wiki.joyme.com/arknights/公开招募工具";// 需要manifest android:usesCleartextTraffic="true"
+//            url = "https://ak.graueneko.xyz/akhr.html";
+//            url="http://wiki.joyme.com/arknights/%E5%85%AC%E5%BC%80%E6%8B%9B%E5%8B%9F%E5%B7%A5%E5%85%B7";
+        }
+
+        mUrlV.setText(url);
+//        titleV.setOnClickListener(this);
         mWebView = settingTable.findViewById(R.id.webview);
         initWebView(mWebView, url);
 //        mWebView.setWebChromeClient(new WebChromeClient());
@@ -155,7 +168,13 @@ public class PublicAdvertisePop implements View.OnClickListener {
                     mWebView.goBack();
                 break;
             case R.id.refresh:
-                mWebView.loadUrl(url);
+                if (mUrlV != null) {
+                    url = mUrlV.getText().toString();
+                    if (!TextUtils.isEmpty(url)) {
+                        SharePreUtil.putString(PREF, mContext, URL_KEY, url);
+                        mWebView.loadUrl(url);
+                    }
+                }
                 break;
             default:
                 break;
