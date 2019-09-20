@@ -78,4 +78,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation project(':mylibrary')
+
+
+//    implementation 'com.google.firebase:firebase-core:17.2.0'
+//    implementation 'com.google.firebase:firebase-invites:17.0.0'
 }

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
@@ -40,6 +41,7 @@ public class PublicAdvertisePop implements View.OnClickListener {
     WebView mWebView;
     TextView mUrlV;
 
+    View settingTable;
     public String url;
 
     public PublicAdvertisePop(Context context) {
@@ -47,7 +49,7 @@ public class PublicAdvertisePop implements View.OnClickListener {
     }
 
     private View getSettingTableView() {
-        View settingTable = LayoutInflater.from(mContext).inflate(R.layout.pop_arknights, null);
+        settingTable = LayoutInflater.from(mContext).inflate(R.layout.pop_arknights, null);
         settingTable.findViewById(R.id.back).setOnClickListener(this);
         settingTable.findViewById(R.id.refresh).setOnClickListener(this);
         mUrlV = settingTable.findViewById(R.id.title);
@@ -153,8 +155,54 @@ public class PublicAdvertisePop implements View.OnClickListener {
 
         }
 
+        mPop.setTouchInterceptor(new View.OnTouchListener() {
+            float xDown, yDown;
+            float yOffsetPermitted = 10;
+            float transparentDistance = 200;//完全透明需要的度
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int action = event.getAction();
+                float x = event.getRawX();
+                float y = event.getRawY();
+//                L.e("onTouch" + event.getAction() + "  x：" + x + "   y:" + y);
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        xDown = x;
+                        yDown = y;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (Math.abs(y - yDown) <= yOffsetPermitted) {
+                            float xDistance = Math.abs(x - xDown);
+                            L.e("move x轴距离:" + xDistance);
+                            setRootViewAlpha((transparentDistance - xDistance) / transparentDistance);
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        setRootViewAlpha(1);
+                        break;
+                    default:
+                        break;
+                }
+
+                return false;
+            }
+        });
+
         mPop.showAtLocation(touchView, Gravity.NO_GRAVITY, 0, 0);
         touchView.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * 设置透明度（0-1）
+     *
+     * @param alpha
+     */
+    private void setRootViewAlpha(float alpha) {
+        if (settingTable != null && alpha >= 0 && alpha <= 1) {
+            L.e("alpha:" + alpha);
+            settingTable.setAlpha(alpha);
+        }
     }
 
     @Override

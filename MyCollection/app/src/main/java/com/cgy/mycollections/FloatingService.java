@@ -63,6 +63,10 @@ public class FloatingService extends Service implements EasyTouchView.FloatingVi
                 if (mTouchView != null)
                     mTouchView.setPause(isPause);
             } else if (ACTION_SHOW_ARKNIGHTS.equalsIgnoreCase(action)) {
+                //显示arknights
+                //TODO:activity悬浮方式
+
+                //pop方式
                 if (mTouchView != null) {
                     PublicAdvertisePop pop = new PublicAdvertisePop(getApplicationContext());
                     pop.showPop(mTouchView.getTouchView());
@@ -121,7 +125,7 @@ public class FloatingService extends Service implements EasyTouchView.FloatingVi
                 }
                 sendBroadcast(pauseIntent);
                 break;
-            case EasyTouchView.ACTION_LOCK:
+            case EasyTouchView.ACTION_LOCK://公招
                 Intent showArk = new Intent(ACTION_SHOW_ARKNIGHTS);
                 sendBroadcast(showArk);
                 break;
