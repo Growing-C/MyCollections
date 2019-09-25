@@ -39,6 +39,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/ic_list_svg"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,6 +51,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="edit Text Demo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:textSize="18sp"
+            android:autoLink="web"
+            android:text="https://blockchainlock.page.link/share" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
