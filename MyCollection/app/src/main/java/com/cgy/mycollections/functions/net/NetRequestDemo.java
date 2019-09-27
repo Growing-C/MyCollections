@@ -2,6 +2,7 @@ package com.cgy.mycollections.functions.net;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +13,8 @@ import com.cgy.mycollections.functions.net.mywebservice.request.MyRequestEnvelop
 import com.cgy.mycollections.functions.net.mywebservice.request.CommonRequestModel;
 import com.cgy.mycollections.functions.net.mywebservice.request.models.MicroPayParams;
 import com.cgy.mycollections.functions.net.mywebservice.response.MyResponseEnvelope;
+import com.cgy.mycollections.functions.net.retrofit.Api;
+import com.cgy.mycollections.functions.net.retrofit.ApiServiceImpl;
 import com.cgy.mycollections.functions.net.webservice.RetrofitGenerator;
 import com.cgy.mycollections.functions.net.webservice.request.RequestBody;
 import com.cgy.mycollections.functions.net.webservice.request.RequestEnvelope;
@@ -435,91 +438,21 @@ public class NetRequestDemo extends AppCompatActivity {
      * @param v
      */
     public void getDynamicLinks(View v) {
-        Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> e) throws Exception {
-//                POST https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=api_key
-//                Content-Type: application/json
-//
-//                {
-//                    "dynamicLinkInfo": {
-//                    "domainUriPrefix": "https://blockchainlock.page.link",
-//                            "link": "https://www.example.com/",
-//                            "androidInfo": {
-//                        "androidPackageName": "com.example.android"
-//                    },
-//                    "iosInfo": {
-//                        "iosBundleId": "com.example.ios"
-//                    },
-//                "suffix": {
-//                    "option": "SHORT" or "UNGUESSABLE"
-//                }
-//                }
-//                }
-                String apiKey = "AIzaSyClrhlCSQ0tmo7JTAWFCOtRmiWYGjdqBKc";
-                String getShortLinkUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + apiKey;
+        String apiKey = "AIzaSyClrhlCSQ0tmo7JTAWFCOtRmiWYGjdqBKc";
+        String getShortLinkUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + apiKey;
 
-                String domainUriPrefix = "https://blockchainlock.page.link";
-                String DEEP_LINK_URL = "http://eco.blockchainlock.io/bcllock/share/index.html?shareId=testsss";
-                try {
-                    String testLongLink="https://blockchainlock.page.link/share?amv=0&apn=io.blockchainlock.deeplink&link=http%3A%2F%2Feco.blockchainlock.io%2Fbcllock%2Fshare%2Findex.html%3FshareId%3D414";
-                    JSONObject requestData = new JSONObject();
-//                    requestData.put("longDynamicLink",testLongLink);
-
-                    JSONObject dynamicLinkInfo = new JSONObject();
-                    dynamicLinkInfo.put("domainUriPrefix", domainUriPrefix);
-                    dynamicLinkInfo.put("link", DEEP_LINK_URL);
-
-                    JSONObject androidInfo = new JSONObject();
-                    androidInfo.put("androidPackageName", "io.blockchainlock.deeplink");
-                    dynamicLinkInfo.put("androidInfo", androidInfo);
-
-                    JSONObject suffix = new JSONObject();
-                    suffix.put("option", "SHORT");
-                    dynamicLinkInfo.put("suffix", suffix);
-
-                    requestData.put("dynamicLinkInfo", dynamicLinkInfo);
-
-                    L.e("getDynamicLinks url:" + getShortLinkUrl);
-                    L.e("getDynamicLinks inputJson:" + requestData.toString());
-
-                    URL url = new URL(getShortLinkUrl);
-                    HttpURLConnection conn = (HttpURLConnection) url
-                            .openConnection();
-
-                    conn.setRequestProperty("Content-type", "application/json;");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-                    conn.setRequestMethod("POST");
-                    conn.setConnectTimeout(TIME_OUT);
-
-                    conn.connect();
-                    OutputStream out = conn.getOutputStream();
-                    out.write(requestData.toString().getBytes());
-                    out.flush();
-                    out.close();
-
-                    int code = conn.getResponseCode();
-
-                    L.e("getDynamicLinks result code:" + code);
-                    String result = "code:" + code;
-                    if (code == HttpURLConnection.HTTP_OK) {
-                        byte[] bit = readInputStream(conn
-                                .getInputStream());
-                        result = new String(bit, CHARSET);
-                        System.out.println("outputString:" + result);
-                    } else {
-                    }
-                    e.onNext(result);
-                } catch (Exception ex) {
-                    e.onError(ex);
-                }
-                e.onComplete();
-            }
-        }).compose(RxUtil.applySchedulersJobUI())
-                .subscribe(new ApiCallback<String>() {
+        String domainUriPrefix = "https://blockchainlock.page.link";
+        String DEEP_LINK_URL = "https://eco.blockchainlock.io/";
+        String androidPkgName = "io.blockchainlock.deeplink";
+        String iosBundleId = "com.example.ios";
+        String suffix = "SHORT";
+        L.e("start createShortDynamicLinks");
+        Api.getInstance().setBaseUrl("https://firebasedynamiclinks.googleapis.com/");
+        ApiServiceImpl.getInstance().createShortDynamicLinks(getShortLinkUrl,
+                domainUriPrefix, DEEP_LINK_URL, androidPkgName, iosBundleId, suffix)
+                .subscribe(new ApiCallback<Object>() {
                     @Override
-                    public void onSuccess(String model) {
+                    public void onSuccess(Object model) {
                         L.e("getDynamicLinks onSuccess:" + model);
                     }
 
@@ -535,6 +468,110 @@ public class NetRequestDemo extends AppCompatActivity {
                         L.e("getDynamicLinks onFinish ");
                     }
                 });
+//        Observable.create(new ObservableOnSubscribe<String>() {
+//            @Override
+//            public void subscribe(ObservableEmitter<String> e) throws Exception {
+////                POST https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=api_key
+////                Content-Type: application/json
+////
+////                {
+////                    "dynamicLinkInfo": {
+////                    "domainUriPrefix": "https://blockchainlock.page.link",
+////                            "link": "https://www.example.com/",
+////                            "androidInfo": {
+////                        "androidPackageName": "com.example.android"
+////                    },
+////                    "iosInfo": {
+////                        "iosBundleId": "com.example.ios"
+////                    },
+////                "suffix": {
+////                    "option": "SHORT" or "UNGUESSABLE"
+////                }
+////                }
+////                }
+//                String apiKey = "AIzaSyClrhlCSQ0tmo7JTAWFCOtRmiWYGjdqBKc";
+//                String getShortLinkUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + apiKey;
+//
+//                String domainUriPrefix = "https://blockchainlock.page.link";
+////                String DEEP_LINK_URL = "http://eco.blockchainlock.io/bcllock/share/index.html?shareId=testsss";
+//                String DEEP_LINK_URL = "https://eco.blockchainlock.io/";
+//                try {
+//                    String testLongLink = "https://blockchainlock.page.link/share?amv=0&apn=io.blockchainlock.deeplink&link=http%3A%2F%2Feco.blockchainlock.io%2Fbcllock%2Fshare%2Findex.html%3FshareId%3D414";
+//                    JSONObject requestData = new JSONObject();
+////                    requestData.put("longDynamicLink",testLongLink);
+//
+//                    JSONObject dynamicLinkInfo = new JSONObject();
+//                    dynamicLinkInfo.put("domainUriPrefix", domainUriPrefix);
+////                    dynamicLinkInfo.put("link", DEEP_LINK_URL);
+//                    dynamicLinkInfo.put("link", Uri.parse(DEEP_LINK_URL));
+//
+//                    JSONObject androidInfo = new JSONObject();
+//                    androidInfo.put("androidPackageName", "io.blockchainlock.deeplink");
+//                    dynamicLinkInfo.put("androidInfo", androidInfo);
+//
+//                    JSONObject suffix = new JSONObject();
+//                    suffix.put("option", "SHORT");
+//                    dynamicLinkInfo.put("suffix", suffix);
+//
+//                    requestData.put("dynamicLinkInfo", dynamicLinkInfo);
+//
+//                    L.e("getDynamicLinks Uri.parse(DEEP_LINK_URL):" + Uri.parse(DEEP_LINK_URL));
+//                    L.e("getDynamicLinks url:" + getShortLinkUrl);
+//                    L.e("getDynamicLinks inputJson:" + requestData.toString());
+//
+//                    URL url = new URL(getShortLinkUrl);
+//                    HttpURLConnection conn = (HttpURLConnection) url
+//                            .openConnection();
+//
+//                    conn.setRequestProperty("Content-type", "application/json;charset=utf-8");
+//                    conn.setDoOutput(true);
+//                    conn.setDoInput(true);
+//                    conn.setRequestMethod("POST");
+//                    conn.setConnectTimeout(TIME_OUT);
+//
+//                    conn.connect();
+//                    OutputStream out = conn.getOutputStream();
+//                    out.write(requestData.toString().getBytes());
+//                    out.flush();
+//                    out.close();
+//
+//                    int code = conn.getResponseCode();
+//
+//                    L.e("getDynamicLinks result code:" + code);
+//                    L.e("getDynamicLinks result msg:" + conn.getResponseMessage());
+//                    String result = "code:" + code;
+//                    if (code == HttpURLConnection.HTTP_OK) {
+//                        byte[] bit = readInputStream(conn
+//                                .getInputStream());
+//                        result = new String(bit, CHARSET);
+//                        System.out.println("outputString:" + result);
+//                    } else {
+//                    }
+//                    e.onNext(result);
+//                } catch (Exception ex) {
+//                    e.onError(ex);
+//                }
+//                e.onComplete();
+//            }
+//        }).compose(RxUtil.applySchedulersJobUI())
+//                .subscribe(new ApiCallback<String>() {
+//                    @Override
+//                    public void onSuccess(String model) {
+//                        L.e("getDynamicLinks onSuccess:" + model);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int code, String msg) {
+//                        L.e("getDynamicLinks onFailure:" + code + msg);
+//
+//                    }
+//
+//                    @Override
+//                    public void onFinish() {
+//
+//                        L.e("getDynamicLinks onFinish ");
+//                    }
+//                });
     }
 
 

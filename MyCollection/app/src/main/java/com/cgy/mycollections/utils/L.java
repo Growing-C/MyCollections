@@ -52,7 +52,7 @@ public class L {
         SDebug = debug;
     }
 
-    private static boolean isDebug() {
+    public static boolean isDebug() {
         return BuildConfig.DEBUG || SDebug;
     }
 
