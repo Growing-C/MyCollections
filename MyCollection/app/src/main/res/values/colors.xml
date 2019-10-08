@@ -20,4 +20,16 @@
     <color name="color_093B6F">#093B6F</color><!--item1 -->
     <color name="color_DE5D26">#DE5D26</color><!--item2 -->
     <color name="color_A9C010">#A9C010</color><!--item3 -->
+
+
+    <!--时间选择器-->
+    <color name="pickerview_timebtn_nor">#057dff</color>
+    <color name="pickerview_timebtn_pre">#c2daf5</color>
+    <color name="pickerview_bg_topbar">#f5f5f5</color>
+    <color name="pickerview_topbar_title">#000000</color>
+    <color name="pickerview_wheelview_textcolor_out">#a8a8a8</color>
+    <color name="pickerview_wheelview_textcolor_center">#2a2a2a</color>
+    <color name="pickerview_wheelview_textcolor_divider">#d5d5d5</color>
+    <color name="bgColor_overlay">#60000000</color> <!--覆盖颜色-->
+
 </resources>

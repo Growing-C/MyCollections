@@ -27,3 +27,7 @@ adb shell pm grant com.cgy.mycollections android.permission.READ_LOGS
 ```
 这个可能会报错
 Operation not allowed: java.lang.SecurityException: grantRuntimePermission: Neither user 2000 nor current process has android.permission.GRANT_RUNTIME_PERMISSIONS.
+
+
+## keytool 获取sha1
+输入命令：keytool -v -list -keystore keystore文件路径

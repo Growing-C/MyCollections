@@ -185,4 +185,16 @@
     <string name="title_activity_media_images">MediaImagesActivity</string>
     <string name="tab_text_all_images">全部图片</string>
     <string name="tab_text_image_files">相册</string>
+
+
+
+    <!--时间选择器-->
+    <string name="pickerview_cancel">Cancel</string>
+    <string name="pickerview_submit">Confirm</string>
+    <string name="pickerview_year">Y</string>
+    <string name="pickerview_month">M</string>
+    <string name="pickerview_day">D</string>
+    <string name="pickerview_hours">H</string>
+    <string name="pickerview_minutes">M</string>
+    <string name="pickerview_seconds">S</string>
 </resources>
