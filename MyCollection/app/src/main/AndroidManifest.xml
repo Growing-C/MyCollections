@@ -121,6 +121,7 @@
         <activity android:name=".functions.ui.UiDemos" />
         <activity android:name=".functions.jetpack.JetPackDemos" />
         <activity android:name=".testsources.arknights.ui.ArknightsDemo" />
+        <activity android:name=".functions.ui.wheel.WheelDemo" />
     </application>
 
 </manifest>

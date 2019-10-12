@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.View;
 
@@ -22,6 +23,7 @@ import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.SimpleRecyc
 import com.cgy.mycollections.functions.ui.dialogdemo.DialogDemo;
 import com.cgy.mycollections.functions.ui.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.ui.textdemo.TextDemo;
+import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 
 import butterknife.BindView;
@@ -63,6 +65,7 @@ public class UiDemos extends AppCompatActivity {
 
     private Demo[] uiDemos = {
             new Demo(R.string.title_activity_simple_recycler_demo, R.string.info_simple_recycler_demo, true, SimpleRecyclerViewDemo.class),
+            new Demo(R.string.title_wheel, R.string.info_wheel, WheelDemo.class),
             new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_dialog, R.string.info_dialog, DialogDemo.class),

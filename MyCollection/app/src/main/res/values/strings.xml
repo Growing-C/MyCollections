@@ -72,6 +72,8 @@
     <string name="title_jetpack">jetPackDemo</string>
     <string name="info_jetpack">所有jetPack相关的demo</string>
 
+    <string name="title_wheel">WheelDemo</string>
+    <string name="info_wheel">滚动条demo</string>
     <!--icon fonts-->
     <string name="icon_guanbi">&#xe62b;</string>
     <string name="icon_shijain">&#xe6bc;</string>
@@ -187,7 +189,6 @@
     <string name="tab_text_image_files">相册</string>
 
 
-
     <!--时间选择器-->
     <string name="pickerview_cancel">Cancel</string>
     <string name="pickerview_submit">Confirm</string>
@@ -197,4 +198,5 @@
     <string name="pickerview_hours">H</string>
     <string name="pickerview_minutes">M</string>
     <string name="pickerview_seconds">S</string>
+
 </resources>
