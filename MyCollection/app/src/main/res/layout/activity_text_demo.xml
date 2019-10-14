@@ -58,7 +58,7 @@
             android:layout_marginTop="@dimen/dimen_10"
             android:textSize="18sp"
             android:autoLink="web"
-            android:text="https://blockchainlock.page.link/share" />
+            android:text="https://bclbasic.page.link/9qXE" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

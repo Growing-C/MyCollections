@@ -6,40 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".functions.net.NetRequestDemo">
 
-    <Button
-        android:id="@+id/work_manager"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="WorkManager - 满足您的后台调度需求。"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent">
 
-    <Button
-        android:id="@+id/room"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Room - 实现数据存储持久性"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/work_manager" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WorkManager" />
 
-    <Button
-        android:id="@+id/navigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Navigation - 管理应用导航流程。"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/room" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Room" />
 
-    <Button
-        android:id="@+id/camerax"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="CameraX - 满足相机应用需求。"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/navigation" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Navigation" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CameraX" />
+
+
+    </com.google.android.material.tabs.TabLayout>
+    <!--        android:text="WorkManager - 满足您的后台调度需求。"-->
+
+    <!--        android:text="Room - 实现数据存储持久性"-->
+
+    <!--        android:text="Navigation - 管理应用导航流程。"-->
+
+    <!--        android:text="CameraX - 满足相机应用需求。"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

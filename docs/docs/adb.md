@@ -30,4 +30,4 @@ Operation not allowed: java.lang.SecurityException: grantRuntimePermission: Neit
 
 
 ## keytool 获取sha1
-输入命令：keytool -v -list -keystore keystore文件路径
+输入命令：keytool -list -v  -keystore keystore文件路径（如果当前在这个目录下 直接输入xxx.jks就行了，不需要加前面的路径）

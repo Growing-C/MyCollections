@@ -33,7 +33,16 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
         android:text="打开" />
+
+    <Button
+        android:id="@+id/show_arknight_pump_count"
+        style="@style/PopBtnStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:text="抽卡" />
 
     <Button
         android:id="@+id/show_setting_table_item_page_button"

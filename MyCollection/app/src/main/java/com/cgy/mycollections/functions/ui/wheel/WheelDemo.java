@@ -66,29 +66,4 @@ public class WheelDemo extends AppCompatActivity {
         ft.commit();
     }
 
-
-    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.password_dialog:
-//                PayPasswordDialog mPasswordDialog = new PayPasswordDialog(this, new OnPasswordInputListener() {
-//                    @Override
-//                    public void onPasswordInput(String password) {
-//                    }
-//                });
-//                mPasswordDialog.show();
-//                break;
-//            case R.id.date_dialog:
-//                TimePickerView mSelectBirthV = PopWindowGenerator.createTimePickerView(this, new TimePickerView.OnTimeSelectListener() {
-//                    @Override
-//                    public void onTimeSelect(Date date) {
-//                        Toast.makeText(WheelDemo.this, "选择了" + TimeUtils.getTime(date.getTime()), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                mSelectBirthV.show();
-//                break;
-//            default:
-//                break;
-//        }
-    }
-
 }

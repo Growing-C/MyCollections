@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/account_spinner"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/total_hint"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/px10_margin"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:text="总抽卡次数：1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/decrease_10"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px50_margin"
+            android:paddingLeft="@dimen/px10_margin"
+            android:paddingRight="@dimen/px10_margin"
+            android:textSize="@dimen/px31_tx_size"
+            android:layout_marginRight="@dimen/px18_margin"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:text="-10" />
+
+        <ImageView
+            android:id="@+id/decrease"
+            android:layout_width="@dimen/px50_margin"
+            android:layout_height="@dimen/px50_margin"
+            android:scaleType="centerInside"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/nav_arrow" />
+
+        <com.cgy.mycollections.widgets.pickerview.lib.WheelView
+            android:id="@+id/current_loop_count"
+            android:layout_width="@dimen/px200"
+            android:paddingRight="10dp"
+            android:paddingTop="3dp"
+            android:layout_marginLeft="@dimen/px10_margin"
+            android:layout_marginRight="@dimen/px10_margin"
+            android:paddingBottom="3dp"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/add"
+            android:layout_width="@dimen/px50_margin"
+            android:layout_height="@dimen/px50_margin"
+            android:rotation="180"
+            android:scaleType="centerInside"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/nav_arrow" />
+
+        <TextView
+            android:id="@+id/add_10"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/px50_margin"
+            android:paddingLeft="@dimen/px10_margin"
+            android:paddingRight="@dimen/px10_margin"
+            android:layout_marginLeft="@dimen/px18_margin"
+            android:textSize="@dimen/px31_tx_size"
+            android:gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:text="+10" />
+
+    </LinearLayout>
+</LinearLayout>
+
+

@@ -11,6 +11,7 @@ import android.os.Process;
 import android.util.Log;
 
 import com.cgy.mycollections.testsources.arknights.ui.PublicAdvertisePop;
+import com.cgy.mycollections.testsources.arknights.ui.PumpCardPop;
 import com.cgy.mycollections.widgets.EasyTouchView;
 
 
@@ -22,6 +23,7 @@ public class FloatingService extends Service implements EasyTouchView.FloatingVi
     public static final String ACTION_CHANGE_STATE = "red_envelop_action_change";//改变暂停还是继续的action
     public static final String ACTION_CHANGE_FLOATING_STATE = "red_envelop_action_float";//是否展示悬浮窗口的action
     public static final String ACTION_SHOW_ARKNIGHTS = "show_ark";//显示arknights ui的action
+    public static final String ACTION_SHOW_ARKNIGHTS_CARD = "show_ark_card";//显示arknights 抽卡
 
     public static final String KEY_SHOW_FLOATING = "show_floating";//是否显示悬浮窗
 
@@ -71,6 +73,12 @@ public class FloatingService extends Service implements EasyTouchView.FloatingVi
                     PublicAdvertisePop pop = new PublicAdvertisePop(getApplicationContext());
                     pop.showPop(mTouchView.getTouchView());
                 }
+            } else if (ACTION_SHOW_ARKNIGHTS_CARD.equalsIgnoreCase(action)) {
+                //pop方式
+                if (mTouchView != null) {
+                    PumpCardPop pop = new PumpCardPop(getApplicationContext());
+                    pop.showPop(mTouchView.getTouchView());
+                }
             }
         }
     };
@@ -94,6 +102,7 @@ public class FloatingService extends Service implements EasyTouchView.FloatingVi
         filter.addAction(ACTION_CHANGE_STATE);
         filter.addAction(ACTION_CHANGE_FLOATING_STATE);
         filter.addAction(ACTION_SHOW_ARKNIGHTS);
+        filter.addAction(ACTION_SHOW_ARKNIGHTS_CARD);
         registerReceiver(mReceiver, filter);
 
 //        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -139,6 +148,13 @@ public class FloatingService extends Service implements EasyTouchView.FloatingVi
                 Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+                break;
+            case EasyTouchView.ACTION_ARKNIGHT_CARD://明日方舟抽卡
+                Intent showArkCard = new Intent(ACTION_SHOW_ARKNIGHTS_CARD);
+                sendBroadcast(showArkCard);
+//                Intent it = new Intent(this, PumpCardCountActivity.class);
+//                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(it);
                 break;
         }
     }

@@ -93,6 +93,7 @@ public class EasyTouchView {
         mPauseButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_common_use_button);
         Button screenLockButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_screen_lock_button);
         Button notificationButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_notification_button);
+        Button arknightPumpCount = (Button) settingTable.findViewById(R.id.show_arknight_pump_count);
 
         Button phoneButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_phone_button);
         Button pageButton = (Button) settingTable.findViewById(R.id.show_setting_table_item_page_button);
@@ -104,6 +105,7 @@ public class EasyTouchView {
 
         mPauseButton.setOnClickListener(mClickListener);
         screenLockButton.setOnClickListener(mClickListener);
+        arknightPumpCount.setOnClickListener(mClickListener);
         notificationButton.setOnClickListener(mClickListener);
 
         phoneButton.setOnClickListener(mClickListener);
@@ -134,6 +136,9 @@ public class EasyTouchView {
                     break;
                 case R.id.show_setting_table_item_phone_button://打开抢红包服务
                     mActionListener.onFloatingAction(ACTION_OPEN);
+                    break;
+                case R.id.show_arknight_pump_count://打开抢红包服务(改为arkNight)
+                    mActionListener.onFloatingAction(ACTION_ARKNIGHT_CARD);
                     break;
                 case R.id.show_setting_table_item_page_button:
                     break;
@@ -325,6 +330,7 @@ public class EasyTouchView {
     public static final int ACTION_LOCK = 0x02;//锁屏
     public static final int ACTION_EXIT = 0x03;//退出
     public static final int ACTION_OPEN = 0x04;//打开
+    public static final int ACTION_ARKNIGHT_CARD = 0x05;//明日抽卡
 
     public interface FloatingViewActionListener {
         void onFloatingAction(int actionId);

@@ -3,102 +3,128 @@ package com.cgy.mycollections.testsources.arknights.ui;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.testsources.arknights.ArknightsConstant;
 import com.cgy.mycollections.utils.L;
 import com.cgy.mycollections.utils.SharePreUtil;
+import com.cgy.mycollections.widgets.pickerview.adapter.NumericWheelAdapter;
+import com.cgy.mycollections.widgets.pickerview.lib.WheelView;
+import com.cgy.mycollections.widgets.pickerview.listener.OnItemSelectedListener;
 
 import java.lang.reflect.Method;
 
-import appframe.utils.DisplayHelperUtils;
+import appframe.utils.ToastCustom;
 
 /**
  * Description :
  * Author :cgy
  * Date :2019/8/19
  */
-public class PublicAdvertisePop implements View.OnClickListener {
+public class PumpCardPop implements View.OnClickListener {
 
+
+    private WheelView mCountWheel;
+    private TextView mTotalHint;
+    private Spinner mAccountSpinner;
 
     private PopupWindow mPop;
-    Context mContext;
-    WebView mWebView;
-    TextView mUrlV;
+    private Context mContext;
 
-    View settingTable;
-    public String url;
+    private View rootView;
 
-    public PublicAdvertisePop(Context context) {
+    public PumpCardPop(Context context) {
         mContext = context;
     }
 
     private View getSettingTableView() {
-        settingTable = LayoutInflater.from(mContext).inflate(R.layout.pop_arknights, null);
-        settingTable.findViewById(R.id.back).setOnClickListener(this);
-        settingTable.findViewById(R.id.refresh).setOnClickListener(this);
-        mUrlV = settingTable.findViewById(R.id.title);
+        rootView = LayoutInflater.from(mContext).inflate(R.layout.pop_pump_card_count, null);
+        mCountWheel = rootView.findViewById(R.id.current_loop_count);
+        mTotalHint = rootView.findViewById(R.id.total_hint);
+        mAccountSpinner = rootView.findViewById(R.id.account_spinner);
 
-        url = SharePreUtil.getString(ArknightsConstant.PREF, mContext, ArknightsConstant.URL_KEY);
-        if (TextUtils.isEmpty(url)) {
-            url = "http://wiki.joyme.com/arknights/公开招募工具";// 需要manifest android:usesCleartextTraffic="true"
-//            url = "https://ak.graueneko.xyz/akhr.html";
-//            url="http://wiki.joyme.com/arknights/%E5%85%AC%E5%BC%80%E6%8B%9B%E5%8B%9F%E5%B7%A5%E5%85%B7";
-        }
+        rootView.findViewById(R.id.decrease_10).setOnClickListener(this);
+        rootView.findViewById(R.id.decrease).setOnClickListener(this);
+        rootView.findViewById(R.id.add_10).setOnClickListener(this);
+        rootView.findViewById(R.id.add).setOnClickListener(this);
 
-        mUrlV.setText(url);
-//        titleV.setOnClickListener(this);
-        mWebView = settingTable.findViewById(R.id.webview);
-        initWebView(mWebView, url);
-//        mWebView.setWebChromeClient(new WebChromeClient());
-//        mWebView.setWebViewClient(new WebViewClient());
-//        mWebView.getSettings().setJavaScriptEnabled(true);
-//
-//        mWebView.loadUrl(url);
-
-        return settingTable;
-    }
-
-    private void initWebView(WebView webView, String url) {
-        //解决webview加载的网页上的按钮点击失效  以及有些图标显示不出来的问题
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowContentAccess(true);
-        webSettings.setAppCacheEnabled(false);
-        webSettings.setBuiltInZoomControls(false);
-        webSettings.setUseWideViewPort(true);
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        webView.loadUrl(url);
-
-        // 将webView的横向竖向的scrollBar都禁用掉，将不再与ScrollView冲突，解决了大面积空白的问题。
-        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setVerticalScrollbarOverlay(false);
-        webView.setHorizontalScrollBarEnabled(false);
-        webView.setHorizontalScrollbarOverlay(false);
-
-        //  重写此方法表明点击网页里面的链接还是在当前的webview里跳转，不跳到浏览器那边
-        webView.setWebViewClient(new WebViewClient() {
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+        mCountWheel.setAdapter(new NumericWheelAdapter(0, 100));//1-100
+        mCountWheel.setLabel("次");// 添加文字
+        mCountWheel.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int index) {
+                int totalCount = (int) mCountWheel.getAdapter().getItem(index);
+                String totalCountHint = mAccountSpinner.getSelectedItem() + "  总抽卡次数：" + totalCount;
+                mTotalHint.setText(totalCountHint);
+                L.e("onItemSelected:" + index + "--" + totalCountHint);
+                SharePreUtil.putInt(ArknightsConstant.PREF, mContext
+                        , mAccountSpinner.getSelectedItem().toString(), totalCount);
             }
         });
+
+        String[] guestAmount = new String[]{"萝莉爱吃糖", "11号"};
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
+                mContext, android.R.layout.simple_spinner_item, guestAmount);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mAccountSpinner.setAdapter(adapter);
+        mAccountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedAccountName = parent.getAdapter().getItem(position).toString();
+                L.e("选中了：" + selectedAccountName);
+                initByAccount(selectedAccountName, -1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        initByAccount(guestAmount[0], -1);
+        return rootView;
+    }
+
+    public void initByAccount(String accountName, int currentCount) {
+        if (currentCount < 0) {
+            currentCount = SharePreUtil.getInt(ArknightsConstant.PREF, mContext
+                    , accountName);
+        }
+        String totalCountHint;
+        if (currentCount >= 0) {
+            int targetPos = mCountWheel.getAdapter().indexOf(currentCount);
+            mCountWheel.setCurrentItem(targetPos);
+            totalCountHint = accountName + " 总抽卡次数：" + currentCount;
+        } else {
+            mCountWheel.setCurrentItem(0);// 初始化时显示的数据
+            totalCountHint = accountName + " 总抽卡次数：" + 0;
+        }
+        mTotalHint.setText(totalCountHint);
+    }
+
+    private void changeCountByOffset(int offset) {
+        int currentNumber = (int) mCountWheel.getAdapter().getItem(mCountWheel.getCurrentItem());
+        L.e("changeCountByOffset currentNumber:" + currentNumber);
+        int targetNumber = currentNumber + offset;
+        if (targetNumber < 0) {
+            new ToastCustom(mContext, "突破下限啦！", Toast.LENGTH_LONG).show();
+        } else if (targetNumber > 100) {
+            new ToastCustom(mContext, "突破上限啦！", Toast.LENGTH_LONG).show();
+        } else {
+            int targetPos = mCountWheel.getAdapter().indexOf(targetNumber);
+            mCountWheel.setCurrentItem(targetPos);
+        }
+
     }
 
     public void showPop(final View touchView) {
@@ -198,30 +224,26 @@ public class PublicAdvertisePop implements View.OnClickListener {
      * @param alpha
      */
     private void setRootViewAlpha(float alpha) {
-        if (settingTable != null && alpha >= 0 && alpha <= 1) {
+        if (rootView != null && alpha >= 0 && alpha <= 1) {
             L.e("alpha:" + alpha);
-            settingTable.setAlpha(alpha);
+            rootView.setAlpha(alpha);
         }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.title:
-//                mWebView.loadUrl(url);
+            case R.id.decrease_10:
+                changeCountByOffset(-10);
                 break;
-            case R.id.back:
-                if (mWebView.canGoBack())
-                    mWebView.goBack();
+            case R.id.decrease:
+                changeCountByOffset(-1);
                 break;
-            case R.id.refresh:
-                if (mUrlV != null) {
-                    url = mUrlV.getText().toString();
-                    if (!TextUtils.isEmpty(url)) {
-                        SharePreUtil.putString(ArknightsConstant.PREF, mContext, ArknightsConstant.URL_KEY, url);
-                        mWebView.loadUrl(url);
-                    }
-                }
+            case R.id.add_10:
+                changeCountByOffset(10);
+                break;
+            case R.id.add:
+                changeCountByOffset(1);
                 break;
             default:
                 break;
