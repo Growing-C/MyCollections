@@ -18,7 +18,10 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.os.Build;
 import android.os.ParcelUuid;
+
 import androidx.annotation.RequiresApi;
+
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cgy.mycollections.functions.ble.client.DataCallback;
@@ -88,6 +91,8 @@ public class BluetoothServer {
             mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
         }
 
+        List<byte[]> receiveByteList = new ArrayList<>();
+
         @Override
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             Log.e("CharacteristicWriteReq", "远程设备请求写入数据");
@@ -96,8 +101,41 @@ public class BluetoothServer {
 
 //            mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, new byte[]{0, 9, 8, 7, 6, 5, 4, 3, 2, 1});
             mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value);
-            if (mCallback != null)
-                mCallback.onGetBleResponse(new String(value), value);
+            String receiveData = new String(value);
+            if (!TextUtils.isEmpty(receiveData)) {
+
+                if (mCallback != null)
+                    mCallback.onGetBleResponse("收到数据包：" + new String(value), value);
+
+                if (receiveData.startsWith("start") && receiveData.endsWith("end")) {
+                    //value包含了一整条指令
+                    receiveByteList.clear();
+                    receiveByteList.add(value);
+                } else if (receiveData.startsWith("start")) {
+                    //value分包了，且是第一包
+                    receiveByteList.clear();
+                    receiveByteList.add(value);
+                    return;
+                } else if (receiveByteList.size() == 0) {
+                    //value没有分包
+                    receiveByteList.add(value);
+                } else {
+                    //value分包了，且是中间的包
+                    receiveByteList.add(value);
+                    byte[] totalData = BinaryUtil.mergeBytes(receiveByteList);
+                    if (!new String(totalData).endsWith("end")) {
+                        //表示还不是最后一包
+                        return;
+                    }
+                }
+
+                byte[] totalData = BinaryUtil.mergeBytes(receiveByteList);
+                //走到这里 receiveByteList 必定是一条完整的包
+                if (mCallback != null) {
+                    mCallback.onGetBleResponse(new String(totalData), totalData);
+                    mCallback.onCommandEnd();
+                }
+            }
 
             //4.处理响应内容
 //            onResponseToClient(value, device, requestId, characteristic);
@@ -296,12 +334,33 @@ public class BluetoothServer {
 //        setIncludeTxPowerLevel(boolean includeTxPowerLevel)是否广播信号强度
     }
 
+//    /**
+//     * 结束广播
+//     */
+//    public void stopAdvertising() {
+//        mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
+//        L.e("invoke stopAdvertising");
+//    }
+
     /**
      * 结束广播
      */
-    public void stopAdvertising() {
-        mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
-        L.e("invoke stopAdvertising");
+    public void stopServer() {
+        if (mBluetoothGattServer != null) {
+            if (mConnectedDevice != null) {
+                mBluetoothGattServer.cancelConnection(mConnectedDevice);
+                mConnectedDevice = null;
+            }
+            mBluetoothGattServer.clearServices();
+            mBluetoothGattServer.close();
+            mBluetoothGattServer = null;
+            L.e("BluetoothGattServer stopped.");
+        }
+
+        if (mBluetoothLeAdvertiser != null) {
+            mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
+            L.e("BluetoothLeAdvertiser stopped.");
+        }
     }
 
     /**
@@ -350,15 +409,19 @@ public class BluetoothServer {
 
         byte[] head = BinaryUtil.strToBytes(false, "FEFE");
         List<byte[]> bts = new ArrayList<>();
-        bts.add(head);
+//        bts.add(head);
         bts.add(command);
 
         byte[] finalCommand = BinaryUtil.mergeBytes(bts);
 
+//        String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, finalCommand); //转成字符串
+//        L.e("发送消息内容：" + lockModuleStr);
+        L.d("发送给客户端的数据:" + new String(finalCommand));
+
         characteristicRead.setValue(finalCommand);
         mBluetoothGattServer.notifyCharacteristicChanged(mConnectedDevice, characteristicRead, false);
 
-        L.d("!!!sendCommand2Client command:" + CHexConverter.byte2HexStr(finalCommand));
+        L.d(finalCommand.length + "!!!sendCommand2Client command:" + CHexConverter.byte2HexStr(finalCommand));
     }
 
     public static void main(String[] args) {

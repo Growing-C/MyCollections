@@ -99,6 +99,37 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/mtu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="20"
+                    android:maxLength="2"
+                    android:hint="MTU" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/set_mtu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="设置mtu" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ble_device_list"
             android:layout_width="match_parent"
@@ -125,19 +156,27 @@
             android:id="@+id/start_broad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="开始广播" />
 
         <Button
             android:id="@+id/stop_broad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="结束广播" />
+            android:text="关闭服务端" />
+
+        <EditText
+            android:id="@+id/to_client"
+            android:layout_width="match_parent"
+            android:text="回复给客户端的数据"
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/server_log"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

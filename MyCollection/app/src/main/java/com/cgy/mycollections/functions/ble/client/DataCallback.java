@@ -7,5 +7,11 @@ package com.cgy.mycollections.functions.ble.client;
  */
 public interface DataCallback {
     void onGetBleResponse(String data, byte[] rawData);
+
     void onConnected();
+
+    /**
+     * 只是为了测试的时候 代表一条指令结束
+     */
+    void onCommandEnd();
 }

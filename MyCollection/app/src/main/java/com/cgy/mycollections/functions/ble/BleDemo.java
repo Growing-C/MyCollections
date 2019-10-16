@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
@@ -53,6 +56,10 @@ public class BleDemo extends BaseActivity {
     TextView mServerLogV;
     @BindView(R.id.ble_data)
     TextView mBleData;
+    @BindView(R.id.mtu)
+    EditText mMtu;
+    @BindView(R.id.to_client)
+    EditText mDataToClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +98,10 @@ public class BleDemo extends BaseActivity {
         mBleDeviceListV.setAdapter(mDeviceAdapter);
 
 //        String demoBle = "SSID:mxi,PWD:88888888";
-        String demoBle = "SSID:NO8,PWD:linkage@12345,SSIDHidden";
+        String demoBle = "start,SSID:NO8,PWD:linkage@12345,SSIDHidden,end";
         mBleData.setText(demoBle);
+
+        mMtu.setText(String.valueOf(BLEClient.BLE_PACKAGE_LEN));
     }
 
     @Override
@@ -102,9 +111,13 @@ public class BleDemo extends BaseActivity {
             mScanner.stopScan(false);
             mScanner = null;
         }
+        if (mBluetoothServer != null) {
+            mBluetoothServer.stopServer();
+            mBluetoothServer = null;
+        }
     }
 
-    @OnClick({R.id.start_scan, R.id.stop_scan, R.id.open_server, R.id.start_broad, R.id.stop_broad, R.id.close_device, R.id.send_data})
+    @OnClick({R.id.set_mtu, R.id.start_scan, R.id.stop_scan, R.id.open_server, R.id.start_broad, R.id.stop_broad, R.id.close_device, R.id.send_data})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_scan:
@@ -126,15 +139,22 @@ public class BleDemo extends BaseActivity {
                 break;
             case R.id.open_server://开启蓝牙服务端
                 openServer();
+                startAdvertise();
                 break;
             case R.id.start_broad://开始广播
-                startAdvertise();
                 break;
             case R.id.stop_broad://结束广播
                 stopAdvertise();
                 break;
             case R.id.send_data://客户端发送数据
                 sendData();
+                break;
+            case R.id.set_mtu:
+                String mtu = mMtu.getText().toString();
+                if (!TextUtils.isEmpty(mtu) && Integer.parseInt(mtu) > 20) {
+                    BLEClient.BLE_PACKAGE_LEN = Integer.parseInt(mtu);
+                    Toast.makeText(this, "设置mtu完成：" + mtu, Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 break;
@@ -150,13 +170,37 @@ public class BleDemo extends BaseActivity {
             mBluetoothServer = new BluetoothServer(this, new DataCallback() {
                 @Override
                 public void onGetBleResponse(final String data, final byte[] rawData) {
-                    String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
+//                    String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串（中文是乱码）
+//                    L.e("收到客户端发送数据 bytesToASCIIStr：" + lockModuleStr);
                     L.e("收到客户端发送数据：" + data);
+                    mServerLogV.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String initText = mServerLogV.getText().toString();
+                            initText += "\n收到客户端发送数据：" + data;
+                            mServerLogV.setText(initText);
+                        }
+                    });
                 }
 
                 @Override
                 public void onConnected() {
                     L.e("客户端连接成功，可以发送数据");
+                    mServerLogV.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mServerLogV.setText("客户端连接成功，可以发送数据");
+                        }
+                    });
+                }
+
+                @Override
+                public void onCommandEnd() {
+                    String data2Client = mDataToClient.getText().toString();
+                    if (TextUtils.isEmpty(data2Client)) {
+                        data2Client = "connect success";
+                    }
+                    mBluetoothServer.sendCommand2Client(data2Client.getBytes());
                 }
             });
 
@@ -170,17 +214,17 @@ public class BleDemo extends BaseActivity {
     public void startAdvertise() {//开始广播
         if (mBluetoothServer != null) {
             mBluetoothServer.startAdvertising();
+            String log = mServerLogV.getText().toString() + "\n开始广播";
+            mServerLogV.setText(log);
         }
-        String log = mServerLogV.getText().toString() + "\n开始广播";
-        mServerLogV.setText(log);
     }
 
     public void stopAdvertise() {//结束广播
         if (mBluetoothServer != null) {
-            mBluetoothServer.stopAdvertising();
+            mBluetoothServer.stopServer();
         }
 
-        String log = mServerLogV.getText().toString() + "\n结束广播";
+        String log = mServerLogV.getText().toString() + "\n关闭蓝牙服务端";
         mServerLogV.setText(log);
     }
 
@@ -281,10 +325,11 @@ public class BleDemo extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
+//                    String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
+                    String lockModuleStr = new String(rawData); //转成字符串
                     showToast("收到设备回调数据 raw：" + data);
                     showToast("收到设备回调数据 解析：" + lockModuleStr);
-                    mLogV.setText("收到设备回调数据：" + lockModuleStr);
+                    mLogV.setText("收到设备回调数据：" + lockModuleStr);//只能是英文，中文乱码！
                     if (!TextUtils.isEmpty(lockModuleStr) && lockModuleStr.contains("connect success")) {
                         L.e("网关设备 网络连接成功！");
                     }
@@ -299,9 +344,14 @@ public class BleDemo extends BaseActivity {
                 public void run() {
                     showToast("连接成功，可以发送数据");
                     mLogV.setText("连接成功，可以发送数据");
-                    mBLEClient.setMTU(50);
+//                    mBLEClient.setMTU(50);
                 }
             });
+        }
+
+        @Override
+        public void onCommandEnd() {
+
         }
     };
 

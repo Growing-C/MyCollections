@@ -125,6 +125,11 @@ public class BackgroundService extends Service {
                 public void onConnected() {
                     Log.e("test", "客户端连接成功，可以发送数据");
                 }
+
+                @Override
+                public void onCommandEnd() {
+
+                }
             });
 
 
@@ -152,7 +157,7 @@ public class BackgroundService extends Service {
 
     public void stopAdvertise() {//结束广播
         if (mBluetoothServer != null) {
-            mBluetoothServer.stopAdvertising();
+            mBluetoothServer.stopServer();
         }
         Log.e("test", "\n结束广播");
 //        String log = mServerLogV.getText().toString() + "\n结束广播";

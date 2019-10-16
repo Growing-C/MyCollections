@@ -11,7 +11,6 @@ public class BinaryUtil {
     private final static String _BYTES = "0123456789ABCDEF";
 
 
-
     public static void setBytes(byte[] dest, String src, byte fillByte) {
         try {
             byte[] srcBytes = src.getBytes("MS936");
@@ -232,7 +231,7 @@ public class BinaryUtil {
     }
 
     /**
-     * bytes数组转为ASCII码的字母
+     * bytes数组转为ASCII码的字母，此方法中文会是乱码
      *
      * @param bigEndian
      * @param bytes
@@ -433,7 +432,7 @@ public class BinaryUtil {
 
     public static int bytesToShortInt(byte[] b) {
         return b[1] & 0xFF |
-                (b[0] & 0xFF) << 8 ;
+                (b[0] & 0xFF) << 8;
     }
 
     public static int bytesToInt(byte[] b) {
@@ -442,7 +441,8 @@ public class BinaryUtil {
                 (b[1] & 0xFF) << 16 |
                 (b[0] & 0xFF) << 24;
     }
-    public static int bytesToInt(boolean bigEndian,byte[] b) {
+
+    public static int bytesToInt(boolean bigEndian, byte[] b) {
         if (bigEndian) {
             return b[0] & 0xFF |
                     (b[1] & 0xFF) << 8 |

@@ -142,7 +142,8 @@ public class NetConfigOperator {
     private DataCallback mCallback = new DataCallback() {
         @Override
         public void onGetBleResponse(final String data, final byte[] rawData) {
-            String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
+//            String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串(中文乱码 弃用)
+            String lockModuleStr = new String(rawData); //转成字符串
             L.e("收到设备回调数据 raw：" + data);
             L.e("收到设备回调数据 解析：" + lockModuleStr);
             if (!TextUtils.isEmpty(lockModuleStr)) {
@@ -170,6 +171,11 @@ public class NetConfigOperator {
             String sendData = "SSID:" + mSSID + ",PWD:" + mPwd + (mSsidHidden ? ",SSIDHidden" : "");
             if (mBLEClient != null)
                 mBLEClient.writeData(sendData);
+        }
+
+        @Override
+        public void onCommandEnd() {
+
         }
     };
 
