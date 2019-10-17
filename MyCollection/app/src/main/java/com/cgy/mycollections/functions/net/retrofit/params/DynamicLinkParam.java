@@ -1,5 +1,7 @@
 package com.cgy.mycollections.functions.net.retrofit.params;
 
+import android.text.TextUtils;
+
 /**
  * Description :
  * Author :cgy
@@ -25,9 +27,12 @@ public class DynamicLinkParam {
 
     public DynamicLinkParam() {
         dynamicLinkInfo = new DynamicLinkInfo();
+        suffix = new Suffix();
     }
 
     public DynamicLinkInfo dynamicLinkInfo;
+
+    public Suffix suffix;
 
     public void setDomainUriPrefix(String domainUriPrefix) {
         dynamicLinkInfo.domainUriPrefix = domainUriPrefix;
@@ -43,13 +48,14 @@ public class DynamicLinkParam {
     }
 
     public void setIosBundleId(String id) {
-        dynamicLinkInfo.iosInfo = new IosInfo();
-        dynamicLinkInfo.iosInfo.iosBundleId = id;
+        if (!TextUtils.isEmpty(id)) {
+            dynamicLinkInfo.iosInfo = new IosInfo();
+            dynamicLinkInfo.iosInfo.iosBundleId = id;
+        }
     }
 
     public void setSuffix(String suffix) {
-        dynamicLinkInfo.suffix = new Suffix();
-        dynamicLinkInfo.suffix.option = suffix;
+        this.suffix.option = suffix;
     }
 
     class DynamicLinkInfo {
@@ -57,7 +63,6 @@ public class DynamicLinkParam {
         public String link;
         public AndroidInfo androidInfo;
         public IosInfo iosInfo;
-        public Suffix suffix;
     }
 
     class AndroidInfo {

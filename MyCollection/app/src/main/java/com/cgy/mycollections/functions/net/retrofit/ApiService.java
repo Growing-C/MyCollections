@@ -17,7 +17,7 @@ import retrofit2.http.Url;
 public interface ApiService {
 
     //获取新闻列表
-    @POST("v1/shortLinks?key=AIzaSyClrhlCSQ0tmo7JTAWFCOtRmiWYGjdqBKc")
-    Observable<Object> createShortDynamicLinks(@Body DynamicLinkParam params);
+    @POST()
+    Observable<Object> createShortDynamicLinks(@Url String url,@Body DynamicLinkParam params);
 
 }

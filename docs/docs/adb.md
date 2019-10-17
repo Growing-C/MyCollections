@@ -31,3 +31,13 @@ Operation not allowed: java.lang.SecurityException: grantRuntimePermission: Neit
 
 ## keytool 获取sha1
 输入命令：keytool -list -v  -keystore keystore文件路径（如果当前在这个目录下 直接输入xxx.jks就行了，不需要加前面的路径）
+
+
+## 获取dependencies 依赖树
+./gradlew :app:dependencies >> ~/dependencieslog.txt
+或
+./gradlew app:dependencies
+
+后面带有 “(*)” 的库就表示 这个库 有被覆盖过。
+
+最后使用的是最高版本

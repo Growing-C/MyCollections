@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import appframe.utils.DisplayHelperUtils;
+import appframe.utils.Logger;
 
 
 /**
@@ -20,15 +21,16 @@ public class MyApplication extends Application {
         sInstance = this;
 
         DisplayHelperUtils.init(this);
+        Logger.setDebug(true);
     }
 
     public static MyApplication getInstance() {
         return sInstance;
     }
 
-    public void bringApp2Foreground(){
+    public void bringApp2Foreground() {
 
-        ActivityManager am = (ActivityManager)  getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 //        am.moveTaskToFront(rti.id, ActivityManager.MOVE_TASK_WITH_HOME);//方法将应用唤起到前台，
 
 

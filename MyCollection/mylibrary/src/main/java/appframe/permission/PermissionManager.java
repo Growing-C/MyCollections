@@ -176,7 +176,7 @@ public class PermissionManager {
         }
         List<String> deniedPermissions = PermissionUtils.findDeniedPermissions(PermissionUtils.getActivity(object), permissions);
 
-//        System.out.println("deniedPermissions:"+deniedPermissions.size());
+        System.out.println("deniedPermissions:"+deniedPermissions.size());
         if (deniedPermissions.size() > 0) {
             if (object instanceof Activity) {
                 ((Activity) object).requestPermissions(deniedPermissions.toArray(new String[deniedPermissions.size()]), requestCode);

@@ -60,7 +60,7 @@ public class ApiServiceImpl {
         param.setAndroidPackageName(androidPkg);
         param.setIosBundleId(iosBundle);
         param.setSuffix(suffix);
-        return applySchedulers(prepareApiService().createShortDynamicLinks(param));
+        return applySchedulers(prepareApiService().createShortDynamicLinks(url,param));
     }
     //</editor-fold">
 }

@@ -438,18 +438,21 @@ public class NetRequestDemo extends AppCompatActivity {
      * @param v
      */
     public void getDynamicLinks(View v) {
-        String apiKey = "AIzaSyClrhlCSQ0tmo7JTAWFCOtRmiWYGjdqBKc";
-        String getShortLinkUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + apiKey;
+//        String apiKey = "AIzaSyCw6Qu7W_Gsis_FuH7aPwUsFjr-MxvIKok";
+//        String getShortLinkUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + apiKey;
 
-        String domainUriPrefix = "https://blockchainlock.page.link";
-        String DEEP_LINK_URL = "https://eco.blockchainlock.io/";
-        String androidPkgName = "io.blockchainlock.deeplink";
-        String iosBundleId = "com.example.ios";
+        String requestUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyCw6Qu7W_Gsis_FuH7aPwUsFjr-MxvIKok";
+
+        String domainUriPrefix = "https://yolotest.page.link";
+        String DEEP_LINK_URL = "https://eco.blockchainlock.io/shareid=dfa";
+        String androidPkgName = "com.linkstec.blockchains.bclwallet";
+        String iosBundleId = null;
         String suffix = "SHORT";
         L.e("start createShortDynamicLinks");
-        Api.getInstance().setBaseUrl("https://firebasedynamiclinks.googleapis.com/");
-        ApiServiceImpl.getInstance().createShortDynamicLinks(getShortLinkUrl,
-                domainUriPrefix, DEEP_LINK_URL, androidPkgName, iosBundleId, suffix)
+//        Api.getInstance().setBaseUrl("https://firebasedynamiclinks.googleapis.com/");
+        Api.getInstance().setBaseUrl(requestUrl);
+        ApiServiceImpl.getInstance().createShortDynamicLinks(requestUrl,
+                domainUriPrefix, DEEP_LINK_URL, androidPkgName, null, suffix)
                 .subscribe(new ApiCallback<Object>() {
                     @Override
                     public void onSuccess(Object model) {

@@ -266,21 +266,21 @@ public final class Api {
     }
 
     protected HostnameVerifier getHostnameVerifier(final String[] hostUrls) {
-        HostnameVerifier TRUSTED_VERIFIER = new HostnameVerifier() {
+        return new HostnameVerifier() {
             public boolean verify(String hostname, SSLSession session) {
                 boolean ret = false;
-                L.e("getHostnameVerifier hostUrls len:" + hostUrls.length);
+//                L.e("getHostnameVerifier hostUrls len:" + hostUrls.length);
                 for (String host : hostUrls) {
-                    L.e("getHostnameVerifier host:" + host);
-                    L.e("getHostnameVerifier hostname:" + hostname);
-                    if (host.equalsIgnoreCase(hostname)) {
+//                    L.e("getHostnameVerifier host:" + host);
+//                    L.e("getHostnameVerifier hostname:" + hostname);
+                    if (host.equalsIgnoreCase(hostname) || host.contains(hostname)) {
                         ret = true;
                     }
                 }
+//                L.e("getHostnameVerifier return:" + ret);
                 return ret;
             }
         };
-        return TRUSTED_VERIFIER;
     }
 
 
@@ -366,8 +366,12 @@ public final class Api {
                             return new ArrayList();
                         }
                     });
+//            L.e("ProjectConfig.isDebug():" + ProjectConfig.isDebug());
             if (ProjectConfig.isDebug()) {//debug 模式输出日志
                 // Log信息拦截器
+
+                //打印log 时使用的logger有个问题，是一整条打印的，可能会有很多行，有点难看
+                // 可以用这个api 'com.orhanobut:logger:2.1.1' 来定制化 每行都可以设置一个tag
                 HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLogger());
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//包含header，body数据
                 //设置 Debug Log 模式
@@ -468,13 +472,16 @@ public final class Api {
 
         @Override
         public void log(String message) {
+//            L.e("HttpLogger log:" + message);
             // 请求或者响应开始
             //由于多条请求同时发生的时候，请求是异步的，就会发生这个请求的post和另一个请求的 end post组合了的情况
             //所以把请求和 结果分开
             if (message.startsWith("--> POST")) {
                 mMessage.setLength(0);
-            } else if (message.startsWith("<-- 200 OK")) {
+                mMessage.append("--------------------------------------------------------------\n");
+            } else if (message.startsWith("<-- 200")) {
                 mMessage.setLength(0);
+                mMessage.append("--------------------------------------------------------------\n");
             }
             // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化(似乎不需要格式化了)
 //            if ((message.startsWith("{") && message.endsWith("}"))

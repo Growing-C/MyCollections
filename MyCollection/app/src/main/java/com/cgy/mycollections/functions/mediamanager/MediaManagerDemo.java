@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.file.FileInfo;
@@ -60,6 +62,12 @@ public class MediaManagerDemo extends BaseActivity {
 //        registerReceiver(this);
         PermissionManager.requestExternalPermission(MediaManagerDemo.this, "for test");
 
+    }
+
+    /**
+     * 初始化内容，必须获取到存储权限
+     */
+    private void initContent() {
         L.e("isMediaScannerScanning:" + MediaHelper.isMediaScannerScanning(this));
         L.e("MediaStore.getVersion:" + MediaStore.getVersion(this));
 
@@ -327,7 +335,7 @@ public class MediaManagerDemo extends BaseActivity {
     @PermissionGranted(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionGranted() {
         Logger.i("externalPermissionGranted");
-
+        initContent();
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
@@ -338,6 +346,11 @@ public class MediaManagerDemo extends BaseActivity {
         mPermissionDialog.show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
