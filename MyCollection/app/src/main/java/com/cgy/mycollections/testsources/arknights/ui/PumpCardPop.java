@@ -122,7 +122,10 @@ public class PumpCardPop implements View.OnClickListener {
             new ToastCustom(mContext, "突破上限啦！", Toast.LENGTH_LONG).show();
         } else {
             int targetPos = mCountWheel.getAdapter().indexOf(targetNumber);
-            mCountWheel.setCurrentItem(targetPos);
+            mCountWheel.setCurrentItem(targetPos);//手动设置不会走mCountWheel 的onItemSelected，所以需要手动保存
+
+            SharePreUtil.putInt(ArknightsConstant.PREF, mContext
+                    , mAccountSpinner.getSelectedItem().toString(), targetNumber);
         }
 
     }

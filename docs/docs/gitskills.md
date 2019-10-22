@@ -73,3 +73,14 @@ git commit --amend
 ```
 
 会弹出修改的文档，修改后保存即可
+
+
+
+## 7. github pages------------------
+github pages 可以用来搭建个人博客，也可以用来直接搭载个人网站
+不过在index.html中  引入的.js 必须使用 ./js/main.js这种相对路径 因为js/main.js这种识别不了
+
+最好在docs文件夹中放入js项目 在根目录下放似乎有点问题？
+
+引用的 .js最好放在body中？放在header中似乎有问题（待确认）
+

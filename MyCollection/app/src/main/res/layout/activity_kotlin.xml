@@ -15,10 +15,12 @@
     <!--    android.support.design.widget.TabLayout-->
     <!--    androidx.constraintlayout.ConstraintLayout-->
     <!--    androidx.appcompat.widget.CardView-->
+    <!--    androidx.core.view.ViewPager-->
 
     <!--    right-->
     <!--    androidx.constraintlayout.widget.ConstraintLayout-->
     <!--    androidx.cardview.widget.CardView-->
+    <!--    androidx.viewpager.widget.ViewPager-->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"

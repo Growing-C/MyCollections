@@ -46,6 +46,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 
     //---------------------------
+    //jet pack Room
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    //---------------------------
+
+    //---------------------------
     //jet pack WorkManager
     def work_version = "2.2.0"
 
