@@ -74,7 +74,7 @@ public class RoomFragment extends Fragment {
         if (getContext() != null) {
             AppDatabase db = AppDatabase.getInstance(getContext());
 
-            List<User> userList = db.userDao().getAll();
+//            List<User> userList = db.userDao().getAll();
         }
     }
 }

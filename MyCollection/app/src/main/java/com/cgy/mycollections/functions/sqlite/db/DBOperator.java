@@ -3,7 +3,9 @@ package com.cgy.mycollections.functions.sqlite.db;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import androidx.annotation.NonNull;
+
 import android.text.TextUtils;
 
 
@@ -15,6 +17,7 @@ import com.cgy.mycollections.utils.L;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -33,11 +36,15 @@ import static com.cgy.mycollections.functions.sqlite.db.DBHelper.TABLE_NAME_USER
  */
 public class DBOperator implements IDBOperate {
     private static final String TAG = DBOperator.class.getSimpleName();
-    private static DBOperator mInstance;
+    private static volatile DBOperator mInstance;
+    Semaphore transSema = new Semaphore(1);//信标 用于同步事务
 
     public static DBOperator getInstance() {
         if (mInstance == null) {
-            mInstance = new DBOperator(MyApplication.getInstance());
+            synchronized (DBOperator.class) {
+                if (mInstance == null)
+                    mInstance = new DBOperator(MyApplication.getInstance());
+            }
         }
         return mInstance;
     }
@@ -59,8 +66,7 @@ public class DBOperator implements IDBOperate {
                     return;
                 }
                 L.d("start addProtectedFile");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
                         userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");//先删除 再添加，实现更新
                 String[] strData = new String[DBHelper.ENUM_PROTECTED_FILES.values().length];
@@ -88,10 +94,10 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 L.d(TAG, "start addProtectedFiles");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
+                transSema.acquire();
+                db.beginTransaction();
                 try {
-                    db.beginTransaction();
                     for (FileInfo fileInfo : fileList) {
                         db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
                                 userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
@@ -108,9 +114,11 @@ public class DBOperator implements IDBOperate {
                         db.execSQL(sql);
                     }
                     db.setTransactionSuccessful();
-                    db.endTransaction();
                 } catch (Exception ex) {
                     e.onError(ex);
+                } finally {
+                    db.endTransaction();
+                    transSema.release();
                 }
                 mDBHelper.closeDatabase();
 
@@ -126,8 +134,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 L.d("start removeProtectedFile");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
                         userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
                 mDBHelper.closeDatabase();
@@ -148,20 +155,23 @@ public class DBOperator implements IDBOperate {
                     return;
                 }
                 L.d(TAG, "start addLockList");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
+
+                transSema.acquire();
+                db.beginTransaction();
                 try {
-                    db.beginTransaction();
                     for (FileInfo fileInfo : fileList) {
                         db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
                                 userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
                     }
                     db.setTransactionSuccessful();
-                    db.endTransaction();
-                    e.onNext(true);
                 } catch (Exception ex) {
                     e.onError(ex);
+                } finally {
+                    db.endTransaction();
+                    transSema.release();
                 }
+                e.onNext(true);
                 mDBHelper.closeDatabase();
 
                 e.onComplete();
@@ -175,8 +185,8 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<List<FileInfo>> e) throws Exception {
                 L.d(TAG, "start getAllLockInfo");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getReadableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(false);
+
                 String querySql = "select * from " + TABLE_NAME_PROTECTED_FILES;
 
                 if (!TextUtils.isEmpty(userId)) {//不为空则添加查询条件
@@ -220,8 +230,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 L.d("start addUserAccount");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_USER_ACCOUNT + " where USER_ID=\"" +
                         account.getUid() + "\";");//先删除 再添加，实现更新
                 String[] strData = new String[DBHelper.ENUM_USER_ACCOUNT.values().length];
@@ -247,8 +256,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 L.d("start addUserKey");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_USER_KEY + " where USER_ID=\"" +
                         account.getUid() + "\";");//先删除 再添加，实现更新
                 String[] strData = new String[DBHelper.ENUM_USER_KEY.values().length];
@@ -270,8 +278,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 L.d("start deleteUserAccount");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_USER_ACCOUNT + " where USER_ID=\"" +
                         account.getUid() + "\";");// 删除 账户信息
                 mDBHelper.closeDatabase();
@@ -288,8 +295,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 L.d("start deleteUserAccount");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getWritableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_USER_ACCOUNT + ";");// 删除 账户信息
                 mDBHelper.closeDatabase();
 
@@ -305,8 +311,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<UserAccount> e) throws Exception {
                 L.d("start getUserAccountInfo");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getReadableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(false);
                 String querySql = "select * from " + TABLE_NAME_USER_ACCOUNT + " left join " + TABLE_NAME_USER_KEY +
                         " on " + TABLE_NAME_USER_ACCOUNT + ".USER_ID = " + TABLE_NAME_USER_KEY + ".USER_ID";
 
@@ -354,8 +359,7 @@ public class DBOperator implements IDBOperate {
             @Override
             public void subscribe(ObservableEmitter<UserAccount> e) throws Exception {
                 L.d("start getUserKeyInfo");
-                mDBHelper.startUsingDatabase();
-                SQLiteDatabase db = mDBHelper.getReadableDatabase();
+                SQLiteDatabase db = mDBHelper.startUsingDatabase(false);
                 String querySql = "select * from " + TABLE_NAME_USER_KEY;
 
                 if (!TextUtils.isEmpty(uid)) {//不为空则添加查询条件

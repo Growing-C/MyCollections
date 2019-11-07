@@ -144,9 +144,8 @@ public class MediaManagerDemo extends BaseActivity {
                 startActivity(it);
                 break;
             case R.id.get_recent_files:
-//                scanFiles("CLImages");
                 scanFiles("Twitter");
-//                List<String> imageList = MediaHelper.getMediaImages(this, "CLImages");
+//                List<String> imageList = MediaHelper.getMediaImages(this, "xxx");
 //                L.e("getMediaImages 文件总数:" + imageList.size());
 //                for (int i = 0, len = imageList.size(); i < len; i++) {
 //                    L.e("getMediaImages:" + imageList.get(i));
@@ -159,11 +158,11 @@ public class MediaManagerDemo extends BaseActivity {
 //                }
                 break;
             case R.id.hide_files://隐藏文件
-                batchHideImage(new File("/storage/emulated/0/CLImages/"));
+                batchHideImage(new File("/storage/emulated/0/xxx/"));
                 batchHideImage(new File("/storage/emulated/0/Pictures/Twitter/"));
                 break;
             case R.id.show_files://显示文件
-                batchRecoverImage(new File("/storage/emulated/0/CLImages/"));
+                batchRecoverImage(new File("/storage/emulated/0/xxx/"));
                 batchHideImage(new File("/storage/emulated/0/Pictures/Twitter/"));
                 break;
             case R.id.add_file:
@@ -189,7 +188,7 @@ public class MediaManagerDemo extends BaseActivity {
      *
      * @param dirName
      */
-    //"CLImages"
+    //"xxx"
     public void scanFiles(String dirName) {
         List<String> imageList = MediaHelper.getMediaImages(this, dirName);
         L.e("getMediaImages 文件夹名：" + dirName + "-->文件总数:" + imageList.size());

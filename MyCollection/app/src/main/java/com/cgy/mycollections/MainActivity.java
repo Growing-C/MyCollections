@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -46,6 +49,9 @@ import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.utils.L;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,6 +97,25 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIt = new Intent(MainActivity.this, FloatingService.class);
         startService(serviceIt);
 
+        getAppList();
+    }
+
+    private void getAppList() {
+        PackageManager pm = getPackageManager();
+        // Return a List of all packages that are installed on the device.
+        List<PackageInfo> packages = pm.getInstalledPackages(0);
+        for (PackageInfo packageInfo : packages) {
+            // 判断系统/非系统应用
+            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) { // 非系统应用
+                L.e("test", "非系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
+            } else {
+                // 系统应用
+                L.e("test", "系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
+            }
+            if (packageInfo.packageName.toUpperCase().contains("webview".toUpperCase())){
+                L.e("test","aaaaaaaaaa:"+packageInfo.packageName);
+            }
+        }
     }
 
     private Demo[] demos = {

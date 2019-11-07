@@ -2,9 +2,10 @@ package appframe.permission;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.os.Build;
+
+import androidx.fragment.app.Fragment;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

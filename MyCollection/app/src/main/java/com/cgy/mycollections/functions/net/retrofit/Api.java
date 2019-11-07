@@ -313,19 +313,6 @@ public final class Api {
                         }
                         for (X509Certificate cert : chain) {
                             cert.checkValidity();
-                     /*   if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
-                            try {
-                                cert.verify(cert.getPublicKey());
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            } catch (InvalidKeyException e) {
-                                e.printStackTrace();
-                            } catch (NoSuchProviderException e) {
-                                e.printStackTrace();
-                            } catch (SignatureException e) {
-                                e.printStackTrace();
-                            }
-                        }*/
                         }
                     }
 

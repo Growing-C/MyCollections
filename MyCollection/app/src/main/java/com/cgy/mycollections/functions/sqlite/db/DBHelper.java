@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 数据库
  */
-public class DBHelper extends SQLiteOpenHelper {
+class DBHelper extends SQLiteOpenHelper {
     final static String DB_NAME = "bclbasic.db";
     final static int DB_VER = 2;
 
@@ -115,15 +115,16 @@ public class DBHelper extends SQLiteOpenHelper {
      * 开始使用数据库标志与{@link #closeDatabase}搭配使用来管理数据库的关闭,<br>
      * 一般应该在getWritableDatabase或getReadableDatabase调用前调用
      */
-    public void startUsingDatabase() {
+    SQLiteDatabase startUsingDatabase(boolean isWrite) {
         int count = mOpenCounter.incrementAndGet();
         L.d("start database for " + count);
+        return isWrite ? getWritableDatabase() : getReadableDatabase();
     }
 
     /**
      * 关闭数据库，仅在数据库没有在被占用的情况下才会关闭
      */
-    public void closeDatabase() {
+    void closeDatabase() {
         synchronized (mutex) {
             L.d("close database count: " + mOpenCounter.get());
             if (mOpenCounter.decrementAndGet() == 0) {
