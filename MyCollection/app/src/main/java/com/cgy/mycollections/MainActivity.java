@@ -1,7 +1,10 @@
 package com.cgy.mycollections;
 
+import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,7 +12,10 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -22,6 +28,8 @@ import android.os.Bundle;
 //import androidx.appcompat.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 
+import androidx.collection.ArrayMap;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,6 +60,7 @@ import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.utils.L;
 
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,13 +100,37 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(mainItemAdapter);
 
-        addNotification();//添加通知栏，没啥意义
-
         //打开悬浮球
         Intent serviceIt = new Intent(MainActivity.this, FloatingService.class);
         startService(serviceIt);
 
+        //下面的是展示用功能
+        addNotification();//添加通知栏，仅展示玩玩
         getAppList();
+        getTaskInfo();
+    }
+
+    /**
+     * task 信息 moveTaskToBack可以把当前task推入后台，如果当前app只有一个task会直接退入后台
+     * isTaskRoot 判断activity是不是栈底
+     * task.getTaskInfo().topActivity是栈顶 即当前显示的activity
+     */
+    private void getTaskInfo() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            L.e("test", isTaskRoot() + "--moveTaskToBack:" + moveTaskToBack(true));
+            ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.AppTask> appTasks = manager.getAppTasks();//获取当前app的task
+            if (appTasks != null) {
+                L.e("test", "appTasks:" + appTasks.size());
+                for (int i = 0, len = appTasks.size(); i < len; i++) {
+                    ActivityManager.AppTask task = appTasks.get(i);
+                    L.e("test", "numActivities:" + task.getTaskInfo().numActivities);
+                    L.e("test", "topActivity:" + task.getTaskInfo().topActivity.getClassName());
+                    L.e("test", "baseActivity:" + task.getTaskInfo().baseActivity.getShortClassName());
+//                L.e("test", "base:" + task.getTaskInfo().origActivity.getShortClassName());
+                }
+            }
+        }
     }
 
     private void getAppList() {
@@ -107,13 +140,13 @@ public class MainActivity extends AppCompatActivity {
         for (PackageInfo packageInfo : packages) {
             // 判断系统/非系统应用
             if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) { // 非系统应用
-                L.e("test", "非系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
+//                L.e("test", "非系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
             } else {
                 // 系统应用
-                L.e("test", "系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
+//                L.e("test", "系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
             }
-            if (packageInfo.packageName.toUpperCase().contains("webview".toUpperCase())){
-                L.e("test","aaaaaaaaaa:"+packageInfo.packageName);
+            if (packageInfo.packageName.toUpperCase().contains("webview".toUpperCase())) {
+                L.e("test", "aaaaaaaaaa:" + packageInfo.packageName);
             }
         }
     }
@@ -181,17 +214,60 @@ public class MainActivity extends AppCompatActivity {
 //        Intent notificationIntent = new Intent(this,TestActivity.class); //点击该通知后要跳转的Activity
 //        PendingIntent contentIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("自动抢红包").setContentText("保持通知栏显示可以防止进程结束").setTicker("aaa").setWhen(System.currentTimeMillis())
+//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        Notification notification = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
+//                .setContentTitle("自动抢红包").setContentText("保持通知栏显示可以防止进程结束").setTicker("aaa").setWhen(System.currentTimeMillis())
+//                .setPriority(Notification.PRIORITY_MAX)
+//                .setDefaults(Notification.DEFAULT_SOUND)
+//                .setOngoing(true)
+//                .setAutoCancel(true)
+//                .setContentIntent(null)
+//                .build();
+////        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+//        notificationManager.notify(0x100, notification);
+
+        //-----------------------------------------------------------------------------
+        Intent intent = new Intent(this, MediaManagerDemo.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.getInstance()
+                , 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationManager notificationManager =
+                (NotificationManager) MyApplication.getInstance().getSystemService(Context.NOTIFICATION_SERVICE);
+        //新版本需要设置channel
+        NotificationChannel channel = null;
+        NotificationCompat.Builder notificationBuilder = null;
+        String channelId = "test_channel_id";
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            channel = new NotificationChannel(channelId, "快速启动", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.enableLights(true); //是否在桌面icon右上角展示小红点
+            channel.setLightColor(Color.RED); //小红点颜色
+            channel.setShowBadge(true); //是否在久按桌面图标时显示此渠道的通知
+
+            notificationManager.createNotificationChannel(channel);
+            notificationBuilder = new NotificationCompat.Builder(this, channelId);
+        } else {
+            notificationBuilder = new NotificationCompat.Builder(this, channelId);
+        }
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        notificationBuilder
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("快速启动")
+                .setContentText("打开媒体管理")
+                .setTicker("aaa")
                 .setPriority(Notification.PRIORITY_MAX)
                 .setDefaults(Notification.DEFAULT_SOUND)
                 .setOngoing(true)
                 .setAutoCancel(true)
-                .setContentIntent(null)
-                .build();
-//        notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        notificationManager.notify(0x100, notification);
+                .setWhen(System.currentTimeMillis())
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+        Ringtone r = RingtoneManager.getRingtone(MyApplication.getInstance(), defaultSoundUri);
+        r.play();
+
+//        notificationBuilder.build().flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
+        notificationManager.notify(0x100 /* ID of notification */, notificationBuilder.build());
     }
 
 
