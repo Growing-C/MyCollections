@@ -42,13 +42,24 @@
             android:layout_below="@id/tv_title"
             android:gravity="center_vertical" />
 
+
         <ImageView
             android:id="@+id/has_child_arrow"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@android:drawable/arrow_down_float" />
+
+        <ImageView
+            android:id="@+id/drag_view"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/has_child_arrow"
+            android:layout_marginRight="@dimen/px18_margin"
+            android:tint="@color/textlight"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_dehaze_white_24dp" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -28,8 +28,8 @@ import android.os.Bundle;
 //import androidx.appcompat.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 
-import androidx.collection.ArrayMap;
 import androidx.core.app.NotificationCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,10 +57,11 @@ import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
 import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
+import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.utils.L;
 
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+
+    private ItemTouchHelper mItemTouchHelper;//滑动删除 拖拽实现
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +93,14 @@ public class MainActivity extends AppCompatActivity {
                 outRect.set(10, 10, 10, 15);
             }
         });
+        recyclerView.setHasFixedSize(true);//可以优化recyclerView
 
-        MainItemAdapter mainItemAdapter = new MainItemAdapter(demos);
+        MainItemAdapter mainItemAdapter = new MainItemAdapter(demos, new MainItemAdapter.OnStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+                mItemTouchHelper.startDrag(viewHolder);
+            }
+        });
         mainItemAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -99,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(mainItemAdapter);
+        initSwipeAndDrag(mainItemAdapter);
 
         //打开悬浮球
         Intent serviceIt = new Intent(MainActivity.this, FloatingService.class);
@@ -108,6 +118,12 @@ public class MainActivity extends AppCompatActivity {
         addNotification();//添加通知栏，仅展示玩玩
         getAppList();
         getTaskInfo();
+    }
+
+    private void initSwipeAndDrag(ItemTouchHelperAdapter itemAdapter) {
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter, this);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     /**
@@ -200,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            openFloatingBtn();
+            openFloatingWindow();
             return true;
         }
 
@@ -281,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
                     getSharedPreferences("mm", MODE_PRIVATE).edit().putBoolean("no_permission", true).commit();
                 } else {
                     Toast.makeText(MainActivity.this, "权限授予成功！", Toast.LENGTH_SHORT).show();
-                    openFloatingBtn();
+                    openFloatingWindow();
                 }
 
         }
@@ -290,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 打开悬浮窗口
      */
-    public void openFloatingBtn() {
+    public void openFloatingWindow() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (!Settings.canDrawOverlays(MainActivity.this)) {
                 SharedPreferences sp = getSharedPreferences("mm", MODE_PRIVATE);

@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.textdemo.fonttext;
+package com.cgy.mycollections.widgets;
 
 import android.content.Context;
 import android.graphics.Typeface;

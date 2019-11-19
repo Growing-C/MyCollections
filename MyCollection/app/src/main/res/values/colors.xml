@@ -11,7 +11,6 @@
     <color name="grey_CCCCCC">#CCCCCC</color>
 
 
-
     <color name="color_light_red_FBF0EE">#FBF0EE</color>
     <color name="color_dark_red_D75F61">#D75F61</color>
     <color name="color_red">#ff0000</color><!--红点，版本更新 -->
@@ -32,4 +31,7 @@
     <color name="pickerview_wheelview_textcolor_divider">#d5d5d5</color>
     <color name="bgColor_overlay">#60000000</color> <!--覆盖颜色-->
 
+    <!--    滑动删除和拖拽-->
+    <color name="red500">#db4437</color>
+    <color name="textlight">#546e7a</color>
 </resources>

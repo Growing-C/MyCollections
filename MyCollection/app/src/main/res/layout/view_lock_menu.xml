@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <com.cgy.mycollections.functions.ui.textdemo.fonttext.IconFontTextView
+    <com.cgy.mycollections.widgets.IconFontTextView
         android:id="@+id/close_menu"
         android:layout_width="45dp"
         android:layout_height="match_parent"
@@ -23,7 +23,7 @@
         android:visibility="gone">
 
 
-        <com.cgy.mycollections.functions.ui.textdemo.fonttext.IconFontTextView
+        <com.cgy.mycollections.widgets.IconFontTextView
             android:id="@+id/wifi"
             android:layout_width="50dp"
             android:layout_height="match_parent"
@@ -33,7 +33,7 @@
             android:textColor="@color/selector_lock_mode"
             android:textSize="18dp" />
 
-        <com.cgy.mycollections.functions.ui.textdemo.fonttext.IconFontTextView
+        <com.cgy.mycollections.widgets.IconFontTextView
             android:id="@+id/ble"
             android:layout_width="50dp"
             android:layout_height="match_parent"
@@ -43,7 +43,7 @@
             android:textColor="@color/selector_lock_mode"
             android:textSize="20dp" />
 
-        <com.cgy.mycollections.functions.ui.textdemo.fonttext.IconFontTextView
+        <com.cgy.mycollections.widgets.IconFontTextView
             android:id="@+id/normal"
             android:layout_width="50dp"
             android:layout_height="match_parent"
@@ -53,7 +53,7 @@
             android:textColor="?attr/colorPrimary"
             android:textSize="10dp" />
 
-        <com.cgy.mycollections.functions.ui.textdemo.fonttext.IconFontTextView
+        <com.cgy.mycollections.widgets.IconFontTextView
             android:id="@+id/fast"
             android:layout_width="50dp"
             android:layout_height="match_parent"

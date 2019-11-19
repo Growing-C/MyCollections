@@ -53,7 +53,7 @@ public class UiDemos extends AppCompatActivity {
             }
         });
 
-        MainItemAdapter mainItemAdapter = new MainItemAdapter(uiDemos);
+        MainItemAdapter mainItemAdapter = new MainItemAdapter(uiDemos, null);
         mainItemAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
