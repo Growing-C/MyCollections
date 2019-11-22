@@ -113,13 +113,8 @@ public class MainItemAdapter extends RecyclerView.Adapter<MainItemAdapter.Defaul
         L.e("test", "onItemDismiss position  :" + position);
 
         //右滑删除 的删除操作在此处进行，如果不操作会一直显示优化删除的图片
-        // 通过notifyDataSetChanged可以恢复recyclerView的状态到原始状态
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                notifyDataSetChanged();
-//            }
-//        }, 3000);
+        // 通过notifyItemChanged可以恢复recyclerView的状态到原始状态
+//        notifyItemChanged(position);
         notifyItemRemoved(position);
         demos.remove(position);
         notifyItemRangeChanged(0, getItemCount());

@@ -41,6 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.jetpack.JetPackDemos;
 import com.cgy.mycollections.functions.ui.UiDemos;
 import com.cgy.mycollections.functions.anim.AnimDemo;
@@ -243,7 +244,8 @@ public class MainActivity extends AppCompatActivity {
 //        notificationManager.notify(0x100, notification);
 
         //-----------------------------------------------------------------------------
-        Intent intent = new Intent(this, MediaManagerDemo.class);
+//        Intent intent = new Intent(this, MediaManagerDemo.class);
+        Intent intent = new Intent(this, ProtectedFilesActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.getInstance()
                 , 0, intent,

@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/permissions_fragment"
-        android:name="com.android.example.cameraxbasic.fragments.PermissionsFragment"
+        android:name="com.cgy.mycollections.functions.jetpack.camerax.fragments.PermissionsFragment"
         android:label="PermissionsFragment" >
 
         <action
@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/camera_fragment"
-        android:name="com.android.example.cameraxbasic.fragments.CameraFragment"
+        android:name="com.cgy.mycollections.functions.jetpack.camerax.fragments.CameraFragment"
         android:label="CameraFragment" >
 
         <action
@@ -52,7 +52,7 @@
 
     <fragment
         android:id="@+id/gallery_fragment"
-        android:name="com.android.example.cameraxbasic.fragments.GalleryFragment"
+        android:name="com.cgy.mycollections.functions.jetpack.camerax.fragments.GalleryFragment"
         android:label="GalleryFragment" >
         <argument
             android:name="root_directory"

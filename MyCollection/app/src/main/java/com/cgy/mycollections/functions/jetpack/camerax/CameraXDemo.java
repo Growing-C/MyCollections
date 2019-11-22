@@ -29,6 +29,9 @@ import butterknife.ButterKnife;
  */
 public class CameraXDemo extends BaseActivity {
 
+    public static final String KEY_EVENT_ACTION = "key_event_action";
+    public static final String KEY_EVENT_EXTRA = "key_event_extra";
+
     @BindView(R.id.fragment_container)
     FrameLayout container;
 
@@ -68,13 +71,13 @@ public class CameraXDemo extends BaseActivity {
     /**
      * Use external media if it is available, our app's file directory otherwise
      */
-    public File getOutputDirectory(Context context) {
+    public static File getOutputDirectory(Context context) {
         File outputDir = null;
 
         Context appContext = context.getApplicationContext();
         File[] mediaDirs = context.getExternalMediaDirs();
         if (mediaDirs != null && mediaDirs.length > 0) {
-            outputDir = new File(mediaDirs[0], getString(R.string.app_name));
+            outputDir = new File(mediaDirs[0], context.getString(R.string.app_name));
             outputDir.mkdirs();
             L.e("getOutputDirectory:" + outputDir);
         }

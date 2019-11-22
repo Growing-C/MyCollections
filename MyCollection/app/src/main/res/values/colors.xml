@@ -34,4 +34,10 @@
     <!--    滑动删除和拖拽-->
     <color name="red500">#db4437</color>
     <color name="textlight">#546e7a</color>
+
+
+    <!--    drawable中的verctor使用-->
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
 </resources>

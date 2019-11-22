@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.file;
+package com.cgy.mycollections.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
