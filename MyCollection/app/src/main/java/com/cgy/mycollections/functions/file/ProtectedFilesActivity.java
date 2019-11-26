@@ -2,6 +2,8 @@ package com.cgy.mycollections.functions.file;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +13,8 @@ import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
+import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.L;
@@ -62,7 +66,14 @@ public class ProtectedFilesActivity extends BaseActivity {
         mFileAdapter.setShowHideFiles(true);
         userId = CommonUtils.getUserId(this);
 
+//        initSwipeAndDrag(mFileAdapter);
         getProtectedFiles();
+    }
+
+    private void initSwipeAndDrag(ItemTouchHelperAdapter itemAdapter) {
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter, this);
+        ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(mProtectedFileListV);
     }
 
     private void getProtectedFiles() {

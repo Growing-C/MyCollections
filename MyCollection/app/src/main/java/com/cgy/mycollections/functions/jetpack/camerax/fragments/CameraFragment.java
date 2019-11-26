@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManager.DisplayListener;
@@ -49,18 +51,23 @@ import org.web3j.abi.datatypes.Int;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Unit;
 import kotlinx.coroutines.Dispatchers;
 
+import static android.provider.Telephony.Mms.Part.FILENAME;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 import static com.cgy.mycollections.functions.jetpack.camerax.CameraXDemo.KEY_EVENT_ACTION;
 import static com.cgy.mycollections.functions.jetpack.camerax.CameraXDemo.KEY_EVENT_EXTRA;
+import static com.cgy.mycollections.functions.jetpack.camerax.utils.ViewExtensionsKt.ANIMATION_FAST_MILLIS;
+import static com.cgy.mycollections.functions.jetpack.camerax.utils.ViewExtensionsKt.ANIMATION_SLOW_MILLIS;
 
 /**
  * Description :
@@ -261,8 +268,8 @@ public class CameraFragment extends Fragment {
                 displayId = viewFinder.getDisplay().getDisplayId();
 
                 // Build UI controls and bind all camera use cases
-//                updateCameraUi();
-//                bindCameraUseCases();
+                updateCameraUi();
+                bindCameraUseCases();
 //
 //                // In the background, load latest photo taken (if any) for gallery thumbnail
 //                lifecycleScope.launch(Dispatchers.IO) {
@@ -344,75 +351,92 @@ public class CameraFragment extends Fragment {
         CameraX.bindToLifecycle(getViewLifecycleOwner(), preview, imageCapture, imageAnalyzer);
     }
 
-//    /** Method used to re-draw the camera UI controls, called every time configuration changes */
+    //    /** Method used to re-draw the camera UI controls, called every time configuration changes */
 //    @SuppressLint("RestrictedApi")
-//    private fun updateCameraUi() {
-//
-//        // Remove previous UI if any
-//        container.findViewById<ConstraintLayout>(R.id.camera_ui_container)?.let {
-//            container.removeView(it)
-//        }
-//
-//        // Inflate a new view containing all UI for controlling the camera
-//        val controls = View.inflate(requireContext(), R.layout.camera_ui_container, container)
-//
-//        // Listener for button used to capture photo
-//        controls.findViewById<ImageButton>(R.id.camera_capture_button).setOnClickListener {
-//            // Get a stable reference of the modifiable image capture use case
-//            imageCapture?.let { imageCapture ->
-//
-//                    // Create output file to hold the image
-//                    val photoFile = createFile(outputDirectory, FILENAME, PHOTO_EXTENSION)
-//
-//                // Setup image capture metadata
-//                val metadata = Metadata().apply {
-//                    // Mirror image when using the front camera
-//                    isReversedHorizontal = lensFacing == CameraX.LensFacing.FRONT
-//                }
-//
-//                // Setup image capture listener which is triggered after photo has been taken
-//                imageCapture.takePicture(photoFile, imageSavedListener, metadata)
-//
-//                // We can only change the foreground Drawable using API level 23+ API
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//                    // Display flash animation to indicate that photo was captured
-//                    container.postDelayed({
-//                            container.foreground = ColorDrawable(Color.WHITE)
-//                            container.postDelayed(
-//                                    { container.foreground = null }, ANIMATION_FAST_MILLIS)
-//                    }, ANIMATION_SLOW_MILLIS)
-//                }
-//            }
-//        }
-//
-//        // Listener for button used to switch cameras
-//        controls.findViewById<ImageButton>(R.id.camera_switch_button).setOnClickListener {
-//            lensFacing = if (CameraX.LensFacing.FRONT == lensFacing) {
-//                CameraX.LensFacing.BACK
-//            } else {
-//                CameraX.LensFacing.FRONT
-//            }
-//            try {
-//                // Only bind use cases if we can query a camera with this orientation
-//                CameraX.getCameraWithLensFacing(lensFacing)
-//
-//                // Unbind all use cases and bind them again with the new lens facing configuration
-//                CameraX.unbindAll()
-//                bindCameraUseCases()
-//            } catch (exc: Exception) {
-//                // Do nothing
-//            }
-//        }
-//
-//        // Listener for button used to view last photo
-//        controls.findViewById<ImageButton>(R.id.photo_view_button).setOnClickListener {
-//            Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-//                    CameraFragmentDirections.actionCameraToGallery(outputDirectory.absolutePath))
-//        }
-//    }
-//
-//
+    private void updateCameraUi() {
+
+        // Remove previous UI if any
+        View cameraUi = container.findViewById(R.id.camera_ui_container);
+        if (cameraUi != null) {
+            container.removeView(cameraUi);
+        }
+
+        // Inflate a new view containing all UI for controlling the camera
+        View controls = View.inflate(requireContext(), R.layout.camera_ui_container, container);
+
+        // Listener for button used to capture photo
+        controls.findViewById(R.id.camera_capture_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get a stable reference of the modifiable image capture use case
+                if (imageCapture != null) {
+
+                    // Create output file to hold the image
+                    File photoFile = createFile(outputDirectory, FILENAME, PHOTO_EXTENSION);
+
+                    // Setup image capture metadata
+                    ImageCapture.Metadata metadata = new ImageCapture.Metadata();
+                    // Mirror image when using the front camera
+                    metadata.isReversedHorizontal = lensFacing == CameraX.LensFacing.FRONT;
+
+                    // Setup image capture listener which is triggered after photo has been taken
+                    imageCapture.takePicture(photoFile, imageSavedListener, metadata);
+
+                    // We can only change the foreground Drawable using API level 23+ API
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                        // Display flash animation to indicate that photo was captured
+                        container.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                container.setForeground(new ColorDrawable(Color.WHITE));
+                                container.postDelayed(new Runnable() {
+                                                          @Override
+                                                          public void run() {
+                                                              container.setForeground(null);
+                                                          }
+                                                      }
+                                        , ANIMATION_FAST_MILLIS);
+                            }
+                        }, ANIMATION_SLOW_MILLIS);
+                    }
+                }
+            }
+        });
+        // Listener for button used to switch cameras
+        controls.findViewById(R.id.camera_switch_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CameraX.LensFacing.FRONT == lensFacing) {
+                    lensFacing = CameraX.LensFacing.BACK;
+                } else {
+                    lensFacing = CameraX.LensFacing.FRONT;
+                }
+                try {
+                    // Only bind use cases if we can query a camera with this orientation
+//                CameraX.getCameraWithLensFacing(lensFacing);
+
+                    // Unbind all use cases and bind them again with the new lens facing configuration
+                    CameraX.unbindAll();
+                    bindCameraUseCases();
+                } catch (Exception exc) {
+                    // Do nothing
+                }
+            }
+        });
+
+        // Listener for button used to view last photo
+        controls.findViewById(R.id.photo_view_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+                        CameraFragmentDirections.actionCameraToGallery(outputDirectory.getAbsolutePath()));
+            }
+        });
+
+
+    }
+
 
     interface LumaListener {
         void doSomething(double d);
@@ -529,17 +553,23 @@ public class CameraFragment extends Fragment {
                 }
             }
         }
+
     }
+
 
     //---------------------------------------companion------------------------------------------
 //    companion object {
-    private final String TAG = "CameraXBasic";
-    private final String FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS";
-    private final String PHOTO_EXTENSION = ".jpg";
+    final String TAG = "CameraXBasic";
+    final String FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS";
+    final String PHOTO_EXTENSION = ".jpg";
 //
-//        /** Helper function used to create a timestamped file */
-//        private fun createFile(baseFolder: File, format: String, extension: String) =
-//        File(baseFolder, SimpleDateFormat(format, Locale.US)
-//                .format(System.currentTimeMillis()) + extension)
+
+    /**
+     * Helper function used to create a timestamped file
+     */
+    private File createFile(File baseFolder, String format, String extension) {
+        return new File(baseFolder, new SimpleDateFormat(format, Locale.US)
+                .format(System.currentTimeMillis()) + extension);
+    }
 //    }
 }

@@ -60,6 +60,7 @@ import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
+import com.cgy.mycollections.testsources.DataTest;
 import com.cgy.mycollections.utils.L;
 
 import java.util.List;
