@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.ui.wheel.rvgallery.lib.ISelectableViewHolder;
 import com.cgy.mycollections.utils.L;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,7 +23,7 @@ import java.util.Random;
  */
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyHolder> {
-    private final String TAG="RecyclerAdapter";
+    private final String TAG = "RecyclerAdapter";
     private Context mContext;
     private List<Integer> mDatas;
 
@@ -36,20 +37,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyHold
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        L.d( TAG, "RecyclerAdapter onAttachedToRecyclerView");
+        L.d(TAG, "RecyclerAdapter onAttachedToRecyclerView");
         super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
     public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        L.d( TAG, "RecyclerAdapter onCreateViewHolder" + " width = " + parent.getWidth());
+        L.d(TAG, "RecyclerAdapter onCreateViewHolder" + " width = " + parent.getWidth());
         View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_gallery, parent, false);
         return new MyHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(final MyHolder holder, final int position) {
-        L.d( TAG, "RecyclerAdapter onBindViewHolder" + "--> position = " + position);
+        L.d(TAG, "RecyclerAdapter onBindViewHolder" + "--> position = " + position);
         holder.mView.setImageResource(mDatas.get(holder.getAdapterPosition()));
         holder.mChange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +72,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyHold
         return mDatas.size();
     }
 
-    static class MyHolder extends RecyclerView.ViewHolder {
+    static class MyHolder extends RecyclerView.ViewHolder implements ISelectableViewHolder {
         final ImageView mView;
         FloatingActionButton mChange;
 
@@ -79,6 +80,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyHold
             super(itemView);
             mView = itemView.findViewById(R.id.iv_photo);
             mChange = itemView.findViewById(R.id.fab_change);
+        }
+
+        @Override
+        public void select(int pos) {
+            itemView.setScaleX((1 + 0.15f));
+            itemView.setScaleY((1 + 0.15f));
+        }
+
+        @Override
+        public void unSelect(int pos) {
+            itemView.setScaleX(1);
+            itemView.setScaleY(1);
         }
     }
 

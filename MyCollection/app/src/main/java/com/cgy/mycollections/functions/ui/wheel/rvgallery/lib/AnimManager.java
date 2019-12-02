@@ -65,35 +65,50 @@ public class AnimManager {
      * @param percent          float
      */
     private void setBottomToTopAnim(RecyclerView recyclerView, int snapViewPosition, float percent) {
-        // 中间页
-        View mCurView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition);
-        // 右边页
-//        View mRightView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition + 1);
-        // 左边页
-//        View mLeftView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition - 1);
-        // 右右边页
-//        View mRRView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition + 2);
-
+        //选中中间页
+        RecyclerView.ViewHolder itemViewHolder = recyclerView.findViewHolderForAdapterPosition(snapViewPosition);
         L.d("AnimManager", "AnimManager setBottomToTopAnim snapViewPosition-->" + snapViewPosition);
+//        L.d("MainActivity_TAG", "AnimManager setBottomToTopAnim getChildAdapterPosition-->" +  recyclerView.getChildAdapterPosition(mCurView));
 
-        if (mCurView != null) {
-            mCurView.setScaleX((1 + mAnimFactor));
-            mCurView.setScaleY((1 + mAnimFactor));
+        if (itemViewHolder instanceof ISelectableViewHolder) {
+            ((ISelectableViewHolder) itemViewHolder).select(snapViewPosition);//选中的需要放大 加设置背景
         }
 
-        int sideItemCount = mVisibleItemCount / 2+2;//中心view两边view的数量(+2表示两个未显示完全的左右的view)
+        // 中间页
+//        View mCurView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition);
+//        L.d("AnimManager", "AnimManager setBottomToTopAnim snapViewPosition-->" + snapViewPosition);
+//
+//        if (mCurView != null) {
+//            mCurView.setScaleX((1 + mAnimFactor));
+//            mCurView.setScaleY((1 + mAnimFactor));
+//        }
+
+        //将屏幕上其他非中心页 取消选中
+        int sideItemCount = mVisibleItemCount / 2 + 2;//中心view两边view的数量(+2表示两个未显示完全的左右的view)
         if (sideItemCount > 0) {
             for (int i = 0; i < sideItemCount; i++) {
-                View leftView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition - 1 - i);
-                View rightView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition + 1 + i);
-                if (leftView != null) {
-                    leftView.setScaleX(1);
-                    leftView.setScaleY(1);
+                int leftPos = snapViewPosition - 1 - i;
+                int rightPos = snapViewPosition + 1 + i;
+
+                RecyclerView.ViewHolder leftViewHolder = recyclerView.findViewHolderForAdapterPosition(leftPos);
+                RecyclerView.ViewHolder rightViewHolder = recyclerView.findViewHolderForAdapterPosition(rightPos);
+                if (leftViewHolder instanceof ISelectableViewHolder) {
+                    ((ISelectableViewHolder) leftViewHolder).unSelect(leftPos);
                 }
-                if (rightView != null) {
-                    rightView.setScaleX(1);
-                    rightView.setScaleY(1);
+                if (rightViewHolder instanceof ISelectableViewHolder) {
+                    ((ISelectableViewHolder) rightViewHolder).unSelect(rightPos);
                 }
+
+//                View leftView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition - 1 - i);
+//                View rightView = recyclerView.getLayoutManager().findViewByPosition(snapViewPosition + 1 + i);
+//                if (leftView != null) {
+//                    leftView.setScaleX(1);
+//                    leftView.setScaleY(1);
+//                }
+//                if (rightView != null) {
+//                    rightView.setScaleX(1);
+//                    rightView.setScaleY(1);
+//                }
             }
         }
 
