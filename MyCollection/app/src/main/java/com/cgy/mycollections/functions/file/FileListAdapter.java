@@ -1,7 +1,9 @@
 package com.cgy.mycollections.functions.file;
 
 //import androidx.appcompat.widget.RecyclerView;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +37,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
     public FileListAdapter() {
     }
 
+    public FileListAdapter(boolean showHide) {
+        this.mShowHide = showHide;
+    }
+
     public void setShowHideFiles(boolean showHide) {
         this.mShowHide = showHide;
         notifyDataSetChanged();
@@ -43,6 +49,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
     public void setData(List<FileInfo> list) {
         this.mFileList = list;
         notifyDataSetChanged();
+    }
+
+    public List<FileInfo> getData() {
+        return mFileList;
     }
 
     public void setIsSelect(boolean isSelect) {

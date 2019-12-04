@@ -57,6 +57,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Unit;
@@ -345,7 +348,7 @@ public class CameraFragment extends Fragment {
             }
 
         });
-        imageAnalyzer.setAnalyzer(luminosityAnalyzer);
+        imageAnalyzer.setAnalyzer(Executors.newFixedThreadPool(5), luminosityAnalyzer);
 
         // Apply declared configs to CameraX using the same lifecycle owner
         CameraX.bindToLifecycle(getViewLifecycleOwner(), preview, imageCapture, imageAnalyzer);
@@ -380,7 +383,7 @@ public class CameraFragment extends Fragment {
                     metadata.isReversedHorizontal = lensFacing == CameraX.LensFacing.FRONT;
 
                     // Setup image capture listener which is triggered after photo has been taken
-                    imageCapture.takePicture(photoFile, imageSavedListener, metadata);
+                    imageCapture.takePicture(photoFile, metadata, Executors.newFixedThreadPool(5), imageSavedListener);
 
                     // We can only change the foreground Drawable using API level 23+ API
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

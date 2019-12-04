@@ -1,13 +1,18 @@
 package com.cgy.mycollections.functions.file;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
@@ -19,8 +24,16 @@ import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.L;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
+import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
+import com.yanzhenjie.recyclerview.SwipeMenu;
+import com.yanzhenjie.recyclerview.SwipeMenuBridge;
+import com.yanzhenjie.recyclerview.SwipeMenuCreator;
+import com.yanzhenjie.recyclerview.SwipeMenuItem;
+import com.yanzhenjie.recyclerview.SwipeRecyclerView;
+import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;
@@ -38,7 +51,7 @@ import io.reactivex.observers.DisposableObserver;
  */
 public class ProtectedFilesActivity extends BaseActivity {
     @BindView(R.id.protected_files)
-    RecyclerView mProtectedFileListV;
+    SwipeRecyclerView mProtectedFileListV;
 
     FileListAdapter mFileAdapter;
 
@@ -47,33 +60,231 @@ public class ProtectedFilesActivity extends BaseActivity {
 
     boolean mIsProtect = false;
 
+    // 创建菜单：
+    SwipeMenuCreator mSwipeMenuCreator = new SwipeMenuCreator() {
+        @Override
+        public void onCreateMenu(SwipeMenu leftMenu, SwipeMenu rightMenu, int position) {
+
+            SwipeMenuItem removeProtectItem = new SwipeMenuItem(ProtectedFilesActivity.this);
+            removeProtectItem.setText("保护");
+            removeProtectItem.setTextColor(ContextCompat.getColor(ProtectedFilesActivity.this, android.R.color.white));
+            removeProtectItem.setImage(R.drawable.ic_switch);
+            removeProtectItem.setBackground(R.drawable.shape_rec);
+            removeProtectItem.setWidth(200);
+            removeProtectItem.setBackgroundColor(ContextCompat.getColor(ProtectedFilesActivity.this, R.color.colorPrimaryDark));
+            removeProtectItem.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            // 各种文字和图标属性设置。
+            rightMenu.addMenuItem(removeProtectItem); // 在Item右侧添加一个菜单。
+
+
+            SwipeMenuItem deleteItem = new SwipeMenuItem(ProtectedFilesActivity.this); // 各种文字和图标属性设置。
+            deleteItem.setText("删除");
+            deleteItem.setTextColor(ContextCompat.getColor(ProtectedFilesActivity.this, android.R.color.white));
+            deleteItem.setImage(R.drawable.ic_delete);
+            deleteItem.setBackground(R.drawable.shape_rec);
+            deleteItem.setWidth(200);
+            deleteItem.setBackgroundColor(ContextCompat.getColor(ProtectedFilesActivity.this, R.color.color_red));
+            deleteItem.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            rightMenu.addMenuItem(deleteItem); // 在Item左侧添加一个菜单。
+        }
+    };
+    OnItemMenuClickListener mItemMenuClickListener = new OnItemMenuClickListener() {
+        @Override
+        public void onItemClick(SwipeMenuBridge menuBridge, int position) {
+            // 任何操作必须先关闭菜单，否则可能出现Item菜单打开状态错乱。
+            menuBridge.closeMenu();
+
+            // 左侧还是右侧菜单：
+            int direction = menuBridge.getDirection();
+            // 菜单在Item中的Position：
+            int menuPosition = menuBridge.getPosition();
+            L.e("mItemMenuClickListener direction:" + direction + " menuPosition:" + menuPosition);
+            if (direction == SwipeRecyclerView.RIGHT_DIRECTION) {
+                switch (menuPosition) {
+                    case 0://保护 取消保护
+                        switchProtectStatus(position);
+                        break;
+                    case 1://删除
+                        showDeleteDialog(position);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+    OnItemMoveListener mItemMoveListener = new OnItemMoveListener() {
+        @Override
+        public boolean onItemMove(RecyclerView.ViewHolder srcHolder, RecyclerView.ViewHolder targetHolder) {
+            // 此方法在Item拖拽交换位置时被调用。
+            // 第一个参数是要交换为之的Item，第二个是目标位置的Item。
+
+            // 交换数据，并更新adapter。
+            int fromPosition = srcHolder.getAdapterPosition();
+            int toPosition = targetHolder.getAdapterPosition();
+            Collections.swap(mFileAdapter.getData(), fromPosition, toPosition);
+            mFileAdapter.notifyItemMoved(fromPosition, toPosition);
+
+            // 返回true，表示数据交换成功，ItemView可以交换位置。
+            return true;
+        }
+
+        @Override
+        public void onItemDismiss(RecyclerView.ViewHolder srcHolder) {
+            // 此方法在Item在侧滑删除时被调用。
+
+            // 从数据源移除该Item对应的数据，并刷新Adapter。
+            int position = srcHolder.getAdapterPosition();
+            mFileAdapter.getData().remove(position);
+            mFileAdapter.notifyItemRemoved(position);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_protected_files);
         ButterKnife.bind(this);
 
-        mProtectedFileListV.setLayoutManager(new LinearLayoutManager(this));
-        mFileAdapter = new FileListAdapter();
-        mFileAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-            }
-        });
-        mProtectedFileListV.setAdapter(mFileAdapter);
-        mProtectedFileListV.addItemDecoration(new SpaceItemDecoration(2));
+        initSwipe();
 
-        mFileAdapter.setShowHideFiles(true);
         userId = CommonUtils.getUserId(this);
 
 //        initSwipeAndDrag(mFileAdapter);
         getProtectedFiles();
     }
 
+    private void initSwipe() {
+        //此库也用了itemTouchHelper不过只有设置了.setItemViewSwipeEnabled(true)才会侧滑删除，但是此侧滑删除就和SwipeMenuCreator无关了
+        mProtectedFileListV.setLayoutManager(new LinearLayoutManager(this));
+        mFileAdapter = new FileListAdapter(true);
+        mFileAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                L.e("mFileAdapter onItemClick:" + position);
+                FileInfoDialogFragment.newInstance(mFileList.get(position))
+                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+            }
+        });
+        mProtectedFileListV.addItemDecoration(new SpaceItemDecoration(2));
+
+        mProtectedFileListV.setLongPressDragEnabled(true); // 拖拽排序，默认关闭。
+//        mProtectedFileListV.setItemViewSwipeEnabled(true); // 侧滑删除，默认关闭。
+
+        // 设置监听器。
+        mProtectedFileListV.setSwipeMenuCreator(mSwipeMenuCreator);
+
+        // 菜单点击监听。
+        mProtectedFileListV.setOnItemMenuClickListener(mItemMenuClickListener);
+        mProtectedFileListV.setOnItemMoveListener(mItemMoveListener);// 监听拖拽，更新UI。
+
+        mProtectedFileListV.setAdapter(mFileAdapter);
+    }
+
     private void initSwipeAndDrag(ItemTouchHelperAdapter itemAdapter) {
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter, this);
         ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(mProtectedFileListV);
+    }
+
+    /**
+     * 切换某个位置的文件保护状态
+     *
+     * @param position
+     */
+    private void switchProtectStatus(int position) {
+        FileInfo fileInfo = mFileList.get(position);
+
+        if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
+            //已保护就切换成未保护
+            if (fileInfo.file.isDirectory()) {
+                FileUtil.showFilesUnderDir(this, fileInfo.file);
+            } else {
+                FileUtil.showSingleFile(this, fileInfo.file);
+            }
+            fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
+        } else {
+            if (fileInfo.file.isDirectory()) {
+                FileUtil.hideFilesUnderDir(this, fileInfo.file);
+            } else {
+                FileUtil.hideSingleFile(this, fileInfo.file);
+            }
+            fileInfo.protectState = FileConstants.STATE_PROTECTED;
+        }
+
+        DBOperator.getInstance().addProtectedFile(userId, fileInfo).subscribe(new DisposableObserver<Boolean>() {
+            @Override
+            public void onNext(Boolean o) {
+                showToast("操作完成");
+                mFileAdapter.notifyItemChanged(position);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showToast("onError:" + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+    }
+
+    private void showDeleteDialog(int position) {
+        FileInfo fileInfo = mFileList.get(position);
+        new AlertDialog.Builder(ProtectedFilesActivity.this)
+                .setMessage("确认删除文件：\n" + fileInfo.filePath)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteProtectedFile(position);
+                    }
+                }).create().show();
+    }
+
+    /**
+     * 删除已保护的文件夹或者文件，仅仅是删除数据库，本地文件还在
+     *
+     * @param position
+     */
+    private void deleteProtectedFile(int position) {
+        FileInfo fileInfo = mFileList.get(position);
+
+        if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
+            //已保护就切换成未保护
+            if (fileInfo.file.isDirectory()) {
+                FileUtil.showFilesUnderDir(this, fileInfo.file);
+            } else {
+                FileUtil.showSingleFile(this, fileInfo.file);
+            }
+            fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
+        }
+
+        DBOperator.getInstance().removeProtectedFile(userId, fileInfo).subscribe(new DisposableObserver<Boolean>() {
+            @Override
+            public void onNext(Boolean success) {
+                if (success) {
+                    showToast("删除成功");
+                    mFileAdapter.getData().remove(position);
+                    mFileAdapter.notifyItemRemoved(position);
+                } else {
+                    showToast("删除失败");
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showToast("onError:" + e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     private void getProtectedFiles() {

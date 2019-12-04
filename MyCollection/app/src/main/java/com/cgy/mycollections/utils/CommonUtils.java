@@ -19,10 +19,10 @@ public class CommonUtils {
         String userId = SharePreUtil.getString(FileConstants.PREF_USER, context, FileConstants.KEY_USER_ID);
         if (TextUtils.isEmpty(userId)) {
             userId = UUID.randomUUID().toString();
-            L.e("userId:" + userId);
             SharePreUtil.putString(FileConstants.PREF_USER, context, FileConstants.KEY_USER_ID, userId);
         }
 
+        L.e("getUserId userId:" + userId);
         return userId;
     }
 }

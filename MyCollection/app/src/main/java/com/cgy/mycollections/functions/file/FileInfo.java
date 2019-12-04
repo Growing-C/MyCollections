@@ -1,11 +1,13 @@
 package com.cgy.mycollections.functions.file;
 
 import androidx.annotation.NonNull;
+
 import android.text.TextUtils;
 
 import com.cgy.mycollections.utils.PinYinUtils;
 
 import java.io.File;
+import java.io.Serializable;
 
 import appframe.utils.TimeUtils;
 
@@ -14,15 +16,15 @@ import appframe.utils.TimeUtils;
  * Author :cgy
  * Date :2019/7/25
  */
-public class FileInfo {
+public class FileInfo implements Serializable {
     public File file;
     public String fileName;
     public String filePath;
 
     public String fileFirstLetter;
 
-    public int protectState = 0;
-    public long addProtectDate = 0;
+    public int protectState = 0;//保护状态 0 未保护 1 已保护
+    public long addProtectDate = 0;//添加保护的日期
 
     public FileInfo(@NonNull File file) {
         this.file = file;
@@ -55,10 +57,26 @@ public class FileInfo {
         return fileFirstLetter;
     }
 
+    /**
+     * 获取上次修改文件的时间
+     *
+     * @return
+     */
     public String getLastModifyTime() {
         if (file != null) {
             return TimeUtils.getTime(file.lastModified());
         }
+        return "";
+    }
+
+    /**
+     * 获取添加保护的时间
+     *
+     * @return
+     */
+    public String getAddProtectDate() {
+        if (addProtectDate > 0)
+            return TimeUtils.getTime(addProtectDate);
         return "";
     }
 

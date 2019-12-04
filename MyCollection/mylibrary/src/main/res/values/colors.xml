@@ -6,7 +6,7 @@
 
     <color name="divider_grey_dfdfdf">#DFDFDF</color>
 
-    <color name="grey_loading_000e13">#000e13</color>
+    <color name="black_loading_000e13">#000e13</color>
 
     <!--toast-->
     <color name="cardShadowColor_1">#0a8c8c8c</color>
