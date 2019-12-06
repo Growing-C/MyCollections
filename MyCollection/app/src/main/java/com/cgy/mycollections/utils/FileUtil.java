@@ -9,7 +9,9 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
+
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -56,38 +58,22 @@ public class FileUtil {
     //--------------------新增-------------------------------
 
     /**
-     * 扫描某个目录下的文件，目标是让系统 图册中 刷新该文件夹中的图片
+     * 指定硬盘缓存的目录，有sd卡优先sd卡，没有sd卡就使用fileSystem中的
      *
-     * @param dirName
+     * @param context
+     * @param uniqueName
+     * @return
      */
-    public static void scanImageFiles(@NonNull Context context, String dirName) {
-        List<String> imageList = MediaHelper.getMediaImages(context, dirName);
-        L.e("getMediaImages 文件夹名：" + dirName + "-->文件总数:" + imageList.size());
-        if (imageList.isEmpty())
-            return;
-
-        String[] pathList = new String[imageList.size()];
-        for (int i = 0, len = imageList.size(); i < len; i++) {
-            L.d("getMediaImages:" + imageList.get(i));
-            pathList[i] = imageList.get(i);
-            //通过广播 也可以实现扫描 不过可能需要在BroadcastReceiver中接收扫描完成事件，不太方便
-//            File file = new File(imageList.get(i));
-//
-//            Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//            it.setData(Uri.fromFile(file));
-//            sendBroadcast(it);
+    public File getDiskCacheDir(Context context, String uniqueName) {
+        String cachePath;
+        if ((Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable())
+                && context.getExternalCacheDir() != null) {
+            cachePath = context.getExternalCacheDir().getPath();
+        } else {
+            cachePath = context.getCacheDir().getPath();
         }
-        try {
-            //直接全部扫描
-            MediaScannerConnection.scanFile(context, pathList,
-                    null, new MediaScannerConnection.OnScanCompletedListener() {
-                        public void onScanCompleted(String path, Uri uri) {
-                            L.e("onScanCompleted path:" + path + "    ---uri:" + uri);
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return new File(cachePath + File.separator + uniqueName);
     }
 
     public static void handlerGetFile(String filePath) {
@@ -102,6 +88,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 列出文件夹中的所有文件
+     *
+     * @param file
+     */
     public static void listFile(File file) {
         Preconditions.checkNotNull(file);
 

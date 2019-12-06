@@ -4,18 +4,22 @@ import androidx.annotation.NonNull;
 //import androidx.appcompat.widget.RecyclerView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
+import com.cgy.mycollections.utils.image.ImageLoader;
 
 import java.util.List;
 
+import appframe.utils.DisplayHelperUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -29,6 +33,14 @@ public class MediaImageAdapter extends RecyclerView.Adapter<MediaImageAdapter.Me
     List<ThumbnailInfo> mThumbnailList;
 
     private OnTItemClickListener<ThumbnailInfo> mOnItemClickListener;
+
+    int itemImageWidth = 0;
+    int itemImageHeight = 0;
+
+    public MediaImageAdapter() {
+        itemImageWidth = DisplayHelperUtils.getScreenWidth() / 2 - 20;
+        itemImageHeight = itemImageWidth;
+    }
 
     public void setOnItemClickListener(OnTItemClickListener<ThumbnailInfo> onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
@@ -50,6 +62,13 @@ public class MediaImageAdapter extends RecyclerView.Adapter<MediaImageAdapter.Me
         holder.setData(mThumbnailList.get(position));
     }
 
+    public ThumbnailInfo getItem(int pos) {
+        if (mThumbnailList != null && pos < mThumbnailList.size()) {
+            return mThumbnailList.get(pos);
+        }
+        return null;
+    }
+
     @Override
     public int getItemCount() {
         return mThumbnailList == null ? 0 : mThumbnailList.size();
@@ -65,11 +84,24 @@ public class MediaImageAdapter extends RecyclerView.Adapter<MediaImageAdapter.Me
             super(itemView);
             ButterKnife.bind(this, itemView);
 
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageV.getLayoutParams();
+            params.width = itemImageWidth;
+            params.height = itemImageHeight;
+            imageV.setLayoutParams(params);
+            imageV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnItemClickListener != null) {
+                        int pos = getAdapterPosition();
+                        mOnItemClickListener.onItemClickOne(pos, getItem(pos));
+                    }
+                }
+            });
         }
 
         public void setData(ThumbnailInfo thumbnailInfo) {
             pathV.setText(thumbnailInfo.data);
-
+            ImageLoader.loadImageFitCenter(imageV.getContext(), thumbnailInfo.data, imageV);
         }
 
 //        @OnClick({R.id.connect, R.id.disconnect})

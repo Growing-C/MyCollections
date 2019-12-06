@@ -13,7 +13,6 @@ public class GlideCircleTransformCenterCrop extends CenterCrop {
     private int bitMapSize;
 
     public GlideCircleTransformCenterCrop(Context context) {
-        super(context);
     }
 
     @Override

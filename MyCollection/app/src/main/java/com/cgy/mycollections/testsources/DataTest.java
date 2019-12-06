@@ -1,13 +1,10 @@
 package com.cgy.mycollections.testsources;
 
-import com.cgy.mycollections.utils.BinaryUtil;
-import com.cgy.mycollections.utils.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.CHexConverter;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.web3j.utils.Numeric;
 
 /**

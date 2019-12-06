@@ -19,8 +19,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.UserHandle;
 import android.provider.Settings;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -48,6 +50,17 @@ public class SystemUtil {
 
     private SystemUtil() {
 
+    }
+
+    /**
+     * 获取系统最大可以使用的内存
+     *
+     * @return
+     */
+    public static int getMaxSystemMemory() {
+        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        Log.d("TAG", "Max memory is " + maxMemory + "KB");
+        return maxMemory;
     }
 
     /**

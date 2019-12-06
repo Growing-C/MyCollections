@@ -25,7 +25,6 @@ import com.cgy.mycollections.functions.ble.scan.BLEScanner;
 import com.cgy.mycollections.functions.ble.scan.IBLEScanObserver;
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
-import com.cgy.mycollections.utils.BinaryUtil;
 import com.cgy.mycollections.utils.L;
 
 import java.util.ArrayList;

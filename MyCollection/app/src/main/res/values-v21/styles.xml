@@ -15,20 +15,37 @@
         <item name="android:dropDownVerticalOffset">4dp</item>
         <!-- 弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙 -->
         <item name="android:dropDownHorizontalOffset">0dp</item>
-        <!-- 设置弹出菜单文字颜色 似乎无效!!，需使用toolbar_pop_theme-->
-        <!--<item name="android:actionMenuTextColor">@android:color/holo_red_dark</item>-->
-        <!--<item name="android:dropDownListViewStyle">@style/AppDropDownListViewStyle</item>-->
+        <item name="android:actionMenuTextColor">@android:color/black</item>
+        <item name="actionMenuTextColor">@android:color/black</item>
 
-    </style>
 
-    <style name="toolbar_pop_theme">
+        <item name="android:colorButtonNormal">@android:color/black</item>
         <!--文字颜色-->
-        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColor">@android:color/white</item>
         <!--文字大小-->
         <item name="android:textSize">18sp</item>
         <!--文字风格-->
         <item name="android:textStyle">bold|italic</item>
         <!--图标与文字的间距-->
         <item name="android:drawablePadding">10dp</item>
+        <!--菜单背景色-->
+        <item name="android:itemBackground">@android:color/holo_green_light</item>
+        <!--check 选中框颜色-->
+        <item name="colorAccent">@android:color/white</item>
+
+        <!--        <item name="android:actionButtonStyle">@style/action_button_style</item>-->
+        <!--        <item name="android:buttonTint">@android:color/white</item>-->
+        <!-- 设置弹出菜单文字颜色 似乎无效!!，需使用toolbar_pop_theme-->
+        <!--        <item name="android:actionMenuTextColor">@android:color/white</item>-->
+        <!--<item name="android:dropDownListViewStyle">@style/AppDropDownListViewStyle</item>-->
+
+    </style>
+
+    <!--设置toolbar颜色-->
+    <style name="ToolbarTheme">
+        <!--        控制菜单icon如三点的颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <!--        控制toolbar上面显示的菜单的字体颜色,在AppTheme.Base 中也可以-->
+        <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 </resources>

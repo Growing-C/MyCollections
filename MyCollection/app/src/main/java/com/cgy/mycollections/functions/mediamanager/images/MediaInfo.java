@@ -34,8 +34,8 @@ public class MediaInfo {
     public String display_name;
     public String mime_type;
     public String title;
-    public int date_added;//添加日期  单位s
-    public int date_modified;//修改日期 单位s
+    public long date_added;//添加日期  单位s
+    public long date_modified;//修改日期 单位s
     public String description;
     public String picasa_id;
     public String isprivate;

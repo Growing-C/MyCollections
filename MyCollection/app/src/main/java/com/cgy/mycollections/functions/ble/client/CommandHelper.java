@@ -2,7 +2,7 @@ package com.cgy.mycollections.functions.ble.client;
 
 
 
-import com.cgy.mycollections.utils.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.BinaryUtil;
 
 import java.util.ArrayList;
 import java.util.List;

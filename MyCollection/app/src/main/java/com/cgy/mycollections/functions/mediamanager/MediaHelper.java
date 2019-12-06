@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -15,6 +16,8 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
 
+
+import androidx.annotation.NonNull;
 
 import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
@@ -29,6 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -78,6 +83,8 @@ import io.reactivex.ObservableOnSubscribe;
  * total:20--column name:->height
  */
 public class MediaHelper {
+
+
     public static final String REPLACE_DOT = "_+_";//用于替换文件扩展名中的. 用于图片隐藏
 
     /**
@@ -103,6 +110,41 @@ public class MediaHelper {
         }
 
         return false;
+    }
+
+    /**
+     * 扫描某个目录下的文件，目标是让系统 图册中 刷新该文件夹中的图片
+     *
+     * @param dirName
+     */
+    public static void scanImageFiles(@NonNull Context context, String dirName) {
+        List<String> imageList = getMediaImages(context, dirName);
+        L.e("getMediaImages 文件夹名：" + dirName + "-->文件总数:" + imageList.size());
+        if (imageList.isEmpty())
+            return;
+
+        String[] pathList = new String[imageList.size()];
+        for (int i = 0, len = imageList.size(); i < len; i++) {
+            L.d("getMediaImages:" + imageList.get(i));
+            pathList[i] = imageList.get(i);
+            //通过广播 也可以实现扫描 不过可能需要在BroadcastReceiver中接收扫描完成事件，不太方便
+//            File file = new File(imageList.get(i));
+//
+//            Intent it = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//            it.setData(Uri.fromFile(file));
+//            sendBroadcast(it);
+        }
+        try {
+            //直接全部扫描
+            MediaScannerConnection.scanFile(context, pathList,
+                    null, new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            L.e("onScanCompleted path:" + path + "    ---uri:" + uri);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static List<ThumbnailInfo> getThumbnailsList(final Context context) {
@@ -238,6 +280,14 @@ public class MediaHelper {
                     }
                     cursor.close();
                 }
+
+                //根据修改日期进行排序
+                Collections.sort(imageInfoList, new Comparator<MediaInfo>() {
+                    @Override
+                    public int compare(MediaInfo mediaStoreData, MediaInfo mediaStoreData2) {
+                        return Long.compare(mediaStoreData2.date_modified, mediaStoreData.date_modified);
+                    }
+                });
                 e.onNext(imageInfoList);
                 e.onComplete();
             }

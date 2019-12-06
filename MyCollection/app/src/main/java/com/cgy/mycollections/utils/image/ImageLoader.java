@@ -9,8 +9,12 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.collection.LruCache;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.module.AppGlideModule;
+import com.cgy.mycollections.functions.cache.disklrucache.DiskLruCache;
 import com.cgy.mycollections.utils.L;
 
 import appframe.network.retrofit.callback.ApiCallback;
@@ -22,6 +26,14 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * Description : 方便图片加载
+ * 图片缓存分为内存缓存（LruCache）和硬盘缓存（DiskLruCache）
+ * 防止多图OOM的核心解决思路就是使用LruCache技术,Glide默认使用了这两种缓存策略
+ * DiskLruCache并没有限制数据的缓存位置，可以自由地进行设定，
+ * 但是通常情况下多数应用程序都会将缓存的位置选择为 /sdcard/Android/data/<application package>/cache
+ * <p>
+ * 大图oom解决思路
+ * https://blog.csdn.net/guolin_blog/article/details/9316683
+ * <p>
  * Author :cgy
  * Date :2019/2/1
  */
@@ -76,7 +88,7 @@ public class ImageLoader {
      * @param height
      * @param imageView
      */
-    public static void loadImage(final Context context, final String url, final int width, final int height,final BitmapTransformation transformation, final ImageView imageView) {
+    public static void loadImage(final Context context, final String url, final int width, final int height, final BitmapTransformation transformation, final ImageView imageView) {
         imageView.setTag(url);
         if (TextUtils.isEmpty(url)) {
             L.e("loadImage but url is null!!!");
@@ -153,6 +165,11 @@ public class ImageLoader {
      */
     public static void loadImage(final Context context, final String url, final int width, final int height, final ImageView imageView) {
         loadImage(context, url, width, height, null, imageView);
+    }
+
+    public static void loadImageFitCenter(Context context, String url, ImageView imageView) {
+//        Glide.with(context).load(url).into(imageView);
+        GlideApp.with(context).load(url).fitCenter().into(imageView);
     }
 
     /**

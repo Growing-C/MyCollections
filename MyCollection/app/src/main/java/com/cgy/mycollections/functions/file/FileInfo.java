@@ -20,7 +20,9 @@ public class FileInfo implements Serializable {
     public File file;
     public String fileName;
     public String filePath;
-
+    //  getAbsolutePath:/storage/emulated/0/baidu
+    //  getPath:/storage/emulated/0/baidu
+    //  getName:baidu
     public String fileFirstLetter;
 
     public int protectState = 0;//保护状态 0 未保护 1 已保护

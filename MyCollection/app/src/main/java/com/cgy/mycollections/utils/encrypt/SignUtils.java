@@ -2,7 +2,7 @@
  * Witontek.com.
  * Copyright (c) 2012-2017 All Rights Reserved.
  */
-package com.cgy.mycollections.functions.net.mywebservice;
+package com.cgy.mycollections.utils.encrypt;
 
 import android.text.TextUtils;
 
@@ -68,28 +68,31 @@ public class SignUtils {
         return sb.toString();
     }
 
-    public static String Md5(String string) {
-
-        if (TextUtils.isEmpty(string)) {
+    public static String Md5(String source) {
+        if (TextUtils.isEmpty(source)) {
             return "";
         }
-        MessageDigest md5 = null;
+        String result;
         try {
-            md5 = MessageDigest.getInstance("MD5");
-            byte[] bytes = md5.digest(string.getBytes());
-            String result = "";
-            for (byte b : bytes) {
-                String temp = Integer.toHexString(b & 0xff);
-                if (temp.length() == 1) {
-                    temp = "0" + temp;
-                }
-                result += temp;
-            }
-            return result;
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            byte[] bytes = md5.digest(source.getBytes());
+            result = bytesToHexString(bytes);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            result = String.valueOf(source.hashCode());
         }
-        return "";
+        return result;
     }
 
+    private static String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
 }

@@ -1,4 +1,4 @@
-package com.cgy.mycollections.utils;
+package com.cgy.mycollections.utils.dataparse;
 
 /**
  * Created by zhouzd on 2018/6/3.

@@ -1,4 +1,7 @@
-package com.cgy.mycollections.utils;
+package com.cgy.mycollections.utils.encrypt;
+
+import com.cgy.mycollections.utils.dataparse.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.CHexConverter;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Key;

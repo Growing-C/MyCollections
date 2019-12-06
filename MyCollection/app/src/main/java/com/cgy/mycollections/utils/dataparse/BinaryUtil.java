@@ -1,4 +1,4 @@
-package com.cgy.mycollections.utils;
+package com.cgy.mycollections.utils.dataparse;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

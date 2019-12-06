@@ -2,7 +2,9 @@ package com.cgy.mycollections.functions.mediamanager.mediaimageui;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 //import androidx.core.app.Fragment;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
+import com.cgy.mycollections.listeners.OnTItemClickListener;
 
 import java.util.List;
 
@@ -80,6 +84,19 @@ public class AllImagesFragment extends Fragment {
 
         mImageAdapter = new MediaImageAdapter();
 
+        mImageAdapter.setOnItemClickListener(new OnTItemClickListener<ThumbnailInfo>() {
+            @Override
+            public void onItemClickOne(int position, ThumbnailInfo data) {
+                if (data != null) {
+
+                }
+            }
+
+            @Override
+            public void onItemClickTwo(int position, ThumbnailInfo data) {
+
+            }
+        });
 //        mImageListV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 //        mImageListV.setLayoutManager(new LinearLayoutManager(getContext()));
         mImageListV.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -94,4 +111,8 @@ public class AllImagesFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
 }

@@ -19,7 +19,6 @@ public class ReduceSizeTransform extends CenterCrop {
     private float mWidth;
 
     public ReduceSizeTransform(Context context, float width, float height) {
-        super(context);
         this.mWidth = width;
         this.mHeight = height;
     }

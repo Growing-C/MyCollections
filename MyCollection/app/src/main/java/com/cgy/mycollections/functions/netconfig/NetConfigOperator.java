@@ -6,13 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.cgy.mycollections.functions.ble.BleDemo;
-import com.cgy.mycollections.functions.ble.BleDeviceAdapter;
 import com.cgy.mycollections.functions.ble.client.BLEClient;
 import com.cgy.mycollections.functions.ble.client.DataCallback;
 import com.cgy.mycollections.functions.ble.scan.BLEScanner;
 import com.cgy.mycollections.functions.ble.scan.IBLEScanObserver;
-import com.cgy.mycollections.utils.BinaryUtil;
 import com.cgy.mycollections.utils.L;
 
 /**

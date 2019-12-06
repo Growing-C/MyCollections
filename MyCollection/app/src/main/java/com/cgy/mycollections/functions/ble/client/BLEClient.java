@@ -9,19 +9,14 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
-import com.cgy.mycollections.utils.BinaryUtil;
-import com.cgy.mycollections.utils.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
-
-import appframe.utils.ToastCustom;
 
 /**
  * Description :

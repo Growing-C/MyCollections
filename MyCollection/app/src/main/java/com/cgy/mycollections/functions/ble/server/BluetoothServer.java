@@ -25,8 +25,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cgy.mycollections.functions.ble.client.DataCallback;
-import com.cgy.mycollections.utils.BinaryUtil;
-import com.cgy.mycollections.utils.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.CHexConverter;
 import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package com.cgy.mycollections.utils;
+package com.cgy.mycollections.utils.dataparse;
 
 import android.content.Context;
 import android.util.Xml;

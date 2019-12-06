@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
@@ -38,17 +42,21 @@ import io.reactivex.functions.Consumer;
  * 文件操作 读取等
  */
 public class FileDemo extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.file_list)
     RecyclerView mFileListV;
     @BindView(R.id.operate_holder)
     View mOperateHolderV;
+    @BindView(R.id.file_path)
+    FilePathView mFilePathV;
 
     FileListAdapter mFileAdapter;
 
     List<FileInfo> mFileList = new ArrayList<>();
 
-    File mRootDir;
-    File mCurrentDir;
+//    File mRootDir;
+//    File mCurrentDir;
 
     String mFileOperateType;
 
@@ -58,12 +66,23 @@ public class FileDemo extends AppCompatActivity {
         setContentView(R.layout.activity_file_demo);
         ButterKnife.bind(this);
 
+        setSupportActionBar(toolbar);
         if (getIntent() != null) {
             mFileOperateType = getIntent().getStringExtra(FileConstants.KEY_FILE_OPERATE);
         }
 
+        //文件选中
+        mFilePathV.setPathSelectListener(new FilePathView.IPathSelectListener() {
+            @Override
+            public void onDirPathSelected(File file) {
+                refreshCurrentFileList(file);
+
+                mFileListV.scrollToPosition(0);
+            }
+        });
+
         mFileListV.setLayoutManager(new LinearLayoutManager(this));
-        mFileAdapter = new FileListAdapter();
+        mFileAdapter = new FileListAdapter(Config.isShowHiddenFiles());
         if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
             //选择文件模式
             mFileAdapter.setIsSelect(true);
@@ -74,12 +93,10 @@ public class FileDemo extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 FileInfo fileInfo = mFileAdapter.getItem(position);
-
-                if (fileInfo.file.isDirectory()) {
-                    mCurrentDir = fileInfo.file;
-                    mFileList = getSortedChildFiles(fileInfo.file, false, true);
-                    L.e(mCurrentDir.getName() + "-->mFileList size:" + mFileList.size());
-                    mFileAdapter.setData(mFileList);
+                mFilePathV.navToFile(fileInfo.file);
+                if (!fileInfo.file.isDirectory()) {
+                    FileInfoDialogFragment.newInstance(fileInfo)
+                            .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
                 }
             }
         });
@@ -88,13 +105,17 @@ public class FileDemo extends AppCompatActivity {
 
         PermissionManager.requestExternalPermission(FileDemo.this, "for test");
 
-        mRootDir = Environment.getExternalStorageDirectory();
-        mCurrentDir = mRootDir;
+//        mRootDir = Environment.getExternalStorageDirectory();
+//        mCurrentDir = mRootDir;
 
-        mFileList = getSortedChildFiles(mRootDir, false, true);
-        mFileAdapter.setData(mFileList);
+        refreshCurrentFileList(mFilePathV.getRootDir());
     }
 
+    private void refreshCurrentFileList(File parent) {
+        mFileList = getSortedChildFiles(parent, Config.isShowHiddenFiles(), true);
+        mFileAdapter.setData(mFileList);
+        L.e(parent.getName() + "-->mFileList size:" + mFileList.size());
+    }
 
     /**
      * 获取按照名称排序的子文件夹列表
@@ -155,8 +176,8 @@ public class FileDemo extends AppCompatActivity {
     @SuppressLint("CheckResult")
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.get_file_path://获取本地文件路径
-                break;
+//            case R.id.get_file_path://获取本地文件路径
+//                break;
             case R.id.cancel://取消选择
                 finish();
                 break;
@@ -194,16 +215,44 @@ public class FileDemo extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mRootDir != null && mCurrentDir != null) {
-            if (!mRootDir.equals(mCurrentDir)) {
-                mCurrentDir = mCurrentDir.getParentFile();
-                if (mCurrentDir.isDirectory()) {
-                    mFileList = getSortedChildFiles(mCurrentDir, false, true);
-                    mFileAdapter.setData(mFileList);
-                    return;
-                }
-            }
-        }
-        super.onBackPressed();
+        if (!mFilePathV.navUp())
+            super.onBackPressed();
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_file, menu);
+        MenuItem showOrHideFileMenu = menu.findItem(R.id.action_show_hidden_files);
+        if (showOrHideFileMenu != null) {
+            showOrHideFileMenu.setChecked(Config.isShowHiddenFiles());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.action_show_hidden_files:
+                item.setChecked(!item.isChecked());
+                Config.setShowHiddenFiles(item.isChecked());
+
+                refreshCurrentFileList(mFilePathV.getCurrentDir());
+
+                mFileAdapter.setShowHideFiles(item.isChecked());
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
 }

@@ -19,12 +19,17 @@
         <!-- colorAccent is used as the default value for colorControlActivated
        which is used to tint widgets -->
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--可以控制toolbar默认的title颜色 toolbarStyle中的会被这个属性重写，除非直接在toolbar中指定style-->
+        <item name="android:textColorPrimary">@color/icFocused</item>
+        <!--        可以控制toolbar菜单三点的颜色-->
+        <item name="android:colorControlNormal">@color/icFocused</item>
+        <!--toolbar右边文字颜色，有效,似乎层级在上面的属性会覆盖下面的 比如toolbarStyle中的actionMenuTextColor就被这里的覆盖了-->
+        <item name="actionMenuTextColor">@android:color/holo_red_dark</item>
+        <!--从apptheme层级设置toolbar右边弹出菜单，功能经测试有效，但是toolbarStyle中的popupTheme会覆盖这个-->
+        <item name="actionOverflowMenuStyle">@style/AppTheme.PopupOverlay</item>
         <!--toolbarStyle是为了去掉自定义toolbar左边的留白,有用-->
         <item name="toolbarStyle">@style/AppToolBar</item>
-        <!--从apptheme层级设置toolbar右边弹出菜单，功能经测试有效-->
-        <item name="actionOverflowMenuStyle">@style/AppTheme.PopupOverlay</item>
-        <!--toolbar右边文字颜色，有效-->
-        <item name="actionMenuTextColor">@android:color/holo_red_dark</item>
         <!-- You can also set colorControlNormal, colorControlActivated
          colorControlHighlight and colorSwitchThumbNormal. -->
         <!--<item name="android:windowIsTranslucent">true</item>&lt;!&ndash;半透明&ndash;&gt;-->
@@ -33,13 +38,12 @@
 
     <style name="AppToolBar" parent="Widget.AppCompat.Toolbar">
         <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->
+
+        <item name="popupTheme">@style/AppTheme.PopupOverlay</item>
+        <item name="theme">@style/ToolbarTheme</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <!--<item name="actionDropDownStyle">@style/AppTheme.PopupOverlay</item>-->
-
-        <!--<item name="contentInsetStart">0dp</item>&lt;!&ndash; 设置该属性解决空白部分&ndash;&gt;-->
-    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <!--很多属性如 popupBackgroun dropDownVerticalOffset在此处不生效，必须在v21中编辑才有用-->
     <!--<style name="AppTheme.PopupOverlay" parent="Widget.AppCompat.PopupMenu.Overflow"  >-->
