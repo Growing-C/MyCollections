@@ -100,7 +100,7 @@ public class MediaImageAdapter extends RecyclerView.Adapter<MediaImageAdapter.Me
         }
 
         public void setData(ThumbnailInfo thumbnailInfo) {
-            pathV.setText(thumbnailInfo.data);
+//            pathV.setText(thumbnailInfo.data);
             ImageLoader.loadImageFitCenter(imageV.getContext(), thumbnailInfo.data, imageV);
         }
 

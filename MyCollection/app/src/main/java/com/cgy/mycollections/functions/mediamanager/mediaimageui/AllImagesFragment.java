@@ -3,6 +3,7 @@ package com.cgy.mycollections.functions.mediamanager.mediaimageui;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
+import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
 
@@ -88,7 +91,9 @@ public class AllImagesFragment extends Fragment {
             @Override
             public void onItemClickOne(int position, ThumbnailInfo data) {
                 if (data != null) {
-
+                    Intent it = new Intent(getActivity(), ShowImagesActivity.class);
+                    it.putExtra("imageInfo", ImageInfo.importFromThumbnail(data));
+                    startActivity(it);
                 }
             }
 

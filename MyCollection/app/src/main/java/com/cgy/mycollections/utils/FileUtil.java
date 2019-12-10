@@ -38,6 +38,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -86,6 +87,33 @@ public class FileUtil {
                 L.e("文件不存在：" + filePath);
             }
         }
+    }
+
+    /**
+     * 返回文件夹下面的所有图片文件（jpg,png,gif）
+     *
+     * @param file
+     * @return
+     */
+    public static List<File> listImageFile(File file) {
+        Preconditions.checkNotNull(file);
+
+        List<File> fileList = new ArrayList<>();
+        if (file.isDirectory()) {
+            L.e("listFile，这是文件夹，路径为：" + file.getPath());
+            File[] files = file.listFiles();
+            for (int i = 0, len = files.length; i < len; i++) {
+                L.e("路径" + files[i].getPath());
+                String filePath = files[i].getPath();
+                if (!TextUtils.isEmpty(filePath) &&
+                        (filePath.endsWith(".jpg") || filePath.endsWith(".gif") || filePath.endsWith(".png"))) {
+                    fileList.add(files[i]);
+                }
+            }
+        } else {
+            L.e("listFile，这是文件，路径为：" + file.getPath());
+        }
+        return fileList;
     }
 
     /**

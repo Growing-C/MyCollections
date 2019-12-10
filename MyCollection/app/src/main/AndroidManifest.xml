@@ -1,43 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cgy.mycollections">
+
     <!-- wifi p2p所需权限 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- wifi p2p所需权限 -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
-    <uses-feature android:name="android.hardware.location.gps" />
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<!--    <uses-permission-->
-<!--        android:name="android.permission.OVERRIDE_WIFI_CONFIG"-->
-<!--        android:protectionLevel="signature|privileged" />-->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.REORDER_TASKS" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
-    <!-- Declare features -->
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".functions.mediamanager.ShowImagesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="图片展示"
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".functions.mediamanager.MediaImagesActivity"
             android:label="@string/title_activity_media_images" />
@@ -51,56 +28,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- 开机启动 -->
-        <receiver
-            android:name=".boot.BootReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-
-                <!-- 注册开机广播地址 -->
-                <!-- <action android:name="android.intent.action.QUICKBOOT_POWERON" /> -->
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.HOME" />
-            </intent-filter>
-        </receiver> <!-- 线程池 -->
         <activity
             android:name=".functions.threadpool.ThreadPoolDemo"
-            android:label="@string/title_activity_thread_pool_demo" /> <!-- 抢红包 -->
-        <service
-            android:name=".functions.weixindemo.EnvelopeService"
-            android:enabled="true"
-            android:exported="true"
-            android:label="@string/red_envelope_label"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility" />
-        </service>
-        <service android:name=".FloatingService" />
-        <service android:name=".functions.netconfig.BackgroundService" />
-
+            android:label="@string/title_activity_thread_pool_demo" /> <!-- 线程池 -->
         <activity
             android:name=".functions.weixindemo.RedEnvelopeDemo"
-            android:label="@string/title_activity_main" /> <!-- 语音 -->
+            android:label="@string/title_activity_main" /> <!-- 抢红包 -->
         <activity android:name=".functions.tts.TTSDemo" />
-
-        <service android:name=".functions.tts.TTSService" />
-        <service android:name=".functions.net.wifip2p.WifiServerService" />
-
         <activity android:name=".functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo" />
         <activity android:name=".functions.framework.databinding.DataBindingDemo" />
-        <activity android:name=".functions.ui.systemui.statusbar.StatusBarDemo" />
+
+        <activity android:name=".functions.ui.systemui.statusbar.StatusBarDemo" /> <!-- 语音 -->
         <activity android:name=".functions.ui.systemui.statusbar.SystemStatusActivity" />
+
         <activity android:name=".functions.ui.systemui.statusbar.DynamicStatusActivity" />
         <activity android:name=".functions.ui.systemui.statusbar.ThirdLibStatusActivity" />
+
         <activity android:name=".functions.net.NetDemos" />
         <activity android:name=".functions.net.NetRequestDemo" />
         <activity android:name=".functions.net.WifiAPDemo" />
@@ -128,19 +71,86 @@
         <activity android:name=".functions.jetpack.JetPackDemos" />
         <activity android:name=".testsources.arknights.ui.ArknightsDemo" />
         <activity android:name=".functions.ui.wheel.WheelDemo" />
-        <activity android:name=".functions.jetpack.camerax.CameraXDemo" >
+        <activity android:name=".functions.jetpack.camerax.CameraXDemo">
 
             <!-- Register as a system camera app -->
             <intent-filter>
                 <action android:name="android.media.action.IMAGE_CAPTURE" />
-                <action android:name="android.media.action.STILL_IMAGE_CAMERA"/>
+                <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
                 <action android:name="android.media.action.VIDEO_CAMERA" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- Declare notch support -->
-            <meta-data android:name="android.notch_support" android:value="true"/>
+            <meta-data
+                android:name="android.notch_support"
+                android:value="true" />
         </activity>
+
+        <receiver
+            android:name=".boot.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- 注册开机广播地址 -->
+                <!-- <action android:name="android.intent.action.QUICKBOOT_POWERON" /> -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".functions.weixindemo.EnvelopeService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/red_envelope_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
+        <service android:name=".FloatingService" />
+        <service android:name=".functions.netconfig.BackgroundService" />
+        <service android:name=".functions.tts.TTSService" />
+        <service android:name=".functions.net.wifip2p.WifiServerService" />
     </application>
+
+    <uses-feature android:name="android.hardware.location.gps" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- wifi p2p所需权限 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- <uses-permission -->
+    <!-- android:name="android.permission.OVERRIDE_WIFI_CONFIG" -->
+    <!-- android:protectionLevel="signature|privileged" /> -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Declare features -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

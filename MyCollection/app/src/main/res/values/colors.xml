@@ -4,7 +4,7 @@
     <color name="colorPrimary">#32B06B</color>
     <color name="colorPrimaryDark">#32B0DB</color>
     <color name="colorAccent">#FF4081</color>
-<!--    <color name="colorAccent">#ffffff</color>-->
+    <!--    <color name="colorAccent">#ffffff</color>-->
 
     <color name="divider_grey">#c0c0c0</color>
     <color name="light_blue_C0F0FF">#C0F0FF</color>
@@ -41,4 +41,6 @@
     <color name="icActive">#FFFFFFFF</color>
     <color name="icFocused">#DDFFFFFF</color>
     <color name="icPressed">#AAFFFFFF</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
