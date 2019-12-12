@@ -1,6 +1,7 @@
 package com.cgy.mycollections.functions.file;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -17,8 +18,11 @@ import android.view.View;
 
 import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
+import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
+import com.cgy.mycollections.utils.image.ImageLoader;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.utils.L;
@@ -95,8 +99,14 @@ public class FileDemo extends AppCompatActivity {
                 FileInfo fileInfo = mFileAdapter.getItem(position);
                 mFilePathV.navToFile(fileInfo.file);
                 if (!fileInfo.file.isDirectory()) {
-                    FileInfoDialogFragment.newInstance(fileInfo)
-                            .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+                    if (ImageLoader.isPic(fileInfo.filePath)) {
+                        Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
+                        it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
+                        startActivity(it);
+                    } else {
+                        FileInfoDialogFragment.newInstance(fileInfo)
+                                .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+                    }
                 }
             }
         });

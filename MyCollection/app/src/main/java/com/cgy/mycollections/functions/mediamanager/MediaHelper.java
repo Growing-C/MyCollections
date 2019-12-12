@@ -211,26 +211,6 @@ public class MediaHelper {
     }
 
     public static Observable<List<MediaInfo>> getMediaImageInfos(final Context context, final String targetFileDir) {
-//          String id;
-//          String data;//内容是文件路径 如：/storage/emulated/0/xxx/.20190619_070221.gif
-//          String size;
-//          String display_name;
-//          String mime_type;
-//          String title;
-//          String date_added;//添加日期  单位s
-//          String date_modified;//修改日期 单位s
-//          String description;
-//          String picasa_id;
-//          String isprivate;
-//          String latitude;
-//          String longitude;
-//          String datetaken;
-//          String orientation;
-//          String mini_thumb_magic;
-//          String bucket_id;
-//          String bucket_display_name;
-//          String width;
-//          String height;
         return Observable.create(new ObservableOnSubscribe<List<MediaInfo>>() {
             @Override
             public void subscribe(ObservableEmitter<List<MediaInfo>> e) throws Exception {
@@ -292,6 +272,29 @@ public class MediaHelper {
                 e.onComplete();
             }
         }).compose(RxUtil.<List<MediaInfo>>applySchedulersJobUI());
+    }
+
+    /**
+     * 获取图片总数量
+     * @param context
+     * @return
+     */
+    public static int getMediaImageTotalSize(Context context) {
+        int size = 0;
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // URI,可以有多种形式
+                null,
+                null,
+                null,
+                MediaStore.Images.Media.DATE_MODIFIED + " DESC");//按照修改时间降序排列
+        if (cursor != null) {
+            //图片路径所在列的索引
+            L.e("getMediaImages 图片数目：" + cursor.getCount());
+            size = cursor.getCount();
+            cursor.close();
+        }
+
+        return size;
     }
 
     /**

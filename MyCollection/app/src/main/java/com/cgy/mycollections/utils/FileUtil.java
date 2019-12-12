@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.utils.L;
+import com.cgy.mycollections.utils.image.ImageLoader;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
 
@@ -105,8 +106,7 @@ public class FileUtil {
             for (int i = 0, len = files.length; i < len; i++) {
                 L.e("路径" + files[i].getPath());
                 String filePath = files[i].getPath();
-                if (!TextUtils.isEmpty(filePath) &&
-                        (filePath.endsWith(".jpg") || filePath.endsWith(".gif") || filePath.endsWith(".png"))) {
+                if (ImageLoader.isPic(filePath)) {
                     fileList.add(files[i]);
                 }
             }

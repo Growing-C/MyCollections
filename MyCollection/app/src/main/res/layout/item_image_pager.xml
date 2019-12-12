@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="6dp"
-    app:cardMaxElevation="10dp"
-    app:cardUseCompatPadding="true">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
+        android:src="@drawable/beauty8"
         android:layout_height="match_parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="@dimen/px18_margin"
-        android:layout_marginEnd="@dimen/px10_margin"
-        android:layout_marginRight="@dimen/px10_margin"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_change"
-        app:backgroundTint="#56abe4"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        app:rippleColor="#56abe4" />
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/fab_change"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="end|bottom"-->
+    <!--        android:layout_marginBottom="@dimen/px18_margin"-->
+    <!--        android:layout_marginEnd="@dimen/px10_margin"-->
+    <!--        android:layout_marginRight="@dimen/px10_margin"-->
+    <!--        android:clickable="true"-->
+    <!--        android:focusable="true"-->
+    <!--        android:src="@drawable/ic_change"-->
+    <!--        android:layout_alignParentRight="true"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        app:backgroundTint="#56abe4"-->
+    <!--        app:elevation="6dp"-->
+    <!--        app:pressedTranslationZ="12dp"-->
+    <!--        app:rippleColor="#56abe4" />-->
 
 
-</androidx.cardview.widget.CardView>
+</RelativeLayout>

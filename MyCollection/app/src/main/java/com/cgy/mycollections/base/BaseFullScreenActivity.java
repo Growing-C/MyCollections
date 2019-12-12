@@ -148,7 +148,7 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
         delayedHide(100);
     }
 
-    private void toggle() {
+    protected void toggle() {
         if (mVisible) {
             hide();
         } else {

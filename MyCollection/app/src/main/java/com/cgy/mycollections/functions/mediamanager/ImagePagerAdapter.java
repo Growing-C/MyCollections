@@ -15,6 +15,9 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
+import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.listeners.OnMyItemClickListener;
+import com.cgy.mycollections.listeners.OnTItemClickListener;
 import com.cgy.mycollections.utils.L;
 import com.cgy.mycollections.utils.image.ImageLoader;
 
@@ -33,9 +36,11 @@ import butterknife.ButterKnife;
 public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.ImageHolder> {
     private List<File> mImagePathList;
     private Context mContext;
+    OnMyItemClickListener<File> mListener;
 
-    public ImagePagerAdapter(Context context) {
+    public ImagePagerAdapter(Context context, OnMyItemClickListener<File> listener) {
         this.mContext = context;
+        this.mListener = listener;
     }
 
     public void setData(List<File> list) {
@@ -60,6 +65,10 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         holder.setData(mImagePathList.get(position));
     }
 
+    public File getItem(int pos) {
+        return mImagePathList.get(pos);
+    }
+
     @Override
     public int getItemCount() {
         return mImagePathList == null ? 0 : mImagePathList.size();
@@ -72,6 +81,14 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         public ImageHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (mListener != null)
+                        mListener.onItemClick(pos, getItem(pos));
+                }
+            });
         }
 
         public void setData(File imageFile) {

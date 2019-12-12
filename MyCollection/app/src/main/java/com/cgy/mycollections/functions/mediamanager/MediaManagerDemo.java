@@ -31,6 +31,7 @@ import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
 import appframe.utils.Logger;
+import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -88,8 +89,13 @@ public class MediaManagerDemo extends BaseActivity {
 
             }
         });
-        int imageCount = MediaHelper.getMediaImages(this, null).size();
-        mImageAmountV.setText(String.valueOf(imageCount));
+        if (MediaHelper.isMediaScannerScanning(this)) {
+            //系统扫描中调用getMediaImages 会要好久 导致黑屏,所以扫描中就不获取内容了
+            new ToastCustom(this, "媒体文件扫描中，请稍等", Toast.LENGTH_SHORT).show();
+        } else {
+            int imageCount = MediaHelper.getMediaImageTotalSize(this);
+            mImageAmountV.setText(String.valueOf(imageCount));
+        }
     }
 
     @Override

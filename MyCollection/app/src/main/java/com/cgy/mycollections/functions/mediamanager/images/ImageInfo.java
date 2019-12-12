@@ -2,6 +2,8 @@ package com.cgy.mycollections.functions.mediamanager.images;
 
 import androidx.annotation.NonNull;
 
+import com.cgy.mycollections.functions.file.FileInfo;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -20,6 +22,13 @@ public class ImageInfo implements Serializable {
         ImageInfo info = new ImageInfo();
         info.imageFilePath = thumbnailInfo.data;
 
+
+        return info;
+    }
+
+    public static ImageInfo importFromFileInfo(@NonNull FileInfo fileInfo) {
+        ImageInfo info = new ImageInfo();
+        info.imageFilePath = fileInfo.filePath;
 
         return info;
     }

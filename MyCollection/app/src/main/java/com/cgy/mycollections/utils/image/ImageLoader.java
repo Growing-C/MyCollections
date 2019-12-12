@@ -42,7 +42,7 @@ public class ImageLoader {
         if (TextUtils.isEmpty(url))
             return false;
 
-        if (url.contains(".jpg") || url.contains(".png") || url.contains(".jpeg"))
+        if (url.contains(".jpg") || url.contains(".png") || url.contains(".jpeg") || url.contains(".gif"))
             return true;
         return false;
     }

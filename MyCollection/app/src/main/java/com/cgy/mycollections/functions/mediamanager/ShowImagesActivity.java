@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -15,9 +17,12 @@ import android.view.View;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.BaseFullScreenActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
+import com.cgy.mycollections.functions.ui.wheel.rvgallery.RecyclerAdapter;
+import com.cgy.mycollections.listeners.OnMyItemClickListener;
 import com.cgy.mycollections.utils.FileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,6 +41,8 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     View mView2Hide;
     @BindView(R.id.dummy_button)
     View mDelayHideButton;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     ImageInfo mSelectedImage;
     List<File> mImageFiles;
@@ -46,19 +53,27 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         setContentView(R.layout.activity_show_images);
         ButterKnife.bind(this);
 
-//        initFullScreenToggleAction(mDelayHideButton);
+        setSupportActionBar(mToolbar);
+
+        initFullScreenToggleAction(mDelayHideButton);
 
         mSelectedImage = (ImageInfo) getIntent().getSerializableExtra("imageInfo");
 
         File imageDir = new File(mSelectedImage.imageFilePath).getParentFile();
         mImageFiles = FileUtil.listImageFile(imageDir);
 
-        ImagePagerAdapter adapter = new ImagePagerAdapter(this);
+        ImagePagerAdapter adapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
+            @Override
+            public void onItemClick(int position, File data) {
+                toggle();
+            }
+        });
         mImagePager.setAdapter(adapter);
         adapter.setData(mImageFiles);
         int selectedPos = findFileIndexInList(mSelectedImage.imageFilePath, mImageFiles);
-//        if (selectedPos >= 0)
-//            mImagePager.setCurrentItem(selectedPos);
+        if (selectedPos >= 0)
+            mImagePager.setCurrentItem(selectedPos, false);
+
     }
 
     @Override
