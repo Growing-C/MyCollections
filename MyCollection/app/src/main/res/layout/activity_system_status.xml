@@ -6,14 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".functions.ui.systemui.statusbar.SystemStatusActivity">
 
+    <!--   AppBarLayout要沉浸时fitsSystemWindows必须放在Toolbar中 -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
+        <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:fitsSystemWindows="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            style="@style/AppToolBar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+    <!--    <androidx.appcompat.widget.Toolbar-->
+    <!--        android:id="@+id/toolbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:title="test"-->
+    <!--        android:fitsSystemWindows="true"-->
+    <!--        android:background="?attr/colorPrimary"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent"-->
+    <!--        style="@style/AppToolBar" />-->
+
+    <!--    app:layout_constraintTop_toBottomOf="@id/toolbar"-->
+
     <!-- android:fitsSystemWindows="true" 必须放在要沉浸的view里面，如果放在根布局里面 会导致状态栏为白色-->
     <TextView
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:background="@color/colorAccent"
         android:clipToPadding="true"
-        android:fitsSystemWindows="true"
         android:text="沉浸式状态栏"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

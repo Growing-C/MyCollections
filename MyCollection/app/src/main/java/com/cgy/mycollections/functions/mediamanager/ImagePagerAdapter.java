@@ -1,7 +1,9 @@
 package com.cgy.mycollections.functions.mediamanager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -78,10 +80,19 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
         @BindView(R.id.image)
         ImageView imageView;
 
+        @SuppressLint("ClickableViewAccessibility")
         public ImageHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int pos = getAdapterPosition();
+//                    if (mListener != null)
+//                        mListener.onItemClick(pos, getItem(pos));
+//                }
+//            });
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
@@ -89,6 +100,31 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
                         mListener.onItemClick(pos, getItem(pos));
                 }
             });
+//            imageView.setOnTouchListener((v, event) -> {
+//                boolean result = true;
+//                //can scroll horizontally checks if there's still a part of the image
+//                //that can be scrolled until you reach the edge
+//                if (event.getPointerCount() >= 2 || v.canScrollHorizontally(1) && v.canScrollHorizontally(-1)) {
+//                    //multi-touch event
+//                    switch (event.getAction()) {
+//                        case MotionEvent.ACTION_DOWN:
+//                        case MotionEvent.ACTION_MOVE:
+//                            // Disallow RecyclerView to intercept touch events.
+//                            itemView.getParent().requestDisallowInterceptTouchEvent(true);
+//                            // Disable touch on view
+//                            result = false;
+//                            break;
+//                        case    MotionEvent.ACTION_UP:
+//                            // Allow RecyclerView to intercept touch events.
+//                            itemView.getParent().requestDisallowInterceptTouchEvent(false);
+//                            result = true;
+//                            break;
+//                        default:
+//                            break;
+//                    }
+//                }
+//                return result;
+//            });
         }
 
         public void setData(File imageFile) {

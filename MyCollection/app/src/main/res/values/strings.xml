@@ -8,8 +8,8 @@
     <string name="title_activity_thread_pool_demo">ThreadPoolDemo</string>
     <string name="info_thread_pool_demo">ThreadPoolDemo</string>
 
-    <string name="title_activity_red_envelope_demo">RedEnvelopeDemo</string>
-    <string name="info_red_envelope_demo">"自动抢红包服务"</string>
+    <string name="title_activity_red_envelope_demo">AccessibilityDemo</string>
+    <string name="info_red_envelope_demo">Accessibility自动服务</string>
 
     <string name="title_activity_tts_demo">TTSDemo</string>
     <string name="info_tts_demo">"安卓文字转语音"</string>
@@ -50,12 +50,14 @@
     <string name="title_dialog">DialogDemo</string>
     <string name="info_dialog">对话框</string>
 
-    <string name="red_envelope_label">"抢红包"</string>
-    <string name="red_envelope_btn">"开启自动抢红包服务"</string>
+    <string name="auto_input_label">自动帐号输入</string>
+    <string name="red_envelope_label">抢红包</string>
+    <string name="red_envelope_btn">开启自动抢红包服务</string>
     <string name="red_envelope_btn_close">"关闭自动抢红包服务"</string>
 
     <string name="testaccessibility">accessibilityDemo</string>
     <string name="red_envelope_desc">WebChat Get RedMoney</string>
+    <string name="auto_input_desc">Arknights AutoInput</string>
 
     <string name="title_ble">BLEDemo</string>
     <string name="info_ble">设备间蓝牙通信</string>

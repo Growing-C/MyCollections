@@ -19,6 +19,8 @@
         <!-- colorAccent is used as the default value for colorControlActivated
        which is used to tint widgets -->
         <item name="colorAccent">@color/colorAccent</item>
+        <!--        配合沉浸式状态栏使用，用于把statusbar设为透明-->
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
 
         <!--可以控制toolbar默认的title颜色 toolbarStyle中的会被这个属性重写，除非直接在toolbar中指定style-->
         <item name="android:textColorPrimary">@color/icFocused</item>

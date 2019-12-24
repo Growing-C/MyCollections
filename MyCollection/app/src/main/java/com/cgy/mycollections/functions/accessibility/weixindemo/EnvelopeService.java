@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.weixindemo;
+package com.cgy.mycollections.functions.accessibility.weixindemo;
 
 import java.util.List;
 

@@ -1,8 +1,10 @@
-package com.cgy.mycollections.functions.weixindemo;
+package com.cgy.mycollections.functions.accessibility;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,7 +16,7 @@ import com.cgy.mycollections.utils.LogUtils;
 /**
  * Created by RB-cgy on 2015/12/25.
  */
-public class RedEnvelopeDemo  extends AppCompatActivity {
+public class AccessibilityDemo extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,20 +25,26 @@ public class RedEnvelopeDemo  extends AppCompatActivity {
     }
 
     public void click(View v) {
+
+        //打开系统设置中辅助功能
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivity(intent);
         switch (v.getId()) {
-            case R.id.red_envelope_btn:
+            case R.id.red_envelope_btn://微信抢红包（微信似乎已经优化过 似乎没啥用了）
                 LogUtils.d("red_envelope_btn");
                 try {
-                    //打开系统设置中辅助功能
-                    Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-                    startActivity(intent);
-                    Toast.makeText(RedEnvelopeDemo.this, "找到抢红包，然后开启服务即可", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccessibilityDemo.this, "找到抢红包，然后开启服务即可", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
-            case R.id.red_envelope_btn_close:
-
+            case R.id.open_auto_input://自动输入账号密码
+                LogUtils.d("open_auto_input");
+                try {
+                    Toast.makeText(AccessibilityDemo.this, "找到自动帐号输入，然后开启服务即可", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;

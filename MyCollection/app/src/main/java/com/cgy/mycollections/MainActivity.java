@@ -56,11 +56,10 @@ import com.cgy.mycollections.functions.netconfig.NetConfigDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
-import com.cgy.mycollections.functions.weixindemo.RedEnvelopeDemo;
+import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
-import com.cgy.mycollections.testsources.DataTest;
 import com.cgy.mycollections.utils.L;
 
 import java.util.List;
@@ -163,17 +162,20 @@ public class MainActivity extends AppCompatActivity {
                 // 系统应用
 //                L.e("test", "系统应用 MainActivity.getAppList, packageInfo=" + packageInfo.packageName);
             }
-            if (packageInfo.packageName.toUpperCase().contains("webview".toUpperCase())) {
+//            if (packageInfo.packageName.toUpperCase().contains("webview".toUpperCase())) {
+            if (packageInfo.packageName.toUpperCase().contains("ark".toUpperCase())) {
                 L.e("test", "aaaaaaaaaa:" + packageInfo.packageName);
             }
         }
+//        Intent intent = pm.getLaunchIntentForPackage(packageName);
+//        startActivity(intent);
     }
 
     private Demo[] demos = {
             new Demo(R.string.title_ui, R.string.info_ui, true, UiDemos.class),
             new Demo(R.string.title_jetpack, R.string.info_jetpack, JetPackDemos.class),
             new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class),
-            new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, RedEnvelopeDemo.class),
+            new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, AccessibilityDemo.class),
             new Demo(R.string.title_activity_tts_demo, R.string.info_tts_demo, TTSDemo.class),
             new Demo(R.string.title_activity_data_binding_demo, R.string.info_data_binding_demo, true, DataBindingDemo.class),
             new Demo(R.string.title_activity_net_demo, R.string.info_net_demo, true, NetDemos.class),

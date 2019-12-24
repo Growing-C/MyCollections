@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <!--    <com.cgy.mycollections.widgets.imagescale.TouchImageView-->
+<!--    <com.cgy.mycollections.widgets.imagescale.ZoomImageView-->
+    <com.cgy.mycollections.widgets.imagescale.PinchImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:src="@drawable/beauty8"

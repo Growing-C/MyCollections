@@ -12,9 +12,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".functions.mediamanager.ShowImagesActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="图片展示"
-            android:theme="@style/FullscreenTheme" />
+            android:label="图片展示"  />
         <activity
             android:name=".functions.mediamanager.MediaImagesActivity"
             android:label="@string/title_activity_media_images" />
@@ -32,7 +30,7 @@
             android:name=".functions.threadpool.ThreadPoolDemo"
             android:label="@string/title_activity_thread_pool_demo" /> <!-- 线程池 -->
         <activity
-            android:name=".functions.weixindemo.RedEnvelopeDemo"
+            android:name=".functions.accessibility.AccessibilityDemo"
             android:label="@string/title_activity_main" /> <!-- 抢红包 -->
         <activity android:name=".functions.tts.TTSDemo" />
         <activity android:name=".functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo" />
@@ -106,7 +104,7 @@
         </receiver>
 
         <service
-            android:name=".functions.weixindemo.EnvelopeService"
+            android:name=".functions.accessibility.weixindemo.EnvelopeService"
             android:enabled="true"
             android:exported="true"
             android:label="@string/red_envelope_label"
@@ -117,7 +115,21 @@
 
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility" />
+                android:resource="@xml/accessibility_wechat" />
+        </service>
+        <service
+            android:name=".functions.accessibility.AutoInputAccountService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/auto_input_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_arknights" />
         </service>
         <service android:name=".FloatingService" />
         <service android:name=".functions.netconfig.BackgroundService" />

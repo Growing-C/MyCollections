@@ -59,3 +59,28 @@ configurations.all {
         }
     }
 把.aar文件放到lib中  dependency中添加   implementation(name: 'EagleBase-1.0.2', ext: 'aar') 即可
+
+7.若打包aar 在其他工程中引用时  如果打包的aar中引用了其他的aar 很可能会下载不下来
+此时最好的方法是 要打包aar的模块中不要引用aar
+或者可以尝试 在allprojects中 添加 
+```
+allprojects {
+    repositories { 
+
+        flatDir {
+            // 由于Library module中引用了 gif 库的 aar，在多 module 的情况下，
+            // 其他的module编译会报错，所以需要在所有工程的repositories
+            // 下把Library module中的libs目录添加到依赖关系中
+            dirs project(':AppLibrary').file('libs')  
+        }
+    }
+}
+```
+注意:是在allprojects 下的repositories，不是在buildscript下的repositories，buildscript下的repositories是用来说明gradle插件的位置。
+
+8. .gradle\caches\modules-2\files-2 中的 引用项目 pom 和aar分别在两个文件夹中，两个文件夹的名字其实是文件的 sha1值
+win下面 可以使用 
+```
+ certutil -hashfile (文件路径) SHA1 
+```
+ 来获取sha1值
