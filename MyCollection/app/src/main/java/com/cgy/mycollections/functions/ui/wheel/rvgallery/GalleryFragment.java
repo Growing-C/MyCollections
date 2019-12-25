@@ -25,7 +25,7 @@ import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.lib.AnimManager;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.lib.GalleryRecyclerView;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.lib.OnItemSelectedListener;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -3,7 +3,7 @@ package com.cgy.mycollections.functions.ble.deviceframe;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 
 /**

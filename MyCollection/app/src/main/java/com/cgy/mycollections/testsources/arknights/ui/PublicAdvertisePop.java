@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.testsources.arknights.ArknightsConstant;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.SharePreUtil;
 
 import java.lang.reflect.Method;

@@ -18,7 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.witon.mylibrary.flux.rx.BaseRxAction;
 
 /**

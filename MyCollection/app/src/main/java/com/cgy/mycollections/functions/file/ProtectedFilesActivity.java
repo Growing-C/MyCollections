@@ -22,7 +22,7 @@ import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenu;
@@ -40,7 +40,6 @@ import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
-import appframe.utils.Logger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -332,7 +331,7 @@ public class ProtectedFilesActivity extends BaseActivity {
 
     @PermissionGranted(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionGranted() {
-        Logger.i("externalPermissionGranted");
+        L.i("externalPermissionGranted");
         for (int i = 0, len = mFileList.size(); i < len; i++) {
             FileInfo fileInfo = mFileList.get(i);
             if (mIsProtect) {//隐藏
@@ -375,7 +374,7 @@ public class ProtectedFilesActivity extends BaseActivity {
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionDenied() {
-        Logger.e("externalPermissionDenied");
+        L.e("externalPermissionDenied");
 
         PermissionDialog mPermissionDialog = new PermissionDialog(ProtectedFilesActivity.this, "需要读取文件权限");
         mPermissionDialog.show();

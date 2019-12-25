@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 
 /**

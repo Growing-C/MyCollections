@@ -19,7 +19,7 @@ import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IBLEDeviceInte
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IDeviceConnectListener;
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IRssiCallback;
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.ISeparable;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.dataparse.CHexConverter;
 
 import java.lang.reflect.Method;

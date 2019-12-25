@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

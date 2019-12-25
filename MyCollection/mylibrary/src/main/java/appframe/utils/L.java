@@ -1,6 +1,7 @@
-package com.cgy.mycollections.utils;
+package appframe.utils;
 
-import com.cgy.mycollections.BuildConfig;
+
+import com.witon.mylibrary.BuildConfig;
 
 import java.lang.reflect.Method;
 

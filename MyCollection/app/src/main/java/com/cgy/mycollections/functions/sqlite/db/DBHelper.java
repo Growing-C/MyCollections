@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

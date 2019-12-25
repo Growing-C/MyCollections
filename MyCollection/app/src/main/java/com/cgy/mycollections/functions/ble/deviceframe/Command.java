@@ -1,7 +1,7 @@
 package com.cgy.mycollections.functions.ble.deviceframe;
 
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IBLEDeviceInterface;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

@@ -60,7 +60,7 @@ import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.List;
 

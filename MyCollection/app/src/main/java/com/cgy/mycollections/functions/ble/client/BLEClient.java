@@ -12,11 +12,12 @@ import android.os.Build;
 
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.utils.dataparse.CHexConverter;
-import com.cgy.mycollections.utils.L;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
+
+import appframe.utils.L;
 
 /**
  * Description :

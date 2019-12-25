@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ethereum.contract.ContractDto;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.SharePreUtil;
 
 import org.web3j.crypto.Bip39Wallet;

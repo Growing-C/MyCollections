@@ -8,7 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 /**
  * Description : 数据库

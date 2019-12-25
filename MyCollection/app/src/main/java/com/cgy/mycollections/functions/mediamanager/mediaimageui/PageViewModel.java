@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.cgy.mycollections.MyApplication;
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.List;
 

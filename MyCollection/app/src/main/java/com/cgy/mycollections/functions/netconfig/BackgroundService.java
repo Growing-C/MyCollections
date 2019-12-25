@@ -20,7 +20,7 @@ import com.cgy.mycollections.functions.ble.client.DataCallback;
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
 import com.cgy.mycollections.utils.dataparse.BinaryUtil;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.List;
 

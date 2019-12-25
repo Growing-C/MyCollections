@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import appframe.utils.L;
+
 /**
  * ShellUtil
  * <ul>

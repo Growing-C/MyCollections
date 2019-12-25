@@ -4,7 +4,7 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 
 /**

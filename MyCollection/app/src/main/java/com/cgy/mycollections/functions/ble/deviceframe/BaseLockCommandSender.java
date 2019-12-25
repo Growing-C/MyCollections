@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.cgy.mycollections.functions.ble.client.CommandHelper;
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IBLEDeviceInterface;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.dataparse.BinaryUtil;
 
 import java.util.ArrayList;

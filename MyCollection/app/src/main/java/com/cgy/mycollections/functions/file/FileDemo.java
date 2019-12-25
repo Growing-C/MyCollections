@@ -25,7 +25,7 @@ import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.image.ImageLoader;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +37,6 @@ import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
-import appframe.utils.Logger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
@@ -212,12 +211,12 @@ public class FileDemo extends AppCompatActivity {
 
     @PermissionGranted(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionGranted() {
-        Logger.i("externalPermissionGranted");
+        L.i("externalPermissionGranted");
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionDenied() {
-        Logger.e("externalPermissionDenied");
+        L.e("externalPermissionDenied");
 
         PermissionDialog mPermissionDialog = new PermissionDialog(FileDemo.this, "需要读取文件权限");
         mPermissionDialog.show();

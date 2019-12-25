@@ -1,7 +1,7 @@
 package com.cgy.mycollections.functions.ethereum;
 
 import com.cgy.mycollections.MyApplication;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import org.web3j.crypto.MnemonicUtils;
 

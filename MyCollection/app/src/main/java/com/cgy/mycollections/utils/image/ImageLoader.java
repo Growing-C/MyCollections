@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.module.AppGlideModule;
 import com.cgy.mycollections.functions.cache.disklrucache.DiskLruCache;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import appframe.network.retrofit.callback.ApiCallback;
 import io.reactivex.Observable;

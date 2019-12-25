@@ -14,7 +14,7 @@ import com.cgy.mycollections.functions.jetpack.navigation.NavigationFragment;
 import com.cgy.mycollections.functions.jetpack.room.RoomFragment;
 import com.cgy.mycollections.functions.jetpack.workmanager.WorkManagerFragment;
 import com.cgy.mycollections.functions.mediamanager.mediaimageui.SectionsPagerAdapter;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;

@@ -10,7 +10,7 @@ import com.cgy.mycollections.functions.ble.client.BLEClient;
 import com.cgy.mycollections.functions.ble.client.DataCallback;
 import com.cgy.mycollections.functions.ble.scan.BLEScanner;
 import com.cgy.mycollections.functions.ble.scan.IBLEScanObserver;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 /**
  * Description :配网操作者 配网流程

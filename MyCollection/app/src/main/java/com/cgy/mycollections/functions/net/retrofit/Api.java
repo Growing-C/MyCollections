@@ -8,7 +8,7 @@ import com.cgy.mycollections.MyApplication;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.net.retrofit.responsemonitor.IResponseReporter;
 import com.cgy.mycollections.functions.net.retrofit.responsemonitor.ResponseMonitor;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.SystemUtil;
 
 import java.io.IOException;
@@ -35,7 +35,6 @@ import javax.net.ssl.X509TrustManager;
 
 import appframe.ProjectConfig;
 import appframe.network.retrofit.network.NetworkStateInterceptor;
-import appframe.utils.Logger;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
@@ -478,9 +477,9 @@ public final class Api {
             mMessage.append(message.concat("\n"));
             // 响应结束，打印整条日志
             if (message.startsWith("<-- END HTTP")) {
-                Logger.d(mMessage.toString());
+                L.d(mMessage.toString());
             } else if (message.startsWith("--> END POST")) {
-                Logger.d(mMessage.toString());
+                L.d(mMessage.toString());
             }
 
         }

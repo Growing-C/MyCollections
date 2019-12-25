@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 
 import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
 import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.RxUtil;
 
 import java.io.ByteArrayOutputStream;

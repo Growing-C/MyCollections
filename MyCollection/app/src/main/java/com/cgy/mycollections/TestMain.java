@@ -2,7 +2,7 @@ package com.cgy.mycollections;
 
 import android.content.Context;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.PinYinUtils;
 
 import org.web3j.crypto.MnemonicUtils;

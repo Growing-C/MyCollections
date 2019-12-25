@@ -4,8 +4,9 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 
+import appframe.utils.L;
+
 import appframe.utils.DisplayHelperUtils;
-import appframe.utils.Logger;
 
 
 /**
@@ -21,7 +22,7 @@ public class MyApplication extends Application {
         sInstance = this;
 
         DisplayHelperUtils.init(this);
-        Logger.setDebug(true);
+        L.setDebug(true);
     }
 
     public static MyApplication getInstance() {

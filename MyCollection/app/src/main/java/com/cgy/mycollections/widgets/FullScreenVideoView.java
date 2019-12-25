@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.VideoView;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 
 /**

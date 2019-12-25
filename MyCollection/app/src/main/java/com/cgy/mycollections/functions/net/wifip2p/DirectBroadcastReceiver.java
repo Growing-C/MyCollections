@@ -11,7 +11,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.text.TextUtils;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.ArrayList;
 

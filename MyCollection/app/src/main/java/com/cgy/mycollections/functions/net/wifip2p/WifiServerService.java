@@ -7,7 +7,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

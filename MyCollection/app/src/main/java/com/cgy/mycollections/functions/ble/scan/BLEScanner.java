@@ -19,7 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.ArrayList;
 import java.util.List;

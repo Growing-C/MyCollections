@@ -2,7 +2,7 @@ package com.cgy.mycollections.functions.ethereum.contract;
 
 import android.text.TextUtils;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.io.IOException;
 import java.math.BigInteger;

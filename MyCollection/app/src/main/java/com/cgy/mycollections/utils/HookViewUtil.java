@@ -5,6 +5,8 @@ import android.view.View;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import appframe.utils.L;
+
 /**
  * Description : hook view的click事件
  * Author :cgy

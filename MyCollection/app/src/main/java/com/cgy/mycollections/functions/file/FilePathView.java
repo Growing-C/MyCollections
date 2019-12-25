@@ -16,7 +16,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.io.File;
 import java.util.ArrayList;

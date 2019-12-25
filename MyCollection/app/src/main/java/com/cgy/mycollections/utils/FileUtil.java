@@ -16,7 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.image.ImageLoader;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;

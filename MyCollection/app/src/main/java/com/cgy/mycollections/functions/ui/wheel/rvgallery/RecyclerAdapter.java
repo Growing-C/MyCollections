@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.lib.ISelectableViewHolder;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;

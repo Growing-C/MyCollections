@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.functions.sqlite.db.UserAccount;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.UUID;
 

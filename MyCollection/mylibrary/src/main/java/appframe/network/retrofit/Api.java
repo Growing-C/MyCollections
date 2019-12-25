@@ -26,8 +26,8 @@ import appframe.network.retrofit.converter.GsonConverterFactory;
 import appframe.network.retrofit.network.NetworkStateInterceptor;
 import appframe.network.retrofit.proxy.ProxyHandler;
 import appframe.utils.JsonFormatter;
+import appframe.utils.L;
 import appframe.utils.LogUtils;
-import appframe.utils.Logger;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -237,7 +237,7 @@ public class Api {
             mMessage.append(message.concat("\n"));
             // 响应结束，打印整条日志
             if (message.startsWith("<-- END HTTP")) {
-                Logger.d(mMessage.toString());
+                L.d(mMessage.toString());
             }
 
         }

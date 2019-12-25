@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.cgy.mycollections.MainActivity;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 /**
  * Description :

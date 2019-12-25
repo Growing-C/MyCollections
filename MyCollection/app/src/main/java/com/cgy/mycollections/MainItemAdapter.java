@@ -32,7 +32,7 @@ import android.widget.TextView;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperViewHolder;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.Typefaces;
 
 import java.util.ArrayList;

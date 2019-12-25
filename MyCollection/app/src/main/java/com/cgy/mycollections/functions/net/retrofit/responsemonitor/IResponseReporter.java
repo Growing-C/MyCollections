@@ -3,7 +3,7 @@ package com.cgy.mycollections.functions.net.retrofit.responsemonitor;
 
 import androidx.annotation.NonNull;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;

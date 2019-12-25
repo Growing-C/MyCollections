@@ -15,6 +15,8 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import appframe.utils.L;
+
 /**
  * Description :屏幕相关工具
  * Author :cgy

@@ -11,7 +11,7 @@ import android.graphics.Shader;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 public class ReduceSizeTransform extends CenterCrop {
     private static final String TAG = "ReduceSizeTransform";

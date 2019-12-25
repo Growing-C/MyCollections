@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.res.Configuration;
 import android.widget.Toast;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.LanguageUtils;
 import com.witon.mylibrary.widget.LoadingDialog;
 

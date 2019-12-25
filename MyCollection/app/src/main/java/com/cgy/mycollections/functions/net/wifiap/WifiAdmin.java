@@ -21,7 +21,7 @@ import androidx.annotation.RequiresApi;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

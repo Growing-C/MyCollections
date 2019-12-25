@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.testsources.arknights.ArknightsConstant;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.SharePreUtil;
 import com.cgy.mycollections.widgets.pickerview.adapter.NumericWheelAdapter;
 import com.cgy.mycollections.widgets.pickerview.lib.WheelView;

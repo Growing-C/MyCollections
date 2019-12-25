@@ -11,7 +11,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

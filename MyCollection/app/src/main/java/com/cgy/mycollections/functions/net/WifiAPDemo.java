@@ -35,7 +35,7 @@ import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdapter;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.List;
 

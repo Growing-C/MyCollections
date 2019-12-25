@@ -20,7 +20,7 @@ import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.OnMyItemClickListener;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.image.ImageLoader;
 
 import java.io.File;

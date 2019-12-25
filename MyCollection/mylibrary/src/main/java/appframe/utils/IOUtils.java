@@ -55,7 +55,7 @@ public class IOUtils {
             try {
                 closeable.close();
             } catch (Exception e) {
-                Logger.w(e);
+                L.w(e);
             }
     }
 
@@ -64,7 +64,7 @@ public class IOUtils {
             try {
                 flushable.flush();
             } catch (Exception e) {
-                Logger.w(e);
+                L.w(e);
             }
     }
 

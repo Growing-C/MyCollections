@@ -13,12 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.cgy.mycollections.R;
+import appframe.utils.L;
 
 import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
-import appframe.utils.Logger;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -78,12 +78,12 @@ public class CameraXFragment extends Fragment {
 
     @PermissionGranted(requestCode = PermissionManager.REQUEST_CAMERA_PERMISSION)
     public void externalPermissionGranted() {
-        Logger.i("CameraPermissionGranted");
+        L.i("CameraPermissionGranted");
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionDenied() {
-        Logger.e("externalPermissionDenied");
+        L.e("externalPermissionDenied");
 
         PermissionDialog mPermissionDialog = new PermissionDialog(getActivity(), "需要相机权限");
         mPermissionDialog.show();

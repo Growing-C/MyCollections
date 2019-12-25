@@ -19,7 +19,7 @@ import com.cgy.mycollections.functions.net.webservice.request.RequestBody;
 import com.cgy.mycollections.functions.net.webservice.request.RequestEnvelope;
 import com.cgy.mycollections.functions.net.webservice.request.RequestModel;
 import com.cgy.mycollections.functions.net.webservice.response.ResponseEnvelope;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;

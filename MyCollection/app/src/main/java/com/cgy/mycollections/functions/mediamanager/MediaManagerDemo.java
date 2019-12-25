@@ -19,7 +19,7 @@ import com.cgy.mycollections.functions.file.FileInfo;
 import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
 
@@ -30,7 +30,6 @@ import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
-import appframe.utils.Logger;
 import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -339,13 +338,13 @@ public class MediaManagerDemo extends BaseActivity {
 
     @PermissionGranted(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionGranted() {
-        Logger.i("externalPermissionGranted");
+        L.i("externalPermissionGranted");
         initContent();
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionDenied() {
-        Logger.e("externalPermissionDenied");
+        L.e("externalPermissionDenied");
 
         PermissionDialog mPermissionDialog = new PermissionDialog(MediaManagerDemo.this, "需要读取文件权限");
         mPermissionDialog.show();

@@ -11,6 +11,8 @@ import android.text.TextUtils;
 
 import java.util.Locale;
 
+import appframe.utils.L;
+
 /**
  * Description :不完善，此处不应该有 zh  中文等特定的语言标识， 待改成全部用locale的方式
  * Author :cgy

@@ -17,7 +17,7 @@ import android.widget.ToggleButton;
 
 import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 import com.cgy.mycollections.utils.SystemUtil;
 
 import appframe.permission.PermissionDenied;

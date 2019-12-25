@@ -12,6 +12,8 @@ import android.widget.EditText;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import appframe.utils.L;
+
 /**
  * Description :
  * Author :cgy

@@ -19,7 +19,7 @@ import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.jetpack.room.data.AppDatabase;
 import com.cgy.mycollections.functions.jetpack.room.data.User;
 import com.cgy.mycollections.functions.mediamanager.mediaimageui.PageViewModel;
-import com.cgy.mycollections.utils.L;
+import appframe.utils.L;
 
 import java.util.List;
 
