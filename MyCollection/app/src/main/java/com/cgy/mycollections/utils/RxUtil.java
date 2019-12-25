@@ -29,6 +29,12 @@ public class RxUtil {
     private RxUtil() {
     }
 
+    /**
+     * 线程中运行，ui线程中观察
+     *
+     * @param <T>
+     * @return
+     */
     public static <T> ObservableTransformer<T, T> applySchedulersJobUI() {
         return new ObservableTransformer<T, T>() {
             @Override
@@ -50,10 +56,25 @@ public class RxUtil {
 //    }
 
 
+    /**
+     * 主线程中运行
+     *
+     * @param t
+     * @param <T>
+     * @return
+     */
     public static <T> Observable<T> runInUIThread(T t) {
         return Observable.just(t).observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * 延迟一定时间后主线程运行
+     *
+     * @param t
+     * @param delayMillis
+     * @param <T>
+     * @return
+     */
     public static <T> Observable<T> runInUIThreadDelay(T t, long delayMillis) {
         return Observable.just(t).delaySubscription(delayMillis, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread());
     }
@@ -67,6 +88,13 @@ public class RxUtil {
     }
 
 
+    /**
+     * io线程运行
+     *
+     * @param t
+     * @param <T>
+     * @return
+     */
     public static <T> Observable<T> runInIoThread(T t) {
         return Observable.just(t).observeOn(Schedulers.io());
     }

@@ -21,6 +21,7 @@ public class L {
      * Library debug tag.
      */
     private static String STag = "linkstec";
+    private static String SLogTagPrefix = "ML";//tag 前缀，所有的这个类打印的tag最前面都有这个
     /**
      * Library debug sign.
      */
@@ -207,7 +208,7 @@ public class L {
             Class<android.util.Log> logClass = android.util.Log.class;
             Method logMethod = logClass.getMethod(method, String.class, String.class);
             logMethod.setAccessible(true);
-            logMethod.invoke(null, tag, message);
+            logMethod.invoke(null, SLogTagPrefix + tag, message);
         } catch (Exception e) {
             System.out.println(tag + ": " + message);
         }
@@ -253,7 +254,7 @@ public class L {
             Class<android.util.Log> logClass = android.util.Log.class;
             Method logMethod = logClass.getMethod(method, String.class, String.class, Throwable.class);
             logMethod.setAccessible(true);
-            logMethod.invoke(null, tag, message, e);
+            logMethod.invoke(null, SLogTagPrefix + tag, message, e);
         } catch (Exception e1) {
             System.out.println(tag + ": " + message);
         }
