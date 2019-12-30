@@ -12,7 +12,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".functions.mediamanager.ShowImagesActivity"
-            android:label="图片展示"  />
+            android:label="图片展示" />
         <activity
             android:name=".functions.mediamanager.MediaImagesActivity"
             android:label="@string/title_activity_media_images" />
@@ -85,6 +85,7 @@
                 android:name="android.notch_support"
                 android:value="true" />
         </activity>
+        <activity android:name=".functions.ui.scale.ScaleViewDemo" />
 
         <receiver
             android:name=".boot.BootReceiver"

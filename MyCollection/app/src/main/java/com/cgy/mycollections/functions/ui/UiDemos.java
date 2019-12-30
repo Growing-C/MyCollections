@@ -21,6 +21,7 @@ import com.cgy.mycollections.MainItemAdapter;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.ui.dialogdemo.DialogDemo;
+import com.cgy.mycollections.functions.ui.scale.ScaleViewDemo;
 import com.cgy.mycollections.functions.ui.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.ui.textdemo.TextDemo;
 import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
@@ -69,6 +70,7 @@ public class UiDemos extends AppCompatActivity {
             new Demo(R.string.title_activity_status_bar_demo, R.string.info_status_bar_demo, StatusBarDemo.class),
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_dialog, R.string.info_dialog, DialogDemo.class),
+            new Demo(R.string.title_scale_view, R.string.info_scale_view, ScaleViewDemo.class),
     };
 
     @Override
