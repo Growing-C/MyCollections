@@ -18,8 +18,8 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class ObservableTest {
     public static void main(String[] args) {
-//        testPublishSubject();
-        testBackpressure();
+        testPublishSubject();
+//        testBackpressure();
     }
 
     public static void testZip() {

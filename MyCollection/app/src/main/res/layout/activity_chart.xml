@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <!--    AppBarLayout的theme似乎只会导致 toolbar的title颜色改变-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
+        <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            style="@style/AppToolBar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/price_change_chart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/deal_chart"
+                android:layout_marginTop="@dimen/px24_margin"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

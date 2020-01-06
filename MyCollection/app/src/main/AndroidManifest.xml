@@ -86,6 +86,7 @@
                 android:value="true" />
         </activity>
         <activity android:name=".functions.ui.scale.ScaleViewDemo" />
+        <activity android:name=".functions.chart.ChartDemo" />
 
         <receiver
             android:name=".boot.BootReceiver"

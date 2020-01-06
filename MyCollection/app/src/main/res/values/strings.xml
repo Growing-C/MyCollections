@@ -53,6 +53,9 @@
     <string name="title_scale_view">ScaleViewDemo</string>
     <string name="info_scale_view">可选择范围的刻度尺</string>
 
+    <string name="title_activity_chart_demo">ChartDemo</string>
+    <string name="info_chart_demo">安卓图表</string>
+
     <string name="auto_input_label">自动帐号输入</string>
     <string name="red_envelope_label">抢红包</string>
     <string name="red_envelope_btn">开启自动抢红包服务</string>

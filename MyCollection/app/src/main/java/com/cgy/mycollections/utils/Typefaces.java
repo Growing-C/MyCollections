@@ -38,5 +38,9 @@ public final class Typefaces {
         return get(context, "font_roboto/Roboto-Medium.ttf");
     }
 
+    public static Typeface getOpenSans(Context context) {
+        return get(context, "font_roboto/OpenSans-Regular.ttf");
+    }
+
 }
 

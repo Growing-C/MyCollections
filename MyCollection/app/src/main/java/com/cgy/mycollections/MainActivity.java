@@ -41,6 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cgy.mycollections.functions.chart.ChartDemo;
 import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.jetpack.JetPackDemos;
 import com.cgy.mycollections.functions.ui.UiDemos;
@@ -60,6 +61,7 @@ import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
+
 import appframe.utils.L;
 
 import java.util.List;
@@ -174,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
     private Demo[] demos = {
             new Demo(R.string.title_ui, R.string.info_ui, true, UiDemos.class),
             new Demo(R.string.title_jetpack, R.string.info_jetpack, JetPackDemos.class),
+            new Demo(R.string.title_activity_chart_demo, R.string.info_chart_demo, ChartDemo.class),
             new Demo(R.string.title_activity_thread_pool_demo, R.string.info_thread_pool_demo, ThreadPoolDemo.class),
             new Demo(R.string.title_activity_red_envelope_demo, R.string.info_red_envelope_demo, AccessibilityDemo.class),
             new Demo(R.string.title_activity_tts_demo, R.string.info_tts_demo, TTSDemo.class),

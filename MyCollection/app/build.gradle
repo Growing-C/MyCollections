@@ -152,6 +152,7 @@ dependencies {
 
     implementation project(':mylibrary')
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 //    implementation 'com.google.firebase:firebase-core:17.2.0'
 //    implementation 'com.google.firebase:firebase-invites:17.0.0'

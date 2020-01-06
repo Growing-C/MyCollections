@@ -1,8 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+//  buildscript主要用于声明gardle脚本自身所需要使用的资源，
+// 包括依赖项、maven仓库地址、第三方插件等。你可以在里面手动添加一些三方插件、库的引用，
+// 这样你就可以在脚本中使用它们了。因为是引用，所以gradle在执行脚本时，会优先执行buildscript代码块中的内容。
 buildscript {
     ext {
         kotlin_version = '+'
+//        kotlin_version = '1.3.50'
         androidx_version = '1.1.0'
 
         java_version = JavaVersion.VERSION_1_8
@@ -10,29 +14,45 @@ buildscript {
     }
 
     repositories {
+//        Maven Central 和JCenter是两个有名的远程仓库，一般不同时使用它们，
+//        通常推荐使用JCenter，它是Maven Central的超集，其也是Android Studio创建Android项目时的默认依赖仓库，而且JCenter还支持HTTPS。
+
+//        mavenLocal,本地Maven仓库是你已经使用了的所有依赖的本地缓存，你也可以自己添加依赖。
+//        默认情况下，依赖仓库可以在一个名为.m2目录文件夹的主目录中找到。在Linux或Mac OS X上，该路径是~/.m2，
+//        在Windows上路径是%UserProfile%/.m2。
+
+//        maven {
+//            url 'https://dl.bintray.com/kotlin/kotlin-dev/'
+//        }
+//        mavenCentral()
+        mavenLocal()
+
         jcenter()
         google()
-//        maven { url 'http://repo1.maven.org/maven2' }
-//        maven {
-//            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
-//        }
-
-//        maven{ url 'http://maven.oschina.net/content/groups/public/'}
-
-
-//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-//        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
-////        mavenCentral()
-//        maven { url "http://192.168.2.94:10080/repertory/maven/dependency/raw/master/" }
+//
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        //MPandroid chart要求
 //        maven { url 'https://jitpack.io' }
-//        maven { url 'https://mobile-sdk.jumio.com' }
+
+
+        //---------------wallet repo------------------------------
+//        mavenCentral()
 //        maven {
 //            url 'https://maven.google.com/'
 //            name 'Google'
 //        }
+//        google()
+//        jcenter()
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
+//        maven { url "http://192.168.2.94:10080/repertory/maven/dependency/raw/master/" }
+//        maven { url 'https://jitpack.io' }
+//        maven { url 'https://mobile-sdk.jumio.com' }
+//
+//        maven { url "http://192.168.2.94:8081/repository/maven-public/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -41,28 +61,36 @@ buildscript {
     }
 }
 
+//allprojects块的repositories用于多项目构建，为所有项目提供共同所需依赖包。
 allprojects {
     repositories {
+//        maven {
+//            url 'https://dl.bintray.com/kotlin/kotlin-dev/'
+//        }
+//
+//        mavenCentral()
         mavenLocal()
         jcenter()
         google()
-//        maven { url 'http://repo1.maven.org/maven2' }
-//        maven {
-//            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
-//        }
+//
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        //MPandroid chart要求，www必须有 不然一直报错
+        maven { url 'https://www.jitpack.io' }
 
-//        maven{ url 'http://maven.oschina.net/content/groups/public/'}
-
-
-//        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-//        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
-////        mavenCentral()
-//        maven { url "http://192.168.2.94:10080/repertory/maven/dependency/raw/master/" }
-//        maven { url 'https://jitpack.io' }
-//        maven { url 'https://mobile-sdk.jumio.com' }
+        //---------------wallet repo------------------------------
+//        mavenCentral()
 //        maven {
 //            url 'https://maven.google.com/'
 //            name 'Google'
 //        }
+//        google()
+//        jcenter()
+//        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+//        jcenter() { url 'http://jcenter.bintray.com/' }//原来是https 如果jcenter() 这样下不下来就改成http
+//        maven { url "http://192.168.2.94:10080/repertory/maven/dependency/raw/master/" }
+//        maven { url 'https://jitpack.io' }
+//        maven { url 'https://mobile-sdk.jumio.com' }
+//
+//        maven { url "http://192.168.2.94:8081/repository/maven-public/" }
     }
 }
