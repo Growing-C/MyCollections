@@ -48,6 +48,8 @@ public class ChartDemo extends AppCompatActivity {
     LineChart mPriceChangeChart;
     @BindView(R.id.deal_chart)
     LineChart mDealChart;
+    @BindView(R.id.new_house_chart)
+    LineChart mNewHouseChart;
 
     private Typeface mTf;
 
@@ -64,6 +66,7 @@ public class ChartDemo extends AppCompatActivity {
 
         setUpWuxiHouseMarketChart(mPriceChangeChart, generateHousingPriceChangeData());//涨价降价数
         setUpWuxiHouseMarketChart(mDealChart, generateHousingNetDealData());//网签数
+        setUpWuxiHouseMarketChart(mNewHouseChart, generateNewHouseData());//新增房源，平均成交价
     }
 
     /**
@@ -83,7 +86,7 @@ public class ChartDemo extends AppCompatActivity {
                 new Entry(10, 3091),
                 new Entry(12, 2671));
 
-//        MATERIAL_COLORS 0-绿色  1-黄色   2-红   3-蓝
+//        MATERIAL_COLORS 0-浅绿色  1-黄色   2-红   3-蓝
         ArrayList<ILineDataSet> sets = new ArrayList<>();
         sets.add(generateLineDataSet("涨价房源数", houseWithPriceRiseCount, ColorTemplate.MATERIAL_COLORS[2]));
         sets.add(generateLineDataSet("降价房源数", houseWithPriceCutCount, ColorTemplate.MATERIAL_COLORS[0]));
@@ -91,7 +94,7 @@ public class ChartDemo extends AppCompatActivity {
     }
 
     /**
-     * 涨价降价房源数
+     * 新房二手房网签数据
      *
      * @return
      */
@@ -109,10 +112,34 @@ public class ChartDemo extends AppCompatActivity {
                 new Entry(11, 5627),
                 new Entry(12, 3884));
 
-//        COLORFUL_COLORS 0-深红  1-浅红，橙色   2-  3-
+//        COLORFUL_COLORS 0-深红  1-浅红，橙色   2-黄色  3-深绿
         ArrayList<ILineDataSet> sets = new ArrayList<>();
         sets.add(generateLineDataSet("二手房网签数", d1, ColorTemplate.COLORFUL_COLORS[2]));
         sets.add(generateLineDataSet("新房网签数", d2, ColorTemplate.COLORFUL_COLORS[3]));
+        return new LineData(sets);
+    }
+
+    /**
+     * 新增房源  成交套数  平均成交价
+     *
+     * @return
+     */
+    private LineData generateNewHouseData() {
+        //新增房源
+        List<Entry> d1 = Arrays.asList(
+                new Entry(12, 7113));
+        //11月成交套数
+        List<Entry> d2 = Arrays.asList(
+                new Entry(11, 383));
+        //11 平均成交单价 成交价为最初报价的 97% 最后报价的 97%
+        List<Entry> d3 = Arrays.asList(
+                new Entry(11, 14774));
+
+//        LIBERTY_COLORS 0-浅蓝  1-蓝   2-深蓝  3-
+        ArrayList<ILineDataSet> sets = new ArrayList<>();
+        sets.add(generateLineDataSet("新增房源", d1, ColorTemplate.LIBERTY_COLORS[0]));
+        sets.add(generateLineDataSet("成交套数", d2, ColorTemplate.LIBERTY_COLORS[1]));
+        sets.add(generateLineDataSet("平均成交单价", d3, ColorTemplate.LIBERTY_COLORS[2]));
         return new LineData(sets);
     }
 

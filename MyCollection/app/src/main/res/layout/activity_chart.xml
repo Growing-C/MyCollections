@@ -43,6 +43,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/new_house_chart"
+                android:layout_marginTop="@dimen/px24_margin"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
         </LinearLayout>
     </ScrollView>
 
