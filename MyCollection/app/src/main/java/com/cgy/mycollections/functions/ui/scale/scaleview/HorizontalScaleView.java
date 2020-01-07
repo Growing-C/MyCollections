@@ -18,6 +18,8 @@ import android.view.ViewConfiguration;
 
 import com.cgy.mycollections.R;
 
+import appframe.utils.L;
+
 
 /**
  * Copyright (c) 2017, Bongmi
@@ -26,6 +28,7 @@ import com.cgy.mycollections.R;
  */
 
 public class HorizontalScaleView extends View {
+    private final String TAG = HorizontalScaleView.class.getSimpleName();
 
     private final int SCALE_WIDTH_BIG = 4;//大刻度线宽度
     private final int SCALE_WIDTH_SMALL = 2;//小刻度线宽度
@@ -40,19 +43,27 @@ public class HorizontalScaleView extends View {
     private int minScaleLength;//小刻度长度
     private int scaleSpace;//刻度间距
     private int scaleSpaceUnit;//每大格刻度间距
-    private int height, width;//view高宽
+    private int height, width;//view高宽,一旦measure 就不变了
     private int ruleHeight;//刻度尺高
 
-    private int max;//最大刻度
-    private int min;//最小刻度
-    private int borderLeft, borderRight;//左右边界值坐标
+    private int pointerTouchWidth = 40;//指针触摸范围
+    private int leftPointerCenterX;//左边指针的中心x
+    private int rightPointerCenterX;//左边指针的中心x
+    private int leftPointerValue;//左边指针的值
+    private int rightPointerValue;//右指针的值
+
+    private int maxValue;//最大刻度，由外部赋值，赋值后不会改变
+    private int minValue;//最小刻度，由外部赋值，赋值后不会改变
+    private int borderLeftX, borderRightX;//左右边界值坐标，一旦赋值不会再改变
     private float midX;//当前中心刻度x坐标
-    private float originMidX;//初始中心刻度x坐标
-    private float minX;//最小刻度x坐标,从最小刻度开始画刻度
+    private float originLengthBetweenStartXAndCenterX;//初始中心刻度x坐标和 绘制开始坐标之间的x轴距离，一旦定了就不会再改变
+    private float scaleStartX;//最小刻度x坐标,从最小刻度开始画刻度
+    private float scaleEndX;//最大刻度x坐标,
+    private float overScrollX = 100;//左右允许滑动出去的x轴长度
 
     private float lastX;
 
-    private float originValue;//初始刻度对应的值
+    //    private float originValue;//初始刻度对应的值
     private float currentValue;//当前刻度对应的值
 
     private Paint paint;//画笔
@@ -109,10 +120,26 @@ public class HorizontalScaleView extends View {
 
     //设置刻度范围
     public void setRange(int min, int max) {
-        this.min = min;
-        this.max = max;
-        originValue = (max + min) / 2;
-        currentValue = originValue;
+        this.minValue = min;
+        this.maxValue = max;
+//        originValue = (max + min) / 2;
+//        currentValue = originValue;
+        L.e(TAG, "setRange min:" + min + "  max:" + max);
+    }
+
+    /**
+     * 设置左右指针的值
+     *
+     * @param leftValue
+     * @param rightValue
+     */
+    public void setPointerPos(int leftValue, int rightValue) {
+        leftPointerValue = leftValue;
+        rightPointerValue = rightValue;
+        if (rightValue < leftValue) {
+            throw new IllegalArgumentException("右指针值必须大于左指针值");
+        }
+        L.e(TAG, "setPointerPos leftValue:" + leftValue + "   rightValue：" + rightValue);
     }
 
     //设置刻度单位
@@ -133,6 +160,7 @@ public class HorizontalScaleView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        L.e(TAG, "onMeasure isMeasured:" + isMeasured);
         if (!isMeasured) {
             width = getMeasuredWidth();
             height = getMeasuredHeight();
@@ -145,11 +173,21 @@ public class HorizontalScaleView extends View {
             rectWidth = scaleSpaceUnit;
             rectHeight = scaleSpaceUnit / 2;
 
-            borderLeft = width / 2 - ((min + max) / 2 - min) * scaleSpaceUnit;
-            borderRight = width / 2 + ((min + max) / 2 - min) * scaleSpaceUnit;
-            midX = (borderLeft + borderRight) / 2;
-            originMidX = midX;
-            minX = borderLeft;
+            //最左边从0开始，右边一直往右超出屏幕部分可以滚动
+            borderLeftX = 0;
+            borderRightX = borderLeftX + (maxValue - minValue) * scaleSpaceUnit;
+//            borderLeftX = width / 2 - ((min + max) / 2 - min) * scaleSpaceUnit;
+//            borderRightX = width / 2 + ((min + max) / 2 - min) * scaleSpaceUnit;
+            leftPointerCenterX = width / 2 - ((minValue + maxValue) / 2 - minValue) * scaleSpaceUnit;
+            rightPointerCenterX = width / 2 + ((minValue + maxValue) / 2 - minValue) * scaleSpaceUnit;
+
+//            midX = (borderLeftX + borderRightX) / 2;
+            midX = width / 2;
+            originLengthBetweenStartXAndCenterX = midX - borderLeftX;
+            scaleStartX = borderLeftX;
+            scaleEndX = borderRightX;
+
+            calculateCurrentScale();
             isMeasured = true;
         }
 
@@ -160,7 +198,7 @@ public class HorizontalScaleView extends View {
         super.onDraw(canvas);
 
         //画刻度线
-        for (int i = min; i <= max; i++) {
+        for (int i = minValue; i <= maxValue; i++) {
             //画刻度数字
             Rect rect = new Rect();
             String str = String.valueOf(i);
@@ -169,31 +207,32 @@ public class HorizontalScaleView extends View {
             paint.getTextBounds(str, 0, str.length(), rect);
             int w = rect.width();
             int h = rect.height();
-            canvas.drawText(str, minX + (i - min) * scaleSpaceUnit - w / 2 - SCALE_WIDTH_BIG / 2, ruleHeight - maxScaleLength - h - minScaleLength / 2, paint);
+            //画刻度文字
+            canvas.drawText(str, scaleStartX + (i - minValue) * scaleSpaceUnit - w / 2 - SCALE_WIDTH_BIG / 2, ruleHeight - maxScaleLength - h - minScaleLength / 2, paint);
             //画大刻度线
             paint.setStrokeWidth(SCALE_WIDTH_BIG);
-            canvas.drawLine(minX + (i - min) * scaleSpaceUnit, ruleHeight - maxScaleLength, minX + (i - min) * scaleSpaceUnit, ruleHeight, paint);
+            canvas.drawLine(scaleStartX + (i - minValue) * scaleSpaceUnit, ruleHeight - maxScaleLength, scaleStartX + (i - minValue) * scaleSpaceUnit, ruleHeight, paint);
 
-            if (i == max) {
+            if (i == maxValue) {
                 continue;//最后一条不画中小刻度线
             }
             //画中刻度线
             paint.setStrokeWidth(SCALE_WIDTH_SMALL);
-            canvas.drawLine(minX + (i - min) * scaleSpaceUnit + scaleSpaceUnit / 2, ruleHeight, minX + (i - min) * scaleSpaceUnit + scaleSpaceUnit / 2, ruleHeight - midScaleLength, paint);
+            canvas.drawLine(scaleStartX + (i - minValue) * scaleSpaceUnit + scaleSpaceUnit / 2, ruleHeight, scaleStartX + (i - minValue) * scaleSpaceUnit + scaleSpaceUnit / 2, ruleHeight - midScaleLength, paint);
             //画小刻度线
             for (int j = 1; j < 10; j++) {
                 if (j == 5) {
                     continue;
                 }
-                canvas.drawLine(minX + (i - min) * scaleSpaceUnit + (SCALE_WIDTH_SMALL + scaleSpace) * j, ruleHeight, minX + (i - min) * scaleSpaceUnit + (SCALE_WIDTH_SMALL + scaleSpace) * j, ruleHeight - minScaleLength, paint);
+                canvas.drawLine(scaleStartX + (i - minValue) * scaleSpaceUnit + (SCALE_WIDTH_SMALL + scaleSpace) * j, ruleHeight, scaleStartX + (i - minValue) * scaleSpaceUnit + (SCALE_WIDTH_SMALL + scaleSpace) * j, ruleHeight - minScaleLength, paint);
             }
 
         }
 
-        //画竖线
+        //画底部横线
         paint.setStrokeWidth(LINE_WIDTH);
         paint.setColor(getResources().getColor(android.R.color.darker_gray));
-        canvas.drawLine(minX + SCALE_WIDTH_BIG / 2, ruleHeight + LINE_WIDTH / 2, minX + (max - min) * scaleSpaceUnit - SCALE_WIDTH_BIG / 2, ruleHeight + LINE_WIDTH / 2, paint);
+        canvas.drawLine(scaleStartX, ruleHeight + LINE_WIDTH / 2, scaleStartX + (maxValue - minValue) * scaleSpaceUnit, ruleHeight + LINE_WIDTH / 2, paint);
         //画指针线
         paint.setColor(getResources().getColor(R.color.colorPrimaryDark));
         canvas.drawLine(width / 2, 0, width / 2, ruleHeight, paint);
@@ -233,6 +272,8 @@ public class HorizontalScaleView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
+//        L.e(TAG, "onTouchEvent x:" + x);
+//        屏幕最左边 x = 0 最右边是屏幕宽度 往右滑动 x越来越大
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 lastX = x;
@@ -247,8 +288,9 @@ public class HorizontalScaleView extends View {
             case MotionEvent.ACTION_MOVE:
                 velocityTracker.addMovement(event);
                 int offsetX = (int) (lastX - x);
-                minX -= offsetX;
-                midX -= offsetX;
+                moveByX(offsetX);
+//                scaleStartX -= offsetX;
+//                midX -= offsetX;
                 calculateCurrentScale();
                 invalidate();
                 lastX = x;
@@ -275,32 +317,72 @@ public class HorizontalScaleView extends View {
         return true;
     }
 
+    /**
+     * 主要的 x 有用的值 移动offsetX的距离
+     *
+     * @param offsetX
+     */
+    private void moveByX(float offsetX) {
+        scaleStartX -= offsetX;
+        scaleEndX -= offsetX;
+        midX -= offsetX;
+    }
+
+    /**
+     * 设置刻度开始的x位置 同时设置其他相关值
+     *
+     * @param newScaleStartX
+     */
+    private void setScaleStartXAndFixOtherData(float newScaleStartX) {
+        scaleStartX = newScaleStartX;
+        scaleEndX = scaleStartX + borderRightX - borderLeftX;
+        midX = originLengthBetweenStartXAndCenterX + scaleStartX;
+    }
+
+    /**
+     * 计算x坐标处的 刻度值
+     *
+     * @param x
+     */
+    private void calculateScaleValueByX(int x) {
+        if (x <= scaleStartX) {
+            //x值小于开始值
+            currentValue = minValue;
+        } else if (x >= scaleEndX) {
+            currentValue = maxValue;
+        } else {
+            float xOffsetFromStart = x - scaleStartX;
+            int bigScaleValue = (int) (xOffsetFromStart / scaleSpaceUnit);//x到start 包含了多少大的刻度
+            float extraSmallScaleValue = xOffsetFromStart % scaleSpaceUnit;//多出的小格数
+
+            int offsetSmall = (new BigDecimal(extraSmallScaleValue / (scaleSpace + SCALE_WIDTH_SMALL)).setScale(0, BigDecimal.ROUND_HALF_UP)).intValue();//移动的小刻度数 四舍五入取整
+            float value = minValue + bigScaleValue + offsetSmall * 0.1f;
+            if (value > maxValue) {
+                currentValue = maxValue;
+            } else if (value < minValue) {
+                currentValue = minValue;
+            } else {
+                currentValue = value;
+            }
+        }
+        L.e(TAG, "calculate x:" + x + "  currentValue:" + currentValue + "  scaleStartX:" + scaleStartX + " --scaleEndX" + scaleEndX);
+        mHandler.sendEmptyMessage(0);
+    }
+
     //计算当前刻度
     private void calculateCurrentScale() {
-        float offsetTotal = midX - originMidX;
-        int offsetBig = (int) (offsetTotal / scaleSpaceUnit);//移动的大刻度数
-        float offsetS = offsetTotal % scaleSpaceUnit;
-        int offsetSmall = (new BigDecimal(offsetS / (scaleSpace + SCALE_WIDTH_SMALL)).setScale(0, BigDecimal.ROUND_HALF_UP)).intValue();//移动的小刻度数 四舍五入取整
-        float offset = offsetBig + offsetSmall * 0.1f;
-        if (originValue - offset > max) {
-            currentValue = max;
-        } else if (originValue - offset < min) {
-            currentValue = min;
-        } else {
-            currentValue = originValue - offset;
-        }
-        mHandler.sendEmptyMessage(0);
+        calculateScaleValueByX(width / 2);
     }
 
     //指针线超出范围时 重置回边界处
     private void confirmBorder() {
-        if (midX < borderLeft) {
-            midX = borderLeft;
-            minX = borderLeft - (borderRight - borderLeft) / 2;
+        if (overScrollX + borderLeftX < scaleStartX) {
+            //view开始绘制的左边位置大于限制位置了
+            setScaleStartXAndFixOtherData(overScrollX + borderLeftX);
             postInvalidate();
-        } else if (midX > borderRight) {
-            midX = borderRight;
-            minX = borderLeft + (borderRight - borderLeft) / 2;
+        } else if (width - overScrollX > scaleStartX + borderRightX - borderLeftX) {
+            //view最右边绘制的位置 x坐标小于限制位置
+            setScaleStartXAndFixOtherData(width - overScrollX - (borderRightX - borderLeftX));
             postInvalidate();
         }
     }
@@ -313,13 +395,11 @@ public class HorizontalScaleView extends View {
                 float velocityAbs = 0;//速度绝对值
                 if (velocity > 0 && continueScroll) {
                     velocity -= 50;
-                    minX += velocity * velocity / a;
-                    midX += velocity * velocity / a;
+                    moveByX(-velocity * velocity / a);
                     velocityAbs = velocity;
                 } else if (velocity < 0 && continueScroll) {
                     velocity += 50;
-                    minX -= velocity * velocity / a;
-                    midX -= velocity * velocity / a;
+                    moveByX(velocity * velocity / a);
                     velocityAbs = -velocity;
                 }
                 calculateCurrentScale();
