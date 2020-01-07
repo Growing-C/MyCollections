@@ -22,9 +22,11 @@ import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
+import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.image.ImageLoader;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+
 import appframe.utils.L;
 
 import java.io.File;
@@ -103,8 +105,14 @@ public class FileDemo extends AppCompatActivity {
                         it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
                         startActivity(it);
                     } else {
-                        FileInfoDialogFragment.newInstance(fileInfo)
-                                .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+                        try {
+                            //TODO:FileUriExposedException
+                            startActivity(FileUtil.openFile(FileDemo.this, fileInfo.filePath));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+//                        FileInfoDialogFragment.newInstance(fileInfo)
+//                                .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
                     }
                 }
             }

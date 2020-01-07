@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path
+        name="external"
+        path="." />
+    <external-files-path
+        name="external_files"
+        path="." />
+    <cache-path
+        name="cache"
+        path="." />
+    <external-cache-path
+        name="external_cache"
+        path="." />
+    <files-path
+        name="files"
+        path="." />
+
+<!--    <files-path-->
+<!--        path="Download/"-->
+<!--        name="download" />-->
+<!--    <files-path-->
+<!--        path="."-->
+<!--        name="root" />-->
+<!--    <files-path-->
+<!--        path="images/"-->
+<!--        name="my_images" />-->
+<!--    <files-path-->
+<!--        path="audios/"-->
+<!--        name="my_audios" />-->
+    <!--    子节点	对应路径-->
+    <!--    files-path	Context.getFilesDir()-->
+    <!--    cache-path	Context.getCacheDir()-->
+    <!--    external-path	Environment.getExternalStorageDirectory()-->
+    <!--    external-files-path	Context.getExternalFilesDir(null)-->
+    <!--    external-cache-path	Context.getExternalCacheDir()-->
+</paths>

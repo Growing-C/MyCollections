@@ -47,8 +47,8 @@ public class HorizontalScaleView extends View {
     private int ruleHeight;//刻度尺高
 
     private int pointerTouchWidth = 40;//指针触摸范围
-    private int leftPointerCenterX;//左边指针的中心x
-    private int rightPointerCenterX;//左边指针的中心x
+    private int leftPointerStartX;//左边指针的开始x
+    private int rightPointerStartX;//右边指针的开始x
     private int leftPointerValue;//左边指针的值
     private int rightPointerValue;//右指针的值
 
@@ -136,6 +136,12 @@ public class HorizontalScaleView extends View {
     public void setPointerPos(int leftValue, int rightValue) {
         leftPointerValue = leftValue;
         rightPointerValue = rightValue;
+
+        if (leftPointerValue < minValue)
+            leftPointerValue = minValue;
+        if (rightPointerValue > maxValue)
+            rightPointerValue = maxValue;
+
         if (rightValue < leftValue) {
             throw new IllegalArgumentException("右指针值必须大于左指针值");
         }
@@ -176,12 +182,10 @@ public class HorizontalScaleView extends View {
             //最左边从0开始，右边一直往右超出屏幕部分可以滚动
             borderLeftX = 0;
             borderRightX = borderLeftX + (maxValue - minValue) * scaleSpaceUnit;
-//            borderLeftX = width / 2 - ((min + max) / 2 - min) * scaleSpaceUnit;
-//            borderRightX = width / 2 + ((min + max) / 2 - min) * scaleSpaceUnit;
-            leftPointerCenterX = width / 2 - ((minValue + maxValue) / 2 - minValue) * scaleSpaceUnit;
-            rightPointerCenterX = width / 2 + ((minValue + maxValue) / 2 - minValue) * scaleSpaceUnit;
 
-//            midX = (borderLeftX + borderRightX) / 2;
+            leftPointerStartX = borderLeftX + (leftPointerValue - minValue) * scaleSpaceUnit;
+            rightPointerStartX = borderLeftX + (rightPointerValue - minValue) * scaleSpaceUnit;
+
             midX = width / 2;
             originLengthBetweenStartXAndCenterX = midX - borderLeftX;
             scaleStartX = borderLeftX;
