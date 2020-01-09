@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import appframe.utils.L;
+
 public class AutoInputAccountService extends AccessibilityService {
     public static final String TAG = "cgy";
 
@@ -24,6 +26,7 @@ public class AutoInputAccountService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         int eventType = event.getEventType();
 
+        L.d(TAG, "事件---->" + event);
         Log.d(TAG, "事件---->" + event);
 
         switch (eventType) {

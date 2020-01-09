@@ -60,19 +60,27 @@ public class ScaleViewDemo extends AppCompatActivity {
 
 
         verticalScaleView.setRange(100, 200);
-        horizontalScaleView.setRange(40, 100);//设置范围
-        horizontalScaleView.setPointerPos(40, 100);//设置左右指针位置
+        horizontalScaleView.setRange(40, 100)//设置范围
+                .setPointerPos(43, 50)//设置左右指针位置
+                .setOnValueChangeListener(new OnValueChangeListener() {
+                    @Override
+                    public void onValueChanged(float value) {
+//                L.e("horizontalScaleView onValueChanged:" + value);
+                    }
+                })
+                .setAvailableFilter(new HorizontalScaleView.IAvailableFilter() {
+                    @Override
+                    public boolean isValueAvailable(int value) {
+                        if (value > 50 && value < 57)
+                            return false;
+                        return true;
+                    }
+                });
 
         verticalScaleView.setOnValueChangeListener(new OnValueChangeListener() {
             @Override
             public void onValueChanged(float value) {
                 L.e("verticalScaleView onValueChanged:" + value);
-            }
-        });
-        horizontalScaleView.setOnValueChangeListener(new OnValueChangeListener() {
-            @Override
-            public void onValueChanged(float value) {
-//                L.e("horizontalScaleView onValueChanged:" + value);
             }
         });
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

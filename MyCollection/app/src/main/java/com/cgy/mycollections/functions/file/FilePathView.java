@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.cgy.mycollections.R;
+
 import appframe.utils.L;
 
 import java.io.File;
@@ -78,6 +79,10 @@ public class FilePathView extends HorizontalScrollView {
 
     public File getRootDir() {
         return mRootDir;
+    }
+
+    public void setRootDir(File rootDir) {
+        this.mRootDir = rootDir;
     }
 
     public File getCurrentDir() {
@@ -144,6 +149,11 @@ public class FilePathView extends HorizontalScrollView {
         }
     }
 
+    /**
+     * 返回上一级
+     *
+     * @return
+     */
     public boolean navUp() {
         boolean navUpOk = navUpInternal();
         if (navUpOk && mListener != null) {

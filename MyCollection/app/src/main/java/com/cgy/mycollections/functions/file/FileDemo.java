@@ -72,8 +72,10 @@ public class FileDemo extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
+        FileInfo targetFile = null;
         if (getIntent() != null) {
             mFileOperateType = getIntent().getStringExtra(FileConstants.KEY_FILE_OPERATE);
+            targetFile = (FileInfo) getIntent().getSerializableExtra(FileConstants.KEY_FILE_INFO);
         }
 
         //文件选中
@@ -125,7 +127,11 @@ public class FileDemo extends AppCompatActivity {
 //        mRootDir = Environment.getExternalStorageDirectory();
 //        mCurrentDir = mRootDir;
 
-        refreshCurrentFileList(mFilePathV.getRootDir());
+        if (targetFile != null && targetFile.file.isDirectory()) {
+            mFilePathV.setRootDir(targetFile.file);
+            mFilePathV.navToFile(targetFile.file);
+        } else
+            refreshCurrentFileList(mFilePathV.getRootDir());
     }
 
     private void refreshCurrentFileList(File parent) {

@@ -1,4 +1,4 @@
-package com.cgy.mycollections;
+package com.cgy.mycollections.testsources;
 
 import android.content.Context;
 

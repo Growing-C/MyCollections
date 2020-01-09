@@ -22,7 +22,9 @@ import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
+
 import appframe.utils.L;
+
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenu;
@@ -64,6 +66,17 @@ public class ProtectedFilesActivity extends BaseActivity {
         @Override
         public void onCreateMenu(SwipeMenu leftMenu, SwipeMenu rightMenu, int position) {
 
+            SwipeMenuItem itemDetail = new SwipeMenuItem(ProtectedFilesActivity.this);
+            itemDetail.setText("详情");
+            itemDetail.setTextColor(ContextCompat.getColor(ProtectedFilesActivity.this, android.R.color.white));
+            itemDetail.setImage(R.drawable.ic_error_outline_24dp);
+            itemDetail.setBackground(R.drawable.shape_rec);
+            itemDetail.setWidth(200);
+            itemDetail.setBackgroundColor(ContextCompat.getColor(ProtectedFilesActivity.this, R.color.colorPrimary));
+            itemDetail.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            // 各种文字和图标属性设置。
+            rightMenu.addMenuItem(itemDetail); // 在Item右侧添加一个菜单。
+
             SwipeMenuItem removeProtectItem = new SwipeMenuItem(ProtectedFilesActivity.this);
             removeProtectItem.setText("保护");
             removeProtectItem.setTextColor(ContextCompat.getColor(ProtectedFilesActivity.this, android.R.color.white));
@@ -100,10 +113,14 @@ public class ProtectedFilesActivity extends BaseActivity {
             L.e("mItemMenuClickListener direction:" + direction + " menuPosition:" + menuPosition);
             if (direction == SwipeRecyclerView.RIGHT_DIRECTION) {
                 switch (menuPosition) {
-                    case 0://保护 取消保护
+                    case 0://详情
+                        FileInfoDialogFragment.newInstance(mFileList.get(position))
+                                .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+                        break;
+                    case 1://保护 取消保护
                         switchProtectStatus(position);
                         break;
-                    case 1://删除
+                    case 2://删除
                         showDeleteDialog(position);
                         break;
                     default:
@@ -161,8 +178,15 @@ public class ProtectedFilesActivity extends BaseActivity {
             @Override
             public void onItemClick(int position) {
                 L.e("mFileAdapter onItemClick:" + position);
-                FileInfoDialogFragment.newInstance(mFileList.get(position))
-                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+                FileInfo fileInfo = mFileList.get(position);
+                if (fileInfo.file.isDirectory()) {
+                    //文件夹
+                    Intent it = new Intent(ProtectedFilesActivity.this, FileDemo.class);
+                    it.putExtra(FileConstants.KEY_FILE_INFO, fileInfo);
+                    startActivity(it);
+                }
+//                FileInfoDialogFragment.newInstance(mFileList.get(position))
+//                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
             }
         });
         mProtectedFileListV.addItemDecoration(new SpaceItemDecoration(2));

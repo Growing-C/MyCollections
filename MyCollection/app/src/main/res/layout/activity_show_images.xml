@@ -51,9 +51,7 @@
     <RelativeLayout
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
-        android:layout_below="@id/appbar"
         android:background="@android:color/black"
-        android:layout_above="@id/fullscreen_content_controls"
         android:layout_height="match_parent">
 
         <androidx.viewpager2.widget.ViewPager2

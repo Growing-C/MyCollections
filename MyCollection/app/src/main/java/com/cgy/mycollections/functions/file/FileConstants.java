@@ -10,6 +10,7 @@ public class FileConstants {
     public static final String KEY_USER_ID = "user_id";
 
     public static final String KEY_FILE_OPERATE = "file_operate";
+    public static final String KEY_FILE_INFO = "file_info";
     public static final String OPERATE_TYPE_SELECT = "select_file";
 
     public static final String FILE_TYPE_DIR = "dir";
