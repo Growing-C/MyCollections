@@ -297,6 +297,8 @@ public class HorizontalScaleView extends View {
 
             //画大刻度线
             linePaint.setStrokeWidth(SCALE_WIDTH_BIG);
+            linePaint.setColor(lineColorBlack);
+
             canvas.drawLine(valueLeftX, ruleHeight - maxScaleHeight, valueLeftX, ruleHeight, linePaint);
 
             if (i == maxValue) {
@@ -305,9 +307,8 @@ public class HorizontalScaleView extends View {
 
             if (mAvailableFilter != null && !mAvailableFilter.isValueAvailable(i)) {
                 //值不可用
-//                linePaint.setColor(unavailableRangeColorGrey);
+                linePaint.setColor(unavailableRangeColorGrey);
                 canvas.drawRect(valueLeftX, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, linePaint);
-//                linePaint.setColor(lineColorBlack);
             }
 
             if (!usingSmallScale) {//不使用小刻度 就不画了
@@ -535,12 +536,20 @@ public class HorizontalScaleView extends View {
     //<editor-fold desc="坐标移动">
 
     private void moveLeftPointerByX(float offsetX) {
+        if (leftPointerStartX - offsetX + bigScaleSpace > rightPointerStartX) {
+            //做指针右移不可以超过右指针
+            return;
+        }
         leftPointerStartX -= offsetX;
         leftPointerValue = (int) calculateScaleValueByX(leftPointerStartX);
         L.e(TAG, "leftPointerValue:" + leftPointerValue);
     }
 
     private void moveRightPointerByX(float offsetX) {
+        if (rightPointerStartX - offsetX - bigScaleSpace < leftPointerStartX) {
+            //右指针左移不可以超过左指针
+            return;
+        }
         rightPointerStartX -= offsetX;
         rightPointerValue = (int) calculateScaleValueByX(rightPointerStartX);
         L.e(TAG, "rightPointerValue:" + rightPointerValue);

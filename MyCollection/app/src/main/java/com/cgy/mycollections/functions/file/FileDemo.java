@@ -102,7 +102,7 @@ public class FileDemo extends AppCompatActivity {
                 FileInfo fileInfo = mFileAdapter.getItem(position);
                 mFilePathV.navToFile(fileInfo.file);
                 if (!fileInfo.file.isDirectory()) {
-                    if (ImageLoader.isPic(fileInfo.filePath)) {
+                    if (ImageLoader.isPicIgnoreDot(fileInfo.filePath)) {
                         Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
                         it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
                         startActivity(it);

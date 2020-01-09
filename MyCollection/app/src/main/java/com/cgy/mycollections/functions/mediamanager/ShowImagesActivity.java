@@ -76,7 +76,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         mSelectedImage = (ImageInfo) getIntent().getSerializableExtra("imageInfo");
 
         File imageDir = new File(mSelectedImage.imageFilePath).getParentFile();
-        mImageFiles = FileUtil.listImageFile(imageDir);
+        mImageFiles = FileUtil.listImageFile(imageDir, true);
 
         ImagePagerAdapter adapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
             @Override

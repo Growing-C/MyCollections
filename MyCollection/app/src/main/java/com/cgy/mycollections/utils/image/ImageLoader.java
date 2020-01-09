@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.module.AppGlideModule;
 import com.cgy.mycollections.functions.cache.disklrucache.DiskLruCache;
+
 import appframe.utils.L;
 
 import appframe.network.retrofit.callback.ApiCallback;
@@ -38,11 +39,32 @@ import io.reactivex.schedulers.Schedulers;
  * Date :2019/2/1
  */
 public class ImageLoader {
+    /**
+     * 是否是图片
+     *
+     * @param url
+     * @return
+     */
     public static boolean isPic(String url) {
         if (TextUtils.isEmpty(url))
             return false;
 
-        if (url.contains(".jpg") || url.contains(".png") || url.contains(".jpeg") || url.contains(".gif"))
+        if (url.endsWith(".jpg") || url.endsWith(".png") || url.endsWith(".jpeg") || url.endsWith(".gif"))
+            return true;
+        return false;
+    }
+
+    /**
+     * 是否是图片，忽略点
+     *
+     * @param url
+     * @return
+     */
+    public static boolean isPicIgnoreDot(String url) {
+        if (TextUtils.isEmpty(url))
+            return false;
+
+        if (url.endsWith("jpg") || url.endsWith("png") || url.endsWith("jpeg") || url.endsWith("gif"))
             return true;
         return false;
     }

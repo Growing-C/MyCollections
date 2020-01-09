@@ -102,6 +102,10 @@ public class FileUtil {
      * @return
      */
     public static List<File> listImageFile(File file) {
+        return listImageFile(file, false);
+    }
+
+    public static List<File> listImageFile(File file, boolean ignoreDot) {
         Preconditions.checkNotNull(file);
 
         List<File> fileList = new ArrayList<>();
@@ -111,7 +115,10 @@ public class FileUtil {
             for (int i = 0, len = files.length; i < len; i++) {
                 L.e("路径" + files[i].getPath());
                 String filePath = files[i].getPath();
-                if (ImageLoader.isPic(filePath)) {
+                if (ignoreDot) {
+                    if (ImageLoader.isPicIgnoreDot(filePath))
+                        fileList.add(files[i]);
+                } else if (ImageLoader.isPic(filePath)) {
                     fileList.add(files[i]);
                 }
             }

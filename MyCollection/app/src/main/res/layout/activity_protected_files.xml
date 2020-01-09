@@ -40,7 +40,7 @@
             android:layout_marginBottom="@dimen/px10_margin"
             android:background="@drawable/shape_circle_add_n"
             android:scaleType="centerInside"
-            android:src="@drawable/tupian"
+            android:src="@drawable/ic_add_black_32dp"
             android:tint="@android:color/white" />
 
         <TextView
@@ -96,9 +96,9 @@
             android:layout_height="@dimen/px100"
             android:layout_marginBottom="@dimen/px10_margin"
             android:background="@drawable/shape_circle_add_n"
-            android:backgroundTint="@color/color_A9C010"
+            android:backgroundTint="@color/red500"
             android:scaleType="centerInside"
-            android:src="@drawable/baohu"
+            android:src="@drawable/ic_clear"
             android:tint="@android:color/white" />
 
         <TextView
