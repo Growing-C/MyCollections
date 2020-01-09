@@ -80,7 +80,7 @@ public class VerticalScaleView extends View {
         public void handleMessage(Message msg) {
             if (null != onValueChangeListener) {
                 float v = (float) (Math.round(currentValue * 10)) / 10;//保留一位小数
-                onValueChangeListener.onValueChanged(v);
+                onValueChangeListener.onValueChanged(v, v);
             }
         }
     };

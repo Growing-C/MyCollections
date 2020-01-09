@@ -64,10 +64,13 @@ public class HorizontalScaleView extends View {
     //    private float originValue;//初始刻度对应的值
     private float currentValue;//当前刻度对应的值
 
-    private Paint linePaint;//画笔
-    private Paint textPaint;//画笔
+    private Paint linePaint;//刻度线画笔
+    private Paint textPaint;//文字画笔
     private Paint pointerPaint;//指针画笔
+    private Paint rangePaint;//范围画笔
+
     private int unavailableRangeColorGrey;//不可用的范围颜色
+    private int rangeColorHighlightBlue;//选中颜色
     private int lineColorBlack;//黑色的线
 
     private Context context;
@@ -88,16 +91,6 @@ public class HorizontalScaleView extends View {
     private IAvailableFilter mAvailableFilter;
 
     private OnValueChangeListener onValueChangeListener;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (null != onValueChangeListener) {
-                float v = (float) (Math.round(currentValue * 10)) / 10;//保留一位小数
-                onValueChangeListener.onValueChanged(v);
-            }
-        }
-    };
 
 
     //<editor-fold desc="内部初始化 ">
@@ -123,6 +116,7 @@ public class HorizontalScaleView extends View {
         unavailableRangeColorGrey = Color.GRAY;
 //        unavailableRangeColorGrey = getResources().getColor(android.R.color.darker_gray);
         lineColorBlack = Color.BLACK;
+        rangeColorHighlightBlue = Color.parseColor("#7732B0DB");
 
         //初始化画笔
         linePaint = new Paint();
@@ -141,6 +135,13 @@ public class HorizontalScaleView extends View {
         pointerPaint.setDither(true);
         pointerPaint.setColor(Color.parseColor("#057dff"));
         pointerPaint.setStrokeWidth(LINE_WIDTH);
+        pointerPaint.setStyle(Paint.Style.STROKE);
+
+        rangePaint = new Paint();
+        rangePaint.setAntiAlias(true);
+        rangePaint.setDither(true);
+        rangePaint.setColor(rangeColorHighlightBlue);
+        rangePaint.setStyle(Paint.Style.FILL);
 
     }
     //</editor-fold>
@@ -191,6 +192,14 @@ public class HorizontalScaleView extends View {
         return this;
     }
 
+    /**
+     * 重新绘制
+     */
+    public void reset() {
+        isMeasured = false;
+        invalidate();
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="生命周期 绘制相关 ">
@@ -218,13 +227,13 @@ public class HorizontalScaleView extends View {
             borderLeftX = 0;
             borderRightX = borderLeftX + (maxValue - minValue) * bigScaleSpace;
 
-            leftPointerStartX = getXByValue(leftPointerValue);
-            rightPointerStartX = getXByValue(rightPointerValue);
-
-            midX = width / 2;
-            originLengthBetweenStartXAndCenterX = midX - borderLeftX;
             scaleStartX = borderLeftX;
             scaleEndX = borderRightX;
+            midX = width / 2;
+            originLengthBetweenStartXAndCenterX = midX - borderLeftX;
+
+            leftPointerStartX = getXByValue(leftPointerValue);
+            rightPointerStartX = getXByValue(rightPointerValue);
 
             calculateCurrentScale();
             isMeasured = true;
@@ -307,8 +316,8 @@ public class HorizontalScaleView extends View {
 
             if (mAvailableFilter != null && !mAvailableFilter.isValueAvailable(i)) {
                 //值不可用
-                linePaint.setColor(unavailableRangeColorGrey);
-                canvas.drawRect(valueLeftX, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, linePaint);
+                rangePaint.setColor(unavailableRangeColorGrey);
+                canvas.drawRect(valueLeftX, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, rangePaint);
             }
 
             if (!usingSmallScale) {//不使用小刻度 就不画了
@@ -345,7 +354,7 @@ public class HorizontalScaleView extends View {
         int w = rect.width();
         int h = rect.height();
         float scaleTextBaseLineY = ruleHeight - maxScaleHeight - (float) h / 2;
-        L.e(TAG, "ruleHeight:" + ruleHeight + "   maxScaleHeight:" + maxScaleHeight + "  textHeight:" + h + "   Y:" + scaleTextBaseLineY);
+//        L.e(TAG, "ruleHeight:" + ruleHeight + "   maxScaleHeight:" + maxScaleHeight + "  textHeight:" + h + "   Y:" + scaleTextBaseLineY);
         //画刻度文字
         canvas.drawText(scaleText, valueLeftX - w / 2 - SCALE_WIDTH_BIG / 2, scaleTextBaseLineY, textPaint);
     }
@@ -370,6 +379,20 @@ public class HorizontalScaleView extends View {
         canvas.drawCircle(rightPointerStartX, ruleHeight + LINE_WIDTH / 2, pointerCircleRadius, pointerPaint);
         //画右边指针
         canvas.drawLine(rightPointerStartX, 0, rightPointerStartX, pointerLineBottomY, pointerPaint);
+
+        boolean shouldDrawSelectedRange = true;
+
+        for (int i = leftPointerValue; i <= rightPointerValue; i++) {
+            if (mAvailableFilter != null && !mAvailableFilter.isValueAvailable(i)) {
+                //选中范围内 该值不可用
+                shouldDrawSelectedRange = false;
+                break;
+            }
+        }
+        if (shouldDrawSelectedRange) {
+            rangePaint.setColor(rangeColorHighlightBlue);
+            canvas.drawRect(leftPointerStartX, ruleHeight - maxScaleHeight, rightPointerStartX, ruleHeight, rangePaint);
+        }
     }
 
     @Override
@@ -408,7 +431,7 @@ public class HorizontalScaleView extends View {
                 lastX = x;
                 break;
             case MotionEvent.ACTION_UP:
-                confirmBorder();
+                adjustScale();
                 //当前滑动速度
                 velocityTracker.computeCurrentVelocity(1000);
                 velocity = velocityTracker.getXVelocity();
@@ -419,6 +442,11 @@ public class HorizontalScaleView extends View {
                 } else {
                     velocityTracker.recycle();
                     velocityTracker = null;
+                }
+                if (currentMovingPointer != -1) {
+                    if (null != onValueChangeListener) {//通知外部 指针值确定了
+                        onValueChangeListener.onValueChanged(leftPointerValue, rightPointerValue);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -442,13 +470,13 @@ public class HorizontalScaleView extends View {
     private int getMovingPointerIndex(float x) {
         if (x <= leftPointerStartX) {
             //左指针左边范围
-            L.e(TAG, "x:" + x + "   左边界:" + (leftPointerStartX - pointerTouchWidth / 2) + " 左指针x：" + leftPointerStartX);
+            L.e(TAG, "getMovingPointerIndex x:" + x + "   左边界:" + (leftPointerStartX - pointerTouchWidth / 2) + " 左指针x：" + leftPointerStartX);
             if (x > leftPointerStartX - pointerTouchWidth / 2) {
                 return 0;
             }
         } else if (x >= rightPointerStartX) {
             //右指针右边范围
-            L.e(TAG, "x:" + x + "   右边界" + (rightPointerStartX + pointerTouchWidth / 2) + " 右指针x：" + rightPointerStartX);
+            L.e(TAG, "getMovingPointerIndex x:" + x + "   右边界：" + (rightPointerStartX + pointerTouchWidth / 2) + " 右指针x：" + rightPointerStartX);
             if (x < rightPointerStartX + pointerTouchWidth / 2) {
                 return 1;
             }
@@ -456,7 +484,7 @@ public class HorizontalScaleView extends View {
             //在两个指针之间，需要根据距离来判断是在操作哪个
             float touchDistanceWithLeftPointerX = x - leftPointerStartX;
             float touchDistanceWithRightPointerX = rightPointerStartX - x;
-            L.e(TAG, "x:" + x + "  距离左指针 x:" + touchDistanceWithLeftPointerX + " 距离右指针：" + touchDistanceWithRightPointerX);
+            L.e(TAG, "getMovingPointerIndex x:" + x + "  距离左指针 x:" + touchDistanceWithLeftPointerX + " 距离右指针：" + touchDistanceWithRightPointerX);
 
             if (touchDistanceWithLeftPointerX <= touchDistanceWithRightPointerX) {
                 //使用更小的那个
@@ -482,7 +510,7 @@ public class HorizontalScaleView extends View {
     private float getXByValue(float value) {
         if (value < minValue || value > maxValue)
             throw new IllegalArgumentException("value can no be lower than min or larger than max!");
-        return borderLeftX + (value - minValue) * bigScaleSpace;
+        return scaleStartX + (value - minValue) * bigScaleSpace;
     }
 
     /**
@@ -523,12 +551,34 @@ public class HorizontalScaleView extends View {
      */
     private void calculateCenterScaleValueByX(int x) {
         currentValue = calculateScaleValueByX(x);
-        mHandler.sendEmptyMessage(0);
+//        mHandler.sendEmptyMessage(0);
     }
 
     //计算当前刻度
     private void calculateCurrentScale() {
         calculateCenterScaleValueByX(width / 2);
+    }
+
+    /**
+     * 获取最近的 刻度值的x坐标
+     *
+     * @param x
+     * @return
+     */
+    private float calculateNearestScaleX(float x) {
+        int scale = (int) calculateScaleValueByX(x);
+        float xCurrent = getXByValue(scale);//实际的刻度 对应的x值
+        float xLeft = getXByValue(scale - 1);//左边一个刻度
+        float xRight = getXByValue(scale + 1);//右边一个刻度
+        if (xCurrent >= x) {
+            xRight = xCurrent;
+        } else {
+            xLeft = xCurrent;
+        }
+
+        L.e(TAG, "calculateNearestScaleX x:" + x + " scale:" + scale + "  xLeft:" + xLeft + " xRight:" + xRight);
+
+        return Math.abs(x - xLeft) < Math.abs(xRight - x) ? xLeft : xRight;
     }
 
     //</editor-fold>
@@ -542,7 +592,7 @@ public class HorizontalScaleView extends View {
         }
         leftPointerStartX -= offsetX;
         leftPointerValue = (int) calculateScaleValueByX(leftPointerStartX);
-        L.e(TAG, "leftPointerValue:" + leftPointerValue);
+        L.e(TAG, "moveLeftPointerByX leftPointerStartX:" + leftPointerStartX + "   leftPointerValue:" + leftPointerValue);
     }
 
     private void moveRightPointerByX(float offsetX) {
@@ -552,7 +602,7 @@ public class HorizontalScaleView extends View {
         }
         rightPointerStartX -= offsetX;
         rightPointerValue = (int) calculateScaleValueByX(rightPointerStartX);
-        L.e(TAG, "rightPointerValue:" + rightPointerValue);
+        L.e(TAG, "moveRightPointerByX rightPointerValue:" + rightPointerValue);
     }
 
     /**
@@ -579,22 +629,32 @@ public class HorizontalScaleView extends View {
         scaleEndX = scaleStartX + borderRightX - borderLeftX;
         midX = originLengthBetweenStartXAndCenterX + scaleStartX;
 
-
         leftPointerStartX = scaleStartX + (leftPointerValue - minValue) * bigScaleSpace;
         rightPointerStartX = scaleStartX + (rightPointerValue - minValue) * bigScaleSpace;
+
+        L.e(TAG, "setScaleStartXAndFixOtherData scaleStartX:" + scaleStartX + " leftPointerStartX:" + leftPointerStartX);
     }
 
-    //指针线超出范围时 重置回边界处
-    private void confirmBorder() {
+    //停止触摸时 修正坐标问题 如指针线超出范围时 重置回边界处
+    private void adjustScale() {
         if (overScrollX + borderLeftX < scaleStartX) {
             //view开始绘制的左边位置大于限制位置了
             setScaleStartXAndFixOtherData(overScrollX + borderLeftX);
-            postInvalidate();
         } else if (width - overScrollX > scaleStartX + borderRightX - borderLeftX) {
             //view最右边绘制的位置 x坐标小于限制位置
             setScaleStartXAndFixOtherData(width - overScrollX - (borderRightX - borderLeftX));
-            postInvalidate();
         }
+        //修正指针位置
+        if (currentMovingPointer == 0) {// 左指针移动
+            leftPointerStartX = calculateNearestScaleX(leftPointerStartX);
+            leftPointerValue = (int) calculateScaleValueByX(leftPointerStartX);
+        } else if (currentMovingPointer == 1) {// 右指针移动
+            rightPointerStartX = calculateNearestScaleX(rightPointerStartX);
+            rightPointerValue = (int) calculateScaleValueByX(rightPointerStartX);
+        }
+        L.e(TAG, "adjustScale leftPointerStartX:" + leftPointerStartX);
+
+        postInvalidate();
     }
 
     //手指抬起后继续惯性滑动
@@ -613,8 +673,7 @@ public class HorizontalScaleView extends View {
                     velocityAbs = -velocity;
                 }
                 calculateCurrentScale();
-                confirmBorder();
-                postInvalidate();
+                adjustScale();
                 if (continueScroll && velocityAbs > 0) {
                     post(this);
                 } else {

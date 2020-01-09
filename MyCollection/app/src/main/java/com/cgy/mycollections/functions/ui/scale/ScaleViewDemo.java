@@ -64,8 +64,8 @@ public class ScaleViewDemo extends AppCompatActivity {
                 .setPointerPos(43, 50)//设置左右指针位置
                 .setOnValueChangeListener(new OnValueChangeListener() {
                     @Override
-                    public void onValueChanged(float value) {
-//                L.e("horizontalScaleView onValueChanged:" + value);
+                    public void onValueChanged(float leftValue, float rightValue) {
+                        L.e("horizontalScaleView onValueChanged:" + leftValue + "  " + rightValue);
                     }
                 })
                 .setAvailableFilter(new HorizontalScaleView.IAvailableFilter() {
@@ -79,13 +79,16 @@ public class ScaleViewDemo extends AppCompatActivity {
 
         verticalScaleView.setOnValueChangeListener(new OnValueChangeListener() {
             @Override
-            public void onValueChanged(float value) {
-                L.e("verticalScaleView onValueChanged:" + value);
+            public void onValueChanged(float leftValue, float rightValue) {
+                L.e("verticalScaleView onValueChanged:" + leftValue);
             }
         });
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                horizontalScaleView.setRange(40, 100).reset();
+
+
                 if (isChecked) {
                     verticalScaleView.setVisibility(View.VISIBLE);
                     horizontalScaleView.setVisibility(View.GONE);
