@@ -157,9 +157,9 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
             if (info.file.isDirectory()) {
                 fileInfo += info.getDirChildCount(mShowHide) + "项  ";
             } else {
-                fileInfo += info.file.length() + "B  ";
+                fileInfo += info.getFileLengthWithUnit();
             }
-            fileInfo += info.getLastModifyTime();
+            fileInfo += "  " + info.getLastModifyTime();
 //
             fileInfoV.setText(fileInfo);
 //            mText.setText(data);

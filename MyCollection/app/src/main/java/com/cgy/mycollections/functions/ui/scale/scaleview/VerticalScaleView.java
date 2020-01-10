@@ -19,12 +19,6 @@ import android.view.ViewConfiguration;
 
 import com.cgy.mycollections.R;
 
-/**
- * Copyright (c) 2017, Bongmi
- * All rights reserved
- * Author: xuyuanyi@bongmi.com
- */
-
 public class VerticalScaleView extends View {
 
     private final int SCALE_WIDTH_BIG = 4;//大刻度线宽度

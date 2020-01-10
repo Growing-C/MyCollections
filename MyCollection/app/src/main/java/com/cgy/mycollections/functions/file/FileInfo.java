@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.text.TextUtils;
 
+import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.PinYinUtils;
 
 import java.io.File;
@@ -101,4 +102,13 @@ public class FileInfo implements Serializable {
         return childCount;
     }
 
+    /**
+     * 获取文件大小
+     *
+     * @return
+     */
+    public String getFileLengthWithUnit() {
+        long lengthInByte = file.length();
+        return FileUtil.formatFileSize(lengthInByte);
+    }
 }
