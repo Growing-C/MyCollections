@@ -26,43 +26,46 @@ public class HorizontalScaleView extends View {
 
 
     //<editor-fold desc="参数 ">
-    private final int SCALE_WIDTH_BIG = 4;//大刻度线宽度
-    private final int SCALE_WIDTH_SMALL = 2;//小刻度线宽度
+    private final int SCALE_LINE_WIDTH_BIG = 4;//大刻度线宽度
+    private final int SCALE_LINE_WIDTH_SMALL = 2;//小刻度线宽度
     private final float LINE_WIDTH = 6;//指针线宽度
+    private final float SMALL_SCALE_SPACE = 20;//最小刻度间距
+    private final float overScrollX = 100;//左右允许滑动出去的x轴长度
 
-    private float rectPadding = 40;//圆角矩形间距
-    private float rectWidth;//圆角矩形宽
-    private float rectHeight;//圆角矩形高
+//    private float rectPadding = 40;//圆角矩形间距
+//    private float rectWidth;//圆角矩形宽
+//    private float rectHeight;//圆角矩形高
 
     private float maxScaleHeight;//大刻度长度
     private float midScaleHeight;//中刻度长度
     private float minScaleHeight;//小刻度长度
-    private float smallScaleSpace;//刻度间距
+    private int smallScaleSpaceCountInBig = 10;//一个大刻度之间有几个小刻度
     private float bigScaleSpace;//每大格刻度间距
     private int height, width;//view高宽,一旦measure 就不变了
     private int ruleHeight;//刻度尺高
 
     private float pointerTouchWidth = 40;//指针触摸范围
-    private float leftPointerStartX;//左边指针的开始x
-    private float rightPointerStartX;//右边指针的开始x
-    private int leftPointerValue;//左边指针的值
-    private int rightPointerValue;//右指针的值
+    private float leftPointerX;//左边指针的开始x
+    private float rightPointerX;//右边指针的开始x
+    private float leftPointerValue;//左边指针的值
+    private float rightPointerValue;//右指针的值
     private int currentMovingPointer = -1;//当前移动的指针 -1 代表没有 0代表左指针  1代表右指针
 
-    private int maxValue;//最大刻度，由外部赋值，赋值后不会改变
-    private int minValue;//最小刻度，由外部赋值，赋值后不会改变
+    private float baseScaleValue;//一个刻度值是多少(如果使用小刻度 则是小刻度大小，不使用则是大刻度大小)
+    private float maxValue;//最大刻度，由外部赋值，赋值后不会改变
+    private float minValue;//最小刻度，由外部赋值，赋值后不会改变
     private float borderLeftX, borderRightX;//左右边界值坐标，一旦赋值不会再改变
-    private float originLengthBetweenStartXAndCenterX;//初始中心刻度x坐标和 绘制开始坐标之间的x轴距离，一旦定了就不会再改变
-    private float overScrollX = 100;//左右允许滑动出去的x轴长度
+    //    private float originLengthBetweenStartXAndCenterX;//初始中心刻度x坐标和 绘制开始坐标之间的x轴距离，一旦定了就不会再改变
 
-    private float midX;//当前中心刻度x坐标
-    private float scaleStartX;//最小刻度x坐标,从最小刻度开始画刻度
-    private float scaleEndX;//最大刻度x坐标,
+
+    //    private float midX;//当前中心刻度x坐标
+    private float scaleStartX;//最小刻度线中心x坐标,从最小刻度开始画刻度
+    private float scaleEndX;//最大刻度线中心x坐标
 
     private float lastX;
 
     //    private float originValue;//初始刻度对应的值
-    private float currentValue;//当前刻度对应的值
+//    private float currentValue;//当前刻度对应的值
 
     private Paint linePaint;//刻度线画笔
     private Paint textPaint;//文字画笔
@@ -75,8 +78,8 @@ public class HorizontalScaleView extends View {
 
     private Context context;
 
-    private String descri = "体重";//描述
-    private String unit = "kg";//刻度单位
+//    private String descri = "体重";//描述
+//    private String unit = "kg";//刻度单位
 
     private VelocityTracker velocityTracker;//速度监测
     private float velocity;//当前滑动速度
@@ -142,21 +145,64 @@ public class HorizontalScaleView extends View {
         rangePaint.setDither(true);
         rangePaint.setColor(rangeColorHighlightBlue);
         rangePaint.setStyle(Paint.Style.FILL);
-
     }
     //</editor-fold>
 
     //<editor-fold desc="外部初始化设置方法 ">
 
-    //设置刻度范围
-    public HorizontalScaleView setRange(int min, int max) {
+
+    /**
+     * 设置刻度范围  最大值减最小值必须可以被 单元刻度值整除
+     *
+     * @param min        刻度范围起始值
+     * @param max        刻度范围结束值
+     * @param scaleValue 最小刻度值
+     * @return
+     */
+    public HorizontalScaleView setRangeAndScale(float min, float max, float scaleValue) {
         this.minValue = min;
         this.maxValue = max;
+        this.baseScaleValue = scaleValue;
+        if (scaleValue <= 0)
+            throw new IllegalArgumentException("Scale value can not be smaller than 0!");
+
+        float totalCount = getScaleSpaceCountBetweenValues(minValue, maxValue) / scaleValue;
+        if (totalCount != (int) totalCount)
+            throw new IllegalArgumentException((maxValue - minValue) + " can not be divided by " + scaleValue);
 //        originValue = (max + min) / 2;
 //        currentValue = originValue;
         L.e(TAG, "setRange min:" + min + "  max:" + max);
         return this;
     }
+
+
+    /**
+     * 设置一个大的刻度包含有几个小的刻度
+     *
+     * @param count
+     * @return
+     */
+    public HorizontalScaleView setSmallScaleSpaceCountInBig(int count) {
+        this.smallScaleSpaceCountInBig = count;
+        this.usingSmallScale = true;
+
+        if (count <= 1)//1相当于没有 必须至少2
+            throw new IllegalArgumentException("small scale count can not be smaller than 1");
+        return this;
+    }
+
+    /**
+     * 设置是否使用小刻度
+     *
+     * @param usingSmallScale
+     * @return
+     */
+    public HorizontalScaleView setUsingSmallScale(boolean usingSmallScale) {
+        this.usingSmallScale = usingSmallScale;
+
+        return this;
+    }
+
 
     /**
      * 设置左右指针的值
@@ -164,7 +210,7 @@ public class HorizontalScaleView extends View {
      * @param leftValue
      * @param rightValue
      */
-    public HorizontalScaleView setPointerPos(int leftValue, int rightValue) {
+    public HorizontalScaleView setPointerPos(float leftValue, float rightValue) {
         leftPointerValue = leftValue;
         rightPointerValue = rightValue;
 
@@ -197,6 +243,7 @@ public class HorizontalScaleView extends View {
      */
     public void reset() {
         isMeasured = false;
+        initScaleData();
         invalidate();
     }
 
@@ -207,80 +254,66 @@ public class HorizontalScaleView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         L.e(TAG, "onMeasure isMeasured:" + isMeasured);
+
         if (!isMeasured) {
             width = getMeasuredWidth();
             height = getMeasuredHeight();
             ruleHeight = height * 2 / 3;
             maxScaleHeight = height / 2;
             midScaleHeight = height * 2 / 5;
-            minScaleHeight = maxScaleHeight / 2;
-            if (usingSmallScale)//使用小刻度时 小刻度最小8
-                smallScaleSpace = height / 60 > 8 ? height / 60 : 8;
-            else {//不使用小刻度时 小刻度还是存在 不过缩小一些 以减小大刻度
-                smallScaleSpace = 1f;
-            }
-            bigScaleSpace = smallScaleSpace * 10 + SCALE_WIDTH_BIG + SCALE_WIDTH_SMALL * 9;
-            rectWidth = bigScaleSpace;
-            rectHeight = bigScaleSpace / 2;
+            minScaleHeight = maxScaleHeight * 3 / 5;
 
-            //最左边从0开始，右边一直往右超出屏幕部分可以滚动
-            borderLeftX = 0;
-            borderRightX = borderLeftX + (maxValue - minValue) * bigScaleSpace;
+//            rectWidth = bigScaleSpace;
+//            rectHeight = bigScaleSpace / 2;
 
-            scaleStartX = borderLeftX;
-            scaleEndX = borderRightX;
-            midX = width / 2;
-            originLengthBetweenStartXAndCenterX = midX - borderLeftX;
-
-            leftPointerStartX = getXByValue(leftPointerValue);
-            rightPointerStartX = getXByValue(rightPointerValue);
-
-            calculateCurrentScale();
+            initScaleData();
             isMeasured = true;
         }
+    }
 
+    /**
+     * 初始化时计算 刻度相关数据
+     */
+    private void initScaleData() {
+        if (baseScaleValue <= 0)
+            return;
+
+        if (usingSmallScale) {//使用小刻度时 根据小刻度数目计算出大刻度大小
+            bigScaleSpace = SMALL_SCALE_SPACE * smallScaleSpaceCountInBig;
+        } else {//不使用小刻度时 小刻度大小和大刻度一样
+            bigScaleSpace = SMALL_SCALE_SPACE;
+        }
+        L.e(TAG, "initScaleData  bigScaleSpace:" + bigScaleSpace);
+
+        //最左边从0开始，右边一直往右超出屏幕部分可以滚动
+        borderLeftX = 0;
+        borderRightX = borderLeftX + getScaleSpaceCountBetweenValues(minValue, maxValue) * SMALL_SCALE_SPACE;
+
+        scaleStartX = borderLeftX;
+        scaleEndX = borderRightX;
+
+//        midX = width / 2;
+//        originLengthBetweenStartXAndCenterX = midX - borderLeftX;
+
+        leftPointerX = getXByValue(leftPointerValue);
+        rightPointerX = getXByValue(rightPointerValue);
+
+//        calculateCurrentScale();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (baseScaleValue <= 0)//刻度值未定，就不画了
+            return;
+
+        //drawLine 竖线的x 是线的中心坐标
 
         //画刻度线的框架，主要是刻度，文字和底部线
         drawScaleFrame(canvas);
         //画指针
         drawPointer(canvas);
 
-        //画圆角矩形
-//        paint.setStyle(Paint.Style.FILL);
-//        RectF r = new RectF();
-//        r.left = width / 2 - rectWidth / 2;
-//        r.top = ruleHeight + rectPadding;
-//        r.right = width / 2 + rectWidth / 2;
-//        r.bottom = ruleHeight + rectPadding + rectHeight;
-//        canvas.drawRoundRect(r, 10, 10, paint);
-        //画小三角形指针
-//        Path path = new Path();
-//        path.moveTo(width / 2 - smallScaleSpace * 2, ruleHeight + rectPadding);
-//        path.lineTo(width / 2, ruleHeight + rectPadding - 10);
-//        path.lineTo(width / 2 + smallScaleSpace * 2, ruleHeight + rectPadding);
-//        path.close();
-//        canvas.drawPath(path, paint);
-        //绘制文字
-//        paint.setColor(lineColorBlack);
-//        Rect rect1 = new Rect();
-//        paint.getTextBounds(descri, 0, descri.length(), rect1);
-//        int w1 = rect1.width();
-//        int h1 = rect1.height();
-//        canvas.drawText(descri, width / 2 - w1 / 2, ruleHeight + rectPadding + rectHeight + h1 + 10, paint);
-//        //绘制当前刻度值数字
-//        paint.setColor(getResources().getColor(android.R.color.white));
-//        float v = (float) (Math.round(currentValue * 10)) / 10;//保留一位小数
-//        String value = String.valueOf(v) + unit;
-//        Rect rect2 = new Rect();
-//        paint.getTextBounds(value, 0, value.length(), rect2);
-//        int w2 = rect2.width();
-//        int h2 = rect2.height();
-//        canvas.drawText(value, width / 2 - w2 / 2, ruleHeight + rectPadding + rectHeight / 2 + h2 / 2, paint);
     }
 
     /**
@@ -289,58 +322,81 @@ public class HorizontalScaleView extends View {
      * @param canvas
      */
     private void drawScaleFrame(Canvas canvas) {
+        //最少多个刻度画一个刻度文字，防止文字重叠
+        int draw2TextSpaceCount = smallScaleSpaceCountInBig < 5 ? smallScaleSpaceCountInBig * 2 : smallScaleSpaceCountInBig;
+
         //画刻度线
-        for (int i = minValue; i <= maxValue; i++) {
-            float valueLeftX = scaleStartX + (i - minValue) * bigScaleSpace;
-            float valueRightX = scaleStartX + (i + 1 - minValue) * bigScaleSpace;
+        for (float i = minValue; i <= maxValue; i += baseScaleValue) {
+            float valueX = getXByValue(i);//i值对应的x坐标
 
-            String str = String.valueOf(i);
+            //从最小值到当前值 之间右多少个空间
+            int spaceCountFromMin = getScaleSpaceCountBetweenValues(minValue, i);
             //画刻度数字
-            if (!usingSmallScale) {
-                if ((i - minValue) % 5 == 0) {//没有小刻度的时候 大刻度不能画太密，暂定5个一画
-                    drawScaleText(canvas, str, valueLeftX);
+            if (!usingSmallScale) {//不使用小刻度，全都是大刻度
+                if (spaceCountFromMin % draw2TextSpaceCount == 0) {
+                    //没有小刻度的时候 大刻度不能画太密，暂定5个一画
+                    drawScaleText(canvas, subZeroAndDot(String.valueOf(i)), valueX);
                 }
-            } else {
-                drawScaleText(canvas, str, valueLeftX);
+                drawBigScaleLine(canvas, valueX);  //画大刻度线
+            } else {//使用小刻度 需要区分大小刻度线
+
+                if (spaceCountFromMin % smallScaleSpaceCountInBig == 0) {
+                    //总空间数是 一个 大刻度的空间数的倍数 则这个value是大刻度线
+                    drawBigScaleLine(canvas, valueX);  //画大刻度线
+                    if (spaceCountFromMin % draw2TextSpaceCount == 0) {
+                        drawScaleText(canvas, subZeroAndDot(String.valueOf(i)), valueX);
+                    }
+                } else {
+                    drawSmallScaleLine(canvas, valueX);
+                }
             }
 
-            //画大刻度线
-            linePaint.setStrokeWidth(SCALE_WIDTH_BIG);
-            linePaint.setColor(lineColorBlack);
-
-            canvas.drawLine(valueLeftX, ruleHeight - maxScaleHeight, valueLeftX, ruleHeight, linePaint);
-
-            if (i == maxValue) {
-                continue;//最后一条不画中小刻度线
-            }
-
-            if (mAvailableFilter != null && !mAvailableFilter.isValueAvailable(i)) {
-                //值不可用
-                rangePaint.setColor(unavailableRangeColorGrey);
-                canvas.drawRect(valueLeftX, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, rangePaint);
-            }
-
-            if (!usingSmallScale) {//不使用小刻度 就不画了
+            if (i == maxValue) {//最大值后面就不会有不可用范围了
                 continue;
             }
 
-            //画中刻度线
-            linePaint.setStrokeWidth(SCALE_WIDTH_SMALL);
-            canvas.drawLine(valueLeftX + bigScaleSpace / 2, ruleHeight, valueLeftX + bigScaleSpace / 2, ruleHeight - midScaleHeight, linePaint);
-            //画小刻度线
-            for (int j = 1; j < 10; j++) {
-                if (j == 5) {
-                    continue;
-                }
-                canvas.drawLine(valueLeftX + (SCALE_WIDTH_SMALL + smallScaleSpace) * j, ruleHeight, valueLeftX + (SCALE_WIDTH_SMALL + smallScaleSpace) * j, ruleHeight - minScaleHeight, linePaint);
-            }
+            if (mAvailableFilter != null && !mAvailableFilter.valueAvailable(i)) {
 
+                float valueRightX = getXByValue(i + baseScaleValue);//i后面一个值对应的x坐标
+                //值不可用
+                rangePaint.setColor(unavailableRangeColorGrey);
+                canvas.drawRect(valueX, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, rangePaint);
+            }
         }
 
         //画底部横线
         linePaint.setStrokeWidth(LINE_WIDTH);
         linePaint.setColor(unavailableRangeColorGrey);
-        canvas.drawLine(scaleStartX, ruleHeight + LINE_WIDTH / 2, scaleStartX + (maxValue - minValue) * bigScaleSpace, ruleHeight + LINE_WIDTH / 2, linePaint);
+        canvas.drawLine(scaleStartX, ruleHeight, scaleEndX, ruleHeight, linePaint);
+    }
+
+    /**
+     * 画大刻度线
+     *
+     * @param canvas
+     * @param valueX
+     */
+    private void drawBigScaleLine(Canvas canvas, float valueX) {
+        //画大刻度线
+        linePaint.setStrokeWidth(SCALE_LINE_WIDTH_BIG);
+        linePaint.setColor(lineColorBlack);
+
+        canvas.drawLine(valueX, ruleHeight - maxScaleHeight, valueX, ruleHeight, linePaint);
+    }
+
+    /**
+     * 画小刻度线
+     *
+     * @param canvas
+     * @param valueX
+     */
+    private void drawSmallScaleLine(Canvas canvas, float valueX) {
+        //画大刻度线
+        linePaint.setStrokeWidth(SCALE_LINE_WIDTH_SMALL);
+        linePaint.setColor(lineColorBlack);
+
+        canvas.drawLine(valueX, ruleHeight - minScaleHeight,
+                valueX, ruleHeight, linePaint);
     }
 
     /**
@@ -348,7 +404,7 @@ public class HorizontalScaleView extends View {
      *
      * @param canvas
      */
-    private void drawScaleText(Canvas canvas, String scaleText, float valueLeftX) {
+    private void drawScaleText(Canvas canvas, String scaleText, float valueX) {
         Rect rect = new Rect();
         textPaint.getTextBounds(scaleText, 0, scaleText.length(), rect);
         int w = rect.width();
@@ -356,7 +412,7 @@ public class HorizontalScaleView extends View {
         float scaleTextBaseLineY = ruleHeight - maxScaleHeight - (float) h / 2;
 //        L.e(TAG, "ruleHeight:" + ruleHeight + "   maxScaleHeight:" + maxScaleHeight + "  textHeight:" + h + "   Y:" + scaleTextBaseLineY);
         //画刻度文字
-        canvas.drawText(scaleText, valueLeftX - w / 2 - SCALE_WIDTH_BIG / 2, scaleTextBaseLineY, textPaint);
+        canvas.drawText(scaleText, valueX - (float) w / 2, scaleTextBaseLineY, textPaint);
     }
 
     /**
@@ -368,22 +424,22 @@ public class HorizontalScaleView extends View {
         //画指针线
 //        paint.setColor(getResources().getColor(R.color.colorPrimaryDark));
 //        canvas.drawLine(width / 2, 0, width / 2, ruleHeight, paint);
-        float pointerCircleRadius = pointerTouchWidth * 2 / 5;//大头针底部圆半径
-        float pointerLineBottomY = ruleHeight + LINE_WIDTH / 2 - pointerCircleRadius;
+        float pointerCircleRadius = pointerTouchWidth * 3 / 10;//大头针底部圆半径
+        float pointerLineBottomY = ruleHeight - pointerCircleRadius;
         //画左边指针底部圆
-        canvas.drawCircle(leftPointerStartX, ruleHeight + LINE_WIDTH / 2, pointerCircleRadius, pointerPaint);
+        canvas.drawCircle(leftPointerX, ruleHeight, pointerCircleRadius, pointerPaint);
         //画左边指针
-        canvas.drawLine(leftPointerStartX, 0, leftPointerStartX, pointerLineBottomY, pointerPaint);
+        canvas.drawLine(leftPointerX, 0, leftPointerX, pointerLineBottomY, pointerPaint);
 
         //画右边指针底部圆
-        canvas.drawCircle(rightPointerStartX, ruleHeight + LINE_WIDTH / 2, pointerCircleRadius, pointerPaint);
+        canvas.drawCircle(rightPointerX, ruleHeight, pointerCircleRadius, pointerPaint);
         //画右边指针
-        canvas.drawLine(rightPointerStartX, 0, rightPointerStartX, pointerLineBottomY, pointerPaint);
+        canvas.drawLine(rightPointerX, 0, rightPointerX, pointerLineBottomY, pointerPaint);
 
         boolean shouldDrawSelectedRange = true;
 
-        for (int i = leftPointerValue; i <= rightPointerValue; i++) {
-            if (mAvailableFilter != null && !mAvailableFilter.isValueAvailable(i)) {
+        for (float i = leftPointerValue; i <= rightPointerValue; i++) {
+            if (mAvailableFilter != null && !mAvailableFilter.valueAvailable(i)) {
                 //选中范围内 该值不可用
                 shouldDrawSelectedRange = false;
                 break;
@@ -391,7 +447,7 @@ public class HorizontalScaleView extends View {
         }
         if (shouldDrawSelectedRange) {
             rangePaint.setColor(rangeColorHighlightBlue);
-            canvas.drawRect(leftPointerStartX, ruleHeight - maxScaleHeight, rightPointerStartX, ruleHeight, rangePaint);
+            canvas.drawRect(leftPointerX, ruleHeight - maxScaleHeight, rightPointerX, ruleHeight, rangePaint);
         }
     }
 
@@ -419,7 +475,7 @@ public class HorizontalScaleView extends View {
                 if (currentMovingPointer == -1) {//view滑动
                     velocityTracker.addMovement(event);
                     moveViewByX(offsetX);
-                    calculateCurrentScale();
+//                    calculateCurrentScale();
                 } else if (currentMovingPointer == 0) {
                     //左指针移动
                     moveLeftPointerByX(offsetX);
@@ -462,28 +518,39 @@ public class HorizontalScaleView extends View {
     //<editor-fold desc="计算x 和value等 ">
 
     /**
+     * 获取两个值之间 刻度空间的数量
+     *
+     * @param startValue
+     * @param endValue
+     * @return
+     */
+    public int getScaleSpaceCountBetweenValues(float startValue, float endValue) {
+        return (int) ((endValue - startValue) / baseScaleValue);
+    }
+
+    /**
      * 根据触摸的x坐标确定是不是在移动pointer 以及是第几个pointer
      *
      * @param x 0-左指针 1-右指针
      * @return
      */
     private int getMovingPointerIndex(float x) {
-        if (x <= leftPointerStartX) {
+        if (x <= leftPointerX) {
             //左指针左边范围
-            L.e(TAG, "getMovingPointerIndex x:" + x + "   左边界:" + (leftPointerStartX - pointerTouchWidth / 2) + " 左指针x：" + leftPointerStartX);
-            if (x > leftPointerStartX - pointerTouchWidth / 2) {
+            L.e(TAG, "getMovingPointerIndex x:" + x + "   左边界:" + (leftPointerX - pointerTouchWidth / 2) + " 左指针x：" + leftPointerX);
+            if (x > leftPointerX - pointerTouchWidth / 2) {
                 return 0;
             }
-        } else if (x >= rightPointerStartX) {
+        } else if (x >= rightPointerX) {
             //右指针右边范围
-            L.e(TAG, "getMovingPointerIndex x:" + x + "   右边界：" + (rightPointerStartX + pointerTouchWidth / 2) + " 右指针x：" + rightPointerStartX);
-            if (x < rightPointerStartX + pointerTouchWidth / 2) {
+            L.e(TAG, "getMovingPointerIndex x:" + x + "   右边界：" + (rightPointerX + pointerTouchWidth / 2) + " 右指针x：" + rightPointerX);
+            if (x < rightPointerX + pointerTouchWidth / 2) {
                 return 1;
             }
         } else {
             //在两个指针之间，需要根据距离来判断是在操作哪个
-            float touchDistanceWithLeftPointerX = x - leftPointerStartX;
-            float touchDistanceWithRightPointerX = rightPointerStartX - x;
+            float touchDistanceWithLeftPointerX = x - leftPointerX;
+            float touchDistanceWithRightPointerX = rightPointerX - x;
             L.e(TAG, "getMovingPointerIndex x:" + x + "  距离左指针 x:" + touchDistanceWithLeftPointerX + " 距离右指针：" + touchDistanceWithRightPointerX);
 
             if (touchDistanceWithLeftPointerX <= touchDistanceWithRightPointerX) {
@@ -510,15 +577,15 @@ public class HorizontalScaleView extends View {
     private float getXByValue(float value) {
         if (value < minValue || value > maxValue)
             throw new IllegalArgumentException("value can no be lower than min or larger than max!");
-        return scaleStartX + (value - minValue) * bigScaleSpace;
+        return scaleStartX + getScaleSpaceCountBetweenValues(minValue, value) * SMALL_SCALE_SPACE;
     }
 
     /**
-     * 计算x坐标处的 刻度值
+     * 计算x坐标处的 刻度值,此处已选择了 距离x最近的刻度值
      *
      * @param x
      */
-    private float calculateScaleValueByX(float x) {
+    private float getValueByX(float x) {
         float scaleValue;
         if (x <= scaleStartX) {
             //x值小于开始值
@@ -526,38 +593,37 @@ public class HorizontalScaleView extends View {
         } else if (x >= scaleEndX) {
             scaleValue = maxValue;
         } else {
-            float xOffsetFromStart = x - scaleStartX;
-            int bigScaleValue = (int) (xOffsetFromStart / bigScaleSpace);//x到start 包含了多少大的刻度
-            float extraSmallScaleValue = xOffsetFromStart % bigScaleSpace;//多出的小格数
+            int scaleSpaceCount = (int) ((x - scaleStartX) / SMALL_SCALE_SPACE);//不存在四舍五入 必定比真实的小
+            float valueX = scaleStartX + scaleSpaceCount * SMALL_SCALE_SPACE;
+            float value = minValue + scaleSpaceCount * baseScaleValue;
 
-            int offsetSmall = (new BigDecimal(extraSmallScaleValue / (smallScaleSpace + SCALE_WIDTH_SMALL)).setScale(0, BigDecimal.ROUND_HALF_UP)).intValue();//移动的小刻度数 四舍五入取整
-            float value = minValue + bigScaleValue + offsetSmall * 0.1f;
-            if (value > maxValue) {
-                scaleValue = maxValue;
-            } else if (value < minValue) {
-                scaleValue = minValue;
+            if (valueX + SMALL_SCALE_SPACE / 2 > x) {
+                scaleValue = value;
+            } else if (valueX + SMALL_SCALE_SPACE / 2 <= x) {
+                scaleValue = value + baseScaleValue;
             } else {
                 scaleValue = value;
+                L.e(TAG, "wtffffffffffffffffffffffff getValueByX 不可能走这里");
             }
         }
-        L.e(TAG, "calculateScaleValueByX x:" + x + "  scaleValue:" + scaleValue + "  scaleStartX:" + scaleStartX + " --scaleEndX" + scaleEndX);
+        L.e(TAG, "getValueByX x:" + x + "  scaleValue:" + scaleValue + "  scaleStartX:" + scaleStartX + " --scaleEndX" + scaleEndX);
         return scaleValue;
     }
 
-    /**
-     * 初始中心点坐标
-     *
-     * @param x
-     */
-    private void calculateCenterScaleValueByX(int x) {
-        currentValue = calculateScaleValueByX(x);
-//        mHandler.sendEmptyMessage(0);
-    }
+//    /**
+//     * 初始中心点坐标
+//     *
+//     * @param x
+//     */
+//    private void calculateCenterScaleValueByX(int x) {
+//        currentValue = calculateScaleValueByX(x);
+////        mHandler.sendEmptyMessage(0);
+//    }
 
-    //计算当前刻度
-    private void calculateCurrentScale() {
-        calculateCenterScaleValueByX(width / 2);
-    }
+//    //计算当前刻度
+//    private void calculateCurrentScale() {
+//        calculateCenterScaleValueByX(width / 2);
+//    }
 
     /**
      * 获取最近的 刻度值的x坐标
@@ -565,20 +631,21 @@ public class HorizontalScaleView extends View {
      * @param x
      * @return
      */
-    private float calculateNearestScaleX(float x) {
-        int scale = (int) calculateScaleValueByX(x);
+    private float getNearestScaleX(float x) {
+        float scale = getValueByX(x);
         float xCurrent = getXByValue(scale);//实际的刻度 对应的x值
-        float xLeft = getXByValue(scale - 1);//左边一个刻度
-        float xRight = getXByValue(scale + 1);//右边一个刻度
-        if (xCurrent >= x) {
-            xRight = xCurrent;
-        } else {
-            xLeft = xCurrent;
-        }
+//        float xLeft = getXByValue(scale - 1);//左边一个刻度
+//        float xRight = getXByValue(scale + 1);//右边一个刻度
+//        if (xCurrent >= x) {
+//            xRight = xCurrent;
+//        } else {
+//            xLeft = xCurrent;
+//        }
 
-        L.e(TAG, "calculateNearestScaleX x:" + x + " scale:" + scale + "  xLeft:" + xLeft + " xRight:" + xRight);
+        L.e(TAG, "getNearestScaleX x:" + x + " scale:" + scale + "  xCurrent:" + xCurrent);
 
-        return Math.abs(x - xLeft) < Math.abs(xRight - x) ? xLeft : xRight;
+//        return Math.abs(x - xLeft) < Math.abs(xRight - x) ? xLeft : xRight;
+        return xCurrent;
     }
 
     //</editor-fold>
@@ -586,22 +653,22 @@ public class HorizontalScaleView extends View {
     //<editor-fold desc="坐标移动">
 
     private void moveLeftPointerByX(float offsetX) {
-        if (leftPointerStartX - offsetX + bigScaleSpace > rightPointerStartX) {
-            //做指针右移不可以超过右指针
+        if (leftPointerX - offsetX + SMALL_SCALE_SPACE > rightPointerX) {
+            //左指针右移不可以超过右指针
             return;
         }
-        leftPointerStartX -= offsetX;
-        leftPointerValue = (int) calculateScaleValueByX(leftPointerStartX);
-        L.e(TAG, "moveLeftPointerByX leftPointerStartX:" + leftPointerStartX + "   leftPointerValue:" + leftPointerValue);
+        leftPointerX -= offsetX;
+        leftPointerValue = (int) getValueByX(leftPointerX);
+        L.e(TAG, "moveLeftPointerByX leftPointerX:" + leftPointerX + "   leftPointerValue:" + leftPointerValue);
     }
 
     private void moveRightPointerByX(float offsetX) {
-        if (rightPointerStartX - offsetX - bigScaleSpace < leftPointerStartX) {
+        if (rightPointerX - offsetX - SMALL_SCALE_SPACE < leftPointerX) {
             //右指针左移不可以超过左指针
             return;
         }
-        rightPointerStartX -= offsetX;
-        rightPointerValue = (int) calculateScaleValueByX(rightPointerStartX);
+        rightPointerX -= offsetX;
+        rightPointerValue = (int) getValueByX(rightPointerX);
         L.e(TAG, "moveRightPointerByX rightPointerValue:" + rightPointerValue);
     }
 
@@ -613,10 +680,10 @@ public class HorizontalScaleView extends View {
     private void moveViewByX(float offsetX) {
         scaleStartX -= offsetX;
         scaleEndX -= offsetX;
-        midX -= offsetX;
+//        midX -= offsetX;
 
-        leftPointerStartX -= offsetX;
-        rightPointerStartX -= offsetX;
+        leftPointerX -= offsetX;
+        rightPointerX -= offsetX;
     }
 
     /**
@@ -627,12 +694,12 @@ public class HorizontalScaleView extends View {
     private void setScaleStartXAndFixOtherData(float newScaleStartX) {
         scaleStartX = newScaleStartX;
         scaleEndX = scaleStartX + borderRightX - borderLeftX;
-        midX = originLengthBetweenStartXAndCenterX + scaleStartX;
+//        midX = originLengthBetweenStartXAndCenterX + scaleStartX;
 
-        leftPointerStartX = scaleStartX + (leftPointerValue - minValue) * bigScaleSpace;
-        rightPointerStartX = scaleStartX + (rightPointerValue - minValue) * bigScaleSpace;
+        leftPointerX = getXByValue(leftPointerValue);
+        rightPointerX = getXByValue(rightPointerValue);
 
-        L.e(TAG, "setScaleStartXAndFixOtherData scaleStartX:" + scaleStartX + " leftPointerStartX:" + leftPointerStartX);
+        L.e(TAG, "setScaleStartXAndFixOtherData scaleStartX:" + scaleStartX + " leftPointerX:" + leftPointerX);
     }
 
     //停止触摸时 修正坐标问题 如指针线超出范围时 重置回边界处
@@ -646,13 +713,13 @@ public class HorizontalScaleView extends View {
         }
         //修正指针位置
         if (currentMovingPointer == 0) {// 左指针移动
-            leftPointerStartX = calculateNearestScaleX(leftPointerStartX);
-            leftPointerValue = (int) calculateScaleValueByX(leftPointerStartX);
+            leftPointerX = getNearestScaleX(leftPointerX);
+            leftPointerValue = (int) getValueByX(leftPointerX);
         } else if (currentMovingPointer == 1) {// 右指针移动
-            rightPointerStartX = calculateNearestScaleX(rightPointerStartX);
-            rightPointerValue = (int) calculateScaleValueByX(rightPointerStartX);
+            rightPointerX = getNearestScaleX(rightPointerX);
+            rightPointerValue = (int) getValueByX(rightPointerX);
         }
-        L.e(TAG, "adjustScale leftPointerStartX:" + leftPointerStartX);
+        L.e(TAG, "adjustScale leftPointerX:" + leftPointerX);
 
         postInvalidate();
     }
@@ -672,7 +739,7 @@ public class HorizontalScaleView extends View {
                     moveViewByX(velocity * velocity / a);
                     velocityAbs = -velocity;
                 }
-                calculateCurrentScale();
+//                calculateCurrentScale();
                 adjustScale();
                 if (continueScroll && velocityAbs > 0) {
                     post(this);
@@ -684,7 +751,53 @@ public class HorizontalScaleView extends View {
     }
     //</editor-fold>
 
+    /**
+     * 使用java正则表达式去掉多余的.与0
+     *
+     * @param s
+     * @return
+     */
+    public static String subZeroAndDot(String s) {
+        if (s.indexOf(".") > 0) {
+            s = s.replaceAll("0+?$", "");//去掉多余的0
+            s = s.replaceAll("[.]$", "");//如最后一位是.则去掉
+        }
+        return s;
+    }
+
     public interface IAvailableFilter {
-        boolean isValueAvailable(int value);
+        boolean valueAvailable(float value);
     }
 }
+
+//画圆角矩形
+//        paint.setStyle(Paint.Style.FILL);
+//        RectF r = new RectF();
+//        r.left = width / 2 - rectWidth / 2;
+//        r.top = ruleHeight + rectPadding;
+//        r.right = width / 2 + rectWidth / 2;
+//        r.bottom = ruleHeight + rectPadding + rectHeight;
+//        canvas.drawRoundRect(r, 10, 10, paint);
+//画小三角形指针
+//        Path path = new Path();
+//        path.moveTo(width / 2 - smallScaleSpace * 2, ruleHeight + rectPadding);
+//        path.lineTo(width / 2, ruleHeight + rectPadding - 10);
+//        path.lineTo(width / 2 + smallScaleSpace * 2, ruleHeight + rectPadding);
+//        path.close();
+//        canvas.drawPath(path, paint);
+//绘制文字
+//        paint.setColor(lineColorBlack);
+//        Rect rect1 = new Rect();
+//        paint.getTextBounds(descri, 0, descri.length(), rect1);
+//        int w1 = rect1.width();
+//        int h1 = rect1.height();
+//        canvas.drawText(descri, width / 2 - w1 / 2, ruleHeight + rectPadding + rectHeight + h1 + 10, paint);
+//        //绘制当前刻度值数字
+//        paint.setColor(getResources().getColor(android.R.color.white));
+//        float v = (float) (Math.round(currentValue * 10)) / 10;//保留一位小数
+//        String value = String.valueOf(v) + unit;
+//        Rect rect2 = new Rect();
+//        paint.getTextBounds(value, 0, value.length(), rect2);
+//        int w2 = rect2.width();
+//        int h2 = rect2.height();
+//        canvas.drawText(value, width / 2 - w2 / 2, ruleHeight + rectPadding + rectHeight / 2 + h2 / 2, paint);

@@ -55,6 +55,8 @@ public class FileDemo extends AppCompatActivity {
     View mOperateHolderV;
     @BindView(R.id.file_path)
     FilePathView mFilePathV;
+    @BindView(R.id.no_file)
+    View mNoFileV;
 
     FileListAdapter mFileAdapter;
 
@@ -120,7 +122,7 @@ public class FileDemo extends AppCompatActivity {
             }
         });
         mFileListV.setAdapter(mFileAdapter);
-        mFileListV.addItemDecoration(new SpaceItemDecoration(3));
+        mFileListV.addItemDecoration(new SpaceItemDecoration(2));
 
         PermissionManager.requestExternalPermission(FileDemo.this, "for test");
 
@@ -138,6 +140,12 @@ public class FileDemo extends AppCompatActivity {
         mFileList = getSortedChildFiles(parent, Config.isShowHiddenFiles(), true);
         mFileAdapter.setData(mFileList);
         L.e(parent.getName() + "-->mFileList size:" + mFileList.size());
+
+        if (mFileList.isEmpty()) {
+            mNoFileV.setVisibility(View.VISIBLE);
+        } else {
+            mNoFileV.setVisibility(View.GONE);
+        }
     }
 
     /**

@@ -52,5 +52,7 @@
     <com.cgy.mycollections.functions.ui.scale.scaleview.HorizontalScaleView
         android:id="@+id/horizontal_scale"
         android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/px24_margin"
+        android:layout_marginRight="@dimen/px24_margin"
         android:layout_height="150dp" />
 </LinearLayout>

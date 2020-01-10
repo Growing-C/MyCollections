@@ -60,8 +60,9 @@ public class ScaleViewDemo extends AppCompatActivity {
 
 
         verticalScaleView.setRange(100, 200);
-        horizontalScaleView.setRange(40, 100)//设置范围
+        horizontalScaleView.setRangeAndScale(40, 100, 0.5f)//设置范围 和一个刻度的大小
                 .setPointerPos(43, 50)//设置左右指针位置
+                .setSmallScaleSpaceCountInBig(2)
                 .setOnValueChangeListener(new OnValueChangeListener() {
                     @Override
                     public void onValueChanged(float leftValue, float rightValue) {
@@ -70,7 +71,7 @@ public class ScaleViewDemo extends AppCompatActivity {
                 })
                 .setAvailableFilter(new HorizontalScaleView.IAvailableFilter() {
                     @Override
-                    public boolean isValueAvailable(int value) {
+                    public boolean valueAvailable(float value) {
                         if (value > 50 && value < 57)
                             return false;
                         return true;
@@ -86,7 +87,7 @@ public class ScaleViewDemo extends AppCompatActivity {
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                horizontalScaleView.setRange(40, 100).reset();
+//                horizontalScaleView.setRange(10, 200).reset();
 
 
                 if (isChecked) {

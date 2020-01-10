@@ -34,6 +34,8 @@ public class TestMain {
 //        1496079745
 //        testGetResources();
 //        testPinyin();
+        System.out.println("t:"+(1.001f==(int)1.001f));
+        System.out.println("a:"+((int)(8f/10f)));
     }
 
     public static void testPinyin() {

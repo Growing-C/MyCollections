@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:layout_height="match_parent"
     tools:context=".functions.anim.AnimDemo">
 
@@ -43,12 +44,25 @@
 
 
     <!--    </LinearLayout>-->
+    <View
+        android:id="@+id/divider"
+        style="@style/CommonDivider"
+        android:layout_below="@id/file_path" />
+
+    <TextView
+        android:id="@+id/no_file"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_below="@id/divider"
+        android:text="没有文件" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/file_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/file_path" />
+        android:layout_below="@id/divider" />
 
     <LinearLayout
         android:id="@+id/operate_holder"
