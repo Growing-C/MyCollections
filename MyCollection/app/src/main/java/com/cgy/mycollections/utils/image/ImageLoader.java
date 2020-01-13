@@ -39,35 +39,6 @@ import io.reactivex.schedulers.Schedulers;
  * Date :2019/2/1
  */
 public class ImageLoader {
-    /**
-     * 是否是图片
-     *
-     * @param url
-     * @return
-     */
-    public static boolean isPic(String url) {
-        if (TextUtils.isEmpty(url))
-            return false;
-
-        if (url.endsWith(".jpg") || url.endsWith(".png") || url.endsWith(".jpeg") || url.endsWith(".gif"))
-            return true;
-        return false;
-    }
-
-    /**
-     * 是否是图片，忽略点
-     *
-     * @param url
-     * @return
-     */
-    public static boolean isPicIgnoreDot(String url) {
-        if (TextUtils.isEmpty(url))
-            return false;
-
-        if (url.endsWith("jpg") || url.endsWith("png") || url.endsWith("jpeg") || url.endsWith("gif"))
-            return true;
-        return false;
-    }
 
     /**
      * 清除图片缓存
@@ -119,7 +90,7 @@ public class ImageLoader {
         applySchedulers(Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
-//                L.e("loadImage start glide");
+                L.e("loadImage start glide");
                 int targetW = 500;
                 int targetH = 500;
                 if (width > 0)
@@ -129,39 +100,34 @@ public class ImageLoader {
 
                 Bitmap myBitmap;
                 if (transformation != null) {
-//                    myBitmap = Glide.with(context)
-//                            .load(url)
-//                            .asBitmap()
-//                            .transform(transformation)
-//                            .into(targetW, targetH)
-//                            .get();
+                    myBitmap = GlideApp.with(context)
+                            .asBitmap()
+                            .load(url)
+                            .transform(transformation)
+                            .submit(targetW, targetH)
+                            .get();
                 } else {
-//                    myBitmap = Glide.with(context)
-//                            .load(url)
-//                            .asBitmap()
-//                            .centerCrop()
-//                            .into(targetW, targetH)
-//                            .get();
+                    myBitmap = Glide.with(context)
+                            .asBitmap()
+                            .load(url)
+                            .centerCrop()
+                            .submit(targetW, targetH)
+                            .get();
                 }
-//                L.e("loadImage end glide");
-//                if (myBitmap != null)
-//                    emitter.onNext(myBitmap);
-//                else
-//                    emitter.onError(new NullPointerException("loadImage fail url:" + url));
+                L.e("loadImage end glide");
+                if (myBitmap != null)
+                    emitter.onNext(myBitmap);
+                else
+                    emitter.onError(new NullPointerException("loadImage fail url:" + url));
                 emitter.onComplete();
             }
         })).subscribe(new ApiCallback<Bitmap>() {
-            protected void safeOnNext(Bitmap bitmap) {
-                String tagUrl = (String) imageView.getTag();
-//                L.e("----tagUrl:" + tagUrl);
-//                L.e("----url   :" + url);
-                if (!TextUtils.isEmpty(tagUrl) && tagUrl.equalsIgnoreCase(url))//和tag相同才加载
-                    imageView.setImageBitmap(bitmap);
-            }
 
             @Override
-            public void onSuccess(Bitmap model) {
-
+            public void onSuccess(Bitmap bitmap) {
+                String tagUrl = (String) imageView.getTag();
+                if (!TextUtils.isEmpty(tagUrl) && tagUrl.equalsIgnoreCase(url))//和tag相同才加载
+                    imageView.setImageBitmap(bitmap);
             }
 
             @Override
@@ -189,26 +155,30 @@ public class ImageLoader {
         loadImage(context, url, width, height, null, imageView);
     }
 
+    /**
+     * 加载图片并且应用fitCenter
+     *
+     * @param context
+     * @param url
+     * @param imageView
+     */
     public static void loadImageFitCenter(Context context, String url, ImageView imageView) {
 //        Glide.with(context).load(url).into(imageView);
         GlideApp.with(context).load(url).fitCenter().into(imageView);
+
     }
 
     /**
-     * 将本地资源图片大小缩放
+     * 加载thumbnail
      *
-     * @param resId
-     * @param w
-     * @param h
-     * @return
+     * @param context
+     * @param url
+     * @param imageView
      */
-    public static Drawable zoomImage(Context context, int resId, int w, int h) {
-        Resources res = context.getResources();
-        Bitmap oldBmp = BitmapFactory.decodeResource(res, resId);
-        Bitmap newBmp = Bitmap.createScaledBitmap(oldBmp, w, h, true);
-        Drawable drawable = new BitmapDrawable(res, newBmp);
-        return drawable;
+    public static void loadImageThumbnail(Context context, String url, ImageView imageView) {
+        GlideApp.with(context).asBitmap().load(url).thumbnail(0.1f).fitCenter().into(imageView);//asBitmap 会使得加载gif时只加载第一帧
     }
+
 
     private static <T> Observable<T> applySchedulers(Observable<T> var1) {
         return var1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());

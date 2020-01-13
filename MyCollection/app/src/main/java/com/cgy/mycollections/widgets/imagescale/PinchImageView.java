@@ -1,11 +1,5 @@
 package com.cgy.mycollections.widgets.imagescale;
 
-/**
- * Description :
- * Author :cgy
- * Date :2019/12/13
- */
-
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,7 +9,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -23,6 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
 
 /**
  * 手势图片控件，表现比zoomImageView好
@@ -823,6 +817,8 @@ public class PinchImageView extends AppCompatImageView {
                 scaleEnd();
             }
             mPinchMode = PINCH_MODE_FREE;
+            getParent().requestDisallowInterceptTouchEvent(false);//viewpager下左右滑动使用
+
         } else if (action == MotionEvent.ACTION_POINTER_UP) {
             //多个手指情况下抬起一个手指,此时需要是缩放模式才触发
             if (mPinchMode == PINCH_MODE_SCALE) {
@@ -859,8 +855,14 @@ public class PinchImageView extends AppCompatImageView {
             saveScaleContext(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
         } else if (action == MotionEvent.ACTION_MOVE) {
             if (!(mScaleAnimator != null && mScaleAnimator.isRunning())) {
+
+                //缩放动画不在运行
                 //在滚动模式下移动
                 if (mPinchMode == PINCH_MODE_SCROLL) {
+                    //此处只兼容了 左右滑动，上下滑动的viewpager需要兼容的话判断  canScrollVertically就行了
+                    if (canScrollHorizontally((int) (mLastMovePoint.x - event.getX()))) {//viewpager下左右滑动使用,不然 放大后左右滑动会滑动viewpager
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                    }
                     //每次移动产生一个差值累积到图片位置上
                     scrollBy(event.getX() - mLastMovePoint.x, event.getY() - mLastMovePoint.y);
                     //记录新的移动点
@@ -875,6 +877,9 @@ public class PinchImageView extends AppCompatImageView {
                     //处理缩放
                     scale(mScaleCenter, mScaleBase, distance, mLastMovePoint);
                 }
+            } else {
+                //缩放动画正在运行
+
             }
         }
         //无论如何都处理各种外部手势

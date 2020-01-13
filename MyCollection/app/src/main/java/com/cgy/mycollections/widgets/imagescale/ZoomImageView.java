@@ -17,8 +17,10 @@ import android.widget.ImageView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import appframe.utils.L;
+
 /**
- *  TODO:放大缩小没问题，但是和viewpager一起使用时 放大后无法左右滑动
+ * 放大缩小没问题，但是和viewpager一起使用时也可以了，但是表现没有  PinchImageView好，胜在代码量小
  */
 @SuppressLint("AppCompatCustomView")
 public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGlobalLayoutListener,
@@ -345,6 +347,24 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
     }
 
     @Override
+    public boolean canScrollHorizontally(int direction) {
+        RectF rectF = getMatrixRectF();
+        if (rectF == null) {
+            return false;
+        }
+        if (rectF.isEmpty()) {
+            return false;
+        }
+        if (direction > 0) {
+            L.e("test", "rectF.right:" + rectF.right + " getWidth():" + getWidth());
+            return rectF.right > getWidth();
+        } else {
+            L.e("test", "rectF.left:" + rectF.left);
+            return rectF.left < 0;
+        }
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (mGestureDetector.onTouchEvent(event)) {
             return true;
@@ -368,17 +388,9 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
         mLastPointerCount = pointerCount;
         RectF rectF = getMatrixRectF();
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (rectF.width() > getWidth() + 0.01 || rectF.height() > getHeight() + 0.01) {
-                    if (getParent() instanceof ViewPager || getParent() instanceof ViewPager2)
-                        getParent().requestDisallowInterceptTouchEvent(true);
-                }
-                break;
-
             case MotionEvent.ACTION_MOVE:
-                if (rectF.width() > getWidth() + 0.01 || rectF.height() > getHeight() + 0.01) {
-                    if (getParent() instanceof ViewPager || getParent() instanceof ViewPager2)
-                        getParent().requestDisallowInterceptTouchEvent(true);
+                if (pointerCount == 1 && canScrollHorizontally((int) (mLastX - x))) {//单指拖动
+                    getParent().requestDisallowInterceptTouchEvent(true);
                 }
                 float dx = x - mLastX;
                 float dy = y - mLastY;
@@ -411,6 +423,7 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mLastPointerCount = 0;
+                getParent().requestDisallowInterceptTouchEvent(false);
                 break;
             default:
                 break;

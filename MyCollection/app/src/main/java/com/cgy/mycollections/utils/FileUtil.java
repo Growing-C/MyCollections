@@ -22,6 +22,7 @@ import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 
 import appframe.utils.L;
 
+import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.utils.image.ImageLoader;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
@@ -113,12 +114,12 @@ public class FileUtil {
             L.e("listFile，这是文件夹，路径为：" + file.getPath());
             File[] files = file.listFiles();
             for (int i = 0, len = files.length; i < len; i++) {
-                L.e("路径" + files[i].getPath());
+//                L.e("路径" + files[i].getPath());
                 String filePath = files[i].getPath();
                 if (ignoreDot) {
-                    if (ImageLoader.isPicIgnoreDot(filePath))
+                    if (ImageHelper.isPicIgnoreDot(filePath))
                         fileList.add(files[i]);
-                } else if (ImageLoader.isPic(filePath)) {
+                } else if (ImageHelper.isPic(filePath)) {
                     fileList.add(files[i]);
                 }
             }
@@ -145,6 +146,19 @@ public class FileUtil {
         } else {
             L.e("listFile，这是文件，路径为：" + file.getPath());
         }
+    }
+
+    /**
+     * 获取文件原来的名称，用于使用 REPLACE_DOT 修改了文件名隐藏的文件 显示原来的名称
+     *
+     * @param currentName
+     * @return
+     */
+    public static String getFileOriginName(String currentName) {
+        if (TextUtils.isEmpty(currentName))
+            return currentName;
+
+        return currentName.replace(MediaHelper.REPLACE_DOT, ".");
     }
 
     /**

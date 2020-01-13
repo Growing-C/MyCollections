@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 /**
  * Description : 图片辅助
@@ -11,6 +14,50 @@ import android.graphics.BitmapFactory;
  * Date :2019/12/6
  */
 public class ImageHelper {
+    /**
+     * 是否是图片
+     *
+     * @param filePath
+     * @return
+     */
+    public static boolean isPic(String filePath) {
+        if (TextUtils.isEmpty(filePath))
+            return false;
+
+        if (filePath.endsWith(".jpg") || filePath.endsWith(".png") || filePath.endsWith(".jpeg") || filePath.endsWith(".gif"))
+            return true;
+        return false;
+    }
+
+    /**
+     * 是否是图片，忽略点
+     *
+     * @param filePath
+     * @return
+     */
+    public static boolean isPicIgnoreDot(String filePath) {
+        if (TextUtils.isEmpty(filePath))
+            return false;
+
+        if (filePath.endsWith("jpg") || filePath.endsWith("png") || filePath.endsWith("jpeg") || filePath.endsWith("gif"))
+            return true;
+        return false;
+    }
+
+    /**
+     * 将本地资源图片大小缩放
+     *
+     * @param resId
+     * @param w
+     * @param h
+     * @return
+     */
+    public static Drawable zoomImage(Context context, int resId, int w, int h) {
+        Resources res = context.getResources();
+        Bitmap oldBmp = BitmapFactory.decodeResource(res, resId);
+        Bitmap newBmp = Bitmap.createScaledBitmap(oldBmp, w, h, true);
+        return new BitmapDrawable(res, newBmp);
+    }
 
     /**
      * 获取本地图片大小等信息，但是不会加载图片，所以不会造成oom，用此方法可以预先获取图片大小来使用策略加载图片，避免oom

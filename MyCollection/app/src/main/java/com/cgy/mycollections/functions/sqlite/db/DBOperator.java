@@ -68,12 +68,12 @@ public class DBOperator implements IDBOperate {
                 L.d("start addProtectedFile");
                 SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
-                        userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");//先删除 再添加，实现更新
+                        userId + "\" and FILE_PATH = \"" + fileInfo.getFilePath() + "\";");//先删除 再添加，实现更新
                 String[] strData = new String[DBHelper.ENUM_PROTECTED_FILES.values().length];
 
 
                 strData[0] = userId;
-                strData[1] = fileInfo.filePath;
+                strData[1] = fileInfo.getFilePath();
                 strData[2] = fileInfo.getFileType();
                 strData[3] = String.valueOf(System.currentTimeMillis());
                 strData[4] = String.valueOf(fileInfo.protectState);
@@ -100,12 +100,12 @@ public class DBOperator implements IDBOperate {
                 try {
                     for (FileInfo fileInfo : fileList) {
                         db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
-                                userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
+                                userId + "\" and FILE_PATH = \"" + fileInfo.getFilePath() + "\";");// 删除 保护的文件
 
                         String[] strData = new String[DBHelper.ENUM_PROTECTED_FILES.values().length];
 
                         strData[0] = userId;
-                        strData[1] = fileInfo.filePath;
+                        strData[1] = fileInfo.getFilePath();
                         strData[2] = fileInfo.getFileType();
                         strData[3] = String.valueOf(System.currentTimeMillis());
                         strData[4] = String.valueOf(fileInfo.protectState);
@@ -136,7 +136,7 @@ public class DBOperator implements IDBOperate {
                 L.d("start removeProtectedFile");
                 SQLiteDatabase db = mDBHelper.startUsingDatabase(true);
                 db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
-                        userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
+                        userId + "\" and FILE_PATH = \"" + fileInfo.getFilePath() + "\";");// 删除 保护的文件
                 mDBHelper.closeDatabase();
 
                 e.onNext(true);
@@ -162,7 +162,7 @@ public class DBOperator implements IDBOperate {
                 try {
                     for (FileInfo fileInfo : fileList) {
                         db.execSQL("delete from " + TABLE_NAME_PROTECTED_FILES + " where USER_ID=\"" +
-                                userId + "\" and FILE_PATH = \"" + fileInfo.filePath + "\";");// 删除 保护的文件
+                                userId + "\" and FILE_PATH = \"" + fileInfo.getFilePath() + "\";");// 删除 保护的文件
                     }
                     db.setTransactionSuccessful();
                 } catch (Exception ex) {

@@ -53,17 +53,17 @@ public class FileInfoDialogFragment extends BaseDialogFragment {
             mFileInfo = (FileInfo) bd.getSerializable("fileInfo");
         }
         if (mFileInfo != null) {
-            mFileNameV.setText("文件名:" + mFileInfo.fileName);
-            mFilePathV.setText("文件路径:\n" + mFileInfo.filePath);
+            mFileNameV.setText("文件名:" + mFileInfo.getFileName());
+            mFilePathV.setText("文件路径:\n" + mFileInfo.getFilePath());
 
             String fileSize = "文件类型和大小:\n";
-            if (mFileInfo.file != null) {
-                if (mFileInfo.file.isDirectory()) {
+            if (mFileInfo.getFile() != null) {
+                if (mFileInfo.getFile().isDirectory()) {
                     fileSize += "文件夹,";
                     fileSize += mFileInfo.getDirChildCount(true) + "项  ";
                 } else {
                     fileSize += "文件,";
-                    fileSize += mFileInfo.file.length() + "B  ";
+                    fileSize += mFileInfo.getFile().length() + "B  ";
                 }
 
                 String modifyTime = "文件修改时间:\n" + mFileInfo.getLastModifyTime();

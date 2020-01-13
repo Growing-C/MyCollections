@@ -43,8 +43,8 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     View mView2Hide;
     @BindView(R.id.dummy_button)
     View mDelayHideButton;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
 
     ImageInfo mSelectedImage;
     List<File> mImageFiles;
@@ -55,7 +55,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         setContentView(R.layout.activity_show_images);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
+//        setSupportActionBar(mToolbar);
 
         //        NOTICE:需要沉浸的view要搭配 android:fitsSystemWindows="true"来使用，不然  view的内容会占用statusBar的位置，导致重叠
         //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏

@@ -179,7 +179,7 @@ public class ProtectedFilesActivity extends BaseActivity {
             public void onItemClick(int position) {
                 L.e("mFileAdapter onItemClick:" + position);
                 FileInfo fileInfo = mFileList.get(position);
-                if (fileInfo.file.isDirectory()) {
+                if (fileInfo.getFile().isDirectory()) {
                     //文件夹
                     Intent it = new Intent(ProtectedFilesActivity.this, FileDemo.class);
                     it.putExtra(FileConstants.KEY_FILE_INFO, fileInfo);
@@ -220,17 +220,17 @@ public class ProtectedFilesActivity extends BaseActivity {
 
         if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
             //已保护就切换成未保护
-            if (fileInfo.file.isDirectory()) {
-                FileUtil.showFilesUnderDir(this, fileInfo.file);
+            if (fileInfo.getFile().isDirectory()) {
+                FileUtil.showFilesUnderDir(this, fileInfo.getFile());
             } else {
-                FileUtil.showSingleFile(this, fileInfo.file);
+                FileUtil.showSingleFile(this, fileInfo.getFile());
             }
             fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
         } else {
-            if (fileInfo.file.isDirectory()) {
-                FileUtil.hideFilesUnderDir(this, fileInfo.file);
+            if (fileInfo.getFile().isDirectory()) {
+                FileUtil.hideFilesUnderDir(this, fileInfo.getFile());
             } else {
-                FileUtil.hideSingleFile(this, fileInfo.file);
+                FileUtil.hideSingleFile(this, fileInfo.getFile());
             }
             fileInfo.protectState = FileConstants.STATE_PROTECTED;
         }
@@ -258,7 +258,7 @@ public class ProtectedFilesActivity extends BaseActivity {
     private void showDeleteDialog(int position) {
         FileInfo fileInfo = mFileList.get(position);
         new AlertDialog.Builder(ProtectedFilesActivity.this)
-                .setMessage("确认删除文件：\n" + fileInfo.filePath)
+                .setMessage("确认删除文件：\n" + fileInfo.getFilePath())
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -278,10 +278,10 @@ public class ProtectedFilesActivity extends BaseActivity {
 
         if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
             //已保护就切换成未保护
-            if (fileInfo.file.isDirectory()) {
-                FileUtil.showFilesUnderDir(this, fileInfo.file);
+            if (fileInfo.getFile().isDirectory()) {
+                FileUtil.showFilesUnderDir(this, fileInfo.getFile());
             } else {
-                FileUtil.showSingleFile(this, fileInfo.file);
+                FileUtil.showSingleFile(this, fileInfo.getFile());
             }
             fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
         }
@@ -359,18 +359,18 @@ public class ProtectedFilesActivity extends BaseActivity {
         for (int i = 0, len = mFileList.size(); i < len; i++) {
             FileInfo fileInfo = mFileList.get(i);
             if (mIsProtect) {//隐藏
-                if (fileInfo.file.isDirectory()) {
-                    FileUtil.hideFilesUnderDir(this, fileInfo.file);
+                if (fileInfo.getFile().isDirectory()) {
+                    FileUtil.hideFilesUnderDir(this, fileInfo.getFile());
                 } else {
-                    FileUtil.hideSingleFile(this, fileInfo.file);
+                    FileUtil.hideSingleFile(this, fileInfo.getFile());
                 }
                 fileInfo.protectState = FileConstants.STATE_PROTECTED;
 
             } else {//显示
-                if (fileInfo.file.isDirectory()) {
-                    FileUtil.showFilesUnderDir(this, fileInfo.file);
+                if (fileInfo.getFile().isDirectory()) {
+                    FileUtil.showFilesUnderDir(this, fileInfo.getFile());
                 } else {
-                    FileUtil.showSingleFile(this, fileInfo.file);
+                    FileUtil.showSingleFile(this, fileInfo.getFile());
                 }
                 fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
             }

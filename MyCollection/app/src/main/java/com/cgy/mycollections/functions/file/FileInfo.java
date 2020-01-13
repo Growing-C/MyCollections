@@ -18,9 +18,9 @@ import appframe.utils.TimeUtils;
  * Date :2019/7/25
  */
 public class FileInfo implements Serializable {
-    public File file;
-    public String fileName;
-    public String filePath;
+    private File file;
+    private String fileName;
+    private String filePath;
     //  getAbsolutePath:/storage/emulated/0/baidu
     //  getPath:/storage/emulated/0/baidu
     //  getName:baidu
@@ -35,6 +35,31 @@ public class FileInfo implements Serializable {
         this.filePath = file.getPath();
     }
 
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * 获取完整的文件名
+     *
+     * @return
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * 获取完整的文件名，然后移除隐藏标志，供外部显示
+     *
+     * @return
+     */
+    public String getShowFileNameWithoutHideFilter() {
+        return FileUtil.getFileOriginName(fileName);
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
 
     public String getFileType() {
         if (file.isDirectory())

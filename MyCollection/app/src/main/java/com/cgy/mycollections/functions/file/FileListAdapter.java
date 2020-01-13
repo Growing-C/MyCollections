@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.utils.image.ImageHelper;
+import com.cgy.mycollections.utils.image.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,11 +131,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
         }
 
         public void setData(FileInfo info) {
+
             if (mIsSelect) {
                 rightArrow.setVisibility(View.INVISIBLE);
                 selectBox.setVisibility(View.VISIBLE);
             } else {
-                if (info.file.isDirectory())
+                if (info.getFile().isDirectory())
                     rightArrow.setVisibility(View.VISIBLE);
                 else {
                     rightArrow.setVisibility(View.INVISIBLE);
@@ -146,15 +150,17 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
                 protectedV.setVisibility(View.GONE);
             }
 
-            fileName.setText(info.fileName);
-            if (info.file.isDirectory()) {
+            fileName.setText(info.getShowFileNameWithoutHideFilter());
+            if (info.getFile().isDirectory()) {
                 fileImage.setImageResource(R.drawable.dir);
+            } else if (ImageHelper.isPicIgnoreDot(info.getFilePath())) {//加载缩略图
+                ImageLoader.loadImageThumbnail(rightArrow.getContext(), info.getFilePath(), fileImage);
             } else {
                 fileImage.setImageResource(R.drawable.file);
             }
 
             String fileInfo = "";
-            if (info.file.isDirectory()) {
+            if (info.getFile().isDirectory()) {
                 fileInfo += info.getDirChildCount(mShowHide) + "项  ";
             } else {
                 fileInfo += info.getFileLengthWithUnit();

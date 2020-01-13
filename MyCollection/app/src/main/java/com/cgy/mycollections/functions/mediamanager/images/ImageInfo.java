@@ -28,7 +28,7 @@ public class ImageInfo implements Serializable {
 
     public static ImageInfo importFromFileInfo(@NonNull FileInfo fileInfo) {
         ImageInfo info = new ImageInfo();
-        info.imageFilePath = fileInfo.filePath;
+        info.imageFilePath = fileInfo.getFilePath();
 
         return info;
     }

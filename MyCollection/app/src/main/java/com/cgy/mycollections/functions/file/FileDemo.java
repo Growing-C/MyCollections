@@ -23,6 +23,7 @@ import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
+import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.utils.image.ImageLoader;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
@@ -102,16 +103,16 @@ public class FileDemo extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 FileInfo fileInfo = mFileAdapter.getItem(position);
-                mFilePathV.navToFile(fileInfo.file);
-                if (!fileInfo.file.isDirectory()) {
-                    if (ImageLoader.isPicIgnoreDot(fileInfo.filePath)) {
+                mFilePathV.navToFile(fileInfo.getFile());
+                if (!fileInfo.getFile().isDirectory()) {
+                    if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
                         Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
                         it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
                         startActivity(it);
                     } else {
                         try {
                             //TODO:FileUriExposedException
-                            startActivity(FileUtil.openFile(FileDemo.this, fileInfo.filePath));
+                            startActivity(FileUtil.openFile(FileDemo.this, fileInfo.getFilePath()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -129,9 +130,9 @@ public class FileDemo extends AppCompatActivity {
 //        mRootDir = Environment.getExternalStorageDirectory();
 //        mCurrentDir = mRootDir;
 
-        if (targetFile != null && targetFile.file.isDirectory()) {
-            mFilePathV.setRootDir(targetFile.file);
-            mFilePathV.navToFile(targetFile.file);
+        if (targetFile != null && targetFile.getFile().isDirectory()) {
+            mFilePathV.setRootDir(targetFile.getFile());
+            mFilePathV.navToFile(targetFile.getFile());
         } else
             refreshCurrentFileList(mFilePathV.getRootDir());
     }
@@ -167,9 +168,9 @@ public class FileDemo extends AppCompatActivity {
             for (File file : files) {
                 FileInfo fileInfo = new FileInfo(file);
 
-                if (!TextUtils.isEmpty(fileInfo.fileName)) {
+                if (!TextUtils.isEmpty(fileInfo.getFileName())) {
                     //显示隐藏文件或者 不显示隐藏文件且点头不是.就添加
-                    if (containHideFiles || !fileInfo.fileName.startsWith(".")) {
+                    if (containHideFiles || !fileInfo.getFileName().startsWith(".")) {
                         if (distinguishDirAndFile) {
                             if (file.isDirectory()) {
                                 dirList.add(fileInfo);
@@ -197,7 +198,7 @@ public class FileDemo extends AppCompatActivity {
             Collections.sort(fileList, new Comparator<FileInfo>() {
                 @Override
                 public int compare(FileInfo o1, FileInfo o2) {
-                    return o1.fileName.toUpperCase().compareTo(o2.fileName.toUpperCase());
+                    return o1.getFileName().toUpperCase().compareTo(o2.getFileName().toUpperCase());
                 }
             });
         }
