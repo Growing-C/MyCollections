@@ -3,14 +3,25 @@ package com.cgy.mycollections.functions.ui.textdemo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+
+import androidx.annotation.NonNull;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.widgets.WaveView;
 
+import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,6 +38,8 @@ public class TextDemo extends AppCompatActivity {
     WaveView mWaveView;
     @BindView(R.id.tv_unlock)
     View mTv;
+    @BindView(R.id.clickable_text)
+    TextView mClickTextV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +48,15 @@ public class TextDemo extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setUpWave();
+
+        setTextClick("可点击的文字");
     }
 
     @OnClick({R.id.tv_unlock, R.id.edit_demo})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.edit_demo:
-                startActivity(new Intent(this,EditTextActivity.class));
+                startActivity(new Intent(this, EditTextActivity.class));
                 break;
             case R.id.tv_unlock:
                 mWaveView.start();
@@ -66,5 +81,21 @@ public class TextDemo extends AppCompatActivity {
         mWaveView.setInitialRadius(120);//字体dp大小
         mWaveView.setColor(Color.WHITE);
         mWaveView.setInterpolator(new LinearOutSlowInInterpolator());
+    }
+
+    private void setTextClick(String name) {
+        if (TextUtils.isEmpty(name))
+            return;
+
+        SpannableString spannableString = new SpannableString(name);
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                new ToastCustom(TextDemo.this, "点击了文字", Toast.LENGTH_LONG).show();
+            }
+
+        }, 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mClickTextV.setText(spannableString);
+        mClickTextV.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }
