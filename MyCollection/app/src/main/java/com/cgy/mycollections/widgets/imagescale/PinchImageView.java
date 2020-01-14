@@ -869,6 +869,7 @@ public class PinchImageView extends AppCompatImageView {
                     mLastMovePoint.set(event.getX(), event.getY());
                     //在缩放模式下移动
                 } else if (mPinchMode == PINCH_MODE_SCALE && event.getPointerCount() > 1) {
+                    getParent().requestDisallowInterceptTouchEvent(true);//scale的时候禁止 viewpager翻页
                     //两个缩放点间的距离
                     float distance = MathUtils.getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
                     //保存缩放点中点
@@ -877,9 +878,6 @@ public class PinchImageView extends AppCompatImageView {
                     //处理缩放
                     scale(mScaleCenter, mScaleBase, distance, mLastMovePoint);
                 }
-            } else {
-                //缩放动画正在运行
-
             }
         }
         //无论如何都处理各种外部手势
