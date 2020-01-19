@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Paul Burke
+ * Copyright 2016 Yan Zhenjie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.cgy.mycollections.listeners;
 
-package com.cgy.mycollections.listeners.swipedrag;
+public interface OnMyItemLongClickListener<T> {
 
-import android.content.Context;
+    void onItemClick(int position, T data);
 
-
-/**
- * 使用系统recyclerview自带的 ItemTouchHelper 实现的滑动删除和位置切换
- */
-public interface ItemTouchHelperViewHolder {
-
-    void onItemSelected(Context context);
-    void onItemClear(Context context);
+    void onItemLongClick(int position, T data);
 }

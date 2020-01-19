@@ -1,10 +1,12 @@
 package com.cgy.mycollections.functions.file;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,9 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
+import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
@@ -22,13 +28,16 @@ import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
+import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.utils.image.ImageLoader;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.widgets.pickerview.utils.PickerViewAnimateUtil;
 
+import appframe.network.retrofit.callback.ApiCallback;
 import appframe.utils.L;
 
 import java.io.File;
@@ -54,7 +63,7 @@ public class FileDemo extends BaseActivity {
     @BindView(R.id.file_list)
     RecyclerView mFileListV;
     @BindView(R.id.operate_holder)
-    View mOperateHolderV;
+    View mBottomMenuHolderV;
     @BindView(R.id.file_path)
     FilePathView mFilePathV;
     @BindView(R.id.no_file)
@@ -68,6 +77,7 @@ public class FileDemo extends BaseActivity {
 //    File mCurrentDir;
 
     String mFileOperateType;
+    FileInfo mSelectedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,10 +113,9 @@ public class FileDemo extends BaseActivity {
 //            mOperateHolderV.setVisibility(View.VISIBLE);
         }
 
-        mFileAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mFileAdapter.setOnItemClickListener(new OnMyItemLongClickListener<FileInfo>() {
             @Override
-            public void onItemClick(int position) {
-                FileInfo fileInfo = mFileAdapter.getItem(position);
+            public void onItemClick(int position, FileInfo fileInfo) {
                 mFilePathV.navToFile(fileInfo.getFile());
                 if (!fileInfo.getFile().isDirectory()) {
                     if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
@@ -125,6 +134,13 @@ public class FileDemo extends BaseActivity {
                     }
                 }
             }
+
+            @Override
+            public void onItemLongClick(int position, FileInfo fileInfo) {
+                mSelectedFile = fileInfo;
+                showBottomMenu();
+            }
+
         });
         mFileListV.setAdapter(mFileAdapter);
         mFileListV.addItemDecoration(new SpaceItemDecoration(2));
@@ -133,6 +149,7 @@ public class FileDemo extends BaseActivity {
 
 //        mRootDir = Environment.getExternalStorageDirectory();
 //        mCurrentDir = mRootDir;
+        mBottomMenuHolderV.setVisibility(View.GONE);
 
         if (targetFile != null && targetFile.getFile().isDirectory()) {
             mFilePathV.setRootDir(targetFile.getFile());
@@ -209,28 +226,62 @@ public class FileDemo extends BaseActivity {
         return fileList;
     }
 
+    private void showBottomMenu() {
+        int res = PickerViewAnimateUtil.getAnimationResource(Gravity.BOTTOM, true);
+        Animation bottomInAnim = AnimationUtils.loadAnimation(this, res);
+        mBottomMenuHolderV.setVisibility(View.VISIBLE);
+        mBottomMenuHolderV.startAnimation(bottomInAnim);
+    }
+
     @SuppressLint("CheckResult")
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cancel://取消选择
-                finish();
+            case R.id.detail://详情
+                FileInfoDialogFragment.newInstance(mSelectedFile)
+                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
                 break;
-            case R.id.confirm://确定选择
-                confirmSelectFile();
+            case R.id.delete://删除
+                showDeleteDialog(mSelectedFile);
                 break;
             default:
                 break;
         }
     }
 
+    private void showDeleteDialog(FileInfo fileInfo) {
+        new AlertDialog.Builder(FileDemo.this)
+                .setMessage("确认删除文件？ \n" + fileInfo.getFilePath())
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteFile(fileInfo);
+                    }
+                }).create().show();
+    }
+
+    private void deleteFile(FileInfo fileInfo) {
+
+    }
+
     private void confirmSelectFile() {
         List<FileInfo> fileList = mFileAdapter.getSelectedFiles();
         if (!fileList.isEmpty()) {
-            DBOperator.getInstance().addProtectedFiles(CommonUtils.getUserId(this), fileList).subscribe(new Consumer<Boolean>() {
+            DBOperator.getInstance().addProtectedFiles(CommonUtils.getUserId(this), fileList).subscribe(new ApiCallback<Boolean>() {
                 @Override
-                public void accept(Boolean aBoolean) throws Exception {
+                public void onSuccess(Boolean model) {
                     setResult(RESULT_OK);
                     finish();
+                }
+
+                @Override
+                public void onFailure(int code, String msg) {
+
+                }
+
+                @Override
+                public void onFinish() {
+
                 }
             });
         } else {

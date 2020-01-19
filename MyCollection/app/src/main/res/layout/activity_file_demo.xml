@@ -69,27 +69,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/px18_margin"
+        android:paddingBottom="@dimen/px18_margin"
+        android:background="@android:color/white"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/px18_margin"
-        android:paddingRight="@dimen/px18_margin"
-        android:visibility="gone">
+        android:paddingRight="@dimen/px18_margin">
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/px10_margin"
+            android:background="@null"
             android:onClick="onClick"
+            android:drawableTop="@drawable/ic_error_outline_24dp"
+            android:drawableTint="@android:color/black"
+            android:textColor="@android:color/black"
             android:layout_weight="1"
-            android:text="取消" />
+            android:text="详情" />
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@null"
             android:onClick="onClick"
+            android:drawableTop="@drawable/ic_delete_white_24dp"
+            android:drawableTint="@android:color/black"
+            android:textColor="@android:color/black"
             android:layout_weight="1"
-            android:text="确定" />
+            android:text="删除" />
     </LinearLayout>
 </RelativeLayout>

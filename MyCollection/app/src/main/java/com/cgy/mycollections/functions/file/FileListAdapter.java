@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.utils.image.ImageLoader;
 
@@ -30,7 +31,7 @@ import butterknife.ButterKnife;
  * Date :2019/7/25
  */
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHolder> {
-    private OnItemClickListener mOnItemClickListener;
+    private OnMyItemLongClickListener<FileInfo> mOnItemClickListener;
     private List<FileInfo> mFileList;
     private List<FileInfo> mSelectedFileList = new ArrayList<>();
 
@@ -70,7 +71,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
         return mSelectedFileList;
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(OnMyItemLongClickListener<FileInfo> onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
 
@@ -111,9 +112,22 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    FileInfo fileInfo = getItem(position);
                     if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(getAdapterPosition());
+                        mOnItemClickListener.onItemClick(position, fileInfo);
                     }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+                    FileInfo fileInfo = getItem(position);
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onItemLongClick(position, fileInfo);
+                    }
+                    return true;
                 }
             });
             selectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

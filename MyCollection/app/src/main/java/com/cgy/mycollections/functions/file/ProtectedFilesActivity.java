@@ -21,6 +21,7 @@ import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.utils.CommonUtils;
@@ -179,11 +180,10 @@ public class ProtectedFilesActivity extends BaseActivity {
         //此库也用了itemTouchHelper不过只有设置了.setItemViewSwipeEnabled(true)才会侧滑删除，但是此侧滑删除就和SwipeMenuCreator无关了
         mProtectedFileListV.setLayoutManager(new LinearLayoutManager(this));
         mFileAdapter = new FileListAdapter(true);
-        mFileAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mFileAdapter.setOnItemClickListener(new OnMyItemLongClickListener<FileInfo>() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(int position, FileInfo fileInfo) {
                 L.e("mFileAdapter onItemClick:" + position);
-                FileInfo fileInfo = mFileList.get(position);
                 if (fileInfo.getFile().isDirectory()) {
                     //文件夹
                     Intent it = new Intent(ProtectedFilesActivity.this, FileDemo.class);
@@ -206,6 +206,12 @@ public class ProtectedFilesActivity extends BaseActivity {
 //                FileInfoDialogFragment.newInstance(mFileList.get(position))
 //                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
             }
+
+            @Override
+            public void onItemLongClick(int position, FileInfo data) {
+
+            }
+
         });
         mProtectedFileListV.addItemDecoration(new SpaceItemDecoration(2));
 
