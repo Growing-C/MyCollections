@@ -20,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/file_image"
         android:singleLine="true"
+        android:layout_toLeftOf="@+id/file_protected"
+        android:layout_marginRight="@dimen/px10_margin"
         android:ellipsize="middle"
         android:layout_marginLeft="@dimen/px24"
         android:layout_toRightOf="@id/file_image"

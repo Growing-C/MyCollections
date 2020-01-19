@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -73,7 +74,7 @@ public class FilePathView extends HorizontalScrollView {
 //        int pathDepth = mFilePathContainer.getChildCount();
 
         if (mRootDir != null && mRootDir.isDirectory()) {
-            addPathName("手机存储");// 手机存储=storage/emulated/0
+            addPathName(mRootDir);// 手机存储=storage/emulated/0
         }
     }
 
@@ -92,11 +93,15 @@ public class FilePathView extends HorizontalScrollView {
     /**
      * 增加一个层级的pathName
      *
-     * @param pathName
+     * @param pathFile
      */
-    private void addPathName(String pathName) {
-        if (TextUtils.isEmpty(pathName))
+    private void addPathName(File pathFile) {
+        if (pathFile == null)
             return;
+        String pathName = pathFile.getName();
+        if (mRootDir.equals(pathFile)) {
+            pathName = "手机存储";
+        }
 
         TextView textView = new TextView(getContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
@@ -106,8 +111,17 @@ public class FilePathView extends HorizontalScrollView {
         textView.setEllipsize(TextUtils.TruncateAt.END);
         textView.setText(pathName);
         textView.setGravity(Gravity.CENTER);
+
+        textView.setTag(pathFile.getPath());
         Drawable rightDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_navigate_next_black_24dp);
         textView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, rightDrawable, null);
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filePath = (String) v.getTag();
+                navToFile(new File(filePath));
+            }
+        });
         mFilePathContainer.addView(textView, params);
     }
 
@@ -179,7 +193,7 @@ public class FilePathView extends HorizontalScrollView {
 //            navDown getName:baidu
             mCurrentDir = selectedDir;
 
-            addPathName(mCurrentDir.getName());
+            addPathName(mCurrentDir);
             return true;
         }
         return false;

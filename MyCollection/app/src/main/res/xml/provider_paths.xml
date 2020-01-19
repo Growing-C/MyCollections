@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--    子节点	对应路径-->
+    <!--    files-path	Context.getFilesDir() /data/user/0/com.cgy.mycollections/files-->
+    <!--    cache-path	Context.getCacheDir() /data/user/0/com.cgy.mycollections/cache-->
+    <!--    external-path	Environment.getExternalStorageDirectory() /storage/emulated/0-->
+    <!--    external-files-path	Context.getExternalFilesDir(null) /storage/emulated/0/Android/data/com.cgy.mycollections/files-->
+    <!--    external-cache-path	Context.getExternalCacheDir() /storage/emulated/0/Android/data/com.cgy.mycollections/cache-->
+
     <external-path
         name="external"
         path="." />
@@ -16,22 +24,16 @@
         name="files"
         path="." />
 
-<!--    <files-path-->
-<!--        path="Download/"-->
-<!--        name="download" />-->
-<!--    <files-path-->
-<!--        path="."-->
-<!--        name="root" />-->
-<!--    <files-path-->
-<!--        path="images/"-->
-<!--        name="my_images" />-->
-<!--    <files-path-->
-<!--        path="audios/"-->
-<!--        name="my_audios" />-->
-    <!--    子节点	对应路径-->
-    <!--    files-path	Context.getFilesDir()-->
-    <!--    cache-path	Context.getCacheDir()-->
-    <!--    external-path	Environment.getExternalStorageDirectory()-->
-    <!--    external-files-path	Context.getExternalFilesDir(null)-->
-    <!--    external-cache-path	Context.getExternalCacheDir()-->
+    <!--    <files-path-->
+    <!--        path="Download/"-->
+    <!--        name="download" />-->
+    <!--    <files-path-->
+    <!--        path="."-->
+    <!--        name="root" />-->
+    <!--    <files-path-->
+    <!--        path="images/"-->
+    <!--        name="my_images" />-->
+    <!--    <files-path-->
+    <!--        path="audios/"-->
+    <!--        name="my_audios" />-->
 </paths>

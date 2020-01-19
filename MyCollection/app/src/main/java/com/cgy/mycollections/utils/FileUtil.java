@@ -1081,34 +1081,37 @@ public class FileUtil {
     public static Intent openFile(Context context, String filePath) {
         File file = new File(filePath);
         if (!file.exists()) return null;
-        /* 取得扩展名 */
-        String end = file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length()).toLowerCase();
-        /* 依扩展名的类型决定MimeType */
-        if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
-                end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
-            return getAudioFileIntent(filePath);
-        } else if (end.equals("3gp") || end.equals("mp4")) {
-            return getAudioFileIntent(filePath);
-        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png") ||
-                end.equals("jpeg") || end.equals("bmp")) {
-            return getImageFileIntent(filePath);
-        } else if (end.equals("apk")) {
-            return getApkFileIntent(filePath);
-        } else if (end.equals("ppt")) {
-            return getPptFileIntent(filePath);
-        } else if (end.equals("xls")) {
-            return getExcelFileIntent(filePath);
-        } else if (end.equals("doc")) {
-            return getWordFileIntent(filePath);
-        } else if (end.equals("pdf")) {
-            return getPdfFileIntent(context, filePath);
-        } else if (end.equals("chm")) {
-            return getChmFileIntent(filePath);
-        } else if (end.equals("txt")) {
-            return getTextFileIntent(filePath, false);
-        } else {
-            return getAllIntent(filePath);
-        }
+
+        return getOpenFileIntent(context, filePath);
+
+//        /* 取得扩展名 */
+//        String end = file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length()).toLowerCase();
+//        /* 依扩展名的类型决定MimeType */
+//        if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
+//                end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
+//            return getAudioFileIntent(filePath);
+//        } else if (end.equals("3gp") || end.equals("mp4")) {
+//            return getAudioFileIntent(filePath);
+//        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png") ||
+//                end.equals("jpeg") || end.equals("bmp")) {
+//            return getImageFileIntent(filePath);
+//        } else if (end.equals("apk")) {
+//            return getApkFileIntent(filePath);
+//        } else if (end.equals("ppt")) {
+//            return getPptFileIntent(filePath);
+//        } else if (end.equals("xls")) {
+//            return getExcelFileIntent(filePath);
+//        } else if (end.equals("doc")) {
+//            return getWordFileIntent(filePath);
+//        } else if (end.equals("pdf")) {
+//            return getPdfFileIntent(context, filePath);
+//        } else if (end.equals("chm")) {
+//            return getChmFileIntent(filePath);
+//        } else if (end.equals("txt")) {
+//            return getTextFileIntent(filePath, false);
+//        } else {
+//            return getAllIntent(filePath);
+//        }
     }
 
     //Android获取一个用于打开APK文件的intent
@@ -1253,17 +1256,17 @@ public class FileUtil {
      * 通用的打开文件的intent，上面的其他intent都可以整合成这一个
      *
      * @param context
-     * @param param
+     * @param filePath
      * @return
      */
-    public static Intent getOpenFileIntent(Context context, String param) {
+    public static Intent getOpenFileIntent(Context context, String filePath) {
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri uri = Uri.fromFile(new File(param));
+        Uri uri = Uri.fromFile(new File(filePath));
 //        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //        Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", new File(param));
-        intent.setDataAndType(uri, getMimeType(param));
+        intent.setDataAndType(uri, getMimeType(filePath));
         return intent;
     }
 

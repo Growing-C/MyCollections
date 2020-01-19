@@ -146,7 +146,7 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         if (mVisible)
-            delayedHide(100);
+            delayedHide(0);
     }
 
     protected void toggle() {

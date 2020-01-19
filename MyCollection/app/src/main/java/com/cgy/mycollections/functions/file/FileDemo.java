@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
@@ -47,7 +48,7 @@ import io.reactivex.functions.Consumer;
 /**
  * 文件操作 读取等
  */
-public class FileDemo extends AppCompatActivity {
+public class FileDemo extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.file_list)
@@ -73,8 +74,11 @@ public class FileDemo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_demo);
         ButterKnife.bind(this);
+        L.e("onCreate");
 
         setSupportActionBar(toolbar);
+        setUpActionBarBack(toolbar);
+
         FileInfo targetFile = null;
         if (getIntent() != null) {
             mFileOperateType = getIntent().getStringExtra(FileConstants.KEY_FILE_OPERATE);
@@ -96,7 +100,7 @@ public class FileDemo extends AppCompatActivity {
         if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
             //选择文件模式
             mFileAdapter.setIsSelect(true);
-            mOperateHolderV.setVisibility(View.VISIBLE);
+//            mOperateHolderV.setVisibility(View.VISIBLE);
         }
 
         mFileAdapter.setOnItemClickListener(new OnItemClickListener() {
@@ -208,27 +212,29 @@ public class FileDemo extends AppCompatActivity {
     @SuppressLint("CheckResult")
     public void onClick(View v) {
         switch (v.getId()) {
-//            case R.id.get_file_path://获取本地文件路径
-//                break;
             case R.id.cancel://取消选择
                 finish();
                 break;
             case R.id.confirm://确定选择
-                List<FileInfo> fileList = mFileAdapter.getSelectedFiles();
-                if (!fileList.isEmpty()) {
-                    DBOperator.getInstance().addProtectedFiles(CommonUtils.getUserId(this), fileList).subscribe(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(Boolean aBoolean) throws Exception {
-                            setResult(RESULT_OK);
-                            finish();
-                        }
-                    });
-                } else {
-                    finish();
-                }
+                confirmSelectFile();
                 break;
             default:
                 break;
+        }
+    }
+
+    private void confirmSelectFile() {
+        List<FileInfo> fileList = mFileAdapter.getSelectedFiles();
+        if (!fileList.isEmpty()) {
+            DBOperator.getInstance().addProtectedFiles(CommonUtils.getUserId(this), fileList).subscribe(new Consumer<Boolean>() {
+                @Override
+                public void accept(Boolean aBoolean) throws Exception {
+                    setResult(RESULT_OK);
+                    finish();
+                }
+            });
+        } else {
+            finish();
         }
     }
 
@@ -257,8 +263,15 @@ public class FileDemo extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_file, menu);
         MenuItem showOrHideFileMenu = menu.findItem(R.id.action_show_hidden_files);
+        MenuItem confirmMenu = menu.findItem(R.id.action_confirm);
         if (showOrHideFileMenu != null) {
             showOrHideFileMenu.setChecked(Config.isShowHiddenFiles());
+        }
+        L.e("onCreateOptionsMenu");
+        if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
+            confirmMenu.setVisible(true);
+        } else {
+            confirmMenu.setVisible(false);
         }
         return true;
     }
@@ -272,13 +285,16 @@ public class FileDemo extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_show_hidden_files:
+            case R.id.action_show_hidden_files://隐藏 隐藏文件
                 item.setChecked(!item.isChecked());
                 Config.setShowHiddenFiles(item.isChecked());
 
                 refreshCurrentFileList(mFilePathV.getCurrentDir());
 
                 mFileAdapter.setShowHideFiles(item.isChecked());
+                break;
+            case R.id.action_confirm://确定选择文件
+                confirmSelectFile();
                 break;
             default:
                 break;

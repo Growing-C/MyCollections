@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
+import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
@@ -25,6 +28,7 @@ import com.cgy.mycollections.utils.FileUtil;
 
 import appframe.utils.L;
 
+import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenu;
@@ -168,6 +172,7 @@ public class ProtectedFilesActivity extends BaseActivity {
 
 //        initSwipeAndDrag(mFileAdapter);
         getProtectedFiles();
+
     }
 
     private void initSwipe() {
@@ -184,6 +189,19 @@ public class ProtectedFilesActivity extends BaseActivity {
                     Intent it = new Intent(ProtectedFilesActivity.this, FileDemo.class);
                     it.putExtra(FileConstants.KEY_FILE_INFO, fileInfo);
                     startActivity(it);
+                } else {
+//                    if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
+//                        Intent it = new Intent(ProtectedFilesActivity.this, ShowImagesActivity.class);
+//                        it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
+//                        startActivity(it);
+//                    } else {
+                    try {
+                        //TODO:FileUriExposedException
+                        startActivity(FileUtil.openFile(ProtectedFilesActivity.this, fileInfo.getFilePath()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                    }
                 }
 //                FileInfoDialogFragment.newInstance(mFileList.get(position))
 //                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
@@ -258,7 +276,7 @@ public class ProtectedFilesActivity extends BaseActivity {
     private void showDeleteDialog(int position) {
         FileInfo fileInfo = mFileList.get(position);
         new AlertDialog.Builder(ProtectedFilesActivity.this)
-                .setMessage("确认删除文件：\n" + fileInfo.getFilePath())
+                .setMessage("确认移除文件保护？（不会删除源文件）：\n" + fileInfo.getFilePath())
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override

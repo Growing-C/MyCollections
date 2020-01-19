@@ -5,11 +5,14 @@ import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.res.Configuration;
+import android.view.View;
 import android.widget.Toast;
 
 import appframe.utils.L;
+
 import com.cgy.mycollections.utils.LanguageUtils;
 import com.witon.mylibrary.widget.LoadingDialog;
 
@@ -50,6 +53,39 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         super.applyOverrideConfiguration(overrideConfiguration);
     }
+
+    /**
+     * toolbar 显示返回按钮
+     * 设置使用系统自带的返回按钮样式
+     * （如果要使用自带的样式 就在xml中设置 app:navigationIcon="@mipmap/title_bar_back"
+     * 或者代码中设置 mToolbar.setNavigationIcon();）
+     *
+     * @param toolbar
+     */
+    protected void setUpActionBarBack(Toolbar toolbar) {
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        Toolbar上的左上角的返回箭头的键值为Android.R.id.home 也可以在onOptionsItemSelected 中监听
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();//返回
+            }
+        });
+    }
+
+    //    /**
+//     * 动态修改actionbar返回键
+//     */
+//    protected void setToolbarCustomTheme() {
+//        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_material);
+//        if(upArrow != null) {
+//            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
+//            if(getSupportActionBar() != null) {
+//                getSupportActionBar().setHomeAsUpIndicator(upArrow);
+//            }
+//        }
+//    }
 
     protected void showLoadingDialog(String message) {
         showLoadingDialog(message, null);

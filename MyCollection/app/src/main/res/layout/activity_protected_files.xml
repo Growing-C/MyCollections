@@ -98,13 +98,13 @@
             android:background="@drawable/shape_circle_add_n"
             android:backgroundTint="@color/red500"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_clear"
+            android:src="@drawable/ic_switch"
             android:tint="@android:color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="移除保护" />
+            android:text="一键解除" />
 
     </LinearLayout>
 

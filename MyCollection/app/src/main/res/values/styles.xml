@@ -23,8 +23,8 @@
         <!--        <item name="android:windowTranslucentStatus">true</item>-->
 
         <!--可以控制view默认字体颜色，也可以控制toolbar默认的title颜色 toolbarStyle中的会被这个属性重写，除非直接在toolbar中指定style-->
-        <!--        <item name="android:textColorPrimary">@color/icFocused</item>-->
-        <!--      可以控制view默认颜色，也可以控制toolbar菜单三点的颜色-->
+        <item name="android:textColorPrimary">@android:color/holo_blue_bright</item>
+        <!--      可以控制view默认颜色，也可以控制toolbar菜单三点及返回按钮的颜色-->
         <!--        <item name="android:colorControlNormal">@color/icFocused</item>-->
         <!--toolbar右边文字颜色，有效,似乎层级在上面的属性会覆盖下面的 比如toolbarStyle中的actionMenuTextColor就被这里的覆盖了-->
         <item name="actionMenuTextColor">@android:color/holo_red_dark</item>
@@ -38,6 +38,7 @@
         <!--windowIsTranslucent makes the background of app transparent-->
     </style>
 
+    <!--    为toolbar设置theme 可以控制toolbar样式 如返回键颜色（colorControlNormal） etc-->
     <style name="AppToolBar" parent="Widget.AppCompat.Toolbar">
         <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->
 
