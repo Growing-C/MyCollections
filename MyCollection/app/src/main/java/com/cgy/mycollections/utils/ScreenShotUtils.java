@@ -22,7 +22,7 @@ import appframe.utils.L;
  * Author :cgy
  * Date :2019/9/19
  */
-public class ScreenUtils {
+public class ScreenShotUtils {
 
     //<editor-fold desc="应用内截屏 ">
     public static void takeAppScreenshotWithoutStatusBar(Window window) {

@@ -9,6 +9,7 @@ import com.cgy.mycollections.functions.ble.client.CommandHelper;
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IBLEDeviceInterface;
 import appframe.utils.L;
 import com.cgy.mycollections.utils.dataparse.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +79,7 @@ public abstract class BaseLockCommandSender {
         requireNonNull(command);
         try {
             if (mCommandQueue != null) {
-                L.e(TAG, "添加指令到队列 command：" + command.commandTag + "  content:" + BinaryUtil.bytesToStr(true, command.sendBytes));
+                L.e(TAG, "添加指令到队列 command：" + command.commandTag + "  content:" + DataFormater.bytesToStr(true, command.sendBytes));
                 mCommandQueue.put(command);
             }
         } catch (Exception e) {
@@ -179,9 +180,9 @@ public abstract class BaseLockCommandSender {
      * payload数据内容（command+内容）(command  2B 内容 nB)
      */
     //协议版本号0001
-    public byte[] head = BinaryUtil.strToBytes(false, "FEFE");
-    public byte[] version = BinaryUtil.strToBytes(false, "01");
-    public byte[] foot = BinaryUtil.strToBytes(false, "3B");
+    public byte[] head = DataFormater.strToBytes(false, "FEFE");
+    public byte[] version = DataFormater.strToBytes(false, "01");
+    public byte[] foot = DataFormater.strToBytes(false, "3B");
 
 
     //--------------------公有方法用abstract-------------------------
@@ -195,7 +196,7 @@ public abstract class BaseLockCommandSender {
      * @return
      */
     protected List<byte[]> createPayloadListFromCommand(String commandStr) {
-        byte[] command = BinaryUtil.strToBytes(false, commandStr);
+        byte[] command = DataFormater.strToBytes(false, commandStr);
         List<byte[]> payloadBytesList = new ArrayList<>();
         payloadBytesList.add(command);
         return payloadBytesList;

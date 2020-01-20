@@ -18,6 +18,7 @@ import android.view.WindowManager;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.BaseFullScreenActivity;
+import com.cgy.mycollections.functions.file.FileInfo;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.RecyclerAdapter;
 import com.cgy.mycollections.listeners.OnMyItemClickListener;
@@ -25,6 +26,8 @@ import com.cgy.mycollections.utils.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -77,6 +80,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 
         File imageDir = new File(mSelectedImage.imageFilePath).getParentFile();
         mImageFiles = FileUtil.listImageFile(imageDir, true);
+        mImageFiles = sortByName(mImageFiles);
 
         ImagePagerAdapter adapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
             @Override
@@ -108,5 +112,17 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
                 return i;
         }
         return -1;
+    }
+
+    public List<File> sortByName(List<File> fileList) {
+        if (fileList != null) {
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+                }
+            });
+        }
+        return fileList;
     }
 }

@@ -1,7 +1,7 @@
 package com.cgy.mycollections.utils.encrypt;
 
 import com.cgy.mycollections.utils.dataparse.BinaryUtil;
-import com.cgy.mycollections.utils.dataparse.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
@@ -281,7 +281,7 @@ public class AESUtil {
     public static void test() {
         String data = "123456";
         System.out.println("md5:" + md5(data.getBytes()));
-        System.out.println(BinaryUtil.bytesToStr(true, BinaryUtil.strToBytes(true, md5(data.getBytes()))));
+        System.out.println(DataFormater.bytesToStr(true, DataFormater.strToBytes(true, md5(data.getBytes()))));
 
         String des = null;
         try {
@@ -308,7 +308,7 @@ public class AESUtil {
 
     private static void testbyteStr() {
         byte[] aa = "C11A1FCD10000053".getBytes();
-        System.out.println("转成16进制byte：" + CHexConverter.byte2HexStr(aa, aa.length));
+        System.out.println("转成16进制byte：" + DataFormater.byte2HexStr(aa, aa.length));
         System.out.println("aa 转成str：" + new String(aa));
     }
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--    shotcut有三种  静态，动态 ，pinned(和app类似，会在桌面生成一个图标)-->
+    <shortcut
+        android:shortcutId="protectedfiles"
+        android:enabled="true"
+        android:icon="@drawable/baohu"
+        android:shortcutShortLabel="@string/shortcut_short_protected_files"
+        android:shortcutLongLabel="@string/shortcut_long_protected_files"
+        android:shortcutDisabledMessage="@string/shortcut_disabled_protected_files">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.cgy.mycollections"
+            android:targetClass="com.cgy.mycollections.functions.file.ProtectedFilesActivity" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>

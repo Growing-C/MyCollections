@@ -226,11 +226,43 @@ public class FileDemo extends BaseActivity {
         return fileList;
     }
 
+    /**
+     * 显示底部菜单
+     */
     private void showBottomMenu() {
         int res = PickerViewAnimateUtil.getAnimationResource(Gravity.BOTTOM, true);
         Animation bottomInAnim = AnimationUtils.loadAnimation(this, res);
         mBottomMenuHolderV.setVisibility(View.VISIBLE);
         mBottomMenuHolderV.startAnimation(bottomInAnim);
+    }
+
+    /**
+     * 隐藏底部菜单
+     */
+    private void hideBottomMenu() {
+        if (mBottomMenuHolderV.getVisibility() != View.VISIBLE) {
+            return;
+        }
+
+        int res = PickerViewAnimateUtil.getAnimationResource(Gravity.BOTTOM, false);
+        Animation bottomOutAnim = AnimationUtils.loadAnimation(this, res);
+        bottomOutAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mBottomMenuHolderV.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mBottomMenuHolderV.startAnimation(bottomOutAnim);
     }
 
     @SuppressLint("CheckResult")
@@ -261,7 +293,14 @@ public class FileDemo extends BaseActivity {
     }
 
     private void deleteFile(FileInfo fileInfo) {
+        if (fileInfo.getFile().isDirectory()) {
+            //TODO:文件夹删除不应该这么简单，应该要用户多确认
+        } else
+            FileUtil.deleteFile(fileInfo.getFilePath());
 
+        hideBottomMenu();
+
+        refreshCurrentFileList(mFilePathV.getCurrentDir());
     }
 
     private void confirmSelectFile() {
@@ -304,6 +343,11 @@ public class FileDemo extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if (mBottomMenuHolderV.getVisibility() == View.VISIBLE) {
+            hideBottomMenu();
+            return;
+        }
+
         if (!mFilePathV.navUp())
             super.onBackPressed();
     }

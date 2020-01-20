@@ -1,4 +1,4 @@
-package com.cgy.mycollections.utils;
+package com.cgy.mycollections.utils.dataparse;
 
 /**
  * Description :json 格式化工具

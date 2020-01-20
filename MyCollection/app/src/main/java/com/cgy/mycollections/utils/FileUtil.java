@@ -778,8 +778,7 @@ public class FileUtil {
     public static boolean deleteFile(String path) {
         File file = new File(path);
         if (file.exists()) {
-            file.delete();
-            return true;
+            return file.delete();
         }
         return false;
     }

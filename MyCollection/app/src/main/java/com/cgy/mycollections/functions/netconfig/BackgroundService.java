@@ -19,7 +19,8 @@ import android.util.Log;
 import com.cgy.mycollections.functions.ble.client.DataCallback;
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
-import com.cgy.mycollections.utils.dataparse.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
+
 import appframe.utils.L;
 
 import java.util.List;
@@ -87,7 +88,7 @@ public class BackgroundService extends Service {
             mBluetoothServer = new BluetoothServer(this, new DataCallback() {
                 @Override
                 public void onGetBleResponse(final String data, final byte[] rawData) {
-                    String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, rawData); //转成字符串
+                    String lockModuleStr = DataFormater.bytesToASCIIStr(true, rawData); //转成字符串
                     L.e("收到客户端发送数据：" + data);
                     if (!TextUtils.isEmpty(lockModuleStr) && lockModuleStr.toUpperCase().contains("SSID")) {
                         String[] strs = lockModuleStr.split(",");

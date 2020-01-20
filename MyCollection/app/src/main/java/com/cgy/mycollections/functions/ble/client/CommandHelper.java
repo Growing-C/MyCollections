@@ -3,6 +3,7 @@ package com.cgy.mycollections.functions.ble.client;
 
 
 import com.cgy.mycollections.utils.dataparse.BinaryUtil;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class CommandHelper {
      */
     public static String getCommandString(byte[] bytes, int highIndex, int lowIndex) {
         if (bytes.length > highIndex) {
-            return BinaryUtil.bytesToStr(true, new byte[]{bytes[highIndex], bytes[lowIndex]}).toUpperCase();
+            return DataFormater.bytesToStr(true, new byte[]{bytes[highIndex], bytes[lowIndex]}).toUpperCase();
         } else {
             return "";
         }
@@ -39,7 +40,7 @@ public class CommandHelper {
      */
     public static String getCommandString(byte[] bytes, int index) {
         if (bytes.length > index) {
-            return BinaryUtil.bytesToStr(true, new byte[]{bytes[index]}).toUpperCase();
+            return DataFormater.bytesToStr(true, new byte[]{bytes[index]}).toUpperCase();
         } else {
             return "";
         }

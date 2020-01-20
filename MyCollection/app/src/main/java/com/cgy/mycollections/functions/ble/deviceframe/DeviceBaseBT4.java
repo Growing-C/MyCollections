@@ -20,7 +20,7 @@ import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IDeviceConnect
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.IRssiCallback;
 import com.cgy.mycollections.functions.ble.deviceframe.interfaces.ISeparable;
 import appframe.utils.L;
-import com.cgy.mycollections.utils.dataparse.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -597,7 +597,7 @@ public abstract class DeviceBaseBT4 extends BluetoothGattCallback implements IBL
                     List<byte[]> childBytes = separate(sendByte);//先分包
                     L.e(TAG, "222 CommandLifeCycle 指令 " + command.commandTag + "  "
                             + Thread.currentThread().getName() + " start->开始发送指令，指令内容："
-                            + command.commandTag + "  \nbytes:" + CHexConverter.byte2HexStr(command.sendBytes));
+                            + command.commandTag + "  \nbytes:" + DataFormater.byte2HexStr(command.sendBytes));
 
                     for (int i = 0, len = childBytes.size(); i < len; i++) {
                         int childPackageRewriteTimeLimit = 3;//每个分包最多只可以失败3次

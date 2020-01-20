@@ -11,7 +11,7 @@ import android.content.Context;
 import android.os.Build;
 
 import com.cgy.mycollections.functions.ble.server.BluetoothServer;
-import com.cgy.mycollections.utils.dataparse.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -60,7 +60,7 @@ public class BLEClient {
             @Override
             public void run() {
                 byte[] command = raw.getBytes();//永远发第一个
-                L.e("writeData 给设备发送了消息，内容：" + CHexConverter.byte2HexStr(command));
+                L.e("writeData 给设备发送了消息，内容：" + DataFormater.byte2HexStr(command));
 
 //                String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, command); //转成字符串(此方法中文会乱码)
                 String lockModuleStr = new String(command); //转成字符串
@@ -211,7 +211,7 @@ public class BLEClient {
             final byte[] dealBytes = characteristic.getValue();
             //回复给客户端的数据Jim
 //            E5 9B 9E E5 A4 8D E7 BB 99 E5 AE A2 E6 88 B7 E7 AB AF E7 9A 84 E6 95 B0 E6 8D AE 4A 69 6D
-            String result = CHexConverter.byte2HexStr(dealBytes);
+            String result = DataFormater.byte2HexStr(dealBytes);
             L.e("收到蓝牙服务端数据 onCharacteristicChanged value：" + result);
             if (callback != null) {
                 callback.onGetBleResponse(result, dealBytes);

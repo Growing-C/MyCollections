@@ -224,4 +224,8 @@
     <string name="title_activity_show_images">ShowImagesActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="shortcut_short_protected_files">保护</string>
+    <string name="shortcut_long_protected_files">文件保护</string>
+    <string name="shortcut_disabled_protected_files">文件保护不可用</string>
 </resources>

@@ -25,8 +25,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cgy.mycollections.functions.ble.client.DataCallback;
-import com.cgy.mycollections.utils.dataparse.BinaryUtil;
-import com.cgy.mycollections.utils.dataparse.CHexConverter;
+import com.cgy.mycollections.utils.dataparse.DataFormater;
+
 import appframe.utils.L;
 
 import java.lang.reflect.Field;
@@ -97,7 +97,7 @@ public class BluetoothServer {
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             Log.e("CharacteristicWriteReq", "远程设备请求写入数据");
             L.e(String.format("3.onCharacteristicWriteRequest：device name = %s, address = %s", device.getName(), device.getAddress()));
-            L.e(String.format("3.onCharacteristicWriteRequest：requestId = %s, preparedWrite=%s, responseNeeded=%s, offset=%s, value=%s", requestId, preparedWrite, responseNeeded, offset, CHexConverter.byte2HexStr(value)));
+            L.e(String.format("3.onCharacteristicWriteRequest：requestId = %s, preparedWrite=%s, responseNeeded=%s, offset=%s, value=%s", requestId, preparedWrite, responseNeeded, offset, DataFormater.byte2HexStr(value)));
 
 //            mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, new byte[]{0, 9, 8, 7, 6, 5, 4, 3, 2, 1});
             mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value);
@@ -122,14 +122,14 @@ public class BluetoothServer {
                 } else {
                     //value分包了，且是中间的包
                     receiveByteList.add(value);
-                    byte[] totalData = BinaryUtil.mergeBytes(receiveByteList);
+                    byte[] totalData = DataFormater.mergeBytes(receiveByteList);
                     if (!new String(totalData).endsWith("end")) {
                         //表示还不是最后一包
                         return;
                     }
                 }
 
-                byte[] totalData = BinaryUtil.mergeBytes(receiveByteList);
+                byte[] totalData = DataFormater.mergeBytes(receiveByteList);
                 //走到这里 receiveByteList 必定是一条完整的包
                 if (mCallback != null) {
                     mCallback.onGetBleResponse(new String(totalData), totalData);
@@ -159,7 +159,7 @@ public class BluetoothServer {
             Log.e(TAG, "远程设备请求Write描述器 onDescriptorWriteRequest");
 
             L.e(String.format("2.onDescriptorWriteRequest：device name = %s, address = %s", device.getName(), device.getAddress()));
-            L.e(String.format("2.onDescriptorWriteRequest：requestId = %s, preparedWrite = %s, responseNeeded = %s, offset = %s, value = %s,", requestId, preparedWrite, responseNeeded, offset, CHexConverter.byte2HexStr(value, value.length)));
+            L.e(String.format("2.onDescriptorWriteRequest：requestId = %s, preparedWrite = %s, responseNeeded = %s, offset = %s, value = %s,", requestId, preparedWrite, responseNeeded, offset, DataFormater.byte2HexStr(value, value.length)));
 
             // now tell the connected device that this was all successfull
             //调了这个方法  client那边才会走onDescriptorWrite
@@ -407,12 +407,12 @@ public class BluetoothServer {
 
         L.d("!!!sendCommand2Client characteristicRead:" + characteristicRead.getUuid().toString());
 
-        byte[] head = BinaryUtil.strToBytes(false, "FEFE");
+        byte[] head = DataFormater.strToBytes(false, "FEFE");
         List<byte[]> bts = new ArrayList<>();
 //        bts.add(head);
         bts.add(command);
 
-        byte[] finalCommand = BinaryUtil.mergeBytes(bts);
+        byte[] finalCommand = DataFormater.mergeBytes(bts);
 
 //        String lockModuleStr = BinaryUtil.bytesToASCIIStr(true, finalCommand); //转成字符串
 //        L.e("发送消息内容：" + lockModuleStr);
@@ -421,7 +421,7 @@ public class BluetoothServer {
         characteristicRead.setValue(finalCommand);
         mBluetoothGattServer.notifyCharacteristicChanged(mConnectedDevice, characteristicRead, false);
 
-        L.d(finalCommand.length + "!!!sendCommand2Client command:" + CHexConverter.byte2HexStr(finalCommand));
+        L.d(finalCommand.length + "!!!sendCommand2Client command:" + DataFormater.byte2HexStr(finalCommand));
     }
 
     public static void main(String[] args) {
