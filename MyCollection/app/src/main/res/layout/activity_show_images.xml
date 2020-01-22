@@ -9,22 +9,40 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <!--    AppBarLayout的theme似乎只会导致 toolbar的title颜色改变-->
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:id="@+id/appbar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:theme="@style/AppTheme.AppBarOverlay">-->
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:id="@+id/appbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:theme="@style/AppTheme.AppBarOverlay">-->
 
-        <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
-        <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:id="@+id/toolbar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            android:background="?attr/colorPrimary"-->
-<!--            style="@style/AppToolBar" />-->
+    <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
+    <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
+    <!--        <androidx.appcompat.widget.Toolbar-->
+    <!--            android:id="@+id/toolbar"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="?attr/actionBarSize"-->
+    <!--            android:background="?attr/colorPrimary"-->
+    <!--            style="@style/AppToolBar" />-->
 
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <!--    此处有个奇怪的现象 去除RelativeLayout的background
+    在切换图片的时候 背景可能会变成图片的重叠，滑动时很奇怪，加了background就 没问题了-->
+    <RelativeLayout
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:background="@android:color/holo_blue_bright"
+        android:layout_height="match_parent">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/image_pager"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/fullscreen_content_controls"
@@ -44,24 +62,34 @@
 
     </LinearLayout>
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
-    <!--    此处有个奇怪的现象 去除RelativeLayout的background
-    在切换图片的时候 背景可能会变成图片的重叠，滑动时很奇怪，加了background就 没问题了-->
-    <RelativeLayout
-        android:id="@+id/fullscreen_content"
+    <LinearLayout
+        android:id="@+id/test"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:background="@android:color/black"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/image_pager"
-            android:orientation="horizontal"
+        <Button
+            android:id="@+id/blur"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+            android:onClick="onClick"
+            android:text="blur"
+            android:layout_height="wrap_content" />
 
+        <Button
+            android:id="@+id/show"
+            android:layout_width="match_parent"
+            android:onClick="onClick"
+            android:text="show"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/hide"
+            android:layout_width="match_parent"
+            android:onClick="onClick"
+            android:text="hide"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <!--    <TextView-->
     <!--        android:id="@+id/fullscreen_content"-->
     <!--        android:layout_width="match_parent"-->

@@ -23,6 +23,7 @@ import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.RecyclerAdapter;
 import com.cgy.mycollections.listeners.OnMyItemClickListener;
 import com.cgy.mycollections.utils.FileUtil;
+import com.cgy.mycollections.utils.SystemUiUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,21 +61,12 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 
 //        setSupportActionBar(mToolbar);
 
-        //        NOTICE:需要沉浸的view要搭配 android:fitsSystemWindows="true"来使用，不然  view的内容会占用statusBar的位置，导致重叠
-        //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//4.4-6.0的状态栏会是  白字，看不到字
-//            以下功能也可以通过在appTheme中添加<item name="android:windowIsTranslucent">true</item> 来实现
+//        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
 
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
-        //6.0以上的 亮色状态栏模式，可以把状态栏字体变成 黑字
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
-        initFullScreenToggleAction(mDelayHideButton);
+        SystemUiUtils.setStatusLight(mContentView);
+        findViewById(R.id.test).setVisibility(View.GONE);
+
+//        initFullScreenToggleAction(mDelayHideButton);//TODO:待搞清楚
 
         mSelectedImage = (ImageInfo) getIntent().getSerializableExtra("imageInfo");
 
@@ -85,7 +77,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         ImagePagerAdapter adapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
             @Override
             public void onItemClick(int position, File data) {
-                toggle();
+//                toggle();
             }
         });
         mImagePager.setAdapter(adapter);
@@ -124,5 +116,20 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
             });
         }
         return fileList;
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.blur:
+                SystemUiUtils.blurSystemUi(mContentView);
+                break;
+            case R.id.hide:
+                SystemUiUtils.hideSystemUi(mContentView);
+                break;
+            case R.id.show:
+                break;
+            default:
+                break;
+        }
     }
 }
