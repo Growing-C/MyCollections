@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.cgy.mycollections.R;
@@ -47,8 +48,8 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     View mView2Hide;
     @BindView(R.id.dummy_button)
     View mDelayHideButton;
-//    @BindView(R.id.toolbar)
-//    Toolbar mToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     ImageInfo mSelectedImage;
     List<File> mImageFiles;
@@ -56,15 +57,22 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
         setContentView(R.layout.activity_show_images);
         ButterKnife.bind(this);
 
-//        setSupportActionBar(mToolbar);
+        setSupportActionBar(mToolbar);
 
-//        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
+        getSupportActionBar().hide();
+
+        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
 
         SystemUiUtils.setStatusLight(mContentView);
         findViewById(R.id.test).setVisibility(View.GONE);
+
+        SystemUiUtils.hideSystemUi(mContentView);
 
 //        initFullScreenToggleAction(mDelayHideButton);//TODO:待搞清楚
 
@@ -120,16 +128,55 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.dummy_button:
+                SystemUiUtils.showSystemUi(mContentView);
+                break;
             case R.id.blur:
                 SystemUiUtils.blurSystemUi(mContentView);
                 break;
             case R.id.hide:
-                SystemUiUtils.hideSystemUi(mContentView);
+//                SystemUiUtils.hideSystemUi(mContentView);
+                setNavVisibility(false);
                 break;
             case R.id.show:
+//                SystemUiUtils.showSystemUi(mContentView);
+                setNavVisibility(true);
                 break;
             default:
                 break;
         }
+    }
+
+    Handler handler = new Handler();
+    Runnable mNavHider = new Runnable() {
+        @Override
+        public void run() {
+            setNavVisibility(false);
+        }
+    };
+
+    void setNavVisibility(boolean visible) {
+        int newVis = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        if (!visible) {
+            newVis |= View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        }
+        // If we are now visible, schedule a timer for us to go invisible.
+        if (visible) {
+            Handler h = handler;
+            if (h != null) {
+                h.removeCallbacks(mNavHider);
+                // If the menus are open or play is paused, we will not auto-hide.
+                h.postDelayed(mNavHider, 3000);
+            }
+        }
+        // Set the new desired visibility.
+        mContentView.setSystemUiVisibility(newVis);
+//        mTitleView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+//        mPlayButton.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+//        mSeekView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 }

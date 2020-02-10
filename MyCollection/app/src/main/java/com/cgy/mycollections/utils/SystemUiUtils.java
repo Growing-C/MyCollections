@@ -82,7 +82,15 @@ public class SystemUiUtils {
         );
     }
 
+    /**
+     * 显示 statusBar 和navigationBar
+     *
+     * @param view
+     */
     public static void showSystemUi(View view) {
-
+        view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        );
     }
 }

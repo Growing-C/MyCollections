@@ -9,22 +9,22 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <!--    AppBarLayout的theme似乎只会导致 toolbar的title颜色改变-->
-    <!--    <com.google.android.material.appbar.AppBarLayout-->
-    <!--        android:id="@+id/appbar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:theme="@style/AppTheme.AppBarOverlay">-->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
-    <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
-    <!--        <androidx.appcompat.widget.Toolbar-->
-    <!--            android:id="@+id/toolbar"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="?attr/actionBarSize"-->
-    <!--            android:background="?attr/colorPrimary"-->
-    <!--            style="@style/AppToolBar" />-->
+        <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
+        <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            style="@style/AppToolBar" />
 
-    <!--    </com.google.android.material.appbar.AppBarLayout>-->
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <!-- This FrameLayout insets its children based on system windows using
@@ -34,7 +34,7 @@
     <RelativeLayout
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
-        android:background="@android:color/holo_blue_bright"
+        android:background="@android:color/black"
         android:layout_height="match_parent">
 
         <androidx.viewpager2.widget.ViewPager2
@@ -56,6 +56,7 @@
             android:id="@+id/dummy_button"
             style="?metaButtonBarButtonStyle"
             android:layout_width="0dp"
+            android:onClick="onClick"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="底部button" />
