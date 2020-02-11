@@ -91,6 +91,7 @@
         </activity>
         <activity android:name=".functions.ui.scale.ScaleViewDemo" />
         <activity android:name=".functions.chart.ChartDemo" />
+        <activity android:name=".testsources.TestDemo" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

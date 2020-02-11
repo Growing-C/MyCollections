@@ -61,6 +61,7 @@ import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
+import com.cgy.mycollections.testsources.TestDemo;
 
 import appframe.utils.L;
 
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Demo[] demos = {
+            new Demo(R.string.title_test, R.string.test_ui, true, TestDemo.class),
             new Demo(R.string.title_ui, R.string.info_ui, true, UiDemos.class),
             new Demo(R.string.title_jetpack, R.string.info_jetpack, JetPackDemos.class),
             new Demo(R.string.title_activity_chart_demo, R.string.info_chart_demo, ChartDemo.class),
