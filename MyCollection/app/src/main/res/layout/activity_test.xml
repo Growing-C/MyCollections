@@ -1,8 +1,10 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/root"
     android:fitsSystemWindows="true"
     tools:context="com.cgy.mycollections.MainActivity">
 
@@ -23,4 +25,29 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/photo_nba2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/fullscreen"
+            android:layout_width="match_parent"
+            android:onClick="onClick"
+            android:layout_height="wrap_content"
+            android:text="全屏" />
+
+        <Button
+            android:id="@+id/quit_full"
+            android:onClick="onClick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="退出全屏" />
+    </LinearLayout>
+</FrameLayout>

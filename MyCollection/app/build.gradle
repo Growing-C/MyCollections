@@ -67,6 +67,15 @@ android {
 }
 
 dependencies {
+	//正常依赖
+	//implementation 'com.chemao.android:chemao-sdk:1.2.3' 
+	//关闭全部依赖传递-方法1
+	//implementation 'com.chemao.android:chemao-sdk:1.2.3@aar' 
+	//关闭全部依赖传递-方法2
+	//implementation('com.chemao.android:chemao-sdk:1.2.3') {
+	//		transitive = false
+	//} 
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'com.android.support.test:runner:1.0.2'
