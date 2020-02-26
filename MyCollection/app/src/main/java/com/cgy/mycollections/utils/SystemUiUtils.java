@@ -12,6 +12,14 @@ import android.view.WindowManager;
  * Date :2020/1/21
  */
 public class SystemUiUtils {
+//    View.SYSTEM_UI_FLAG_FULLSCREEN, //全屏，状态栏和导航栏不显示
+//    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION, //隐藏导航栏
+//    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN, //全屏，状态栏会盖在布局上
+//    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION,
+//    View.SYSTEM_UI_FLAG_LAYOUT_STABLE,
+//    View.SYSTEM_UI_FLAG_LOW_PROFILE,
+//    View.SYSTEM_UI_FLAG_VISIBLE, //显示状态栏和导航栏
+//    View.SYSTEM_UI_LAYOUT_FLAGS
 
     /**
      * 设置窗口status和navigation 透明,此时 view配置 fitSystemWindows=true 可以沉浸式全屏

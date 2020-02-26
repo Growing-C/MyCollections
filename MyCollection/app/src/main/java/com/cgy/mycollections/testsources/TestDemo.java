@@ -55,19 +55,19 @@ public class TestDemo extends AppCompatActivity {
 
         //view占据全屏，但是依然能看到status 和导航栏，只是背景透明
 //        这里使用了SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION，表示会让应用的主体内容占用系统导航栏的空间，然后又调用了setNavigationBarColor()方法将导航栏设置成透明色。
-        int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        decorView.setSystemUiVisibility(option);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+//        int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+//        decorView.setSystemUiVisibility(option);
+//        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+//        getWindow().setStatusBarColor(Color.TRANSPARENT);
 
     }
 
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);//真正的沉浸式
+        super.onWindowFocusChanged(hasFocus);//真正的沉浸式,隐藏status和navigation 可以下滑拉出但是一段时间后自动隐藏
         L.e("test", "onWindowFocusChanged hasFocus:" + hasFocus);
         if (hasFocus && Build.VERSION.SDK_INT >= 19) {
             View decorView = getWindow().getDecorView();
