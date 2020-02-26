@@ -48,6 +48,18 @@ public class JetPackDemos extends BaseActivity {
         sectionsPagerAdapter.addFragment("CameraX", CameraXFragment.newInstance());
         mTabPager.setAdapter(sectionsPagerAdapter);
         mTabs.setupWithViewPager(mTabPager);
+
+
+//        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//
+//        Fragment tabFrag = mFragments.get(selectedTabIndex);
+//        boolean tabFragIsAdded = tabFrag.isAdded();
+//
+//        if (!tabFragIsAdded) {
+//            transaction.add(R.id.fragment_container, tabFrag);
+//        }
+//        transaction.show(tabFrag);
+//        int commitResult = transaction.commitAllowingStateLoss();
     }
 
 

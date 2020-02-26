@@ -7,6 +7,7 @@ import android.view.WindowManager;
 
 /**
  * Description :系统画面 statusBar,navigationBar等系统的ui 控制
+ * https://www.jb51.net/article/111936.htm
  * Author :cgy
  * Date :2020/1/21
  */
@@ -31,11 +32,17 @@ public class SystemUiUtils {
             //{@link View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN}
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                     | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//去除全屏的标记，温和方法。
             //透明导航栏
             //When this flag is enabled for a window, it automatically sets
             //the system UI visibility flags {@link View#SYSTEM_UI_FLAG_LAYOUT_STABLE} and
             //{@link View#SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION}
 //            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+
+            //退出全屏
+//            window.setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+//            WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
         }
     }
 

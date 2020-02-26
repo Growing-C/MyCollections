@@ -4,30 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/root"
-    android:fitsSystemWindows="true"
-    tools:context="com.cgy.mycollections.MainActivity">
+    android:id="@+id/root">
 
     <!--    AppBarLayout的theme似乎只会导致 toolbar的title颜色改变-->
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:theme="@style/AppTheme.AppBarOverlay">-->
 
-        <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
-        <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            style="@style/AppToolBar" />
+    <!--        &lt;!&ndash;通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式&ndash;&gt;-->
+    <!--        &lt;!&ndash;通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式&ndash;&gt;-->
+    <!--        <androidx.appcompat.widget.Toolbar-->
+    <!--            android:id="@+id/toolbar"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="?attr/actionBarSize"-->
+    <!--            android:background="?attr/colorPrimary"-->
+    <!--            style="@style/AppToolBar" />-->
 
-    </com.google.android.material.appbar.AppBarLayout>
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="fitXY"
         android:src="@drawable/photo_nba2" />
 
     <LinearLayout
@@ -35,6 +34,13 @@
         android:orientation="vertical"
         android:gravity="center"
         android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/navigate"
+            android:layout_width="match_parent"
+            android:text="跳转位置设置"
+            android:layout_height="wrap_content"
+            android:onClick="onClick" />
 
         <Button
             android:id="@+id/fullscreen"

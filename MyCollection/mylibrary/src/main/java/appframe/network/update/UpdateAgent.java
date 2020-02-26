@@ -12,8 +12,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+
 import android.util.Log;
 import android.widget.Toast;
 
@@ -131,7 +133,9 @@ public class UpdateAgent {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 System.out.println("Positive button onClick");
-                                Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+
+                                Uri packageURI = Uri.parse("package:" + activity.getPackageName());
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI);
                                 activity.startActivityForResult(intent, GET_UNKNOWN_APP_SOURCES);
                             }
                         })
