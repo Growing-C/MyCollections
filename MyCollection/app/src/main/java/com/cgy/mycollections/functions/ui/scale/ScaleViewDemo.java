@@ -61,8 +61,10 @@ public class ScaleViewDemo extends AppCompatActivity {
 
         verticalScaleView.setRange(100, 200);
         horizontalScaleView.setRangeAndScale(40, 100, 0.5f)//设置范围 和一个刻度的大小
-                .setPointerPos(43, 50)//设置左右指针位置
+                .setPointerValue(43, 50)//设置左右指针位置
                 .setSmallScaleSpaceCountInBig(2)
+                .setDrawTextSmallScaleIndex(6)
+                .setScaleMovable(false)
                 .setOnValueChangeListener(new OnValueChangeListener() {
                     @Override
                     public void onValueChanged(float leftValue, float rightValue) {

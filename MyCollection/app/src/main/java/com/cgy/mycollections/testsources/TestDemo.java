@@ -88,7 +88,7 @@ public class TestDemo extends AppCompatActivity {
                 break;
             case R.id.fullscreen:
 //                SystemUiUtils.showSystemUi(mContentView);
-                hideStatus();
+//                hideStatus();
 //                toggle(true);
                 changeFullScreen(true);
                 break;
