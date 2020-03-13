@@ -100,6 +100,7 @@ class GalleryFragment internal constructor() : Fragment() {
         // Handle back button press
         view.findViewById<ImageButton>(R.id.back_button).setOnClickListener {
             fragmentManager?.popBackStack()
+            //由于navigation的 回退再跳转问题 考虑这里使用navigation来返回？
         }
 
         // Handle share button press
@@ -151,7 +152,8 @@ class GalleryFragment internal constructor() : Fragment() {
                             if (mediaList.isEmpty()) {
                                 fragmentManager?.popBackStack()
                             }
-                        }}
+                        }
+                    }
 
                     .setNegativeButton(android.R.string.no, null)
                     .create().showImmersive()

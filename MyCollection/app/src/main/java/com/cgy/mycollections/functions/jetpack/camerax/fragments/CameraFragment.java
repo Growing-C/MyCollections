@@ -434,9 +434,6 @@ public class CameraFragment extends Fragment {
         controls.findViewById(R.id.photo_view_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.d(TAG, " actionCameraToGallery: " +
-                        CameraFragmentDirections.actionCameraToGallery(outputDirectory.getAbsolutePath()).toString());
                 NavController controller = Navigation.findNavController(requireActivity(), R.id.fragment_container);
                 //NavController跳转之前 currentDestination是当前fragment即CameraFragment
                 //跳转之后  currentDestination 就变成了 galleryFragment
