@@ -68,6 +68,11 @@ public class CameraXDemo extends BaseActivity {
         }, IMMERSIVE_FLAG_TIMEOUT);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     /**
      * Use external media if it is available, our app's file directory otherwise
      */

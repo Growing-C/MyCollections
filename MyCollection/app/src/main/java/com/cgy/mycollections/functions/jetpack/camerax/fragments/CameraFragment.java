@@ -38,6 +38,8 @@ import androidx.camera.core.PreviewConfig;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
@@ -432,7 +434,35 @@ public class CameraFragment extends Fragment {
         controls.findViewById(R.id.photo_view_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
+
+                Log.d(TAG, " actionCameraToGallery: " +
+                        CameraFragmentDirections.actionCameraToGallery(outputDirectory.getAbsolutePath()).toString());
+                NavController controller = Navigation.findNavController(requireActivity(), R.id.fragment_container);
+                //NavController跳转之前 currentDestination是当前fragment即CameraFragment
+                //跳转之后  currentDestination 就变成了 galleryFragment
+                //此时按返回键回到 cameraFragment 此时NavController，currentDestination依然是galleryFragment
+                //再点击跳转就会报错 action is unknown to this NavController。
+                //因为当前destination就是目标fragment 所以需要popBackStack 然后再跳
+                //考虑popBack操作是不是可以放在CameraXDemo 的onBackPressed中
+                if (controller.getCurrentDestination() != null) {
+                    switch (controller.getCurrentDestination().getId()) {
+                        case R.id.gallery_fragment:
+                            Log.d(TAG, " current destination is gallery_fragment id : " +
+                                    R.id.gallery_fragment);
+                            controller.popBackStack();
+                            Log.d(TAG, " getCurrentDestination again: " +
+                                    controller.getCurrentDestination().getId());
+                            break;
+                        case R.id.camera_fragment:
+                            Log.d(TAG, " current destination is camera_fragment id : " +
+                                    R.id.camera_fragment);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //TODO:第二次调用的时候会报找不到action的错 ，待研究
+                controller.navigate(
                         CameraFragmentDirections.actionCameraToGallery(outputDirectory.getAbsolutePath()));
             }
         });

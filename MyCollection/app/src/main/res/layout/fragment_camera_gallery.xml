@@ -23,9 +23,9 @@
     android:layoutDirection="ltr">
 
     <androidx.viewpager.widget.ViewPager
+        android:id="@+id/photo_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/photo_view_pager" />
+        android:layout_height="match_parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cutout_safe_area"
