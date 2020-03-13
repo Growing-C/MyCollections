@@ -1,10 +1,12 @@
 package com.cgy.mycollections.functions.ui.dialogdemo;
 
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -13,10 +15,15 @@ import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.OnPasswordInputList
 import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.PayPasswordDialog;
 import com.cgy.mycollections.widgets.PopWindowGenerator;
 import com.cgy.mycollections.widgets.pickerview.TimePickerView;
+import com.cgy.mycollections.widgets.wheelview.WheelView;
+import com.cgy.mycollections.widgets.wheelview.adapter.NumericWheelAdapter;
+import com.cgy.mycollections.widgets.wheelview.adapter.WheelViewAdapter;
 
 import java.util.Date;
 
 import appframe.utils.TimeUtils;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * 该页面展示了对话框
@@ -24,10 +31,17 @@ import appframe.utils.TimeUtils;
  */
 public class DialogDemo extends AppCompatActivity {
 
+    @BindView(R.id.wheel_view)
+    WheelView mWheelView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog_demo);
+        ButterKnife.bind(this);
+
+        WheelViewAdapter adapter = new NumericWheelAdapter(this, 1, 20);
+        mWheelView.setViewAdapter(adapter);
     }
 
 

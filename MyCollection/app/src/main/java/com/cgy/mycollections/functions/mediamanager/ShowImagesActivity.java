@@ -12,10 +12,13 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.BaseFullScreenActivity;
@@ -25,6 +28,7 @@ import com.cgy.mycollections.functions.ui.wheel.rvgallery.RecyclerAdapter;
 import com.cgy.mycollections.listeners.OnMyItemClickListener;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.SystemUiUtils;
+import com.cgy.mycollections.widgets.HeaderBar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import appframe.utils.L;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -48,8 +53,9 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     View mView2Hide;
     @BindView(R.id.dummy_button)
     View mDelayHideButton;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    //    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
+    HeaderBar mHeaderBar;
 
     ImageInfo mSelectedImage;
     List<File> mImageFiles;
@@ -63,9 +69,15 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         setContentView(R.layout.activity_show_images);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
+        mHeaderBar = new HeaderBar(this);
+//        mToolbar.setTitleMarginStart(100);
+//        mToolbar.setTitle("1/2");
+//        mToolbar.setSubtitle("wc");//toolbar设置title什么的必须在 setSupportActionBar之前，否则无效，之后需要用setTitle 来设置
+//        setSupportActionBar(mToolbar);
 
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
+
+        mHeaderBar.setDefaultBackIcon();
 
         SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
 
@@ -82,6 +94,12 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         mImageFiles = FileUtil.listImageFile(imageDir, true);
         mImageFiles = sortByName(mImageFiles);
 
+        mImagePager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                mHeaderBar.setTitle(position + 1 + "/" + mImageFiles.size());
+            }
+        });
         ImagePagerAdapter adapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
             @Override
             public void onItemClick(int position, File data) {

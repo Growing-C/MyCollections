@@ -18,6 +18,7 @@
     <dimen name="px80_size">40dp</dimen>
     <dimen name="px85_common">42.5dp</dimen>
     <dimen name="px87_size">43.5dp</dimen>
+    <dimen name="px94_size">47dp</dimen>
 
     <dimen name="px240_size">120dp</dimen>
     <dimen name="px384_height">192dp</dimen>

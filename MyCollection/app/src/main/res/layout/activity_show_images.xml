@@ -9,22 +9,24 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <!--    AppBarLayout的theme似乎只会导致 toolbar的title颜色改变-->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    <!--    <include layout="@layout/toolbar" />-->
 
-        <!--通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式-->
-        <!--通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式-->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            style="@style/AppToolBar" />
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:id="@+id/appbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:theme="@style/AppTheme.AppBarOverlay">-->
 
-    </com.google.android.material.appbar.AppBarLayout>
+    <!--        &lt;!&ndash;通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式&ndash;&gt;-->
+    <!--        &lt;!&ndash;通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式&ndash;&gt;-->
+    <!--        <androidx.appcompat.widget.Toolbar-->
+    <!--            android:id="@+id/toolbar"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="?attr/actionBarSize"-->
+    <!--            android:background="?attr/colorPrimary"-->
+    <!--            style="@style/AppToolBar" />-->
+
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
 
 
     <!-- This FrameLayout insets its children based on system windows using
@@ -50,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/px100"
         android:layout_alignParentBottom="true"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <Button
@@ -62,6 +65,8 @@
             android:text="底部button" />
 
     </LinearLayout>
+
+    <include layout="@layout/toolbar" />
 
     <LinearLayout
         android:id="@+id/test"

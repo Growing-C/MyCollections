@@ -35,5 +35,11 @@
             app:maxCount="15"
             app:psdType="bottomLine"
             app:rectAngle="@dimen/dimen_10" />
+
+        <com.cgy.mycollections.widgets.wheelview.WheelView
+            android:id="@+id/wheel_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+             />
     </LinearLayout>
 </ScrollView>
