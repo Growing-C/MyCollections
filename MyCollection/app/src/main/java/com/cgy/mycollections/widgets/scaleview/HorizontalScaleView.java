@@ -1,6 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.scaleview;
-
-import java.math.BigDecimal;
+package com.cgy.mycollections.widgets.scaleview;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,8 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -75,6 +71,7 @@ public class HorizontalScaleView extends View {
     //    private float originValue;//初始刻度对应的值
 //    private float currentValue;//当前刻度对应的值
 
+    private Paint pointerPopPaint;//指针值pop画笔
     private Paint linePaint;//刻度线画笔
     private Paint textPaint;//文字画笔
     private Paint pointerPaint;//指针画笔
@@ -133,6 +130,12 @@ public class HorizontalScaleView extends View {
         pointerColorBlue = Color.parseColor("#057dff");
 
         //初始化画笔
+        pointerPopPaint = new Paint();
+        pointerPopPaint.setAntiAlias(true);
+        pointerPopPaint.setDither(true);
+        pointerPopPaint.setColor(lineColorBlack);
+        pointerPopPaint.setAlpha(155);
+
         linePaint = new Paint();
         linePaint.setAntiAlias(true);
         linePaint.setDither(true);
@@ -142,7 +145,7 @@ public class HorizontalScaleView extends View {
         textPaint.setAntiAlias(true);
         textPaint.setDither(true);
         textPaint.setColor(lineColorBlack);
-        textPaint.setTextSize(40);
+        textPaint.setTextSize(35);
 
         pointerPaint = new Paint();
         pointerPaint.setAntiAlias(true);
@@ -435,9 +438,21 @@ public class HorizontalScaleView extends View {
 //        int draw2TextSpaceCount = smallScaleSpaceCountInBig < 5 ? smallScaleSpaceCountInBig * 2 : smallScaleSpaceCountInBig;
         int draw2TextSpaceCount = drawScaleTextEverySeveralSmallScale;
 
+        int unavailableRangeOffset = SCALE_LINE_WIDTH_SMALL / 2;
         //画刻度线
         for (float i = minValue; i <= maxValue; i += baseScaleValue) {
             float valueX = getXByValue(i);//i值对应的x坐标
+
+            if (i != maxValue) {//最大值后面就不会有不可用范围了
+                //画不可用灰色范围,先画，不然会导致刻度线不清晰
+                if (mAvailableFilter != null && !mAvailableFilter.valueAvailable(i)) {
+
+                    float valueRightX = getXByValue(i + baseScaleValue) + unavailableRangeOffset;//i后面一个值对应的x坐标
+                    //值不可用
+                    rangePaint.setColor(unavailableRangeColorGrey);
+                    canvas.drawRect(valueX - unavailableRangeOffset, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, rangePaint);
+                }
+            }
 
             //从最小值到当前值 之间右多少个空间
             int spaceCountFromMin = getScaleSpaceCountBetweenValues(minValue, i);
@@ -459,19 +474,6 @@ public class HorizontalScaleView extends View {
                 } else {
                     drawSmallScaleLine(canvas, valueX);
                 }
-            }
-
-            if (i == maxValue) {//最大值后面就不会有不可用范围了
-                continue;
-            }
-
-            //画不可用灰色范围
-            if (mAvailableFilter != null && !mAvailableFilter.valueAvailable(i)) {
-
-                float valueRightX = getXByValue(i + baseScaleValue);//i后面一个值对应的x坐标
-                //值不可用
-                rangePaint.setColor(unavailableRangeColorGrey);
-                canvas.drawRect(valueX, ruleHeight - maxScaleHeight, valueRightX, ruleHeight, rangePaint);
             }
         }
 
@@ -576,11 +578,64 @@ public class HorizontalScaleView extends View {
         //画右边指针底部圆 蓝色空心
         canvas.drawCircle(rightPointerX, ruleHeight, pointerCircleRadius, pointerPaint);
 
+        //指针起始Y值 原来是0 改成和长指针一样的起始
+        float pointerStartY = ruleHeight - maxScaleHeight;
         //画左边指针
-        canvas.drawLine(leftPointerX, 0, leftPointerX, pointerLineBottomY, pointerPaint);
+        canvas.drawLine(leftPointerX, pointerStartY, leftPointerX, pointerLineBottomY, pointerPaint);
 
         //画右边指针
-        canvas.drawLine(rightPointerX, 0, rightPointerX, pointerLineBottomY, pointerPaint);
+        canvas.drawLine(rightPointerX, pointerStartY, rightPointerX, pointerLineBottomY, pointerPaint);
+
+        if (currentMovingPointer == 0) {
+            //左指针移动，需要画pop
+            drawValuePop(canvas, leftPointerX, pointerStartY, leftPointerValue);
+        } else if (currentMovingPointer == 1) {
+            //右指针移动,需要在右指针之上画pop
+            drawValuePop(canvas, rightPointerX, pointerStartY, rightPointerValue);
+        }
+    }
+
+    /**
+     * 指针移动的时候画出指针指代的值，带单位
+     *
+     * @param canvas
+     * @param bottomX
+     * @param bottomY
+     * @param value
+     */
+    private void drawValuePop(Canvas canvas, float bottomX, float bottomY, float value) {
+        float triangleHeight = bottomY / 5;//三角形高度
+        float triangleTopY = bottomY - triangleHeight;//气泡三角形顶部y坐标
+        float triangleLeftX = bottomX - triangleHeight;//气泡三角形顶部左边x坐标
+        float triangleRightX = bottomX + triangleHeight;//气泡三角形顶部右边x坐标
+
+        //画刻度文字
+        String pointerValueText = String.valueOf((int) value);
+        if (!TextUtils.isEmpty(drawScaleTextUnit)) {
+            pointerValueText += drawScaleTextUnit;
+        }
+        Rect rect = new Rect();
+        textPaint.getTextBounds(pointerValueText, 0, pointerValueText.length(), rect);
+        int textWidth = rect.width();
+        int textHeight = rect.height();
+        float scaleTextBaseLineY = triangleTopY - (float) textHeight * 2 / 5;
+
+        //画背景气泡
+        float valuePopWidth = textWidth > 90 ? textWidth + 10 : 100;
+        Path path = new Path();
+        path.moveTo(bottomX, bottomY);
+        path.lineTo(triangleLeftX, triangleTopY);
+        path.lineTo(triangleRightX, triangleTopY);
+        path.lineTo(bottomX, bottomY);
+        float radius = 10;
+        RectF recRect = new RectF(bottomX - valuePopWidth / 2, 0, bottomX + valuePopWidth / 2, triangleTopY);
+        path.addRoundRect(recRect, radius, radius, Path.Direction.CW);
+        canvas.drawPath(path, pointerPopPaint);
+
+        //文字需要后画 不然看不见
+        textPaint.setColor(Color.WHITE);
+        canvas.drawText(pointerValueText, bottomX - (float) textWidth / 2, scaleTextBaseLineY, textPaint);
+        textPaint.setColor(lineColorBlack);
     }
 
     @Override
@@ -651,6 +706,8 @@ public class HorizontalScaleView extends View {
                         onValueChangeListener.onValueChanged(leftPointerValue, rightPointerValue);
                     }
                 }
+                currentMovingPointer = -1;//用完了就重置 当前移动的pointer
+                postInvalidate();
                 //实行点击事件
                 if (mPendingCheckForTap != null &&
                         mPendingCheckForTap.isClick(event.getX(), event.getY(), System.currentTimeMillis())) {
@@ -897,8 +954,6 @@ public class HorizontalScaleView extends View {
             rightPointerValue = getValueByX(rightPointerX);
         }
         L.d(TAG, "adjustScale leftPointerX:" + leftPointerX);
-
-        postInvalidate();
     }
 
     //手指抬起后继续惯性滑动
@@ -918,6 +973,7 @@ public class HorizontalScaleView extends View {
                 }
 //                calculateCurrentScale();
                 adjustScale();
+                postInvalidate();
                 if (continueScroll && velocityAbs > 0) {
                     post(this);
                 } else {
@@ -963,7 +1019,7 @@ public class HorizontalScaleView extends View {
         public boolean isClick(float upX, float upY, long tabUpTimeInMillis) {
             int moveOffset = 10;
             int tabTimeOut = ViewConfiguration.getTapTimeout();
-            L.e(TAG, "tabTimeOut:" + tabTimeOut);
+            L.d(TAG, "tabTimeOut:" + tabTimeOut);
             //手指抬起时间在tabTimeOut 之内，且x,y 移动距离在offset之内，则认为是点击事件
             return tabUpTimeInMillis - tabTimeInMillis < tabTimeOut
                     && upX < (x + moveOffset) && upX > (x - moveOffset)

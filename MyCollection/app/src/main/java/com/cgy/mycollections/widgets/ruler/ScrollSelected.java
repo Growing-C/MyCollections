@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.ruler;
+package com.cgy.mycollections.widgets.ruler;
 
 /**
  * Created to : 滑动停止之后选中项的监听.

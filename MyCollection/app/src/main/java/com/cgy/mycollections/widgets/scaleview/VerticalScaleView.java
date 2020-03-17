@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.scaleview;
+package com.cgy.mycollections.widgets.scaleview;
 
 import java.math.BigDecimal;
 
@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;

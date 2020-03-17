@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.scaleview;
+package com.cgy.mycollections.widgets.scaleview;
 
 public interface OnValueChangeListener {
     void onValueChanged(float leftValue, float rightValue);

@@ -1,7 +1,5 @@
 package com.cgy.mycollections.functions.ui.scale;
 
-import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -10,23 +8,12 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.cgy.mycollections.Demo;
-import com.cgy.mycollections.MainItemAdapter;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo;
-import com.cgy.mycollections.functions.ui.dialogdemo.DialogDemo;
-import com.cgy.mycollections.functions.ui.scale.ruler.ScrollRulerLayout;
-import com.cgy.mycollections.functions.ui.scale.scaleview.HorizontalScaleView;
-import com.cgy.mycollections.functions.ui.scale.scaleview.OnValueChangeListener;
-import com.cgy.mycollections.functions.ui.scale.scaleview.VerticalScaleView;
-import com.cgy.mycollections.functions.ui.systemui.statusbar.StatusBarDemo;
-import com.cgy.mycollections.functions.ui.textdemo.TextDemo;
-import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
-import com.cgy.mycollections.listeners.OnItemClickListener;
+import com.cgy.mycollections.widgets.ruler.ScrollRulerLayout;
+import com.cgy.mycollections.widgets.scaleview.HorizontalScaleView;
+import com.cgy.mycollections.widgets.scaleview.OnValueChangeListener;
+import com.cgy.mycollections.widgets.scaleview.VerticalScaleView;
 
 import appframe.utils.L;
 import butterknife.BindView;

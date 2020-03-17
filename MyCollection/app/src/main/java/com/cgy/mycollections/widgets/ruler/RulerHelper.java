@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.ruler;
+package com.cgy.mycollections.widgets.ruler;
 
 import java.util.ArrayList;
 import java.util.List;

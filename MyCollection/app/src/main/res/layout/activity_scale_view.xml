@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/px10_margin"
         android:text="第一种实现" />
 
-    <com.cgy.mycollections.functions.ui.scale.ruler.ScrollRulerLayout
+    <com.cgy.mycollections.widgets.ruler.ScrollRulerLayout
         android:id="@+id/ruler_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
@@ -43,13 +43,13 @@
         android:textOn="vertical"
         android:textOff="horizontal" />
 
-    <com.cgy.mycollections.functions.ui.scale.scaleview.VerticalScaleView
+    <com.cgy.mycollections.widgets.scaleview.VerticalScaleView
         android:id="@+id/vertical_scale"
         android:layout_width="200dp"
         android:visibility="gone"
         android:layout_height="wrap_content" />
 
-    <com.cgy.mycollections.functions.ui.scale.scaleview.HorizontalScaleView
+    <com.cgy.mycollections.widgets.scaleview.HorizontalScaleView
         android:id="@+id/horizontal_scale"
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/px24_margin"

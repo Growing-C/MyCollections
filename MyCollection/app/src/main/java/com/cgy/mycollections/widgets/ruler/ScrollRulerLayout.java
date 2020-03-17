@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.ruler;
+package com.cgy.mycollections.widgets.ruler;
 
 import android.content.Context;
 import android.graphics.Canvas;

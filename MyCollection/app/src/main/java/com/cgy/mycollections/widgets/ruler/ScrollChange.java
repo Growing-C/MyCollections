@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.ui.scale.ruler;
+package com.cgy.mycollections.widgets.ruler;
 
 /**
  * Created to : 给{@link RulerHelper}使用的方法,来让{@link RulerView}滑动.
