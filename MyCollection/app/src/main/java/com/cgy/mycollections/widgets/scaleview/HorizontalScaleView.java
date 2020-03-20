@@ -74,6 +74,7 @@ public class HorizontalScaleView extends View {
     private Paint pointerPopPaint;//指针值pop画笔
     private Paint linePaint;//刻度线画笔
     private Paint textPaint;//文字画笔
+    private Paint valuePopTextPaint;//文字画笔
     private Paint pointerPaint;//指针画笔
     private Paint rangePaint;//范围画笔
 
@@ -146,6 +147,12 @@ public class HorizontalScaleView extends View {
         textPaint.setDither(true);
         textPaint.setColor(lineColorBlack);
         textPaint.setTextSize(35);
+
+        valuePopTextPaint = new Paint();
+        valuePopTextPaint.setAntiAlias(true);
+        valuePopTextPaint.setDither(true);
+        valuePopTextPaint.setColor(Color.WHITE);
+        valuePopTextPaint.setTextSize(35);
 
         pointerPaint = new Paint();
         pointerPaint.setAntiAlias(true);
@@ -614,11 +621,13 @@ public class HorizontalScaleView extends View {
         if (!TextUtils.isEmpty(drawScaleTextUnit)) {
             pointerValueText += drawScaleTextUnit;
         }
+        valuePopTextPaint.setTextSize(triangleTopY * 3 / 5);//需要设置文字大小，防止大于pop高度
         Rect rect = new Rect();
-        textPaint.getTextBounds(pointerValueText, 0, pointerValueText.length(), rect);
+        valuePopTextPaint.getTextBounds(pointerValueText, 0, pointerValueText.length(), rect);
         int textWidth = rect.width();
         int textHeight = rect.height();
-        float scaleTextBaseLineY = triangleTopY - (float) textHeight * 2 / 5;
+        //文字居中，需要计算baseline距离中轴线的位置
+        float scaleTextBaseLineY = triangleTopY / 2 + getBaselineToCenterY(valuePopTextPaint);
 
         //画背景气泡
         float valuePopWidth = textWidth > 90 ? textWidth + 10 : 100;
@@ -633,9 +642,7 @@ public class HorizontalScaleView extends View {
         canvas.drawPath(path, pointerPopPaint);
 
         //文字需要后画 不然看不见
-        textPaint.setColor(Color.WHITE);
-        canvas.drawText(pointerValueText, bottomX - (float) textWidth / 2, scaleTextBaseLineY, textPaint);
-        textPaint.setColor(lineColorBlack);
+        canvas.drawText(pointerValueText, bottomX - (float) textWidth / 2, scaleTextBaseLineY, valuePopTextPaint);
     }
 
     @Override
@@ -1067,6 +1074,16 @@ public class HorizontalScaleView extends View {
 
     // </editor-fold>
 
+    /**
+     * 计算绘制文字时的基线到中轴线的距离
+     *
+     * @param p
+     * @return 基线和centerY的距离
+     */
+    public static float getBaselineToCenterY(Paint p) {
+        Paint.FontMetrics fontMetrics = p.getFontMetrics();
+        return (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent;
+    }
 
     /**
      * 使用java正则表达式去掉多余的.与0
