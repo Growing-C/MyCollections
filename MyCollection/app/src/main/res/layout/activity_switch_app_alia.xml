@@ -1,0 +1,51 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--    AppBarLayout的theme似乎只会导致 toolbar的title颜色改变-->
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:theme="@style/AppTheme.AppBarOverlay">-->
+
+    <!--        &lt;!&ndash;通过在AppTheme.Base 中设置actionOverflowMenuStyle可以设置下拉菜单的基本样式，但是设置不了文字样式&ndash;&gt;-->
+    <!--        &lt;!&ndash;通过在toolbar中设置popupTheme可以设置下拉菜单的文字样式&ndash;&gt;-->
+    <!--        <androidx.appcompat.widget.Toolbar-->
+    <!--            android:id="@+id/toolbar"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="?attr/actionBarSize"-->
+    <!--            android:background="?attr/colorPrimary"-->
+    <!--            style="@style/AppToolBar" />-->
+
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/demos"
+            android:layout_width="match_parent"
+            android:text="demos样式"
+            android:layout_height="wrap_content"
+            android:onClick="onClick" />
+
+        <Button
+            android:id="@+id/settings"
+            android:layout_width="match_parent"
+            android:onClick="onClick"
+            android:layout_height="wrap_content"
+            android:text="settings样式" />
+
+        <Button
+            android:id="@+id/wechat"
+            android:onClick="onClick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="wechat样式" />
+    </LinearLayout>
+</FrameLayout>

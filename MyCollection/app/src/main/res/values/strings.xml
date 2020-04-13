@@ -232,4 +232,8 @@
     <string name="shortcut_short_protected_files">保护</string>
     <string name="shortcut_long_protected_files">文件保护</string>
     <string name="shortcut_disabled_protected_files">文件保护不可用</string>
+
+    <string name="shortcut_short_alias">Alias</string>
+    <string name="shortcut_long_alias">app样式</string>
+    <string name="shortcut_disabled_alias">app样式无法修改</string>
 </resources>

@@ -4,22 +4,25 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
 
+def config = rootProject.extensions.getByName("ext")
+
 android {
-    compileSdkVersion 28
+    compileSdkVersion config["compile_sdk"]
 
     defaultConfig {
         applicationId "com.cgy.mycollections"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion config["min_sdk"]
+        targetSdkVersion config["target_sdk"]
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner config["test_runner"]
     }
 
     //配置keystore签名
     signingConfigs {
         debug {
-            storeFile file("debug.keystore")
+//            storeFile file("debug.keystore")
+            storeFile file('../projectbuild/debug.keystore')
             storePassword "android"
             keyAlias "androiddebugkey"
             keyPassword "android"
@@ -27,13 +30,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false //是否打开混淆
+            signingConfig signingConfigs.debug
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-
-        debug {
-            signingConfig signingConfigs.debug
         }
     }
 
@@ -54,6 +58,31 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+//    sourceSets {
+//        main.java.srcDirs += 'src/main/kotlin'
+//        main.java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+//        test.java.srcDirs += 'src/test/kotlin'
+//        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+//    }
+
+//    packagingOptions {
+//        exclude 'LICENSE.txt'
+//        exclude 'META-INF/DEPENDENCIES'
+//        exclude 'META-INF/ASL2.0'
+//        exclude 'META-INF/NOTICE'
+//        exclude 'META-INF/LICENSE'
+//    }
+//
+//    lintOptions {
+//        quiet true
+//        abortOnError false
+//        ignoreWarnings true
+//        disable 'InvalidPackage'            //Some libraries have issues with this.
+//        disable 'OldTargetApi'              //Lint gives this warning but SDK 20 would be Android L Beta.
+//        disable 'IconDensities'             //For testing purpose. This is safe to remove.
+//        disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
+//    }
+
 //    flavorDimensions "all"
 //
 //    productFlavors {
@@ -67,19 +96,9 @@ android {
 }
 
 dependencies {
-	//正常依赖
-	//implementation 'com.chemao.android:chemao-sdk:1.2.3' 
-	//关闭全部依赖传递-方法1
-	//implementation 'com.chemao.android:chemao-sdk:1.2.3@aar' 
-	//关闭全部依赖传递-方法2
-	//implementation('com.chemao.android:chemao-sdk:1.2.3') {
-	//		transitive = false
-	//} 
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation('org.web3j:core:3.3.1-android')
     implementation('org.web3j:abi:3.3.1-android')
     implementation('org.web3j:infura:3.3.1-android')
@@ -172,12 +191,93 @@ dependencies {
 //    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 //    implementation 'com.jakewharton:butterknife:8.8.1'
 //    kapt 'androidx.databinding:databinding-compiler:3.5.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation project(':mylibrary')
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 //    implementation 'com.google.firebase:firebase-core:17.2.0'
 //    implementation 'com.google.firebase:firebase-invites:17.0.0'
+
+
+//    def applicationDependencies = rootProject.ext.mainApplication
+//    def unitTestDependencies = rootProject.ext.unitTesting
+//    def acceptanceTestDependencies = rootProject.ext.acceptanceTesting
+//    def developmentDependencies = rootProject.ext.development
+    //正常依赖
+    //implementation 'com.chemao.android:chemao-sdk:1.2.3'
+    //关闭全部依赖传递-方法1
+    //implementation 'com.chemao.android:chemao-sdk:1.2.3@aar'
+    //关闭全部依赖传递-方法2
+    //implementation('com.chemao.android:chemao-sdk:1.2.3') {
+    //		transitive = false
+    //}
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+
+    implementation project(':mylibrary')
+
+//    //使用kotlin注解 的项目 必须用 kapt 不能用 annotationProcessor
+////   如果你有其他的注解处理器，它们都必须全部被从 annotationProcessor 转换为 kapt
+//    //Compile time dependencies
+//    kapt applicationDependencies.roomCompiler
+////    kapt applicationDependencies.glideCompiler
+//    kapt applicationDependencies.butterknifeCompiler
+//
+//    //Application dependencies
+//    implementation applicationDependencies.lifecycle
+//    implementation applicationDependencies.room
+//    implementation applicationDependencies.navFragment
+//    implementation applicationDependencies.navUi
+//    implementation applicationDependencies.navFragmentKtx
+//    implementation applicationDependencies.navUiKtx
+//    implementation applicationDependencies.cameraCore
+//    implementation applicationDependencies.camera2
+//    implementation applicationDependencies.workRuntime
+//    implementation applicationDependencies.workRxjava2
+//    implementation applicationDependencies.workGcm
+//    implementation applicationDependencies.appCompat
+//    implementation applicationDependencies.constraintLayout
+//    implementation applicationDependencies.material
+//    implementation applicationDependencies.legacy
+//    implementation applicationDependencies.cardview
+//    implementation applicationDependencies.viewpager2
+//    implementation applicationDependencies.web3jCore
+//    implementation applicationDependencies.web3jAbi
+//    implementation applicationDependencies.web3jInfura
+//    implementation applicationDependencies.gson
+//    implementation applicationDependencies.okhttpLoggingInterceptor
+//    implementation applicationDependencies.retrofit2
+//    implementation applicationDependencies.retrofit2Gson
+//    implementation applicationDependencies.retrofit2Adapter
+//    implementation applicationDependencies.retrofit2Xml
+//    implementation applicationDependencies.rxjava
+//    implementation applicationDependencies.rxandroid
+//    implementation applicationDependencies.yanzhenjieRecyclerView
+////    implementation applicationDependencies.glide
+//    implementation applicationDependencies.fresco
+//    implementation applicationDependencies.systembartint
+//    implementation applicationDependencies.lottie
+//    implementation applicationDependencies.butterknife
+//    implementation applicationDependencies.MPAndroidChart
+
+    //Unit/Integration tests dependencies
+//    testImplementation unitTestDependencies.kotlin
+//    testImplementation unitTestDependencies.kotlinTest
+//    testImplementation unitTestDependencies.robolectric
+//    testImplementation unitTestDependencies.junit
+//    testImplementation unitTestDependencies.mockito
+//    testImplementation unitTestDependencies.kluent
+
+    //Acceptance tests dependencies
+//    androidTestImplementation acceptanceTestDependencies.testRunner
+//    androidTestImplementation acceptanceTestDependencies.testRules
+//    androidTestImplementation acceptanceTestDependencies.espressoCore
+//    androidTestImplementation acceptanceTestDependencies.espressoIntents
+//    androidTestImplementation acceptanceTestDependencies.androidAnnotations
+
+    //Development dependencies
+//    debugImplementation developmentDependencies.leakCanary
+//    releaseImplementation developmentDependencies.leakCanaryNoop
+//    testImplementation developmentDependencies.leakCanaryNoop
 }

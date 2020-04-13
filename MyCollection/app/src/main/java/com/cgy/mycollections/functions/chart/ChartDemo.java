@@ -16,11 +16,13 @@ import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.functions.sqlite.db.UserAccount;
 import com.cgy.mycollections.utils.Typefaces;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
@@ -52,6 +54,10 @@ public class ChartDemo extends AppCompatActivity {
     LineChart mNewHouseChart;
 
     private Typeface mTf;
+
+    protected final String[] months = new String[]{
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,14 +156,26 @@ public class ChartDemo extends AppCompatActivity {
      * @param data
      */
     private void setUpWuxiHouseMarketChart(LineChart chart, LineData data) {
-        chart.getDescription().setEnabled(false);
+        chart.getDescription().setEnabled(true);
         chart.setDrawGridBackground(false);
+
+        Description des = new Description();
+        des.setText("月份");
+        chart.setDescription(des);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTypeface(mTf);
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(true);
+        xAxis.setAxisMinimum(0f);//x轴最小值 0 （不设置会自动计算）
+        xAxis.setGranularity(1f);//缩放时相邻x坐标 间的最小距离
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return months[(int) value % months.length];
+            }
+        });
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setTypeface(mTf);

@@ -17,6 +17,10 @@
             android:name=".functions.mediamanager.MediaImagesActivity"
             android:label="@string/title_activity_media_images" />
         <activity
+            android:name=".SwitchAppAliaActivity"
+            android:label="@string/app_name" />
+
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
@@ -30,6 +34,47 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity> <!-- 开机启动 -->
+
+        <!--       使用别名 可以动态切换app logo和名称-->
+        <!--         注册这个组件的名字，不需要生成文件-->
+        <!--         是否显示这个启动项,都是true的话桌面会有多个图标-->
+        <!--         名称，也就是对应这个启动项显示在桌面上的app名称-->
+        <!--        图标，也就是对应这个启动项显示在桌面上的app图标-->
+        <!--        对应的原来的Activity组件，这里路径要跟注册的Activity对应。-->
+        <activity-alias
+            android:name="MainActivityEntry1"
+            android:enabled="false"
+            android:label="Settings"
+            android:icon="@mipmap/setting"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias>
+
+        <!--别名1-->
+        <activity-alias
+            android:name="MainActivityEntry2"
+            android:enabled="false"
+            android:label="Wechat"
+            android:icon="@mipmap/wechat"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity-alias>
+
+
         <activity
             android:name=".functions.threadpool.ThreadPoolDemo"
             android:label="@string/title_activity_thread_pool_demo" /> <!-- 线程池 -->
