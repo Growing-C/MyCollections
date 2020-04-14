@@ -3,6 +3,9 @@ package com.cgy.mycollections.testsources;
 import android.content.Context;
 
 import appframe.utils.L;
+
+import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
+import com.cgy.mycollections.functions.sqlite.db.UserAccount;
 import com.cgy.mycollections.utils.PinYinUtils;
 
 import org.web3j.crypto.MnemonicUtils;
@@ -14,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -26,16 +30,50 @@ import dalvik.system.DexFile;
  */
 public class TestMain {
     public static void main(String[] args) {
-        long currentTime = System.currentTimeMillis();
-        System.out.println(currentTime+"t:" + TimeUtils.getTime(currentTime));
-        System.out.println("t:" + TimeUtils.getTime(1496079745L * 1000));
-//        1563791685827
-//        1563186616
-//        1496079745
-//        testGetResources();
-//        testPinyin();
-        System.out.println("t:"+(1.001f==(int)1.001f));
-        System.out.println("a:"+((int)(8f/10f)));
+        testMemory();
+
+//        long currentTime = System.currentTimeMillis();
+//        System.out.println(currentTime + "t:" + TimeUtils.getTime(currentTime));
+//        System.out.println("t:" + TimeUtils.getTime(1496079745L * 1000));
+////        1563791685827
+////        1563186616
+////        1496079745
+////        testGetResources();
+////        testPinyin();
+//        System.out.println("t:" + (1.001f == (int) 1.001f));
+//        System.out.println("a:" + ((int) (8f / 10f)));
+    }
+
+    /**
+     * 测试不同情况耗时问题
+     * 结论：
+     * 1.new 一个对象耗时比较多，大量计算时需要尽量避免无必要new
+     * 2.clone操作比new操作耗时少，所以不得不new的时候可以考虑用clone替代
+     */
+    public static void testMemory() {
+        long time = System.currentTimeMillis();
+
+        MediaInfo m = new MediaInfo();
+        long a = 355;
+        Calendar b = Calendar.getInstance();
+        for (int i = 0; i < 1000; i++) {
+            Calendar c = (Calendar) b.clone();
+//            Calendar d = Calendar.getInstance();
+            a += 20;
+            a = a * 13;
+            if (a > 2000) {
+                a -= 2000;
+            }
+        }
+        System.out.println("11 cost time:" + (System.currentTimeMillis() - time));
+
+        time = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            Calendar c = Calendar.getInstance();
+//            Calendar c = (Calendar) b.clone();
+        }
+        System.out.println("222 cost time:" + (System.currentTimeMillis() - time));
+
     }
 
     public static void testPinyin() {
