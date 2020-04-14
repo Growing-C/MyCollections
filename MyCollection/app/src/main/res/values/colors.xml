@@ -43,4 +43,7 @@
     <color name="icPressed">#AAFFFFFF</color>
 
     <color name="black_overlay">#66000000</color>
+
+    <color name="focused_color">#ff871e</color>
+
 </resources>

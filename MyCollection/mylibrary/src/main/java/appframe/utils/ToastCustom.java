@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+
 import androidx.core.content.ContextCompat;
+
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +31,10 @@ public class ToastCustom {
     TextView mToastText;
 
     private static final List<WeakReference<Toast>> sToastList = new ArrayList<>();
+
+    public ToastCustom(Context context, CharSequence text) {
+        this(context, text, Toast.LENGTH_LONG);
+    }
 
     public ToastCustom(Context context, CharSequence text, int length) {
         mToast = Toast.makeText(context, text, length);

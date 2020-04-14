@@ -14,6 +14,8 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import appframe.utils.L;
+
 /**
  * Description :圆圈中有个勾或者 一个时钟样式
  * Author :cgy
@@ -49,6 +51,10 @@ public class HintView extends View {
      * 圆心纵坐标
      */
     private int mCenterY;
+    /**
+     * 实际开始画的图的左边界
+     */
+    private int mRealLeftX;
 
     public HintView(Context context) {
         super(context);
@@ -90,6 +96,7 @@ public class HintView extends View {
 
         mCenterY = height / 2;
         mCenterX = width / 2;
+        mRealLeftX = mCenterX - mRealSize / 2;//实际左边开始画的位置
     }
 
     /**
@@ -115,9 +122,9 @@ public class HintView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-//        L.e("mRealSize:" + mRealSize);
-//        L.e("mCenterY:" + mCenterY);
-//        L.e("mCenterX:" + mCenterX);
+        L.e("mRealSize:" + mRealSize);
+        L.e("mCenterY:" + mCenterY);
+        L.e("mCenterX:" + mCenterX);
 
         canvas.drawCircle(mCenterX, mCenterY, mRealSize / 2, mCirclePaint);
 
@@ -126,12 +133,12 @@ public class HintView extends View {
         } else {//画勾号
             initOkMarkPatternPath();
         }
-//        L.e("PathSegment size: " + pathSegments.size());
+        L.e("PathSegment size: " + pathSegments.size());
         //画线
         for (PathSegment p : pathSegments) {
             mLinePaint.setAlpha(p.getAlpha());
             mLinePaint.setStrokeWidth(p.getWidth());
-//            L.e("PathSegment width: " + p.getWidth());
+            L.e("PathSegment width: " + p.getWidth());
             canvas.drawPath(p.getPath(), mLinePaint);
         }
     }
@@ -141,19 +148,19 @@ public class HintView extends View {
 
         Path path = new Path();
         // 时针起点
-        float startX = (float) (0.5 * mRealSize);
+        float startX = (float) (mRealLeftX + 0.5 * mRealSize);
         float startY = (float) (0.15 * mRealSize);
         path.moveTo(startX, startY);
         generatePathSegment(path, true);
 
         // 中心点
-        float cornerX = (float) (0.5 * mRealSize);
+        float cornerX = (float) (mRealLeftX + 0.5 * mRealSize);
         float cornerY = (float) (0.5 * mRealSize);
         path.lineTo(cornerX, cornerY);
         generatePathSegment(path, true);
 
         // 分针终点
-        float endX = (float) (0.72 * mRealSize);
+        float endX = (float) (mRealLeftX + 0.72 * mRealSize);
         float endY = (float) (0.68 * mRealSize);
         path.lineTo(endX, endY);
         generatePathSegment(path, false);
@@ -164,19 +171,19 @@ public class HintView extends View {
 
         Path path = new Path();
         // 对号起点
-        float startX = (float) (0.3 * mRealSize);
+        float startX = (float) (mRealLeftX + 0.3 * mRealSize);
         float startY = (float) (0.5 * mRealSize);
         path.moveTo(startX, startY);
         generatePathSegment(path, true);
 
         // 对号拐角点
-        float cornerX = (float) (0.43 * mRealSize);
+        float cornerX = (float) (mRealLeftX + 0.43 * mRealSize);
         float cornerY = (float) (0.66 * mRealSize);
         path.lineTo(cornerX, cornerY);
         generatePathSegment(path, true);
 
         // 对号终点
-        float endX = (float) (0.75 * mRealSize);
+        float endX = (float) (mRealLeftX + 0.75 * mRealSize);
         float endY = (float) (0.4 * mRealSize);
         path.lineTo(endX, endY);
         generatePathSegment(path, false);

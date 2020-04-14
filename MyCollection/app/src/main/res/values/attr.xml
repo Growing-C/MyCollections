@@ -38,4 +38,13 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="MSpinner">
+        <attr name="text" format="string|reference"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="downListTextColor" format="color"/>
+        <attr name="downListBackground" format="color"/>
+        <attr name="downListDividerColor" format="color"/>
+    </declare-styleable>
+
 </resources>

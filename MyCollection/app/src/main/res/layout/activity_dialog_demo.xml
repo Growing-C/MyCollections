@@ -39,7 +39,31 @@
         <com.cgy.mycollections.widgets.wheelview.WheelView
             android:id="@+id/wheel_view"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-             />
+            android:layout_height="200dp" />
+
+        <com.cgy.mycollections.widgets.HintView
+            android:id="@+id/hint_view"
+            android:layout_width="match_parent"
+            android:onClick="onClick"
+            android:layout_height="70dp" />
+
+        <com.cgy.mycollections.widgets.MProgressView
+            android:id="@+id/m_progress"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/px10_margin"
+            android:layout_height="@dimen/px240_size" />
+
+        <com.cgy.mycollections.widgets.MSpinner
+            android:id="@+id/m_spinner"
+            android:layout_width="match_parent"
+            app:downListBackground="@color/colorPrimary"
+            app:text="自动切换下拉或者上拉"
+            app:textColor="@android:color/white"
+            app:downListTextColor="@android:color/white"
+            app:downListDividerColor="@android:color/white"
+            app:textSize="@dimen/px33_tx_size"
+            android:background="@android:color/holo_blue_bright"
+            android:layout_margin="@dimen/px24_margin"
+            android:layout_height="@dimen/px80_size" />
     </LinearLayout>
 </ScrollView>

@@ -48,8 +48,8 @@
     <string name="title_file">FileDemo</string>
     <string name="info_file">文件操作相关</string>
 
-    <string name="title_dialog">DialogDemo</string>
-    <string name="info_dialog">对话框</string>
+    <string name="title_dialog">DialogAndWidgetDemo</string>
+    <string name="info_dialog">对话框和自定义组件</string>
 
     <string name="title_scale_view">ScaleViewDemo</string>
     <string name="info_scale_view">可选择范围的刻度尺</string>
