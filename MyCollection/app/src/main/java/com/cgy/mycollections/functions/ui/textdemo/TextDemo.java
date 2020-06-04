@@ -5,15 +5,19 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,6 +99,10 @@ public class TextDemo extends AppCompatActivity {
             }
 
         }, 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        spannableString.setSpan(new AbsoluteSizeSpan(getResources().getDimensionPixelSize(R.dimen.px25_tx_size)), name.length() - 4, name.length() - 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorPrimary)),
+                1, name.length() - 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         mClickTextV.setText(spannableString);
         mClickTextV.setMovementMethod(LinkMovementMethod.getInstance());
     }
