@@ -1277,7 +1277,9 @@ public class FileUtil {
      */
     private static String getMimeType(String filePath) {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
-        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+        //有的文件可能被隐藏了，此处获取隐藏前真实的名字 来决定mineType
+        String realFilePath = FileUtil.getFileOriginName(filePath);
+        String ext = realFilePath.substring(realFilePath.lastIndexOf(".") + 1);
         String type = mime.getMimeTypeFromExtension(ext);
         L.e(filePath + "--getMimeType:" + type);
         return type;

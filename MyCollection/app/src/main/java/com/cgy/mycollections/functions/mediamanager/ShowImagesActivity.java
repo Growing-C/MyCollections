@@ -78,13 +78,14 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 //        getSupportActionBar().hide();
 
         mHeaderBar.setDefaultBackIcon();
-
-        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
-
-        SystemUiUtils.setStatusLight(mContentView);
         findViewById(R.id.test).setVisibility(View.GONE);
 
-        SystemUiUtils.hideSystemUi(mContentView);
+        //TODO:待完善全屏切换
+//        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
+
+//        SystemUiUtils.setStatusLight(mContentView);
+
+//        SystemUiUtils.hideSystemUi(mContentView);
 
 //        initFullScreenToggleAction(mDelayHideButton);//TODO:待搞清楚
 

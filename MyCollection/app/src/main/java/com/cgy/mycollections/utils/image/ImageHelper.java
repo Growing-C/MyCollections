@@ -30,7 +30,7 @@ public class ImageHelper {
     }
 
     /**
-     * 是否是图片，忽略点
+     * 是否是图片，忽略点,支持大小写
      *
      * @param filePath
      * @return
@@ -38,8 +38,12 @@ public class ImageHelper {
     public static boolean isPicIgnoreDot(String filePath) {
         if (TextUtils.isEmpty(filePath))
             return false;
+        String upperCaseFilePath = filePath.toUpperCase();
 
-        if (filePath.endsWith("jpg") || filePath.endsWith("png") || filePath.endsWith("jpeg") || filePath.endsWith("gif"))
+        if (upperCaseFilePath.endsWith("JPG")
+                || upperCaseFilePath.endsWith("PNG")
+                || upperCaseFilePath.endsWith("JPEG")
+                || upperCaseFilePath.endsWith("GIF"))
             return true;
         return false;
     }
