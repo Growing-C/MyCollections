@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.text.TextUtils;
 
+import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.PinYinUtils;
 
@@ -18,7 +19,8 @@ import appframe.utils.TimeUtils;
  * Date :2019/7/25
  */
 public class FileInfo implements Serializable {
-    private File file;
+    private File file;//可能是原始文件，也可能是隐藏后的文件但是还是使用未隐藏时的路径，所以可能不存在
+    private File originFile;//原始文件，当file不存在的时候（可能被隐藏）找到对应的原始文件
     private String fileName;
     private String filePath;
     //  getAbsolutePath:/storage/emulated/0/baidu
@@ -35,6 +37,11 @@ public class FileInfo implements Serializable {
         this.filePath = file.getPath();
     }
 
+    /**
+     * 获取文件，不保证一定存在
+     *
+     * @return
+     */
     public File getFile() {
         return file;
     }
@@ -128,12 +135,25 @@ public class FileInfo implements Serializable {
     }
 
     /**
+     * 若当前路径的file不存在，则获取原始文件
+     *
+     * @return
+     */
+    public File getOriginFileIfFileNotExist() {
+        File originFile = file;
+        if (!file.exists()) {
+            originFile = FileUtil.getOriginOrHiddenFileByFileState(file);
+        }
+        return originFile;
+    }
+
+    /**
      * 获取文件大小
      *
      * @return
      */
     public String getFileLengthWithUnit() {
-        long lengthInByte = file.length();
+        long lengthInByte = getOriginFileIfFileNotExist().length();
         return FileUtil.formatFileSize(lengthInByte);
     }
 }

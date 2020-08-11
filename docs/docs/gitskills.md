@@ -84,3 +84,33 @@ github pages 可以用来搭建个人博客，也可以用来直接搭载个人�
 
 引用的 .js最好放在body中？放在header中似乎有问题（待确认）
 
+
+## 8. git拉取项目失败，Early EOF 错误------------------
+```
+https://stackoverflow.com/questions/21277806/fatal-early-eof-fatal-index-pack-failed
+
+
+first, turn off compression:
+
+git config --global core.compression 0
+Next, let's do a partial clone to truncate the amount of info coming down:
+
+git clone --depth 1 <repo_URI>                   //这个clone只会clone最近有操作的分支的一个commit
+When that works, go into the new directory and retrieve the rest of the clone:
+
+git fetch --unshallow 
+or, alternately,
+
+git fetch --depth=2147483647
+Now, do a regular pull:
+
+git pull --all
+```
+
+如果不行，设置了 compression = 0之后 可以  
+git fetch --depth=100  慢慢往上升
+
+
+
+
+

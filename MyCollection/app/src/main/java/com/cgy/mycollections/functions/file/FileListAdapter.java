@@ -35,8 +35,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
     private List<FileInfo> mFileList;
     private List<FileInfo> mSelectedFileList = new ArrayList<>();
 
-    private boolean mIsSelect = false;
-    private boolean mShowHide = false;
+    private boolean mIsSelect = false;//是否是选择文件
+    private boolean mShowHide = false;//是否显示隐藏文件
 
     public FileListAdapter() {
     }

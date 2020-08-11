@@ -197,7 +197,7 @@ public class ProtectedFilesActivity extends BaseActivity {
 //                    } else {
                     try {
                         //TODO:FileUriExposedException
-                        startActivity(FileUtil.openFile(ProtectedFilesActivity.this, fileInfo.getFilePath()));
+                        startActivity(FileUtil.openFileIncludingHiddenFile(ProtectedFilesActivity.this, fileInfo.getFile()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -125,7 +125,7 @@ public class FileDemo extends BaseActivity {
                     } else {
                         try {
                             //TODO:FileUriExposedException
-                            startActivity(FileUtil.openFile(FileDemo.this, fileInfo.getFilePath()));
+                            startActivity(FileUtil.openFileIncludingHiddenFile(FileDemo.this, fileInfo.getFile()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

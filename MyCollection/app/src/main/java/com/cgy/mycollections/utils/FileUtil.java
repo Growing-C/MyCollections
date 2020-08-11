@@ -148,6 +148,72 @@ public class FileUtil {
         }
     }
 
+
+    //<editor-fold desc="文件隐藏相关">
+
+    /**
+     * 文件是否是已经保护性隐藏的文件
+     *
+     * @param file
+     * @return
+     */
+    public static boolean isFileHidden(File file) {
+        if (file != null) {
+            String fileName = file.getName();
+            if (!TextUtils.isEmpty(fileName) && fileName.contains(MediaHelper.REPLACE_DOT)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 根据文件状态（隐藏或者显示）获取相反状态的文件,并不保证一定存在
+     *
+     * @param rawFile
+     * @return
+     */
+    public static File getOriginOrHiddenFileByFileState(File rawFile) {
+        if (isFileHidden(rawFile)) {
+            return getOriginFile(rawFile);
+        }
+        return getHiddenFile(rawFile);
+    }
+
+    /**
+     * 获取文件的隐藏文件。
+     * 如果已经是隐藏的 会多一个点
+     *
+     * @param rawFile
+     * @return
+     */
+    public static File getHiddenFile(File rawFile) {
+        File hiddenFile = rawFile;
+        if (rawFile != null) {
+            hiddenFile = new File(rawFile.getParentFile().getPath() + "/." + rawFile.getName().replace(".", MediaHelper.REPLACE_DOT));
+        }
+        return hiddenFile;
+    }
+
+    /**
+     * 获取隐藏文件的原始文件，
+     * 如果是隐藏文件一定可以获取到原始文件
+     * 如果不是隐藏文件，返回的还是原始文件
+     *
+     * @param hiddenFile
+     * @return
+     */
+    public static File getOriginFile(File hiddenFile) {
+
+        File originFile = hiddenFile;
+        if (hiddenFile != null) {
+            String fileName = hiddenFile.getName();
+            if (fileName.startsWith(".") && fileName.length() > 1)
+                originFile = new File(hiddenFile.getParentFile().getPath() + "/" + fileName.substring(1).replace(MediaHelper.REPLACE_DOT, "."));
+        }
+        return originFile;
+    }
+
     /**
      * 获取文件原来的名称，用于使用 REPLACE_DOT 修改了文件名隐藏的文件 显示原来的名称
      *
@@ -345,6 +411,7 @@ public class FileUtil {
         }
     }
 
+    //</editor-fold>
     //---------------------------------------------------
 
     /**
@@ -1077,6 +1144,31 @@ public class FileUtil {
 
 
     //<editor-fold desc="打开文件 ">
+
+    /**
+     * 打开文件，如果文件不存在会找到对应的隐藏或者非隐藏文件
+     *
+     * @param context
+     * @param file
+     * @return
+     */
+    public static Intent openFileIncludingHiddenFile(Context context, File file) {
+        if (file == null)
+            return null;
+        File originFile = file;
+        if (!file.exists()) {
+            originFile = FileUtil.getOriginOrHiddenFileByFileState(file);
+        }
+        return getOpenFileIntent(context, originFile);
+    }
+
+    /**
+     * 根据filepath打开文件，filepath对应的文件可能不存在
+     *
+     * @param context
+     * @param filePath
+     * @return
+     */
     public static Intent openFile(Context context, String filePath) {
         File file = new File(filePath);
         if (!file.exists()) return null;
@@ -1259,13 +1351,17 @@ public class FileUtil {
      * @return
      */
     public static Intent getOpenFileIntent(Context context, String filePath) {
+        return getOpenFileIntent(context, new File(filePath));
+    }
+
+    public static Intent getOpenFileIntent(Context context, File file) {
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri uri = Uri.fromFile(new File(filePath));
+        Uri uri = Uri.fromFile(file);
 //        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //        Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", new File(param));
-        intent.setDataAndType(uri, getMimeType(filePath));
+        intent.setDataAndType(uri, getMimeType(file.getPath()));
         return intent;
     }
 
