@@ -391,6 +391,12 @@ public class FileDemo extends BaseActivity {
             case R.id.action_confirm://确定选择文件
                 confirmSelectFile();
                 break;
+            case R.id.action_reverse://顺序反转
+                if (mFileList != null && mFileList.size() > 0) {
+                    Collections.reverse(mFileList);
+                    mFileAdapter.notifyDataSetChanged();
+                }
+                break;
             default:
                 break;
         }

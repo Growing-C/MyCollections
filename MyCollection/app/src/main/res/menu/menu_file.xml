@@ -14,4 +14,11 @@
         android:title="确定"
         android:visible="true"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_reverse"
+        android:orderInCategory="100"
+        android:title="顺序反转"
+        android:icon="@drawable/ic_baseline_swap_vert_24"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
 </menu>
