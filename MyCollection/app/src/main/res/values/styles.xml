@@ -54,6 +54,16 @@
         <!--windowIsTranslucent makes the background of app transparent-->
     </style>
 
+    <!-- dialog风格的activity使用-->
+    <style name="ActivityPopStyle" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
     <!--    为toolbar设置theme 可以控制toolbar样式 如返回键颜色（colorControlNormal） etc-->
     <style name="AppToolBar" parent="Widget.AppCompat.Toolbar">
         <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->

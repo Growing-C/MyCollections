@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.cgy.mycollections.R;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * A placeholder fragment containing a simple view.
  */

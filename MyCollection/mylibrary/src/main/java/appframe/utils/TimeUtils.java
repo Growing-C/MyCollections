@@ -200,4 +200,43 @@ public class TimeUtils {
         }
         return weekDayS;
     }
+
+    /**
+     * 是否是同一天
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static boolean isSameDay(Calendar date1, Calendar date2) {
+        if (date1 == null || date2 == null)
+            return false;
+
+        if (date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+                && date1.get(Calendar.DATE) == date2.get(Calendar.DATE))
+            return true;
+
+        return false;
+    }
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        if (date1 == null || date2 == null)
+            return false;
+        Calendar ca1 = Calendar.getInstance();
+        ca1.setTime(date1);
+        Calendar ca2 = Calendar.getInstance();
+        ca2.setTime(date2);
+        return isSameDay(ca1, ca2);
+    }
+
+    public static boolean isSameDay(long timeInMillis1, long timeInMillis2) {
+        if (timeInMillis1 <= 0 || timeInMillis2 <= 0)
+            return false;
+        Calendar ca1 = Calendar.getInstance();
+        ca1.setTimeInMillis(timeInMillis1);
+        Calendar ca2 = Calendar.getInstance();
+        ca2.setTimeInMillis(timeInMillis2);
+        return isSameDay(ca1, ca2);
+    }
 }
