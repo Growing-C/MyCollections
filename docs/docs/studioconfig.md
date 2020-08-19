@@ -13,6 +13,10 @@ C:\android\androidstudio4.0\jre
 C:\android\androidstudio4.0\jre\jre
 ```
 (都放肯定可以解决)
+修改完之后直接点击例如String,Calendar之类的立刻就能看到有注释的源码，
+但是从ExternalLibraries中的JDK的rt.jar中直接点击某个类看可能还没有注释，
+稍等片刻（片刻可能挺久的）即可，会自动加载出来。
+
 
 #2.修改 默认的安卓配置 .AndroidStudio路径
 在C:\android\androidstudio4.0\bin\idea.properties中加如下两行即可

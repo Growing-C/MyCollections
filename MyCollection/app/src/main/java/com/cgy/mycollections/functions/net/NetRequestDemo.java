@@ -19,7 +19,9 @@ import com.cgy.mycollections.functions.net.webservice.request.RequestBody;
 import com.cgy.mycollections.functions.net.webservice.request.RequestEnvelope;
 import com.cgy.mycollections.functions.net.webservice.request.RequestModel;
 import com.cgy.mycollections.functions.net.webservice.response.ResponseEnvelope;
+
 import appframe.utils.L;
+
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -414,6 +416,7 @@ public class NetRequestDemo extends AppCompatActivity {
                             // 获取当前下载量
                             System.out.println("progress:" + (downSize * 100 / totalSize));
                         }
+                        fos.flush();//需要flush一下
                         fos.close();
                         bis.close();
                         is.close();

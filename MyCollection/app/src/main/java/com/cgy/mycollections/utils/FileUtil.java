@@ -563,8 +563,76 @@ public class FileUtil {
      * 解压缩功能.
      * 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
      *
+     * @param zipFileString 压缩文件
+     * @param outPathString 解压目录
+     */
+    /**
+     * 解压缩功能.
+     * 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
+     *
+     * @param zip        压缩文件
+     * @param folderPath 解压目录
+     */
+    public static int unZip(File zip, String folderPath) {
+        if (zip == null || !zip.exists()) {
+            L.e("unZipFile", "unZipFile 目标文件不存在 !!! ");
+            return -1;
+        }
+
+        try {
+            L.e("unZipFile", "-开始解压缩 unZipFile zip文件路径 = " + zip.getPath());
+            ZipEntry zipEntry;
+            String szName = "";
+
+            ZipFile zipFile = new ZipFile(zip);
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                zipEntry = entries.nextElement();
+                szName = zipEntry.getName();
+                if (zipEntry.isDirectory()) {
+                    L.e("unZipFile", "unZipFile file is dir :ze.getName() = " + szName);
+                    // get the folder name of the widget
+                    szName = szName.substring(0, szName.length() - 1);
+                    File folder = new File(folderPath + File.separator + szName);
+                    folder.mkdirs();
+                } else {
+                    //此处有个坑，解压缩出来第一级是文件夹的时候不一定走上面的isDirectory,直接跑这里第二级文件来了
+                    //所以第二级文件的parent文件夹不一定存在，所以需要parent创建一下
+                    File file = new File(folderPath + File.separator + szName);
+                    file.getParentFile().mkdirs();
+                    L.e("unZipFile", file.exists() + "-unZipFile is file path = " + file.getPath());
+                    file.createNewFile();
+                    // get the output stream of the file
+                    FileOutputStream out = new FileOutputStream(file);
+                    int len;
+                    byte[] buffer = new byte[1024 * 100];
+                    InputStream inZip = new BufferedInputStream(zipFile.getInputStream(zipEntry));
+                    // read (len) bytes into buffer
+                    while ((len = inZip.read(buffer)) != -1) {
+                        // write (len) byte from buffer at the position 0
+                        out.write(buffer, 0, len);
+                        out.flush();
+                    }
+                    inZip.close();
+                    out.close();
+                }
+            }
+            zipFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            L.e("unZipFile", "unZipFile error = " + e.toString());
+        }
+
+        return 0;
+    }
+
+    /**
+     * 解压缩功能.
+     * 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
+     *
      * @param zipFile    压缩文件
      * @param folderPath 解压目录
+     * @deprecated 这个方法有时候有问题，使用上面的方法
      */
     public static int unZipFile(File zipFile, String folderPath) {
         ZipFile zfile = null;

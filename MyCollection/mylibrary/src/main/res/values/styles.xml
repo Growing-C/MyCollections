@@ -15,6 +15,7 @@
     <style name="Theme.ActivityDialogStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <!--        背景蒙版,true背景会有一层黑色透明对话框式蒙版，false则没有-->
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowCloseOnTouchOutside">false</item>
