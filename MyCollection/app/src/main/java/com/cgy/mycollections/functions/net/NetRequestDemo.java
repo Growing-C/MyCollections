@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.utils.HttpUrlConnectionUtil;
 import com.cgy.mycollections.utils.encrypt.SignUtils;
 import com.cgy.mycollections.functions.net.mywebservice.request.MyRequestBody;
 import com.cgy.mycollections.functions.net.mywebservice.request.MyRequestEnvelope;
@@ -387,45 +388,10 @@ public class NetRequestDemo extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                int len;
-                int downSize = 0;// 已下载文件大小
-                int totalSize;// 文件总 长度
-                URL url;
-                try {
-                    url = new URL("http://d2.witon.us/minipay/dev/test/download/web-20171213-231653.zip");
-
-                    HttpURLConnection conn = (HttpURLConnection) url
-                            .openConnection();
-                    conn.setConnectTimeout(5000);
-                    conn.connect();
-                    // 获取到文件的大小
-                    totalSize = conn.getContentLength();
-                    System.out.println("totalSize:" + totalSize);
-                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        System.out.println("start down load~~~~~~~~200");
-                        InputStream is = conn.getInputStream();
-                        String filePath = getExternalCacheDir() + "/app.zip";
-                        System.out.println("filePath:" + filePath);
-                        FileOutputStream fos = new FileOutputStream(filePath);
-                        BufferedInputStream bis = new BufferedInputStream(is);
-                        byte[] buffer = new byte[1024];
-
-                        while ((len = bis.read(buffer)) != -1) {
-                            fos.write(buffer, 0, len);
-                            downSize += len;
-                            // 获取当前下载量
-                            System.out.println("progress:" + (downSize * 100 / totalSize));
-                        }
-                        fos.flush();//需要flush一下
-                        fos.close();
-                        bis.close();
-                        is.close();
-                        System.out.println("down load ok~");
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                if (getExternalCacheDir() != null)
+                    HttpUrlConnectionUtil.downLoad(
+                            "http://d2.witon.us/minipay/dev/test/download/web-20171213-231653.zip",
+                            getExternalCacheDir().getPath());
             }
         }.start();
     }

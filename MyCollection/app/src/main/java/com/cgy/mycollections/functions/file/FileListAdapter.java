@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHolder> {
     private OnMyItemLongClickListener<FileInfo> mOnItemClickListener;
     private List<FileInfo> mFileList;
-    private List<FileInfo> mSelectedFileList = new ArrayList<>();
+    private ArrayList<FileInfo> mSelectedFileList = new ArrayList<>();
 
     private boolean mIsSelect = false;//是否是选择文件
     private boolean mShowHide = false;//是否显示隐藏文件
@@ -63,11 +63,21 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
         this.mIsSelect = isSelect;
     }
 
+    public void select(FileInfo info) {
+        if (mFileList.contains(info))
+            mSelectedFileList.add(info);
+        notifyDataSetChanged();
+    }
+
+    public boolean isSelectMode() {
+        return mIsSelect;
+    }
+
     public FileInfo getItem(int position) {
         return mFileList.get(position);
     }
 
-    public List<FileInfo> getSelectedFiles() {
+    public ArrayList<FileInfo> getSelectedFiles() {
         return mSelectedFileList;
     }
 
@@ -149,6 +159,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
             if (mIsSelect) {
                 rightArrow.setVisibility(View.INVISIBLE);
                 selectBox.setVisibility(View.VISIBLE);
+                if (mSelectedFileList.contains(info)) {
+                    selectBox.setChecked(true);
+                } else {
+                    selectBox.setChecked(false);
+                }
             } else {
                 if (info.getFile().isDirectory())
                     rightArrow.setVisibility(View.VISIBLE);

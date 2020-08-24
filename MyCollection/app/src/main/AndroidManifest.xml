@@ -137,6 +137,7 @@
         <activity android:name=".functions.ui.scale.ScaleViewDemo" />
         <activity android:name=".functions.chart.ChartDemo" />
         <activity android:name=".testsources.TestDemo" />
+        <activity android:name=".functions.webview.WebViewDemos" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -78,6 +78,9 @@
     <string name="title_test">TestDemo</string>
     <string name="test_ui">测试demo</string>
 
+    <string name="title_webview">WebViewDemo</string>
+    <string name="info_webview">测试WebView</string>
+
     <string name="title_ui">UiDemo</string>
     <string name="info_ui">所有ui相关的demo</string>
 

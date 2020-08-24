@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
@@ -28,6 +29,7 @@ import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
+import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
@@ -50,6 +52,7 @@ import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
+import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
@@ -77,7 +80,7 @@ public class FileDemo extends BaseActivity {
 //    File mCurrentDir;
 
     String mFileOperateType;
-    FileInfo mSelectedFile;
+//   List< FileInfo> mSelectedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,9 @@ public class FileDemo extends BaseActivity {
             @Override
             public void onItemClick(int position, FileInfo fileInfo) {
                 mFilePathV.navToFile(fileInfo.getFile());
+                if (mFileAdapter.isSelectMode())//选择模式不响应点击
+                    return;
+
                 if (!fileInfo.getFile().isDirectory()) {
                     if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
                         Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
@@ -137,8 +143,14 @@ public class FileDemo extends BaseActivity {
 
             @Override
             public void onItemLongClick(int position, FileInfo fileInfo) {
-                mSelectedFile = fileInfo;
-                showBottomMenu();
+                if (mFileAdapter.isSelectMode()) {
+                    mFileAdapter.setIsSelect(false);
+                    hideBottomMenu();
+                } else {
+                    showBottomMenu();
+                    mFileAdapter.setIsSelect(true);
+                    mFileAdapter.select(fileInfo);
+                }
             }
 
         });
@@ -269,27 +281,56 @@ public class FileDemo extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.detail://详情
-                FileInfoDialogFragment.newInstance(mSelectedFile)
+                FileInfoDialogFragment.newInstance(mFileAdapter.getSelectedFiles())
                         .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
                 break;
             case R.id.delete://删除
-                showDeleteDialog(mSelectedFile);
+                showDeleteDialog(mFileAdapter.getSelectedFiles());
                 break;
             default:
                 break;
         }
     }
 
-    private void showDeleteDialog(FileInfo fileInfo) {
+    private void showDeleteDialog(ArrayList<FileInfo> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0)
+            return;
+
+        StringBuilder filePathList = new StringBuilder();
+        for (FileInfo fileInfo :
+                filesToDelete) {
+            filePathList.append(fileInfo.getFilePath());
+            filePathList.append("\n");
+        }
         new AlertDialog.Builder(FileDemo.this)
-                .setMessage("确认删除文件？ \n" + fileInfo.getFilePath())
+                .setMessage("确认删除文件？ \n" + filePathList)
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteFile(fileInfo);
+                        deleteFiles(filesToDelete);
                     }
                 }).create().show();
+    }
+
+    private void deleteFiles(ArrayList<FileInfo> filesToDelete) {
+        if (filesToDelete == null || filesToDelete.size() == 0)
+            return;
+        int deleteFileCount = 0;
+        for (FileInfo fileInfo :
+                filesToDelete) {
+            if (fileInfo.getFile().isDirectory()) {
+                //TODO:文件夹删除不应该这么简单，应该要用户多确认
+            } else {
+                FileUtil.deleteFile(fileInfo.getFilePath());
+                deleteFileCount++;
+            }
+        }
+        new ToastCustom(FileDemo.this, "删除了 " + deleteFileCount + "个文件", Toast.LENGTH_SHORT).show();
+
+        hideBottomMenu();
+
+        refreshCurrentFileList(mFilePathV.getCurrentDir());
     }
 
     private void deleteFile(FileInfo fileInfo) {

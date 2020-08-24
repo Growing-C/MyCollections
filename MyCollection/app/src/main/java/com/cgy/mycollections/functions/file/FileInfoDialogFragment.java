@@ -8,6 +8,9 @@ import android.widget.TextView;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.BaseDialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,9 +33,11 @@ public class FileInfoDialogFragment extends BaseDialogFragment {
 
     private FileInfo mFileInfo;
 
-    public static FileInfoDialogFragment newInstance(FileInfo fileInfo) {
+    List<FileInfo> mFileList = new ArrayList<>();
+
+    public static FileInfoDialogFragment newInstance(ArrayList<FileInfo> mFileList) {
         Bundle args = new Bundle();
-        args.putSerializable("fileInfo", fileInfo);
+        args.putSerializable("fileInfo", mFileList);
 
         FileInfoDialogFragment fragment = new FileInfoDialogFragment();
         fragment.setArguments(args);
@@ -50,7 +55,9 @@ public class FileInfoDialogFragment extends BaseDialogFragment {
 
         Bundle bd = getArguments();
         if (bd != null) {
-            mFileInfo = (FileInfo) bd.getSerializable("fileInfo");
+            mFileList = (List<FileInfo>) bd.getSerializable("fileInfo");
+            if (mFileList != null && mFileList.size() > 0)
+                mFileInfo = mFileList.get(0);
         }
         if (mFileInfo != null) {
             mFileNameV.setText("文件名:" + mFileInfo.getFileName());

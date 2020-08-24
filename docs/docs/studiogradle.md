@@ -1,4 +1,4 @@
-1.
+#1.as乱码
 android studio显示乱码的时候去settings file encoding 改成gbk
 右下角有个编码的地方也可以改
 若安装app显示乱码 在gradle中添加
@@ -6,19 +6,19 @@ android {
     compileOptions.encoding = "GBK" 即可
 
 
-2.当as app编译后 app上有个x 点运行提示Please select Android SDK的时候，
+#2.当as app编译后 app上有个x 点运行提示Please select Android SDK的时候，
 选择file-settings-android SDK 点击edit在出现的页面里一直next即可（原理是重新安装一下sdk，一般来说会提示nothing to do 但是问题能解决。）
 猜测可能原因是 项目编译的时候sdk配置错误，上面的步骤大概是刷新了一下sdk的配置，所以问题解决了
 
 
-3.有时候修改了引用的 aar包内容 引用maven上的aar包 还是会显示老的内容，因为gradle有缓存，可以通过
+#3.有时候修改了引用的 aar包内容 引用maven上的aar包 还是会显示老的内容，因为gradle有缓存，可以通过
 gradlew build --refresh-dependencies    来强制清除依赖刷新引用库
 
  是在 .idea/libraries 里会记录每一个第三方库的 classes, javadoc 以及 sources 所对应的路径。其中 classes 对应的正是前面所提到的 transforms-1 里的目录，同样也正如前面所说，其中包含的路径是有 hash 值的，更新了依赖之后，hash 值不同，新的缓存路径也就不同了，而这里还是用的原来被删的那个路径，找不到对应的文件当然编辑器里就提示 cannot resolve symbol 了。所以正确而直接的解决方案应该是删除 .idea/libraries/ 里对应该第三方库的 xml 文件让它重新生成，或者是直接修改该 xml 文件的内容，改为更新依赖之后的路径。
 
 
 
-4. 一个gradle项目 引用的包 如：eagleBase:1.0.0 在git上面修改了内容 但是版本还是1.0.0  要更新项目中的引用 
+#4. 一个gradle项目 引用的包 如：eagleBase:1.0.0 在git上面修改了内容 但是版本还是1.0.0  要更新项目中的引用 
 使用gradlew --refresh-dependencies 命令刷新依赖库   
 但是此时android studio上面还是无法识别的
 需要删除 .idea/library/Gradl__eagleBase_1.0.0.xml  这个文件(此文件作用是 在External Libraries下面显示那个引用内容)
@@ -30,7 +30,7 @@ jar://$USER_HOME$/.android/build-cache/9b5d2cfede5006242603af689c6c3dea44e4e644/
 待研究 studio 如何把这个dependency和  .android下面的build-cache对应起来的
 
 
-5.多个support v7冲突的话 可以用exclude 也可以（项目app build.grale 最外层加，和dependency平级）
+#5.多个support v7冲突的话 可以用exclude 也可以（项目app build.grale 最外层加，和dependency平级）
 configurations.all {
     resolutionStrategy.eachDependency { details ->
         def requested = details.requested
@@ -51,7 +51,7 @@ configurations.all {
 }
 
 
-6.引入aar
+#6.引入aar
 在build.gradle的android 标签下增加
  repositories {
         flatDir {
@@ -60,7 +60,7 @@ configurations.all {
     }
 把.aar文件放到lib中  dependency中添加   implementation(name: 'EagleBase-1.0.2', ext: 'aar') 即可
 
-7.若打包aar 在其他工程中引用时  如果打包的aar中引用了其他的aar 很可能会下载不下来
+#7.若打包aar 在其他工程中引用时  如果打包的aar中引用了其他的aar 很可能会下载不下来
 此时最好的方法是 要打包aar的模块中不要引用aar
 或者可以尝试 在allprojects中 添加 
 ```
@@ -78,9 +78,17 @@ allprojects {
 ```
 注意:是在allprojects 下的repositories，不是在buildscript下的repositories，buildscript下的repositories是用来说明gradle插件的位置。
 
-8. .gradle\caches\modules-2\files-2 中的 引用项目 pom 和aar分别在两个文件夹中，两个文件夹的名字其实是文件的 sha1值
+#8. .gradle\caches\modules-2\files-2 中的 引用项目 pom 和aar分别在两个文件夹中，两个文件夹的名字其实是文件的 sha1值
 win下面 可以使用 
 ```
  certutil -hashfile (文件路径) SHA1 
 ```
  来获取sha1值
+
+
+#9.手动下载gradle版本 
+有条件翻墙可以去 https://services.gradle.org/distributions/ 下载目标gradle版本。
+然后到如 C:\android\androidhome\.gradle\wrapper\dists\gradle-6.1.1-all 中
+将下载好的 gradle.zip 放到 其中，删除gradle-6.1.1-all.zip.part   
+将gradle-6.1.1-all.zip.lck复制一份并重命名为  gradle-6.1.1-all.zip.ok 
+最后重启as即可
