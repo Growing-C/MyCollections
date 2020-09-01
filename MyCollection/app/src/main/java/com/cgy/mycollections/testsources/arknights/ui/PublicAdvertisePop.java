@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.testsources.arknights.ArknightsConstant;
+
 import appframe.utils.L;
+
 import com.cgy.mycollections.utils.SharePreUtil;
 
 import java.lang.reflect.Method;
@@ -55,9 +57,8 @@ public class PublicAdvertisePop implements View.OnClickListener {
 
         url = SharePreUtil.getString(ArknightsConstant.PREF, mContext, ArknightsConstant.URL_KEY);
         if (TextUtils.isEmpty(url)) {
-            url = "http://wiki.joyme.com/arknights/公开招募工具";// 需要manifest android:usesCleartextTraffic="true"
-//            url = "https://ak.graueneko.xyz/akhr.html";
-//            url="http://wiki.joyme.com/arknights/%E5%85%AC%E5%BC%80%E6%8B%9B%E5%8B%9F%E5%B7%A5%E5%85%B7";
+            url = "http://wiki.joyme.com/arknights/公开招募工具";// 需要manifest android:usesCleartextTraffic="true"（已经打不开了）
+            url = "http://www.baidu.com";//
         }
 
         mUrlV.setText(url);

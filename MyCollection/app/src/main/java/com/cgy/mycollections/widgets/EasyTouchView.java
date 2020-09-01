@@ -2,6 +2,7 @@ package com.cgy.mycollections.widgets;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
@@ -18,6 +19,8 @@ import android.widget.PopupWindow;
 import com.cgy.mycollections.R;
 
 import java.lang.reflect.Method;
+
+import static android.graphics.PixelFormat.TRANSLUCENT;
 
 /**
  * 仿iphone悬浮圆点
@@ -80,7 +83,7 @@ public class EasyTouchView {
         mWMParams.flags = 40; // 设置桌面可控
         mWMParams.width = LayoutParams.WRAP_CONTENT;
         mWMParams.height = LayoutParams.WRAP_CONTENT;
-        mWMParams.format = -3; // 透明
+        mWMParams.format = PixelFormat.TRANSLUCENT; // 透明
 
         mWManager.addView(mTouchView, mWMParams);
 

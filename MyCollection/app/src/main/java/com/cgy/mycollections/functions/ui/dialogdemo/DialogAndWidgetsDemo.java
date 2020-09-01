@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.ui.dialogdemo;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -69,6 +70,9 @@ public class DialogAndWidgetsDemo extends AppCompatActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.floating_dialog:
+                startActivity(new Intent(this, FloatingActivity.class));
+                break;
             case R.id.password_dialog:
                 PayPasswordDialog mPasswordDialog = new PayPasswordDialog(this, new OnPasswordInputListener() {
                     @Override

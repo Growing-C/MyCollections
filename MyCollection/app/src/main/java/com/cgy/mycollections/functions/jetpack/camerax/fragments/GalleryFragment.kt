@@ -54,7 +54,7 @@ class GalleryFragment internal constructor() : Fragment() {
     private lateinit var mediaList: MutableList<File>
 
     /** Adapter class used to present a fragment containing one photo or video as a page */
-    inner class MediaPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    inner class MediaPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount(): Int = mediaList.size
         override fun getItem(position: Int): Fragment = PhotoFragment.create(mediaList[position])
         override fun getItemPosition(obj: Any): Int = POSITION_NONE

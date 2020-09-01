@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@android:color/transparent"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.cgy.mycollections.widgets.RoundLinearLayout
+        android:id="@+id/floating_content"
+        android:layout_width="100dp"
+        android:orientation="vertical"
+        android:layout_height="100dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@android:color/holo_purple"
+            android:layout_height="match_parent" />
+    </com.cgy.mycollections.widgets.RoundLinearLayout>
+
+    <ImageView
+        android:id="@+id/floating_close"
+        android:layout_width="@dimen/px50_margin"
+        android:layout_height="@dimen/px50_margin"
+        android:layout_marginTop="@dimen/px50_margin"
+        android:src="@drawable/activitypop_close" />
+</LinearLayout>

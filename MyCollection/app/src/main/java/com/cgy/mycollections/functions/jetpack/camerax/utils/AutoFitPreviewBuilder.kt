@@ -92,32 +92,32 @@ class AutoFitPreviewBuilder private constructor(
 
         // Every time the view finder is updated, recompute layout
         useCase.setOnPreviewOutputUpdateListener(Preview.OnPreviewOutputUpdateListener {
-            val viewFinder =
+            val innerViewFinder =
                     viewFinderRef.get() ?: return@OnPreviewOutputUpdateListener
             Log.d(TAG, "Preview output changed. " +
                     "Size: ${it.textureSize}. Rotation: ${it.rotationDegrees}")
 
             // To update the SurfaceTexture, we have to remove it and re-add it
-            val parent = viewFinder.parent as ViewGroup
-            parent.removeView(viewFinder)
-            parent.addView(viewFinder, 0)
+            val parent = innerViewFinder.parent as ViewGroup
+            parent.removeView(innerViewFinder)
+            parent.addView(innerViewFinder, 0)
 
             // Update internal texture
-            viewFinder.surfaceTexture = it.surfaceTexture
+            innerViewFinder.surfaceTexture = it.surfaceTexture
 
             // Apply relevant transformations
             bufferRotation = it.rotationDegrees
-            val rotation = getDisplaySurfaceRotation(viewFinder.display)
-            updateTransform(viewFinder, rotation, it.textureSize, viewFinderDimens)
+            val rotation = getDisplaySurfaceRotation(innerViewFinder.display)
+            updateTransform(innerViewFinder, rotation, it.textureSize, viewFinderDimens)
         })
 
         // Every time the provided texture view changes, recompute layout
         viewFinder.addOnLayoutChangeListener { view, left, top, right, bottom, _, _, _, _ ->
-            val viewFinder = view as TextureView
+            val innerViewFinder = view as TextureView
             val newViewFinderDimens = Size(right - left, bottom - top)
             Log.d(TAG, "View finder layout changed. Size: $newViewFinderDimens")
-            val rotation = getDisplaySurfaceRotation(viewFinder.display)
-            updateTransform(viewFinder, rotation, bufferDimens, newViewFinderDimens)
+            val rotation = getDisplaySurfaceRotation(innerViewFinder.display)
+            updateTransform(innerViewFinder, rotation, bufferDimens, newViewFinderDimens)
         }
 
         // Every time the orientation of device changes, recompute layout

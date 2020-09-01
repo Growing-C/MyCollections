@@ -1,3 +1,25 @@
+
+class GreetingPluginExtension{
+    String message = "Hello from GreetingPlugin"
+}
+
+
+class GreetingPlugin implements Plugin<Project>{
+
+    @Override
+    void apply(Project project){
+
+        def extension  = project.extensions.create('greeting',GreetingPluginExtension)
+
+        project.task('hello'){
+            doLast {
+                println extension.message
+            }
+        }
+    }
+}
+
+apply plugin: GreetingPlugin //应用插件，这样插件才能在gradle构建过程中生效。
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'

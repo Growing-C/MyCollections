@@ -111,6 +111,18 @@ git pull --all
 git fetch --depth=100  慢慢往上升
 
 
-
+## 9.有时候git fetch获取不到远程分支
+有时候遇到上面8的 early EOF的时候 使用了 depth等 拉取成功后，fetch一直获取不到远程分支
+此时查看 .git 中的config
+```
+[remote "origin"]
+	url = http://xxxxx.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+```
+注意必须是*
+获取 不到远程分支的原因是 fetch中 指定了远程分支如下，此时怎么都获取不到其他分支了，改成*即可
+```
+fetch = +refs/heads/dev20171216:refs/remotes/origin/dev20171216
+```
 
 

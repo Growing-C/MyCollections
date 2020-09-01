@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
             }
 //            if (packageInfo.packageName.toUpperCase().contains("webview".toUpperCase())) {
             if (packageInfo.packageName.toUpperCase().contains("ark".toUpperCase())) {
-                L.e("test", "aaaaaaaaaa:" + packageInfo.packageName);
+                L.e("test", "app list:" + packageInfo.packageName);
             }
         }
 //        Intent intent = pm.getLaunchIntentForPackage(packageName);

@@ -138,6 +138,9 @@
         <activity android:name=".functions.chart.ChartDemo" />
         <activity android:name=".testsources.TestDemo" />
         <activity android:name=".functions.webview.WebViewDemos" />
+        <activity
+            android:name=".functions.ui.dialogdemo.FloatingActivity"
+            android:theme="@style/ActivityPopStyle" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -40,6 +40,7 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -119,7 +120,9 @@ public class ProtectedFilesActivity extends BaseActivity {
             if (direction == SwipeRecyclerView.RIGHT_DIRECTION) {
                 switch (menuPosition) {
                     case 0://详情
-                        FileInfoDialogFragment.newInstance(mFileList.get(position))
+                        ArrayList<FileInfo> list = new ArrayList<>();
+                        list.add(mFileList.get(position));
+                        FileInfoDialogFragment.newInstance(list)
                                 .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
                         break;
                     case 1://保护 取消保护
