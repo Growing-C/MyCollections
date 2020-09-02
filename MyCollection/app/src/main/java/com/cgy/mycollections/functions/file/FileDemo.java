@@ -82,6 +82,8 @@ public class FileDemo extends BaseActivity {
     String mFileOperateType;
 //   List< FileInfo> mSelectedFile;
 
+    FileInfo targetFile = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +94,6 @@ public class FileDemo extends BaseActivity {
         setSupportActionBar(toolbar);
         setUpActionBarBack(toolbar);
 
-        FileInfo targetFile = null;
         if (getIntent() != null) {
             mFileOperateType = getIntent().getStringExtra(FileConstants.KEY_FILE_OPERATE);
             targetFile = (FileInfo) getIntent().getSerializableExtra(FileConstants.KEY_FILE_INFO);
@@ -163,6 +164,12 @@ public class FileDemo extends BaseActivity {
 //        mCurrentDir = mRootDir;
         mBottomMenuHolderV.setVisibility(View.GONE);
 
+    }
+
+    /**
+     * 获取文件必须先获取文件权限，不然查询某个文件夹下面所有文件返回的是空
+     */
+    private void getDataAfterPermissionGranted() {
         if (targetFile != null && targetFile.getFile().isDirectory()) {
             mFilePathV.setRootDir(targetFile.getFile());
             mFilePathV.navToFile(targetFile.getFile());
@@ -198,20 +205,22 @@ public class FileDemo extends BaseActivity {
             List<FileInfo> dirList = new ArrayList<>();
             List<FileInfo> rawFileList = new ArrayList<>();
             File[] files = parent.listFiles();
-            for (File file : files) {
-                FileInfo fileInfo = new FileInfo(file);
+            if (files != null) {
+                for (File file : files) {
+                    FileInfo fileInfo = new FileInfo(file);
 
-                if (!TextUtils.isEmpty(fileInfo.getFileName())) {
-                    //显示隐藏文件或者 不显示隐藏文件且点头不是.就添加
-                    if (containHideFiles || !fileInfo.getFileName().startsWith(".")) {
-                        if (distinguishDirAndFile) {
-                            if (file.isDirectory()) {
-                                dirList.add(fileInfo);
+                    if (!TextUtils.isEmpty(fileInfo.getFileName())) {
+                        //显示隐藏文件或者 不显示隐藏文件且点头不是.就添加
+                        if (containHideFiles || !fileInfo.getFileName().startsWith(".")) {
+                            if (distinguishDirAndFile) {
+                                if (file.isDirectory()) {
+                                    dirList.add(fileInfo);
+                                } else {
+                                    rawFileList.add(fileInfo);
+                                }
                             } else {
-                                rawFileList.add(fileInfo);
+                                fileList.add(fileInfo);
                             }
-                        } else {
-                            fileList.add(fileInfo);
                         }
                     }
                 }
@@ -372,6 +381,7 @@ public class FileDemo extends BaseActivity {
     @PermissionGranted(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
     public void externalPermissionGranted() {
         L.i("externalPermissionGranted");
+        getDataAfterPermissionGranted();
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)

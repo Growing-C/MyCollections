@@ -3,6 +3,7 @@ package com.cgy.mycollections.base;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,6 +12,7 @@ import android.content.res.Configuration;
 import android.view.View;
 import android.widget.Toast;
 
+import appframe.permission.PermissionManager;
 import appframe.utils.L;
 
 import com.cgy.mycollections.utils.LanguageUtils;
@@ -52,6 +54,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             overrideConfiguration.uiMode = uiMode;
         }
         super.applyOverrideConfiguration(overrideConfiguration);
+    }
+
+    //用于权限框架 返回权限请求结果。不过权限请求使用rxPermission更好，android也将推出类似rxPermission的api
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     /**

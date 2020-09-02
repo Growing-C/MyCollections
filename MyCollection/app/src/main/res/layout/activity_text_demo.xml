@@ -67,6 +67,16 @@
             android:layout_marginTop="@dimen/dimen_10"
             android:textSize="18sp"
             android:text="可点击的text" />
+
+        <TextView
+            android:id="@+id/linkify_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/px30_common"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:textSize="18sp"
+            android:text="我是你的http://www.baidu.com,专属顾问，地18351321215，方萨芬2231哈哈 这是\m我的手机号码15051286100" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
