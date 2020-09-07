@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIt);
 
         //下面的是展示用功能
-        addNotification();//添加通知栏，仅展示玩玩
         getAppList();
         getTaskInfo();
     }
@@ -226,9 +225,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            openFloatingWindow();
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                openFloatingWindow();
+                return true;
+            case R.id.action_notify:
+                addNotification();//添加通知栏，仅展示玩玩
+                return true;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);

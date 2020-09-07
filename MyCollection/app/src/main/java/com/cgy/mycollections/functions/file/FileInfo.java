@@ -19,8 +19,8 @@ import appframe.utils.TimeUtils;
  * Date :2019/7/25
  */
 public class FileInfo implements Serializable {
-    private File file;//可能是原始文件，也可能是隐藏后的文件但是还是使用未隐藏时的路径，所以可能不存在
-    private File originFile;//原始文件，当file不存在的时候（可能被隐藏）找到对应的原始文件
+    private File showFile;//可能是原始文件，也可能是隐藏后的文件但是还是使用未隐藏时的路径，所以可能不存在
+    private File realFile;//真实存在的原始文件，当file不存在的时候（可能被隐藏）找到对应的原始文件
     private String fileName;
     private String filePath;
     //  getAbsolutePath:/storage/emulated/0/baidu
@@ -32,9 +32,18 @@ public class FileInfo implements Serializable {
     public long addProtectDate = 0;//添加保护的日期
 
     public FileInfo(@NonNull File file) {
-        this.file = file;
+        this.showFile = file;
         this.fileName = file.getName();
         this.filePath = file.getPath();
+    }
+
+    /**
+     * 是否是文件夹
+     *
+     * @return
+     */
+    public boolean isDirectory() {
+        return getRealFile().isDirectory();
     }
 
     /**
@@ -42,8 +51,8 @@ public class FileInfo implements Serializable {
      *
      * @return
      */
-    public File getFile() {
-        return file;
+    public File getShowFile() {
+        return showFile;
     }
 
     /**
@@ -69,7 +78,7 @@ public class FileInfo implements Serializable {
     }
 
     public String getFileType() {
-        if (file.isDirectory())
+        if (isDirectory())
             return FileConstants.FILE_TYPE_DIR;
 
         return FileConstants.FILE_TYPE_FILE;
@@ -98,8 +107,8 @@ public class FileInfo implements Serializable {
      * @return
      */
     public String getLastModifyTime() {
-        if (file != null) {
-            return TimeUtils.getTime(file.lastModified());
+        if (getRealFile() != null) {
+            return TimeUtils.getTime(getRealFile().lastModified());
         }
         return "";
     }
@@ -117,8 +126,8 @@ public class FileInfo implements Serializable {
 
     public int getDirChildCount(boolean containHideFiles) {
         int childCount = 0;
-        if (file.isDirectory()) {
-            String[] children = file.list();
+        if (isDirectory()) {
+            String[] children = getRealFile().list();
 
             if (children != null) {
                 childCount = children.length;
@@ -135,16 +144,20 @@ public class FileInfo implements Serializable {
     }
 
     /**
-     * 若当前路径的file不存在，则获取原始文件
+     * 获取真实文件,当file存在的时候和file一样
+     * file不存在则根据隐藏规则找到隐藏后的文件（并不保证一定存在）
      *
      * @return
      */
-    public File getOriginFileIfFileNotExist() {
-        File originFile = file;
-        if (!file.exists()) {
-            originFile = FileUtil.getOriginOrHiddenFileByFileState(file);
+    public File getRealFile() {
+        if (realFile != null)
+            return realFile;
+        if (!showFile.exists()) {
+            realFile = FileUtil.getOriginOrHiddenFileByFileState(showFile);
+        } else {
+            realFile = showFile;
         }
-        return originFile;
+        return realFile;
     }
 
     /**
@@ -153,7 +166,7 @@ public class FileInfo implements Serializable {
      * @return
      */
     public String getFileLengthWithUnit() {
-        long lengthInByte = getOriginFileIfFileNotExist().length();
+        long lengthInByte = getRealFile().length();
         return FileUtil.formatFileSize(lengthInByte);
     }
 }

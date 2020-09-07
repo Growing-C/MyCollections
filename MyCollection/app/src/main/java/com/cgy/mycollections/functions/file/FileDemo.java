@@ -120,11 +120,11 @@ public class FileDemo extends BaseActivity {
         mFileAdapter.setOnItemClickListener(new OnMyItemLongClickListener<FileInfo>() {
             @Override
             public void onItemClick(int position, FileInfo fileInfo) {
-                mFilePathV.navToFile(fileInfo.getFile());
+                mFilePathV.navToFile(fileInfo.getRealFile());
                 if (mFileAdapter.isSelectMode())//选择模式不响应点击
                     return;
 
-                if (!fileInfo.getFile().isDirectory()) {
+                if (!fileInfo.isDirectory()) {
                     if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
                         Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
                         it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
@@ -132,7 +132,7 @@ public class FileDemo extends BaseActivity {
                     } else {
                         try {
                             //TODO:FileUriExposedException
-                            startActivity(FileUtil.openFileIncludingHiddenFile(FileDemo.this, fileInfo.getFile()));
+                            startActivity(FileUtil.openFileIncludingHiddenFile(FileDemo.this, fileInfo.getShowFile()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -170,9 +170,9 @@ public class FileDemo extends BaseActivity {
      * 获取文件必须先获取文件权限，不然查询某个文件夹下面所有文件返回的是空
      */
     private void getDataAfterPermissionGranted() {
-        if (targetFile != null && targetFile.getFile().isDirectory()) {
-            mFilePathV.setRootDir(targetFile.getFile());
-            mFilePathV.navToFile(targetFile.getFile());
+        if (targetFile != null && targetFile.isDirectory()) {
+            mFilePathV.setRootDir(targetFile.getRealFile());
+            mFilePathV.navToFile(targetFile.getRealFile());
         } else
             refreshCurrentFileList(mFilePathV.getRootDir());
     }
@@ -328,7 +328,7 @@ public class FileDemo extends BaseActivity {
         int deleteFileCount = 0;
         for (FileInfo fileInfo :
                 filesToDelete) {
-            if (fileInfo.getFile().isDirectory()) {
+            if (fileInfo.isDirectory()) {
                 //TODO:文件夹删除不应该这么简单，应该要用户多确认
             } else {
                 FileUtil.deleteFile(fileInfo.getFilePath());
@@ -343,7 +343,7 @@ public class FileDemo extends BaseActivity {
     }
 
     private void deleteFile(FileInfo fileInfo) {
-        if (fileInfo.getFile().isDirectory()) {
+        if (fileInfo.isDirectory()) {
             //TODO:文件夹删除不应该这么简单，应该要用户多确认
         } else
             FileUtil.deleteFile(fileInfo.getFilePath());

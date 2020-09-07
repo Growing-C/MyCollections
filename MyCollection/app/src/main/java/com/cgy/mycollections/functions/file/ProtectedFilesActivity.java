@@ -187,7 +187,7 @@ public class ProtectedFilesActivity extends BaseActivity {
             @Override
             public void onItemClick(int position, FileInfo fileInfo) {
                 L.e("mFileAdapter onItemClick:" + position);
-                if (fileInfo.getFile().isDirectory()) {
+                if (fileInfo.isDirectory()) {
                     //文件夹
                     Intent it = new Intent(ProtectedFilesActivity.this, FileDemo.class);
                     it.putExtra(FileConstants.KEY_FILE_INFO, fileInfo);
@@ -200,7 +200,7 @@ public class ProtectedFilesActivity extends BaseActivity {
 //                    } else {
                     try {
                         //TODO:FileUriExposedException
-                        startActivity(FileUtil.openFileIncludingHiddenFile(ProtectedFilesActivity.this, fileInfo.getFile()));
+                        startActivity(FileUtil.openFileIncludingHiddenFile(ProtectedFilesActivity.this, fileInfo.getShowFile()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -247,17 +247,17 @@ public class ProtectedFilesActivity extends BaseActivity {
 
         if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
             //已保护就切换成未保护
-            if (fileInfo.getFile().isDirectory()) {
-                FileUtil.showFilesUnderDir(this, fileInfo.getFile());
+            if (fileInfo.isDirectory()) {
+                FileUtil.showFilesUnderDir(this, fileInfo.getShowFile());
             } else {
-                FileUtil.showSingleFile(this, fileInfo.getFile());
+                FileUtil.showSingleFile(this, fileInfo.getShowFile());
             }
             fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
         } else {
-            if (fileInfo.getFile().isDirectory()) {
-                FileUtil.hideFilesUnderDir(this, fileInfo.getFile());
+            if (fileInfo.isDirectory()) {
+                FileUtil.hideFilesUnderDir(this, fileInfo.getShowFile());
             } else {
-                FileUtil.hideSingleFile(this, fileInfo.getFile());
+                FileUtil.hideSingleFile(this, fileInfo.getShowFile());
             }
             fileInfo.protectState = FileConstants.STATE_PROTECTED;
         }
@@ -305,10 +305,10 @@ public class ProtectedFilesActivity extends BaseActivity {
 
         if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
             //已保护就切换成未保护
-            if (fileInfo.getFile().isDirectory()) {
-                FileUtil.showFilesUnderDir(this, fileInfo.getFile());
+            if (fileInfo.isDirectory()) {
+                FileUtil.showFilesUnderDir(this, fileInfo.getShowFile());
             } else {
-                FileUtil.showSingleFile(this, fileInfo.getFile());
+                FileUtil.showSingleFile(this, fileInfo.getShowFile());
             }
             fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
         }
@@ -386,18 +386,18 @@ public class ProtectedFilesActivity extends BaseActivity {
         for (int i = 0, len = mFileList.size(); i < len; i++) {
             FileInfo fileInfo = mFileList.get(i);
             if (mIsProtect) {//隐藏
-                if (fileInfo.getFile().isDirectory()) {
-                    FileUtil.hideFilesUnderDir(this, fileInfo.getFile());
+                if (fileInfo.isDirectory()) {
+                    FileUtil.hideFilesUnderDir(this, fileInfo.getShowFile());
                 } else {
-                    FileUtil.hideSingleFile(this, fileInfo.getFile());
+                    FileUtil.hideSingleFile(this, fileInfo.getShowFile());
                 }
                 fileInfo.protectState = FileConstants.STATE_PROTECTED;
 
             } else {//显示
-                if (fileInfo.getFile().isDirectory()) {
-                    FileUtil.showFilesUnderDir(this, fileInfo.getFile());
+                if (fileInfo.isDirectory()) {
+                    FileUtil.showFilesUnderDir(this, fileInfo.getShowFile());
                 } else {
-                    FileUtil.showSingleFile(this, fileInfo.getFile());
+                    FileUtil.showSingleFile(this, fileInfo.getShowFile());
                 }
                 fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
             }

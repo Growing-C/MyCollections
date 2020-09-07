@@ -1,9 +1,12 @@
 package com.cgy.mycollections.utils;
 
+import android.graphics.Rect;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 /**
  * Description :系统画面 statusBar,navigationBar等系统的ui 控制
@@ -20,6 +23,54 @@ public class SystemUiUtils {
 //    View.SYSTEM_UI_FLAG_LOW_PROFILE,
 //    View.SYSTEM_UI_FLAG_VISIBLE, //显示状态栏和导航栏
 //    View.SYSTEM_UI_LAYOUT_FLAGS
+
+    /**
+     * 获取statusBar高度
+     * 需要注意 在activity#onCreate中调用结果是0，因为此时view还没有测量绘制
+     *
+     * @param window
+     * @return
+     */
+    public static int getStatusBarHeight(@NonNull Window window) {
+        Rect rect = new Rect();
+        /*
+         * getWindow().getDecorView()得到的View是Window中的最顶层View，可以从Window中获取到该View，
+         * 然后该View有个getWindowVisibleDisplayFrame()方法可以获取到程序显示的区域，
+         * 包括标题栏，但不包括状态栏。
+         */
+        window.getDecorView().getWindowVisibleDisplayFrame(rect);
+
+//        1.获取状态栏高度：
+//        根据上面所述，我们可以通过rect对象得到手机状态栏的高度
+        return rect.top;
+    }
+
+    /**
+     * 获取titleBar高度
+     * 需要注意 在activity#onCreate中调用结果是0，因为此时view还没有测量绘制
+     *
+     * @param window
+     * @return
+     */
+    public static int getTitleBarHeight(@NonNull Window window) {
+        Rect rect = new Rect();
+        /*
+         * getWindow().getDecorView()得到的View是Window中的最顶层View，可以从Window中获取到该View，
+         * 然后该View有个getWindowVisibleDisplayFrame()方法可以获取到程序显示的区域，
+         * 包括标题栏，但不包括状态栏。
+         */
+        window.getDecorView().getWindowVisibleDisplayFrame(rect);
+
+//        1.获取状态栏高度：
+//        根据上面所述，我们可以通过rect对象得到手机状态栏的高度
+        int statusBarHeight = rect.top;
+
+//        2.获取标题栏高度：
+//        该方法获取到的View是程序不包括标题栏的部分，这样我们就可以计算出标题栏的高度了。
+        int contentTop = window.findViewById(Window.ID_ANDROID_CONTENT).getTop();
+        //statusBarHeight是上面所求的状态栏的高度
+        return contentTop - statusBarHeight;
+    }
 
     /**
      * 设置窗口status和navigation 透明,此时 view配置 fitSystemWindows=true 可以沉浸式全屏

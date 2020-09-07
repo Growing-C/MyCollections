@@ -64,13 +64,13 @@ public class FileInfoDialogFragment extends BaseDialogFragment {
             mFilePathV.setText("文件路径:\n" + mFileInfo.getFilePath());
 
             String fileSize = "文件类型和大小:\n";
-            if (mFileInfo.getFile() != null) {
-                if (mFileInfo.getFile().isDirectory()) {
+            if (mFileInfo.getRealFile() != null) {
+                if (mFileInfo.isDirectory()) {
                     fileSize += "文件夹,";
                     fileSize += mFileInfo.getDirChildCount(true) + "项  ";
                 } else {
                     fileSize += "文件,";
-                    fileSize += mFileInfo.getFile().length() + "B  ";
+                    fileSize += mFileInfo.getFileLengthWithUnit();
                 }
 
                 String modifyTime = "文件修改时间:\n" + mFileInfo.getLastModifyTime();

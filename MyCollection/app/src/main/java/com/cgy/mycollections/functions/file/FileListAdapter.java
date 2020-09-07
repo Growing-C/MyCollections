@@ -165,7 +165,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
                     selectBox.setChecked(false);
                 }
             } else {
-                if (info.getFile().isDirectory())
+                if (info.isDirectory())
                     rightArrow.setVisibility(View.VISIBLE);
                 else {
                     rightArrow.setVisibility(View.INVISIBLE);
@@ -180,7 +180,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
             }
 
             fileName.setText(info.getShowFileNameWithoutHideFilter());
-            if (info.getFile().isDirectory()) {
+            if (info.isDirectory()) {
                 fileImage.setImageResource(R.drawable.dir);
             } else if (ImageHelper.isPicIgnoreDot(info.getFilePath())) {//加载缩略图
                 ImageLoader.loadImageThumbnail(rightArrow.getContext(), info.getFilePath(), fileImage);
@@ -189,7 +189,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
             }
 
             String fileInfo = "";
-            if (info.getFile().isDirectory()) {
+            if (info.isDirectory()) {
                 fileInfo += info.getDirChildCount(mShowHide) + "项  ";
             } else {
                 fileInfo += info.getFileLengthWithUnit();

@@ -18,6 +18,7 @@ public class FileConstants {
     public static final String FILE_TYPE_IMAGE = "image";
     public static final String FILE_TYPE_AUDIO = "audio";
     public static final String FILE_TYPE_VIDEO = "video";
+    public static final String FILE_TYPE_APK = "apk";
 
     public static final int STATE_UNPROTECTED = 0;//未保护
     public static final int STATE_PROTECTED = 1;//已保护

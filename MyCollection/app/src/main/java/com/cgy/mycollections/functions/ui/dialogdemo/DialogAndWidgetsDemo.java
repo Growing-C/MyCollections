@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.OnPasswordInputListener;
 import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.PayPasswordDialog;
+import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.TestWindowDialog;
 import com.cgy.mycollections.widgets.HintView;
 import com.cgy.mycollections.widgets.MProgressView;
 import com.cgy.mycollections.widgets.MSpinner;
@@ -23,6 +24,7 @@ import com.cgy.mycollections.widgets.wheelview.adapter.WheelViewAdapter;
 
 import java.util.Date;
 
+import appframe.utils.L;
 import appframe.utils.TimeUtils;
 import appframe.utils.ToastCustom;
 import butterknife.BindView;
@@ -42,6 +44,11 @@ public class DialogAndWidgetsDemo extends AppCompatActivity {
     MProgressView mProgress;
     @BindView(R.id.hint_view)
     HintView mHintV;
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,10 @@ public class DialogAndWidgetsDemo extends AppCompatActivity {
 
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.test_window_dialog:
+                TestWindowDialog dialog = new TestWindowDialog(this);
+                dialog.show();
+                break;
             case R.id.floating_dialog:
                 startActivity(new Intent(this, FloatingActivity.class));
                 break;
@@ -77,6 +88,7 @@ public class DialogAndWidgetsDemo extends AppCompatActivity {
                 PayPasswordDialog mPasswordDialog = new PayPasswordDialog(this, new OnPasswordInputListener() {
                     @Override
                     public void onPasswordInput(String password) {
+                        L.e("test", "password:" + password);
                     }
                 });
                 mPasswordDialog.show();

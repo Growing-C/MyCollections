@@ -7,9 +7,11 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <!--    设置了icon会优先显示 icon，没设置icon会显示title-->
     <item
-        android:id="@+id/action_test"
+        android:id="@+id/action_notify"
         android:orderInCategory="90"
-        android:title="test"
+        android:title="Notify"
+        android:icon="@drawable/ic_baseline_volume_down_24"
         app:showAsAction="ifRoom" />
 </menu>
