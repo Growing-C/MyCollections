@@ -47,6 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -59,6 +60,17 @@ public class FileUtil {
     public static final int SIZETYPE_KB = 2;// 获取文件大小单位为KB的double值
     public static final int SIZETYPE_MB = 3;// 获取文件大小单位为MB的double值
     public static final int SIZETYPE_GB = 4;// 获取文件大小单位为GB的double值
+
+    //文件类型,
+    public static final String FILE_TYPE_DIR = "dir";//mineType为null
+    public static final String FILE_TYPE_FILE = "file";//用于暂时不认识的文件类型
+    public static final String FILE_TYPE_IMAGE = "image";//mineType=image/jpeg
+    public static final String FILE_TYPE_AUDIO = "audio";//mineType=audio/mpeg
+    public static final String FILE_TYPE_VIDEO = "video";//mineType=video/mp4
+    public static final String FILE_TYPE_APK = "apk";//mineType=application/vnd.android.package-archive
+    public static final String FILE_TYPE_ZIP = "zip";//mineType=
+
+    public static final HashMap<String, String> sFileTypes = new HashMap<String, String>();
 
     private FileUtil() {
     }
@@ -148,6 +160,159 @@ public class FileUtil {
         }
     }
 
+
+    //<editor-fold desc="获取文件类型">
+
+    /**
+     * 获取文件类型，此方法会返回一个大的类型
+     *
+     * @param file 此处的file需要是realFile
+     * @return
+     */
+    public static String getFileType(@NonNull File file) {
+        if (file.isDirectory())
+            return FILE_TYPE_DIR;
+        String mimeType = getMimeType(file.getPath());
+        if (!TextUtils.isEmpty(mimeType)) {
+            //有mimeType就好办了
+            //mineType有以下几种 image/jpeg , audio/mpeg , video/mp4 , application/vnd.android.package-archive
+            return convertFileTypeFromTypeString(mimeType);
+        } else {//没有mimeType此时表示可能无法识别,需要读取文件头来识别
+            L.e("fileUtil", "--no mineType!!!!!!!!!!!" + file.getName());
+            String rawFileType = getFileTypeFromHeader(file.getPath());
+            if (!TextUtils.isEmpty(rawFileType)) {
+                L.e("fileUtil", "raw fileType:" + rawFileType + " --path:" + file.getPath());
+                return convertFileTypeFromTypeString(rawFileType);
+            }
+        }
+        return FILE_TYPE_FILE;
+    }
+
+    /**
+     * 从文件类型string转换成我们的常量type
+     * 如  image/jpeg  --》  image
+     *
+     * @param typeString
+     * @return
+     */
+    private static String convertFileTypeFromTypeString(String typeString) {
+        if (!TextUtils.isEmpty(typeString)) {
+            //有mimeType就好办了
+            //mineType有以下几种 image/jpeg , audio/mpeg , video/mp4 , application/vnd.android.package-archive
+            if (typeString.contains(FILE_TYPE_IMAGE)) {
+                return FILE_TYPE_IMAGE;
+            } else if (typeString.contains(FILE_TYPE_VIDEO))
+                return FILE_TYPE_VIDEO;
+            else if (typeString.contains("package-archive"))
+                return FILE_TYPE_APK;
+            else if (typeString.contains(FILE_TYPE_AUDIO))
+                return FILE_TYPE_AUDIO;
+        }
+        return FILE_TYPE_FILE;
+    }
+
+    /**
+     * 从文件名后缀获取文件类型
+     *
+     * @param filePath
+     * @return
+     */
+    private static String getMimeType(String filePath) {
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        //有的文件可能被隐藏了，此处获取隐藏前真实的名字 来决定mineType
+        String realFilePath = FileUtil.getFileOriginName(filePath);
+        try {
+            String ext = realFilePath.substring(realFilePath.lastIndexOf(".") + 1);
+            String type = mime.getMimeTypeFromExtension(ext);
+            L.e("fileUtil", "getMimeType:" + type + "---" + filePath);
+            return type;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 通过读取文件头获取文件类型
+     *
+     * @param filePath
+     * @return
+     */
+    public static synchronized String getFileTypeFromHeader(String filePath) {
+        if (sFileTypes.size() == 0) {
+            //images
+            sFileTypes.put("FFD8FF", "image/jpg");
+            sFileTypes.put("89504E47", "image/png");
+            sFileTypes.put("47494638", "image/gif");
+            sFileTypes.put("49492A00", "image/tif");
+            sFileTypes.put("424D", "image/bmp");
+            sFileTypes.put("41433130", "dwg"); //CAD
+            sFileTypes.put("38425053", "psd");
+            sFileTypes.put("7B5C727466", "rtf"); //日记本
+            sFileTypes.put("3C3F786D6C", "xml");
+            sFileTypes.put("68746D6C3E", "html");
+            sFileTypes.put("44656C69766572792D646174653A", "eml"); //邮件
+            sFileTypes.put("D0CF11E0", "doc");
+            sFileTypes.put("5374616E64617264204A", "mdb");
+            sFileTypes.put("252150532D41646F6265", "ps");
+            sFileTypes.put("255044462D312E", "pdf");
+            sFileTypes.put("504B0304", "zip/zip");
+            sFileTypes.put("52617221", "zip/rar");
+            sFileTypes.put("57415645", "video/wav");
+            sFileTypes.put("41564920", "video/avi");
+            sFileTypes.put("2E524D46", "video/rm");
+            sFileTypes.put("000001BA", "video/mpg");
+            sFileTypes.put("000001B3", "video/mpg");
+            sFileTypes.put("6D6F6F76", "video/mov");
+            sFileTypes.put("3026B2758E66CF11", "asf");
+            sFileTypes.put("4D546864", "mid");
+            sFileTypes.put("1F8B08", "gz");
+        }
+        return sFileTypes.get(getFileHeader(filePath));
+    }
+
+    /**
+     * 通过读取文件头获取文件类型
+     *
+     * @param filePath
+     * @return
+     */
+    private static String getFileHeader(String filePath) {
+        FileInputStream is = null;
+        String value = null;
+        try {
+            is = new FileInputStream(filePath);
+            byte[] b = new byte[3];
+            is.read(b, 0, b.length);
+            value = bytesToHexString(b);
+        } catch (Exception e) {
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return value;
+    }
+
+    private static String bytesToHexString(byte[] src) {
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        String hv;
+        for (int i = 0; i < src.length; i++) {
+            hv = Integer.toHexString(src[i] & 0xFF).toUpperCase();
+            if (hv.length() < 2) {
+                builder.append(0);
+            }
+            builder.append(hv);
+        }
+        return builder.toString();
+    }
+    //</editor-fold>
 
     //<editor-fold desc="文件隐藏相关">
 
@@ -415,27 +580,6 @@ public class FileUtil {
     //---------------------------------------------------
 
     /**
-     * 获取文件夹大小
-     */
-    public static long getDirSize(String filePath) {
-        long size = 0;
-        File f = new File(filePath);
-        if (f.isDirectory()) {
-            File[] files = f.listFiles();
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    size += getDirSize(file.getPath());
-                    continue;
-                }
-                size += file.length();
-            }
-        } else {
-            size += f.length();
-        }
-        return size;
-    }
-
-    /**
      * 存储bitmap
      */
     public static void saveBitmap(@NonNull String filePath, @NonNull Bitmap bitmap) {
@@ -452,38 +596,6 @@ public class FileUtil {
         }
     }
 
-    /**
-     * 格式化文件大小
-     *
-     * @param size file.length() 获取文件大小
-     * @return
-     */
-    public static String formatFileSize(double size) {
-        double kiloByte = size / 1024;
-        if (kiloByte < 1) {
-            return CommonUtils.formatZeroDecimal(size) + "B";
-        }
-
-        double megaByte = kiloByte / 1024;
-        if (megaByte < 1) {
-            BigDecimal result1 = new BigDecimal(Double.toString(kiloByte));
-            return result1.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "KB";
-        }
-
-        double gigaByte = megaByte / 1024;
-        if (gigaByte < 1) {
-            BigDecimal result2 = new BigDecimal(Double.toString(megaByte));
-            return result2.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "MB";
-        }
-
-        double teraBytes = gigaByte / 1024;
-        if (teraBytes < 1) {
-            BigDecimal result3 = new BigDecimal(Double.toString(gigaByte));
-            return result3.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "GB";
-        }
-        BigDecimal result4 = new BigDecimal(teraBytes);
-        return result4.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "TB";
-    }
 
     /**
      * 获取文件后缀名
@@ -559,13 +671,69 @@ public class FileUtil {
         }
     }
 
+
     /**
-     * 解压缩功能.
-     * 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
-     *
-     * @param zipFileString 压缩文件
-     * @param outPathString 解压目录
+     * 获取SDCard的目录路径功能
      */
+    public static String getSDCardPath() {
+        File sdcardDir = null;
+        // 判断SDCard是否存在
+        boolean sdcardExist = Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED);
+        if (sdcardExist) {
+            sdcardDir = Environment.getExternalStorageDirectory();
+        } else {
+            sdcardDir = Environment.getDataDirectory();
+        }
+        return sdcardDir.toString();
+    }
+
+    /**
+     * 给定根目录，返回一个相对路径所对应的实际文件名.
+     *
+     * @param baseDir     指定根目录
+     * @param absFileName 相对路径名，来自于ZipEntry中的name
+     * @return java.io.File 实际的文件
+     */
+    private static File getRealFileName(String baseDir, String absFileName) {
+        String[] dirs = absFileName.split("/");
+        File ret = new File(baseDir);
+        String substr = null;
+        if (dirs.length > 1) {
+            for (int i = 0; i < dirs.length - 1; i++) {
+                substr = dirs[i];
+                try {
+                    //substr.trim();
+                    substr = new String(substr.getBytes("8859_1"), "GB2312");
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                ret = new File(ret, substr);
+
+            }
+//            L.d("upZipFile", "1ret = " + ret);
+            if (!ret.exists())
+                ret.mkdirs();
+            substr = dirs[dirs.length - 1];
+            try {
+                //substr.trim();
+                substr = new String(substr.getBytes("8859_1"), "GB2312");
+//                L.d("upZipFile", "substr = " + substr);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            ret = new File(ret, substr);
+//            L.d("upZipFile", "2ret = " + ret);
+            return ret;
+        }
+
+        return ret;
+    }
+
+
+    //<editor-fold desc="文件读写，解压缩">
+
     /**
      * 解压缩功能.
      * 将ZIP_FILENAME文件解压到ZIP_DIR目录下.
@@ -599,7 +767,7 @@ public class FileUtil {
                     //此处有个坑，解压缩出来第一级是文件夹的时候不一定走上面的isDirectory,直接跑这里第二级文件来了
                     //所以第二级文件的parent文件夹不一定存在，所以需要parent创建一下
                     File file = new File(folderPath + File.separator + szName);
-                    file.getParentFile().mkdirs();
+                    file.getParentFile().mkdirs();//似乎不需要getParent
                     L.e("unZipFile", file.exists() + "-unZipFile is file path = " + file.getPath());
                     file.createNewFile();
                     // get the output stream of the file
@@ -673,80 +841,27 @@ public class FileUtil {
     }
 
     /**
-     * 获取SDCard的目录路径功能
-     */
-    public static String getSDCardPath() {
-        File sdcardDir = null;
-        // 判断SDCard是否存在
-        boolean sdcardExist = Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED);
-        if (sdcardExist) {
-            sdcardDir = Environment.getExternalStorageDirectory();
-        } else {
-            sdcardDir = Environment.getDataDirectory();
-        }
-        return sdcardDir.toString();
-    }
-
-    /**
-     * 给定根目录，返回一个相对路径所对应的实际文件名.
+     * 读取文件，返回一个byte数组
      *
-     * @param baseDir     指定根目录
-     * @param absFileName 相对路径名，来自于ZipEntry中的name
-     * @return java.io.File 实际的文件
+     * @return
+     * @throws
      */
-    private static File getRealFileName(String baseDir, String absFileName) {
-        String[] dirs = absFileName.split("/");
-        File ret = new File(baseDir);
-        String substr = null;
-        if (dirs.length > 1) {
-            for (int i = 0; i < dirs.length - 1; i++) {
-                substr = dirs[i];
-                try {
-                    //substr.trim();
-                    substr = new String(substr.getBytes("8859_1"), "GB2312");
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                ret = new File(ret, substr);
-
-            }
-//            L.d("upZipFile", "1ret = " + ret);
-            if (!ret.exists())
-                ret.mkdirs();
-            substr = dirs[dirs.length - 1];
-            try {
-                //substr.trim();
-                substr = new String(substr.getBytes("8859_1"), "GB2312");
-//                L.d("upZipFile", "substr = " + substr);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            ret = new File(ret, substr);
-//            L.d("upZipFile", "2ret = " + ret);
-            return ret;
+    public static byte[] readFile(File file) throws Exception {
+        if (file == null || !file.isFile()) {
+            return null;
         }
-
-        return ret;
-    }
-
-    /**
-     * 通过流创建文件
-     */
-    public static void createFileFormInputStream(InputStream is, String path) {
-        try {
-            FileOutputStream fos = new FileOutputStream(path);
-            byte[] buf = new byte[1376];
-            while (is.read(buf) > 0) {
-                fos.write(buf, 0, buf.length);
-            }
-            is.close();
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileInputStream inStream = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        while ((len = inStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, len);// 把buffer里的数据写入流中
         }
+        byte[] data = outStream.toByteArray();
+        outStream.close();
+        inStream.close();
+
+        return data;
     }
 
     /**
@@ -799,6 +914,28 @@ public class FileUtil {
                 }
             } catch (IOException e) {
             }
+        }
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="文件创建，复制，删除">
+
+    /**
+     * 通过流创建文件
+     */
+    public static void createFileFormInputStream(InputStream is, String path) {
+        try {
+            FileOutputStream fos = new FileOutputStream(path);
+            byte[] buf = new byte[1376];
+            while (is.read(buf) > 0) {
+                fos.write(buf, 0, buf.length);
+            }
+            is.close();
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -903,263 +1040,6 @@ public class FileUtil {
         }
     }
 
-
-    /**
-     * 删除文件 如果文件存在删除文件，否则返回false
-     *
-     * @param path
-     * @return
-     */
-    public static boolean deleteFile(String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            return file.delete();
-        }
-        return false;
-    }
-
-    /**
-     * 递归删除目录下的所有文件及子目录下所有文件
-     *
-     * @param dir 将要删除的文件目录
-     * @return 删除成功返回true，否则返回false,如果文件是空，那么永远返回true
-     */
-    public static boolean deleteDir(File dir) {
-        if (dir == null) {
-            return true;
-        }
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            // 递归删除目录中的子目录下
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        // 目录此时为空，可以删除，或者删除的是文件
-        return dir.delete();
-    }
-
-    /**
-     * 递归返回文件或者目录的大小（单位:KB）
-     * 不建议使用这个方法，有点坑
-     * 可以使用下面的方法：http://blog.csdn.net/loongggdroid/article/details/12304695
-     *
-     * @param path
-     * @param size
-     * @return
-     */
-    private static float getSize(String path, Float size) {
-        File file = new File(path);
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                String[] children = file.list();
-                for (int fileIndex = 0; fileIndex < children.length; ++fileIndex) {
-                    float tmpSize = getSize(file.getPath() + File.separator + children[fileIndex], size) / 1000;
-                    size += tmpSize;
-                }
-            } else if (file.isFile()) {
-                size += file.length();
-            }
-        }
-        return size;
-    }
-
-    /**
-     * 获取apk文件的icon
-     *
-     * @param context
-     * @param path    apk文件路径
-     * @return
-     */
-    public static Drawable getApkIcon(Context context, String path) {
-        PackageManager pm = context.getPackageManager();
-        PackageInfo info = pm.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
-        if (info != null) {
-            ApplicationInfo appInfo = info.applicationInfo;
-            //android有bug，需要下面这两句话来修复才能获取apk图片
-            appInfo.sourceDir = path;
-            appInfo.publicSourceDir = path;
-//			    String packageName = appInfo.packageName;  //得到安装包名称
-//	            String version=info.versionName;       //得到版本信息
-            return pm.getApplicationIcon(appInfo);
-        }
-        return null;
-    }
-
-    /**
-     * 获取文件指定文件的指定单位的大小
-     *
-     * @param filePath 文件路径
-     * @param sizeType 获取大小的类型1为B、2为KB、3为MB、4为GB
-     * @return double值的大小
-     */
-    public static Double getFileOrFilesSize(String filePath, int sizeType) {
-        File file = new File(filePath);
-        long blockSize = 0;
-        try {
-            if (file.isDirectory()) {
-                blockSize = getFileSizes(file);
-            } else {
-                blockSize = getFileSize(file);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("获取文件大小", "获取失败!");
-        }
-        return FormetFileSize(blockSize, sizeType);
-    }
-
-    /**
-     * 调用此方法自动计算指定文件或指定文件夹的大小
-     *
-     * @param filePath 文件路径
-     * @return 计算好的带B、KB、MB、GB的字符串
-     */
-    public static String getAutoFileOrFilesSize(String filePath) {
-        File file = new File(filePath);
-        long blockSize = 0;
-        try {
-            if (file.isDirectory()) {
-                blockSize = getFileSizes(file);
-            } else {
-                blockSize = getFileSize(file);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("获取文件大小", "获取失败!");
-        }
-        return FormetFileSize(blockSize);
-    }
-
-    /**
-     * 读取文件，返回一个byte数组
-     *
-     * @return
-     * @throws
-     */
-    public static byte[] readFile(File file) throws Exception {
-        if (file == null || !file.isFile()) {
-            return null;
-        }
-        FileInputStream inStream = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        int len = -1;
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        while ((len = inStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, len);// 把buffer里的数据写入流中
-        }
-        byte[] data = outStream.toByteArray();
-        outStream.close();
-        inStream.close();
-
-        return data;
-    }
-
-    /**
-     * 获取指定文件大小
-     *
-     * @param
-     * @return
-     * @throws
-     */
-    private static long getFileSize(File file) throws Exception {
-        long size = 0;
-        if (file.exists()) {
-            FileInputStream fis = null;
-            fis = new FileInputStream(file);
-            size = fis.available();
-        } else {
-//            file.createNewFile();
-            Log.e("获取文件大小", "文件不存在!");
-        }
-        return size;
-    }
-
-    /**
-     * 获取指定文件夹
-     *
-     * @param f
-     * @return
-     * @throws
-     */
-    private static long getFileSizes(File f) throws Exception {
-        long size = 0;
-        File flist[] = f.listFiles();
-        for (int i = 0; i < flist.length; i++) {
-            if (flist[i].isDirectory()) {
-                size = size + getFileSizes(flist[i]);
-            } else {
-                size = size + getFileSize(flist[i]);
-            }
-        }
-        return size;
-    }
-
-    /**
-     * 转换文件大小
-     *
-     * @param fileS
-     * @return
-     */
-    private static String FormetFileSize(long fileS) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        String fileSizeString = "";
-        String wrongSize = "0B";
-        if (fileS == 0) {
-            return wrongSize;
-        }
-        if (fileS < 1024) {
-            fileSizeString = df.format((double) fileS) + "B";
-        } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "KB";
-        } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "MB";
-        } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "GB";
-        }
-        return fileSizeString;
-    }
-
-    /**
-     * 转换文件大小,指定转换的类型
-     *
-     * @param fileS
-     * @param sizeType
-     * @return
-     */
-    private static Double FormetFileSize(long fileS, int sizeType) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        double fileSizeLong = 0;
-        switch (sizeType) {
-            case SIZETYPE_B:
-                BigDecimal b = new BigDecimal((double) fileS);
-                fileSizeLong = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                break;
-            case SIZETYPE_KB:
-//                BigDecimal kb = new BigDecimal((double) fileS / 1024);
-//                fileSizeLong = kb.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                fileSizeLong = Double.valueOf(df.format((double) fileS / 1024));
-                break;
-            case SIZETYPE_MB:
-//                BigDecimal mb = new BigDecimal((double) fileS / 1048576);
-//                fileSizeLong = mb.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                fileSizeLong = Double.valueOf(df.format((double) fileS / 1048576));
-                break;
-            case SIZETYPE_GB:
-                BigDecimal gb = new BigDecimal((double) fileS / 1073741824);
-                fileSizeLong = gb.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-//                fileSizeLong = Double.valueOf(df
-//                        .format((double) fileS / 1073741824));
-                break;
-            default:
-                break;
-        }
-        return fileSizeLong;
-    }
-
     /**
      * 复制文件夹及其中的文件
      *
@@ -1210,6 +1090,298 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 删除文件 如果文件存在删除文件，否则返回false
+     *
+     * @param path
+     * @return
+     */
+    public static boolean deleteFile(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            return file.delete();
+        }
+        return false;
+    }
+
+    /**
+     * 递归删除目录下的所有文件及子目录下所有文件
+     *
+     * @param dir 将要删除的文件目录
+     * @return 删除成功返回true，否则返回false,如果文件是空，那么永远返回true
+     */
+    public static boolean deleteDir(File dir) {
+        if (dir == null) {
+            return true;
+        }
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            // 递归删除目录中的子目录下
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // 目录此时为空，可以删除，或者删除的是文件
+        return dir.delete();
+    }
+    //</editor-fold>
+
+
+    /**
+     * 获取apk文件的icon
+     * 该方法耗时较长，最好放到子线程（几十到100多ms）
+     *
+     * @param context
+     * @param path    apk文件路径
+     * @return
+     */
+    public static Drawable getApkIcon(Context context, String path) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            ApplicationInfo appInfo = info.applicationInfo;
+            //android有bug，需要下面这两句话来修复才能获取apk图片
+            appInfo.sourceDir = path;
+            appInfo.publicSourceDir = path;
+//			    String packageName = appInfo.packageName;  //得到安装包名称
+//	            String version=info.versionName;       //得到版本信息
+            return pm.getApplicationIcon(appInfo);
+        }
+        return null;
+    }
+
+
+    //<editor-fold desc="文件大小相关 ">
+
+    /**
+     * 格式化文件大小
+     *
+     * @param size file.length() 获取文件大小
+     * @return
+     */
+    public static String formatFileSize(double size) {
+        double kiloByte = size / 1024;
+        if (kiloByte < 1) {
+            return CommonUtils.formatZeroDecimal(size) + "B";
+        }
+
+        double megaByte = kiloByte / 1024;
+        if (megaByte < 1) {
+            BigDecimal result1 = new BigDecimal(Double.toString(kiloByte));
+            return result1.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "KB";
+        }
+
+        double gigaByte = megaByte / 1024;
+        if (gigaByte < 1) {
+            BigDecimal result2 = new BigDecimal(Double.toString(megaByte));
+            return result2.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "MB";
+        }
+
+        double teraBytes = gigaByte / 1024;
+        if (teraBytes < 1) {
+            BigDecimal result3 = new BigDecimal(Double.toString(gigaByte));
+            return result3.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "GB";
+        }
+        BigDecimal result4 = new BigDecimal(teraBytes);
+        return result4.setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString() + "TB";
+    }
+
+    /**
+     * 获取文件指定文件的指定单位的大小
+     *
+     * @param filePath 文件路径
+     * @param sizeType 获取大小的类型1为B、2为KB、3为MB、4为GB
+     * @return double值的大小
+     */
+    public static Double getFileOrFilesSize(String filePath, int sizeType) {
+        File file = new File(filePath);
+        long blockSize = 0;
+        try {
+            if (file.isDirectory()) {
+                blockSize = getFileSizes(file);
+            } else {
+                blockSize = getFileSize(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("获取文件大小", "获取失败!");
+        }
+        return formatFileSize(blockSize, sizeType);
+    }
+
+    /**
+     * 调用此方法自动计算指定文件或指定文件夹的大小
+     *
+     * @param filePath 文件路径
+     * @return 计算好的带B、KB、MB、GB的字符串
+     */
+    public static String getAutoFileOrFilesSize(String filePath) {
+        File file = new File(filePath);
+        long blockSize = 0;
+        try {
+            if (file.isDirectory()) {
+                blockSize = getFileSizes(file);
+            } else {
+                blockSize = getFileSize(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("获取文件大小", "获取失败!");
+        }
+        return formatFileSize(blockSize);
+    }
+
+    /**
+     * 获取指定文件大小
+     *
+     * @param
+     * @return
+     * @throws
+     */
+    private static long getFileSize(File file) throws Exception {
+        long size = 0;
+        if (file.exists()) {
+            FileInputStream fis = null;
+            fis = new FileInputStream(file);
+            size = fis.available();
+        } else {
+//            file.createNewFile();
+            Log.e("获取文件大小", "文件不存在!");
+        }
+        return size;
+    }
+
+    /**
+     * 获取文件夹大小
+     */
+    public static long getDirSize(String filePath) {
+        long size = 0;
+        File f = new File(filePath);
+        if (f.isDirectory()) {
+            File[] files = f.listFiles();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    size += getDirSize(file.getPath());
+                    continue;
+                }
+                size += file.length();
+            }
+        } else {
+            size += f.length();
+        }
+        return size;
+    }
+
+    /**
+     * 获取指定文件夹
+     *
+     * @param f
+     * @return
+     * @throws
+     */
+    private static long getFileSizes(File f) throws Exception {
+        long size = 0;
+        File flist[] = f.listFiles();
+        for (int i = 0; i < flist.length; i++) {
+            if (flist[i].isDirectory()) {
+                size = size + getFileSizes(flist[i]);
+            } else {
+                size = size + getFileSize(flist[i]);
+            }
+        }
+        return size;
+    }
+
+    /**
+     * 转换文件大小
+     *
+     * @param fileS
+     * @return
+     */
+    private static String formatFileSize(long fileS) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String fileSizeString = "";
+        String wrongSize = "0B";
+        if (fileS == 0) {
+            return wrongSize;
+        }
+        if (fileS < 1024) {
+            fileSizeString = df.format((double) fileS) + "B";
+        } else if (fileS < 1048576) {
+            fileSizeString = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1073741824) {
+            fileSizeString = df.format((double) fileS / 1048576) + "MB";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "GB";
+        }
+        return fileSizeString;
+    }
+
+    /**
+     * 转换文件大小,指定转换的类型
+     *
+     * @param fileS
+     * @param sizeType
+     * @return
+     */
+    private static Double formatFileSize(long fileS, int sizeType) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        double fileSizeLong = 0;
+        switch (sizeType) {
+            case SIZETYPE_B:
+                BigDecimal b = new BigDecimal((double) fileS);
+                fileSizeLong = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                break;
+            case SIZETYPE_KB:
+//                BigDecimal kb = new BigDecimal((double) fileS / 1024);
+//                fileSizeLong = kb.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                fileSizeLong = Double.valueOf(df.format((double) fileS / 1024));
+                break;
+            case SIZETYPE_MB:
+//                BigDecimal mb = new BigDecimal((double) fileS / 1048576);
+//                fileSizeLong = mb.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                fileSizeLong = Double.valueOf(df.format((double) fileS / 1048576));
+                break;
+            case SIZETYPE_GB:
+                BigDecimal gb = new BigDecimal((double) fileS / 1073741824);
+                fileSizeLong = gb.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//                fileSizeLong = Double.valueOf(df
+//                        .format((double) fileS / 1073741824));
+                break;
+            default:
+                break;
+        }
+        return fileSizeLong;
+    }
+
+    /**
+     * 递归返回文件或者目录的大小（单位:KB）
+     * 不建议使用这个方法，有点坑
+     * 可以使用下面的方法：http://blog.csdn.net/loongggdroid/article/details/12304695
+     *
+     * @param path
+     * @param size
+     * @return
+     */
+    private static float getSize(String path, Float size) {
+        File file = new File(path);
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                String[] children = file.list();
+                for (int fileIndex = 0; fileIndex < children.length; ++fileIndex) {
+                    float tmpSize = getSize(file.getPath() + File.separator + children[fileIndex], size) / 1000;
+                    size += tmpSize;
+                }
+            } else if (file.isFile()) {
+                size += file.length();
+            }
+        }
+        return size;
+    }
+    //</editor-fold>
 
     //<editor-fold desc="打开文件 ">
 
@@ -1433,20 +1605,6 @@ public class FileUtil {
         return intent;
     }
 
-    /**
-     * 获取文件类型
-     *
-     * @param filePath
-     * @return
-     */
-    private static String getMimeType(String filePath) {
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        //有的文件可能被隐藏了，此处获取隐藏前真实的名字 来决定mineType
-        String realFilePath = FileUtil.getFileOriginName(filePath);
-        String ext = realFilePath.substring(realFilePath.lastIndexOf(".") + 1);
-        String type = mime.getMimeTypeFromExtension(ext);
-        L.e(filePath + "--getMimeType:" + type);
-        return type;
-    }
+
     //</editor-fold>
 }

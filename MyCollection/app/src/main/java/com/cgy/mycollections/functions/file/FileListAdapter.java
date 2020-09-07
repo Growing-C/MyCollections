@@ -4,6 +4,8 @@ package com.cgy.mycollections.functions.file;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,14 @@ import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
+import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.utils.image.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import appframe.utils.L;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -61,11 +65,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
 
     public void setIsSelect(boolean isSelect) {
         this.mIsSelect = isSelect;
+        if (!isSelect)
+            clearSelectedFiles();
+        notifyDataSetChanged();
     }
 
     public void select(FileInfo info) {
         if (mFileList.contains(info))
-            mSelectedFileList.add(info);
+            addSelect(info);
         notifyDataSetChanged();
     }
 
@@ -79,6 +86,10 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
 
     public ArrayList<FileInfo> getSelectedFiles() {
         return mSelectedFileList;
+    }
+
+    public void clearSelectedFiles() {
+        mSelectedFileList.clear();
     }
 
     public void setOnItemClickListener(OnMyItemLongClickListener<FileInfo> onItemClickListener) {
@@ -98,6 +109,11 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
     @Override
     public int getItemCount() {
         return mFileList == null ? 0 : mFileList.size();
+    }
+
+    private void addSelect(FileInfo info) {
+        if (!mSelectedFileList.contains(info))
+            mSelectedFileList.add(info);
     }
 
     class FileHolder extends RecyclerView.ViewHolder {
@@ -146,7 +162,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
                     int position = getAdapterPosition();
                     FileInfo fileInfo = getItem(position);
                     if (isChecked) {
-                        mSelectedFileList.add(fileInfo);
+                        addSelect(fileInfo);
                     } else {
                         mSelectedFileList.remove(fileInfo);
                     }
@@ -180,13 +196,27 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
             }
 
             fileName.setText(info.getShowFileNameWithoutHideFilter());
-            if (info.isDirectory()) {
+            String fileType = FileUtil.getFileType(info.getRealFile());
+            if (TextUtils.isEmpty(fileType))
+                fileImage.setImageResource(R.drawable.file);
+            else if (TextUtils.equals(FileUtil.FILE_TYPE_DIR, fileType)) {
                 fileImage.setImageResource(R.drawable.dir);
-            } else if (ImageHelper.isPicIgnoreDot(info.getFilePath())) {//加载缩略图
+            } else if (TextUtils.equals(fileType, FileUtil.FILE_TYPE_IMAGE)) {
+                //加载缩略图
+                //TODO:隐藏后的路径也能加载出图片，待研究是不是glide缓存
                 ImageLoader.loadImageThumbnail(rightArrow.getContext(), info.getFilePath(), fileImage);
+            } else if (TextUtils.equals(fileType, FileUtil.FILE_TYPE_APK)) {
+                //加载apk icon
+                ImageLoader.loadApkIcon(rightArrow.getContext(), info.getRealFile().getPath(), fileImage, R.drawable.file);
             } else {
                 fileImage.setImageResource(R.drawable.file);
             }
+//            if (info.isDirectory()) {
+//            } else if (ImageHelper.isPicIgnoreDot(info.getFilePath())) {//加载缩略图
+//                ImageLoader.loadImageThumbnail(rightArrow.getContext(), info.getFilePath(), fileImage);
+//            } else {
+//
+//            }
 
             String fileInfo = "";
             if (info.isDirectory()) {

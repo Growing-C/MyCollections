@@ -9,6 +9,11 @@
         android:checkable="true"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_filter"
+        android:orderInCategory="100"
+        android:title="筛选"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_confirm"
         android:orderInCategory="100"
         android:title="确定"

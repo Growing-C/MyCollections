@@ -9,12 +9,15 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.collection.LruCache;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.module.AppGlideModule;
 import com.cgy.mycollections.functions.cache.disklrucache.DiskLruCache;
+import com.cgy.mycollections.utils.FileUtil;
+import com.cgy.mycollections.utils.RxUtil;
 
 import appframe.utils.L;
 
@@ -46,7 +49,7 @@ public class ImageLoader {
      * @param context
      */
     public static void clearCache(final Context context) {
-        applySchedulers(Observable.create(new ObservableOnSubscribe<Boolean>() {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
                 L.e("Glide start clear cache");
@@ -54,7 +57,7 @@ public class ImageLoader {
                 emitter.onNext(true);
                 emitter.onComplete();
             }
-        })).subscribe(new ApiCallback<Boolean>() {
+        }).compose(RxUtil.applySchedulersJobUI()).subscribe(new ApiCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean model) {
 
@@ -87,7 +90,7 @@ public class ImageLoader {
             L.e("loadImage but url is null!!!");
             return;
         }
-        applySchedulers(Observable.create(new ObservableOnSubscribe<Bitmap>() {
+        Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
                 L.e("loadImage start glide");
@@ -121,27 +124,78 @@ public class ImageLoader {
                     emitter.onError(new NullPointerException("loadImage fail url:" + url));
                 emitter.onComplete();
             }
-        })).subscribe(new ApiCallback<Bitmap>() {
+        }).compose(RxUtil.applySchedulersJobUI())
+                .subscribe(new ApiCallback<Bitmap>() {
 
-            @Override
-            public void onSuccess(Bitmap bitmap) {
-                String tagUrl = (String) imageView.getTag();
-                if (!TextUtils.isEmpty(tagUrl) && tagUrl.equalsIgnoreCase(url))//和tag相同才加载
-                    imageView.setImageBitmap(bitmap);
-            }
+                    @Override
+                    public void onSuccess(Bitmap bitmap) {
+                        String tagUrl = (String) imageView.getTag();
+                        if (!TextUtils.isEmpty(tagUrl) && tagUrl.equalsIgnoreCase(url))//和tag相同才加载
+                            imageView.setImageBitmap(bitmap);
+                    }
 
-            @Override
-            public void onFailure(int code, String msg) {
-                L.e("loadImage onFailure url:" + url + "--" + msg);
-            }
+                    @Override
+                    public void onFailure(int code, String msg) {
+                        L.e("loadImage onFailure url:" + url + "--" + msg);
+                    }
 
-            @Override
-            public void onFinish() {
+                    @Override
+                    public void onFinish() {
 
-            }
-        });
+                    }
+                });
     }
 
+    /**
+     * 由于加载apk的方法有点耗时，放到子线程
+     *
+     * @param context
+     * @param apkFilePath
+     * @param imageView
+     * @param defaultImageIds
+     */
+    public static void loadApkIcon(@NonNull Context context, String apkFilePath, @NonNull ImageView imageView, int defaultImageIds) {
+        imageView.setTag(apkFilePath);
+        if (TextUtils.isEmpty(apkFilePath)) {
+            L.e("loadApkIcon but apkFilePath is null!!!");
+            return;
+        }
+        Observable.create(new ObservableOnSubscribe<Drawable>() {
+            @Override
+            public void subscribe(ObservableEmitter<Drawable> emitter) throws Exception {
+                L.e("loadApkIcon start glide");
+                long time = System.currentTimeMillis();
+                Drawable apkIcon = FileUtil.getApkIcon(context, apkFilePath);
+                L.e("loadApkIcon end glide cost time:" + (System.currentTimeMillis() - time));
+                if (apkIcon != null)
+                    emitter.onNext(apkIcon);
+                else
+                    emitter.onError(new NullPointerException("loadApkIcon fail apkFilePath:" + apkFilePath));
+                emitter.onComplete();
+            }
+        }).compose(RxUtil.applySchedulersJobUI())
+                .subscribe(new ApiCallback<Drawable>() {
+                    @Override
+                    public void onSuccess(Drawable drawable) {
+                        String tagUrl = (String) imageView.getTag();
+                        if (!TextUtils.isEmpty(tagUrl) && tagUrl.equalsIgnoreCase(apkFilePath))//和tag相同才加载
+                            imageView.setImageDrawable(drawable);
+                    }
+
+                    @Override
+                    public void onFailure(int code, String msg) {
+                        L.e("loadApkIcon onFailure apkFilePath:" + apkFilePath + "--" + msg);
+                        String tagUrl = (String) imageView.getTag();
+                        if (!TextUtils.isEmpty(tagUrl) && tagUrl.equalsIgnoreCase(apkFilePath))//和tag相同才加载
+                            imageView.setImageResource(defaultImageIds);
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+                });
+    }
 
     /**
      * Glide加载图片，先在线程中加载，然后在主线程中设置，解决 glide直接加载会卡住屏幕的问题
@@ -180,9 +234,9 @@ public class ImageLoader {
     }
 
 
-    private static <T> Observable<T> applySchedulers(Observable<T> var1) {
-        return var1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-    }
+//    private static <T> Observable<T> applySchedulers(Observable<T> var1) {
+//        return var1.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+//    }
 }
 
 //                    Glide.with(mContext).load(url).centerCrop().override(100, 50).placeholder(R.drawable.testpic).into(iv);

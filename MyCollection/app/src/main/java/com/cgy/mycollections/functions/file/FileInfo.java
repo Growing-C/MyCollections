@@ -7,10 +7,12 @@ import android.text.TextUtils;
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.PinYinUtils;
+import com.cgy.mycollections.utils.image.ImageHelper;
 
 import java.io.File;
 import java.io.Serializable;
 
+import appframe.utils.L;
 import appframe.utils.TimeUtils;
 
 /**
@@ -27,6 +29,7 @@ public class FileInfo implements Serializable {
     //  getPath:/storage/emulated/0/baidu
     //  getName:baidu
     public String fileFirstLetter;
+    public String fileType;//文件类型
 
     public int protectState = 0;//保护状态 0 未保护 1 已保护
     public long addProtectDate = 0;//添加保护的日期
@@ -77,11 +80,24 @@ public class FileInfo implements Serializable {
         return filePath;
     }
 
+    /**
+     * 获取文件类型
+     *
+     * @return
+     */
     public String getFileType() {
+        if (!TextUtils.isEmpty(fileType)) {
+            return fileType;
+        }
         if (isDirectory())
-            return FileConstants.FILE_TYPE_DIR;
+            fileType = FileUtil.FILE_TYPE_DIR;
+        else if (ImageHelper.isPicIgnoreDot(getRealFile().getPath())) {
+            fileType = FileUtil.FILE_TYPE_IMAGE;
+        } else {
+            fileType = FileUtil.FILE_TYPE_FILE;
+        }
 
-        return FileConstants.FILE_TYPE_FILE;
+        return fileType;
     }
 
     /**

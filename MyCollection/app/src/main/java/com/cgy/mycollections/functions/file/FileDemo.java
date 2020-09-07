@@ -179,6 +179,7 @@ public class FileDemo extends BaseActivity {
 
     private void refreshCurrentFileList(File parent) {
         mFileList = getSortedChildFiles(parent, Config.isShowHiddenFiles(), true);
+        mFileAdapter.clearSelectedFiles();//清空选中的文件
         mFileAdapter.setData(mFileList);
         L.e(parent.getName() + "-->mFileList size:" + mFileList.size());
 
@@ -304,15 +305,16 @@ public class FileDemo extends BaseActivity {
     private void showDeleteDialog(ArrayList<FileInfo> filesToDelete) {
         if (filesToDelete == null || filesToDelete.size() == 0)
             return;
-
+        int len = filesToDelete.size();
         StringBuilder filePathList = new StringBuilder();
-        for (FileInfo fileInfo :
-                filesToDelete) {
-            filePathList.append(fileInfo.getFilePath());
+        for (int i = 0; i < len; i++) {
+            filePathList.append(i);
+            filePathList.append(".");
+            filePathList.append(filesToDelete.get(i).getFilePath());
             filePathList.append("\n");
         }
         new AlertDialog.Builder(FileDemo.this)
-                .setMessage("确认删除文件？ \n" + filePathList)
+                .setMessage("确认删除" + filesToDelete.size() + "个文件？ \n" + filePathList)
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -330,14 +332,14 @@ public class FileDemo extends BaseActivity {
                 filesToDelete) {
             if (fileInfo.isDirectory()) {
                 //TODO:文件夹删除不应该这么简单，应该要用户多确认
-            } else {
+            } else {//TODO:隐藏文件的删除
                 FileUtil.deleteFile(fileInfo.getFilePath());
                 deleteFileCount++;
             }
         }
         new ToastCustom(FileDemo.this, "删除了 " + deleteFileCount + "个文件", Toast.LENGTH_SHORT).show();
 
-        hideBottomMenu();
+//        hideBottomMenu();
 
         refreshCurrentFileList(mFilePathV.getCurrentDir());
     }
@@ -396,6 +398,7 @@ public class FileDemo extends BaseActivity {
     public void onBackPressed() {
         if (mBottomMenuHolderV.getVisibility() == View.VISIBLE) {
             hideBottomMenu();
+            mFileAdapter.setIsSelect(false);
             return;
         }
 
@@ -447,6 +450,9 @@ public class FileDemo extends BaseActivity {
                     Collections.reverse(mFileList);
                     mFileAdapter.notifyDataSetChanged();
                 }
+                break;
+            case R.id.action_filter://筛选
+
                 break;
             default:
                 break;
