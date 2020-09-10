@@ -10,6 +10,7 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -20,8 +21,10 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import com.cgy.mycollections.functions.ui.textdemo.linkify.LinkMovementMethodEx;
 import com.cgy.mycollections.functions.ui.textdemo.linkify.NoUnderlineSpan;
 import com.cgy.mycollections.widgets.WaveView;
 
+import java.util.Locale;
 import java.util.regex.Matcher;
 
 import appframe.utils.L;
@@ -55,6 +59,10 @@ public class TextDemo extends AppCompatActivity {
     TextView mClickTextV;
     @BindView(R.id.linkify_text)
     TextView mLinkifyTextV;
+    @BindView(R.id.count_down)
+    Button mCountDownV;
+
+    CountDownTimer mCountDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +72,27 @@ public class TextDemo extends AppCompatActivity {
 
         setUpWave();
 
-        setTextClick("可点击的文字");
+        String tt = String.format(Locale.getDefault(), "%s%d", "可点击的文字", 1234);
+        setTextClick(tt);
 
         testLinkify();
     }
 
-    @OnClick({R.id.tv_unlock, R.id.edit_demo})
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+            mCountDownTimer = null;
+        }
+    }
+
+    @OnClick({R.id.tv_unlock, R.id.edit_demo, R.id.count_down})
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.count_down:
+                testCountDown();
+                break;
             case R.id.edit_demo:
                 startActivity(new Intent(this, EditTextActivity.class));
                 break;
@@ -90,6 +111,37 @@ public class TextDemo extends AppCompatActivity {
 
     }
 
+    /**
+     * 测试倒计时
+     */
+    public void testCountDown() {
+        //倒计时
+        if (mCountDownTimer == null) {
+            L.e("testCountDown~~");
+            mCountDownTimer = new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Log.e("test", "millisUntilFinished:" + millisUntilFinished);
+//                    mGetVerifyBtn.setText(String.format("%s%d）", getString(R.string.has_send), millisUntilFinished / 1000));
+                    //四舍五入向上取整 开启后会直接onTick  但是 是 4999,此时需要四舍五入
+                    mCountDownV.setText(String.format(Locale.getDefault(), "(%s%d)", "倒计时", Math.round(millisUntilFinished / 1000f)));
+                }
+
+                @Override
+                public void onFinish() {
+                    mCountDownV.setEnabled(true);
+                    mCountDownV.setText("验证码倒计时");
+                    mCountDownTimer = null;
+                }
+            };
+            mCountDownTimer.start();
+            mCountDownV.setEnabled(false);
+        }
+    }
+
+    /**
+     * 点击动画
+     */
     public void setUpWave() {
         mWaveView.setSpeed(700);
         mWaveView.setOneWaveDuration(5000);
@@ -100,6 +152,11 @@ public class TextDemo extends AppCompatActivity {
         mWaveView.setInterpolator(new LinearOutSlowInInterpolator());
     }
 
+    /**
+     * 给文字添加点击事件
+     *
+     * @param name
+     */
     private void setTextClick(String name) {
         if (TextUtils.isEmpty(name))
             return;
@@ -120,6 +177,9 @@ public class TextDemo extends AppCompatActivity {
         mClickTextV.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
+    /**
+     * 测试识别文字中的电话号码和网址，并添加点击事件
+     */
     private void testLinkify() {
         try {
             //此方法只适用于部分手机，红米note8之类的不管用，而且 Linkify.WEB_URLS这个不能正确识别

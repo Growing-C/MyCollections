@@ -15,6 +15,9 @@ import butterknife.OnClick;
 /**
  * 切换app logo 和名称,通过桌面长按applogo 选中shortcut中的app样式进入
  * https://juejin.im/post/5c36f2226fb9a049b7809170
+ * 可以根据alias切换app到不同模式
+ * 目前仅切换了app名和图标
+ * TODO：  待开发不同模式内容，如好孩子模式等，
  */
 public class SwitchAppAliaActivity extends BaseActivity {
 

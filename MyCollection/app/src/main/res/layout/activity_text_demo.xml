@@ -52,6 +52,12 @@
             android:layout_height="wrap_content"
             android:text="edit Text Demo" />
 
+        <Button
+            android:id="@+id/count_down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="验证码倒计时" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
