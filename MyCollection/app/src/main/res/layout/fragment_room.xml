@@ -5,16 +5,22 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/user_name"
+        android:id="@+id/account_source"
         android:layout_width="match_parent"
-        android:hint="用户名"
+        android:hint="账号网站名"
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/age"
+        android:id="@+id/account_name"
         android:layout_width="match_parent"
-        android:hint="用户年龄"
-        android:inputType="number"
+        android:hint="账号"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:hint="密码"
+        android:inputType="textPassword"
         android:layout_height="wrap_content" />
 
     <Button
@@ -22,6 +28,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="添加" />
+
+    <Button
+        android:id="@+id/load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="加载" />
 
 
     <androidx.recyclerview.widget.RecyclerView

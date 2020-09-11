@@ -15,11 +15,13 @@ import appframe.utils.L;
  * Author :cgy
  * Date :2019/10/18
  */
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class, Account.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = "mydb";
 
     public abstract UserDao userDao();
+
+    public abstract AccountDao accountDao();
 
     // For Singleton instantiation
     private static AppDatabase instance;
