@@ -270,14 +270,12 @@ public class NetRequestDemo extends AppCompatActivity {
     public static final String CHARSET = "utf-8";// 编码方式
 
     private static final int TIME_OUT = 10 * 1000;// 超时时间
-    private static String lock = new String();
+    private static final String lock = "lock";
 
     public void post(View view) {//http post
         new Thread() {
             public void run() {
                 synchronized (lock) {
-
-
                     try {
                         JSONObject requestData = new JSONObject();
                         requestData.put("mobile", "15051286108");
@@ -395,6 +393,95 @@ public class NetRequestDemo extends AppCompatActivity {
             }
         }.start();
     }
+
+    /**
+     * 禅道上传图片
+     *
+     * @param imgPath
+     * @return
+     */
+    public static synchronized String uploadImage(String imgPath) {
+        String msg;
+        File file = new File(imgPath);
+        if (!file.exists()) {
+            msg = "文件不存在！";
+            return msg;
+        }
+
+        try {
+            String end = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "*****";//边界 可以自定义
+
+            URL url = new URL("http://192.168.32.116/zentao/index.php?m=file&f=ajaxUpload&t=json&uid=odts3hcdp9l5fjng1p874t0082&dir=image");
+            HttpURLConnection conn = (HttpURLConnection) url
+                    .openConnection();
+
+//            conn.setRequestProperty("Cookie", ZentaoAccountKeeper.sZentaoCookie);//提交bug必须有cookie
+//            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            conn.setUseCaches(false);
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setRequestMethod("POST");
+            // 设置字符编码连接参数
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("Charset", CHARSET);
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(TIME_OUT);
+
+            conn.connect();
+
+            //上传文件 这里面的 boundary必须有，不过可以自定义
+            DataOutputStream out = new DataOutputStream(conn.getOutputStream());
+            DataInputStream in = new DataInputStream(new FileInputStream(file));
+            int bytes = 0;
+            out.writeBytes(twoHyphens + boundary + end);
+            out.writeBytes("Content-Disposition: form-data; name=\"imgFile\"; filename=\""
+                    + file.getName() + "\"\r\n");// 这里的name由接口给出  可变
+
+            out.writeBytes(end);
+            byte[] bufferOut = new byte[2048];
+            while ((bytes = in.read(bufferOut)) != -1) {
+                out.write(bufferOut, 0, bytes);
+            }
+            out.writeBytes(end);
+            out.writeBytes("--" + boundary + "\r\n");
+
+            in.close();
+
+            out.flush();
+            out.close();
+
+            int code = conn.getResponseCode();
+            if (code == HttpURLConnection.HTTP_OK) {
+                byte[] bit = readInputStream(conn
+                        .getInputStream());
+                String string = new String(bit, CHARSET);
+
+                JSONObject response = new JSONObject(string);
+                int result = response.optInt("error");
+                if (result == 0) {
+                    msg = "上传成功";
+                    String urla = response.optString("url");
+                    return urla;
+                } else {
+                    JSONObject message = response.optJSONObject("message");
+
+                    msg = "上传失败" + message.toString();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        msg = "上传图片失败";
+        return msg;
+    }
+    //</editor-fold">
+
+    //<editor-fold desc="retrofit ">
 
     /**
      * rest方式获取短链接
@@ -541,92 +628,6 @@ public class NetRequestDemo extends AppCompatActivity {
 //                });
     }
 
-
-    /**
-     * 禅道上传图片
-     *
-     * @param imgPath
-     * @return
-     */
-    public static synchronized String uploadImage(String imgPath) {
-        String msg;
-        File file = new File(imgPath);
-        if (!file.exists()) {
-            msg = "文件不存在！";
-            return msg;
-        }
-
-        try {
-            String end = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "*****";//边界 可以自定义
-
-            URL url = new URL("http://192.168.32.116/zentao/index.php?m=file&f=ajaxUpload&t=json&uid=odts3hcdp9l5fjng1p874t0082&dir=image");
-            HttpURLConnection conn = (HttpURLConnection) url
-                    .openConnection();
-
-//            conn.setRequestProperty("Cookie", ZentaoAccountKeeper.sZentaoCookie);//提交bug必须有cookie
-//            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-            conn.setUseCaches(false);
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-            conn.setDoOutput(true);
-            conn.setDoInput(true);
-            conn.setRequestMethod("POST");
-            // 设置字符编码连接参数
-            conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.setRequestProperty("Charset", CHARSET);
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(TIME_OUT);
-
-            conn.connect();
-
-            //上传文件 这里面的 boundary必须有，不过可以自定义
-            DataOutputStream out = new DataOutputStream(conn.getOutputStream());
-            DataInputStream in = new DataInputStream(new FileInputStream(file));
-            int bytes = 0;
-            out.writeBytes(twoHyphens + boundary + end);
-            out.writeBytes("Content-Disposition: form-data; name=\"imgFile\"; filename=\""
-                    + file.getName() + "\"\r\n");// 这里的name由接口给出  可变
-
-            out.writeBytes(end);
-            byte[] bufferOut = new byte[2048];
-            while ((bytes = in.read(bufferOut)) != -1) {
-                out.write(bufferOut, 0, bytes);
-            }
-            out.writeBytes(end);
-            out.writeBytes("--" + boundary + "\r\n");
-
-            in.close();
-
-            out.flush();
-            out.close();
-
-            int code = conn.getResponseCode();
-            if (code == HttpURLConnection.HTTP_OK) {
-                byte[] bit = readInputStream(conn
-                        .getInputStream());
-                String string = new String(bit, CHARSET);
-
-                JSONObject response = new JSONObject(string);
-                int result = response.optInt("error");
-                if (result == 0) {
-                    msg = "上传成功";
-                    String urla = response.optString("url");
-                    return urla;
-                } else {
-                    JSONObject message = response.optJSONObject("message");
-
-                    msg = "上传失败" + message.toString();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        msg = "上传图片失败";
-        return msg;
-    }
 
     //</editor-fold>
 

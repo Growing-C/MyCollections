@@ -1,0 +1,15 @@
+{
+  "dynamicLinkInfo": {
+    "domainUriPrefix": "https://blockchainlock.page.link",
+    "link": "https://www.example.com/",
+    "androidInfo": {
+      "androidPackageName": "com.example.android"
+    },
+    "iosInfo": {
+      "iosBundleId": "com.example.ios"
+    },
+    "suffix": {
+      "option": "SHORT"
+    }
+  }
+}

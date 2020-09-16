@@ -1,6 +1,8 @@
 package appframe.utils;
 
 
+import android.text.TextUtils;
+
 import com.witon.mylibrary.BuildConfig;
 
 import java.lang.reflect.Method;
@@ -29,6 +31,7 @@ public class L {
     private static boolean SDebug = false;
     /**
      * Default length.
+     * logcat一次输出最多这么多，再多就不见了
      */
     private static final int MAX_LENGTH = 4000;
     /**
@@ -161,7 +164,9 @@ public class L {
     }
 
     /**
-     * Print log for define method. When information is too long, the Logger can also complete printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
+     * Print log for define method. When information is too long, the Logger can also complete
+     * printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code
+     * com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
      *
      * @param method  such as "{@code v, i, d, w, e, wtf}".
      * @param message message.
@@ -171,7 +176,9 @@ public class L {
     }
 
     /**
-     * Print log for define method. When information is too long, the Logger can also complete printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
+     * Print log for define method. When information is too long, the Logger can also complete
+     * printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code
+     * com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
      *
      * @param method  such as "{@code v, i, d, w, e, wtf}".
      * @param tag     tag.
@@ -185,16 +192,50 @@ public class L {
             if (strLength == 0)
                 invokePrint(method, tag, message);
             else {
+                //大于最大长度的时候需要截取
                 for (int i = 0; i < strLength / maxLength + (strLength % maxLength > 0 ? 1 : 0); i++) {
                     int end = (i + 1) * maxLength;
                     if (strLength >= end) {
-                        invokePrint(method, tag, message.substring(end - maxLength, end));
+                        printAutoNewLine(method, tag, message.substring(end - maxLength, end));
                     } else {
-                        invokePrint(method, tag, message.substring(end - maxLength));
+                        printAutoNewLine(method, tag, message.substring(end - maxLength));
                     }
                 }
             }
         }
+    }
+
+    /**
+     * 打印时自动换行
+     *
+     * @param method
+     * @param tag
+     * @param message
+     */
+    private static void printAutoNewLine(String method, String tag, String message) {
+        if (!TextUtils.isEmpty(message)) {
+            String[] singleLineMessage = message.split("\n");
+            for (int i = 0, len = singleLineMessage.length; i < len; i++) {
+                if (!TextUtils.isEmpty(singleLineMessage[i]))//过滤空行
+                    invokePrint(method, i > 0 ? tag + randomKey() : tag, singleLineMessage[i]);
+            }
+        }
+    }
+
+    private static int last;
+
+    /**
+     * 由于studio 3.1之后会莫名其妙的换行以及前部时间等信息缺失，导致logger不对齐，此处logger使用这个strategy来防止这个情况
+     *
+     * @return
+     */
+    private static String randomKey() {
+        int random = (int) (10 * Math.random());
+        if (random == last) {
+            random = (random + 1) % 10;
+        }
+        last = random;
+        return String.valueOf(random);
     }
 
     /**
@@ -216,7 +257,9 @@ public class L {
     }
 
     /**
-     * Print log for define method. When information is too long, the Logger can also complete printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
+     * Print log for define method. When information is too long, the Logger can also complete
+     * printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code
+     * com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
      *
      * @param method  such as "{@code v, i, d, w, e, wtf}".
      * @param message message.
@@ -227,7 +270,9 @@ public class L {
     }
 
     /**
-     * Print log for define method. When information is too long, the Logger can also complete printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
+     * Print log for define method. When information is too long, the Logger can also complete
+     * printing. The equivalent of "{@code android.util.Log.i("Tag", "Message")}" "{@code
+     * com.yolanda.nohttp.Logger.print("i", "Tag", "Message")}".
      *
      * @param method  such as "{@code v, i, d, w, e, wtf}".
      * @param tag     tag.

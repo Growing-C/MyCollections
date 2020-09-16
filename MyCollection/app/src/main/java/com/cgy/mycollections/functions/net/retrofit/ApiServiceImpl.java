@@ -1,5 +1,6 @@
 package com.cgy.mycollections.functions.net.retrofit;
 
+import com.cgy.mycollections.functions.net.retrofit.mock.MockDataInterceptor;
 import com.cgy.mycollections.functions.net.retrofit.params.DynamicLinkParam;
 
 import io.reactivex.Observable;
@@ -15,6 +16,7 @@ public class ApiServiceImpl {
 
     private ApiServiceImpl() {
         Api.getInstance().setBaseUrl("https://firebasedynamiclinks.googleapis.com/");
+        Api.getInstance().setMockDataInterceptor(new MockDataInterceptor());//网络请求数据mock
     }
 
     public static ApiServiceImpl getInstance() {
@@ -60,7 +62,7 @@ public class ApiServiceImpl {
         param.setAndroidPackageName(androidPkg);
         param.setIosBundleId(iosBundle);
         param.setSuffix(suffix);
-        return applySchedulers(prepareApiService().createShortDynamicLinks(url,param));
+        return applySchedulers(prepareApiService().createShortDynamicLinks(url, param));
     }
     //</editor-fold">
 }

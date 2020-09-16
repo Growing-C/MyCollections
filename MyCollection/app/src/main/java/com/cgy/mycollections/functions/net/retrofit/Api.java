@@ -1,15 +1,25 @@
 package com.cgy.mycollections.functions.net.retrofit;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
 import com.cgy.mycollections.MyApplication;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.net.retrofit.cache.CacheStrategy;
+import com.cgy.mycollections.functions.net.retrofit.cache.NetworkHelper;
 import com.cgy.mycollections.functions.net.retrofit.responsemonitor.IResponseReporter;
 import com.cgy.mycollections.functions.net.retrofit.responsemonitor.ResponseMonitor;
+
 import appframe.utils.L;
+
 import com.cgy.mycollections.utils.SystemUtil;
+import com.cgy.mycollections.utils.dataparse.JsonFormatter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -39,6 +50,8 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
+import okhttp3.Cache;
+import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -52,20 +65,20 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by yanghailang on 16/7/19.
- */
 public final class Api {
-    public Map<String, Object> apis = new HashMap<String, Object>();
+    public Map<String, Object> apis = new HashMap<>();//api缓存
+    private Map<String, Object> proxyApis = new HashMap<>();//proxy api缓存
     private static OkHttpClient okHttpClient;
-    private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
-    private static CallAdapter.Factory rxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create();
+    private Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
+    //    private Converter.Factory scalarsConverterFactory = ScalarsConverterFactory.create();
+    private CallAdapter.Factory rxJava2CallAdapterFactory = RxJava2CallAdapterFactory.create();
 
     public static int TIME_OUT_SECONDS = 20;//默认超时时间 暂时设置为20，js那边有个接口超过10秒
 
-    private static Api mApi;
-    private X509TrustManager mX509TrustManager;
+    private static volatile Api mApi;
+//    private X509TrustManager mX509TrustManager;
 
+    //    private Certificate mCa;
     private String mBaseUrl;
 
     private Api() {
@@ -73,26 +86,84 @@ public final class Api {
 
     //最好外部使用到Api的时候不要继承了，直接用getInstance...这样可以有多个wrapper，同时只有一个Api实例
     public static Api getInstance() {
-        synchronized (Api.class) {
-            if (mApi == null) {
-                mApi = new Api();
+        if (mApi == null) {
+            synchronized (Api.class) {
+                if (mApi == null) {
+                    mApi = new Api();
+                }
             }
-            return mApi;
         }
+        return mApi;
     }
 
     private Interceptor mMockDataInterceptor;//仅测试用
     private Interceptor mResponseMonitor;//额外的结果监控者
     private Interceptor mResponseReporter;//用于监控response错误 上报
 
+    private List<Interceptor> mExtNetworkInterceptorList;// 额外的networkInterceptor
+    private List<Interceptor> mExtInterceptorList;//额外的interceptor
+    private Cache cache;
+
     /**
      * 外部设置的header
      */
     public Map<String, String> mExternalHeaders = new HashMap<String, String>();
 
-
     public void setBaseUrl(String mBaseUrl) {
         this.mBaseUrl = mBaseUrl;
+    }
+
+//    /**
+//     * 替换gsonConverterFactory,
+//     *
+//     * @param gsonConverterFactory
+//     */
+//    public void setGsonConverterFactory(Converter.Factory gsonConverterFactory) {
+//        this.gsonConverterFactory = gsonConverterFactory;
+//    }
+
+    public void setNetCache(Cache cache) {
+        this.cache = cache;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void enableCache(int cacheExpireTimeInSecond, CacheStrategy strategy) {
+        NetworkHelper.getInstance().enableCache(cacheExpireTimeInSecond, strategy);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void disableCache() {
+        NetworkHelper.getInstance().disableCache();
+    }
+
+    public void addNetworkInterceptor(Interceptor networkInterceptor) {
+        if (mExtNetworkInterceptorList == null) {
+            mExtNetworkInterceptorList = new ArrayList<>();
+        }
+        if (networkInterceptor != null)
+            mExtNetworkInterceptorList.add(networkInterceptor);
+    }
+
+    public void addInterceptor(Interceptor interceptor) {
+        if (mExtInterceptorList == null) {
+            mExtInterceptorList = new ArrayList<>();
+        }
+        if (interceptor != null)
+            mExtInterceptorList.add(interceptor);
+    }
+
+    /**
+     * 删除所有的 interceptor 包括mExtInterceptorList和mExtNetworkInterceptorList
+     *
+     * @param interceptor
+     */
+    public void removeInterceptor(Interceptor interceptor) {
+        if (mExtInterceptorList != null) {
+            mExtInterceptorList.remove(interceptor);
+        }
+        if (mExtNetworkInterceptorList != null) {
+            mExtNetworkInterceptorList.remove(interceptor);
+        }
     }
 
     /**
@@ -106,6 +177,19 @@ public final class Api {
             return;//空的不操作
 
         mExternalHeaders.put(key, value);
+    }
+
+    /**
+     * 获取某个请求头
+     *
+     * @param key
+     * @return
+     */
+    public String getHeader(String key) {
+        if (TextUtils.isEmpty(key))
+            return "";//空的不操作
+
+        return mExternalHeaders.get(key);
     }
 
     /**
@@ -193,6 +277,8 @@ public final class Api {
 
     /**
      * 所有的createApi最后都应该走这里
+     * <p>
+     * param apiNamePrefix          缓存用的api名称前缀（防止clazz一样的时候缓存出问题）
      *
      * @param clazz
      * @param factory                指定的convertFactory
@@ -202,7 +288,9 @@ public final class Api {
      * @param <T>
      * @return
      */
-    public <T> T createApi(final Class<T> clazz, Converter.Factory factory, boolean containStringConverter, String baseUrl, boolean useCache) {
+    public <T> T createApi(final Class<T> clazz, Converter.Factory factory,
+                           boolean containStringConverter,
+                           @NonNull String baseUrl, boolean useCache) {
         Object api;
         String apiName = clazz.getName();
         if (useCache) {//如果使用缓存，根据clazz名获取缓存中是否有
@@ -218,17 +306,13 @@ public final class Api {
         Retrofit.Builder builder = new Retrofit.Builder()
                 .client(genericClient(baseUrl));
 
-        if (containStringConverter) {
+//        if (containStringConverter) {
 //            builder.addConverterFactory(scalarsConverterFactory);
-        }
+//        }
 
         builder.addConverterFactory(factory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory);
-        if (!TextUtils.isEmpty(baseUrl)) {
-            builder.baseUrl(baseUrl);
-        } else {
-//            builder.baseUrl(BaseApplication.getDefault().getUrlConfig().getBASE_URL());
-        }
+        builder.baseUrl(baseUrl);
 
         api = builder.build().create(clazz);
         if (useCache)//缓存
@@ -236,49 +320,49 @@ public final class Api {
         return (T) api;
     }
 
+    /**
+     * 由于代理在此处创建的话有点麻烦，改成外部创建保存到这里
+     *
+     * @param key
+     * @param api
+     */
+    public void putProxyApi(String key, Object api) {
+        if (TextUtils.isEmpty(key) || api == null)
+            return;
+        proxyApis.put(key, api);
+    }
 
-    protected SSLSocketFactory getSSLSocketFactory(Context context, int[] certificates) {
-        if (context == null) {
-            throw new NullPointerException("context == null");
-        }
-        CertificateFactory certificateFactory;
-        try {
-            certificateFactory = CertificateFactory.getInstance("X.509");
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            keyStore.load(null, null);
-            for (int i = 0; i < certificates.length; i++) {
-                InputStream certificate = context.getResources().openRawResource(certificates[i]);
-                keyStore.setCertificateEntry(String.valueOf(i), certificateFactory.generateCertificate(certificate));
-                if (certificate != null) {
-                    certificate.close();
-                }
-            }
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-            sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
-            return sslContext.getSocketFactory();
-        } catch (Exception e) {
+    public synchronized <T> T getProxyApi(String key, Class<T> clazz) {
+        if (TextUtils.isEmpty(key))
+            return null;
+        Object api = proxyApis.get(key);
 
+        if (clazz != null && clazz.isInstance(api)) {
+            return (T) api;
         }
+
         return null;
     }
 
+    public synchronized void clearAllProxyApi() {
+        proxyApis.clear();
+    }
+
+    public synchronized void clearAllApi() {
+        apis.clear();
+        proxyApis.clear();
+    }
+
+
     protected HostnameVerifier getHostnameVerifier(final String[] hostUrls) {
-        return new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                boolean ret = false;
-//                L.e("getHostnameVerifier hostUrls len:" + hostUrls.length);
-                for (String host : hostUrls) {
-//                    L.e("getHostnameVerifier host:" + host);
-//                    L.e("getHostnameVerifier hostname:" + hostname);
-                    if (host.equalsIgnoreCase(hostname) || host.contains(hostname)) {
-                        ret = true;
-                    }
+        return (hostname, session) -> {
+            boolean ret = false;
+            for (String host : hostUrls) {
+                if (host.equalsIgnoreCase(hostname)) {
+                    ret = true;
                 }
-//                L.e("getHostnameVerifier return:" + ret);
-                return ret;
             }
+            return ret;
         };
     }
 
@@ -290,75 +374,36 @@ public final class Api {
      */
     public OkHttpClient genericClient(String baseUrl) {
         try {
-            // Create a trust manager that does not validate certificate chains
-            if (mX509TrustManager == null)
-                mX509TrustManager = new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(
-                            X509Certificate[] chain,
-                            String authType) throws CertificateException {
-                        L.e("checkClientTrusted");
-                    }
-
-                    @Override
-                    public void checkServerTrusted(
-                            X509Certificate[] chain,
-                            String authType) throws CertificateException {
-                        if (chain == null) {
-                            throw new IllegalArgumentException("Check Server X509Certificate is null");
-                        }
-                        if (chain.length < 0) {
-                            throw new IllegalArgumentException("Check Server X509Certificate is empty");
-                        }
-                        for (X509Certificate cert : chain) {
-                            cert.checkValidity();
-                        }
-                    }
-
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-                };
-            final TrustManager[] trustAllCerts = new TrustManager[]{mX509TrustManager};
-
-            // Install the all-trusting trust manager
-            final SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustAllCerts,
-                    new SecureRandom());
-            // Create an ssl socket factory with our all-trusting manager
-            final SSLSocketFactory sslSocketFactory = sslContext
-                    .getSocketFactory();
-//            String base_url = BaseApplication.getDefault().getUrlConfig().getBASE_URL();//https://eco.blockchainlock.io/walletapi/
-//            base_url = base_url.substring(base_url.indexOf("://") + 3);//eco.blockchainlock.io/walletapi/
-//            base_url = base_url.substring(0, base_url.indexOf("/"));//eco.blockchainlock.io
             OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                    .sslSocketFactory(sslSocketFactory, mX509TrustManager)
+//                    .sslSocketFactory(sslSocketFactory, mX509TrustManager) //新注释掉了，不需要设置这些东西，系统会自动校验证书
                     .hostnameVerifier(getHostnameVerifier(new String[]{baseUrl}))
 //                    .certificatePinner(new CertificatePinner.Builder().add("www.guguaixia.com", "sha256/FsIBR1E5WVnukHQ6yOwNllrDlZt9MYjSxUuYiitx5G4=").build())
                     .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                     .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                     .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
 //                    .addNetworkInterceptor(new TokenHeaderInterceptor())
-                    .addInterceptor(new NetworkStateInterceptor(MyApplication.getInstance())) //截获请求，增加是否有网络连接的判断
+//                    .addInterceptor(new NetworkStateInterceptor(BaseApplication.getDefault())) //截获请求，增加是否有网络连接的判断
+//                    .addInterceptor(new HttpInterceptor())
                     .cookieJar(new CookieJar() {
                         @Override
-                        public void saveFromResponse(HttpUrl url, List cookies) {
+                        public void saveFromResponse(@NotNull HttpUrl url, @NotNull List<Cookie> cookies) {
                             CookieUtil.saveCookies(cookies, url.host());
+//                            String c = getCookies(cookies);
+//                            CookieUtil.setCookie(c);
                         }
 
+                        @NotNull
                         @Override
-                        public List loadForRequest(HttpUrl url) {
-                            return new ArrayList();
+                        public List<Cookie> loadForRequest(HttpUrl url) {
+                            return new ArrayList<Cookie>();
                         }
                     });
-//            L.e("ProjectConfig.isDebug():" + ProjectConfig.isDebug());
             if (ProjectConfig.isDebug()) {//debug 模式输出日志
                 // Log信息拦截器
 
                 //打印log 时使用的logger有个问题，是一整条打印的，可能会有很多行，有点难看
                 // 可以用这个api 'com.orhanobut:logger:2.1.1' 来定制化 每行都可以设置一个tag
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+                MyLoggingInterceptor loggingInterceptor = new MyLoggingInterceptor(new HttpLogger());
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);//包含header，body数据
                 //设置 Debug Log 模式
                 builder.addInterceptor(loggingInterceptor);
@@ -374,12 +419,261 @@ public final class Api {
             if (mResponseReporter != null)
                 builder.addInterceptor(mResponseReporter);
 
+            if (mExtNetworkInterceptorList != null) {
+                for (Interceptor networkInterceptor :
+                        mExtNetworkInterceptorList) {
+                    builder.addNetworkInterceptor(networkInterceptor);
+                }
+            }
+            if (mExtInterceptorList != null) {
+                for (Interceptor interceptor :
+                        mExtInterceptorList) {
+                    builder.addInterceptor(interceptor);
+                }
+            }
+
+            //设置缓存
+            if (cache != null) {
+                builder.cache(cache);
+            } else {//没有启用缓存的时候还是使用 有无网络的判断逻辑
+                builder.addInterceptor(new NetworkStateInterceptor(MyApplication.getInstance())); //截获请求，增加是否有网络连接的判断
+            }
+
             okHttpClient = builder.build();
             return okHttpClient;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+
+    /**
+     * 格式化log中的json   用Logger打印
+     */
+    protected static class HttpLogger implements HttpLoggingInterceptor.Logger {
+        private StringBuilder mMessage = new StringBuilder();
+
+        UUID uuid = UUID.randomUUID();
+
+        /**
+         * 手动设置start 防止出bug的时候有问题
+         */
+        public synchronized void setStart() {
+            mMessage.setLength(0);
+        }
+
+        @Override
+        public void log(String message) {
+            // 请求或者响应开始
+            //由于多条请求同时发生的时候，请求是异步的，就会发生这个请求的post和另一个请求的 end post组合了的情况
+            //所以把请求和 结果分开
+            if (message.startsWith("--> POST")) {
+                mMessage.setLength(0);
+            } else if (message.startsWith("<-- 200")) {
+                mMessage.setLength(0);
+            }
+            // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化(似乎不需要格式化了)
+//            if ((message.startsWith("{") && message.endsWith("}"))
+//                    || (message.startsWith("[") && message.endsWith("]"))) {
+//                message = JsonFormatter.formatJson(JsonFormatter.decodeUnicode(message));
+//            }
+            mMessage.append(message.concat("\n"));
+            // 响应结束，打印整条日志
+            if (message.startsWith("<-- END HTTP")) {
+                L.e("EAGLE_BASE_HttpLogger", uuid.toString() + "-->message" + message);
+                realLogOutPut(mMessage.toString());
+//                Logger.d(mMessage.toString());
+            } else if (message.startsWith("--> END POST")) {
+                L.e("EAGLE_BASE_HttpLogger", uuid.toString() + "-->message" + message);
+//                Logger.d(mMessage.toString());
+                realLogOutPut(mMessage.toString());
+            }
+
+        }
+
+        /**
+         * 真实的log打印
+         *
+         * @param msg
+         */
+        private void realLogOutPut(String msg) {
+//            if (formatLogJson) {
+            try {
+                msg = JsonFormatter.formatJson(msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//            }
+            L.d("HttpLog", msg);
+        }
+    }
+
+
+    /**
+     * Observable<T> 做统一的处理，处理了线程调度、分割返回结果等操作组合了起
+     *
+     * @param responseObservable
+     * @param <T>
+     * @return
+     */
+    public <T> io.reactivex.Observable<T> applySchedulers(io.reactivex.Observable<T> responseObservable) {
+        return responseObservable.subscribeOn(io.reactivex.schedulers.Schedulers.io())//在线程池中执
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())//在主线程中获得观察结
+                .flatMap(new Function<T, io.reactivex.Observable<T>>() {
+                    @Override
+                    public io.reactivex.Observable<T> apply(@NonNull T t) throws Exception {
+                        return flatResponse(t);
+                    }
+                });
+
+    }
+
+    /**
+     * 对网络接口返回的Response进行分割操作 对于json 解析错误以及返回 响应实体为空的情况
+     * 主要用来防止 response为null的情况导致的crash
+     *
+     * @param response
+     * @return
+     */
+    public <T> io.reactivex.Observable<T> flatResponse(final T response) {
+        return io.reactivex.Observable.create(new ObservableOnSubscribe<T>() {
+            @Override
+            public void subscribe(ObservableEmitter<T> e) throws Exception {
+                L.d("ApiFactory", "Api flatResponse:call");
+                if (response != null) {
+                    if (!e.isDisposed()) {
+                        e.onNext(response);   //此处onNext 中抛出异常会导致 onError onComplete不会调用  加上tryCatch也没用！
+                    }
+                } else {//response为null即解析失败或者返回空的数
+                    if (!e.isDisposed()) {
+                        e.onError(new appframe.network.retrofit.Api.APIException("11", "parse_json_error"));
+                    }
+                }
+                if (!e.isDisposed()) {
+                    e.onComplete();//必须有 否则最终的subscribe中的Observer不会调用onComplete
+                }
+            }
+        });
+    }
+}
+/*以下是新修改注释掉的。HTTPS不需要刻意去校验证书*/
+//            X509TrustManager mX509TrustManager;
+//            KeyStore keyStore;
+//            TrustManagerFactory tmf;
+//            SSLContext sslContext;
+//            mX509TrustManager = new X509TrustManager() {
+//                @Override
+//                public void checkClientTrusted(
+//                        X509Certificate[] chain,
+//                        String authType) throws CertificateException {
+//                    L.e("checkClientTrusted");
+//                }
+//
+//                @Override
+//                public void checkServerTrusted(
+//                        X509Certificate[] chain,
+//                        String authType) throws CertificateException {
+//                    if (chain == null) {
+//                        throw new IllegalArgumentException("Check Server X509Certificate is null");
+//                    }
+//                    if (chain.length < 0) {
+//                        throw new IllegalArgumentException("Check Server X509Certificate is empty");
+//                    }
+//                    for (X509Certificate cert : chain) {
+//                        cert.checkValidity();
+////                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O) {
+//                        try {
+//                            cert.verify(cert.getPublicKey());
+//                        } catch (NoSuchAlgorithmException e) {
+//                            e.printStackTrace();
+//                        } catch (InvalidKeyException e) {
+//                            e.printStackTrace();
+//                        } catch (NoSuchProviderException e) {
+//                            e.printStackTrace();
+//                        } catch (SignatureException e) {
+//                            e.printStackTrace();
+//                        }
+////                        }
+//                    }
+//                }
+//
+//                @Override
+//                public X509Certificate[] getAcceptedIssuers() {
+//                    return new X509Certificate[0];
+//                }
+//            };
+//            final TrustManager[] trustAllCerts = new TrustManager[]{mX509TrustManager};
+/*以上是新修改注释掉的。HTTPS不需要刻意去校验证书*/
+
+/*
+ * 以下是修改的，自签名证书可以这样写
+ * */
+//            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+//            InputStream caInput = BaseApplication.getDefault().getAssets().open("cert.cer");
+//            try {
+//                mCa = cf.generateCertificate(caInput);
+//                System.out.println("ca=" + ((X509Certificate) mCa).getSubjectDN());
+//            } finally {
+//                caInput.close();
+//            }
+//            String keyStoreType = KeyStore.getDefaultType();
+//            keyStore = KeyStore.getInstance(keyStoreType);
+//            keyStore.load(null, null);
+//            keyStore.setCertificateEntry("ca", mCa);
+//
+//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+//            tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+//            tmf.init(keyStore);
+//
+//            sslContext = SSLContext.getInstance("TLS");
+//            sslContext.init(null, tmf.getTrustManagers(), null);
+
+//            sslContext.init(null, trustAllCerts, new SecureRandom());
+/*
+ * 以上是修改的，自签名证书可以这样写
+ * */
+//             sslContext = SSLContext.getInstance("TLS");
+//            sslContext.init(null, trustAllCerts,
+//                    new SecureRandom());
+//            final SSLSocketFactory sslSocketFactory = sslContext
+//                    .getSocketFactory();
+
+// Install the all-trusting trust manager
+//            final SSLContext sslContext = SSLContext.getInstance("TLS");
+//            sslContext.init(null, trustAllCerts,
+//                    new SecureRandom());
+//            // Create an ssl socket factory with our all-trusting manager
+//            final SSLSocketFactory sslSocketFactory = sslContext
+//                    .getSocketFactory();
+
+
+//    protected SSLSocketFactory getSSLSocketFactory(Context context, int[] certificates) {
+//        if (context == null) {
+//            throw new NullPointerException("context == null");
+//        }
+//        CertificateFactory certificateFactory;
+//        try {
+//            certificateFactory = CertificateFactory.getInstance("X.509");
+//            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+//            keyStore.load(null, null);
+//            for (int i = 0; i < certificates.length; i++) {
+//                InputStream certificate = context.getResources().openRawResource(certificates[i]);
+//                keyStore.setCertificateEntry(String.valueOf(i), certificateFactory.generateCertificate(certificate));
+//                if (certificate != null) {
+//                    certificate.close();
+//                }
+//            }
+//            SSLContext sslContext = SSLContext.getInstance("TLS");
+//            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+//            trustManagerFactory.init(keyStore);
+//            sslContext.init(null, trustManagerFactory.getTrustManagers(), new SecureRandom());
+//            return sslContext.getSocketFactory();
+//        } catch (Exception e) {
+//
+//        }
+//        return null;
+//    }
+
 
 //    public class TokenHeaderInterceptor implements Interceptor { //添加header的token拦截
 //
@@ -397,7 +691,7 @@ public final class Api {
 //
 //    }
 
-    //http返回code在BaseApiCallback中处理，交给实际的onFailure来执行操作
+//http返回code在BaseApiCallback中处理，交给实际的onFailure来执行操作
 //    public class HttpInterceptor implements Interceptor { //添加异常处理的token拦截
 //
 //        @Override
@@ -449,130 +743,3 @@ public final class Api {
 //        }
 //        return str;
 //    }
-
-    /**
-     * 格式化log中的json   用Logger打印
-     */
-    public class HttpLogger implements HttpLoggingInterceptor.Logger {
-        private StringBuilder mMessage = new StringBuilder();
-
-        @Override
-        public void log(String message) {
-//            L.e("HttpLogger log:" + message);
-            // 请求或者响应开始
-            //由于多条请求同时发生的时候，请求是异步的，就会发生这个请求的post和另一个请求的 end post组合了的情况
-            //所以把请求和 结果分开
-            if (message.startsWith("--> POST")) {
-                mMessage.setLength(0);
-                mMessage.append("--------------------------------------------------------------\n");
-            } else if (message.startsWith("<-- 200")) {
-                mMessage.setLength(0);
-                mMessage.append("--------------------------------------------------------------\n");
-            }
-            // 以{}或者[]形式的说明是响应结果的json数据，需要进行格式化(似乎不需要格式化了)
-//            if ((message.startsWith("{") && message.endsWith("}"))
-//                    || (message.startsWith("[") && message.endsWith("]"))) {
-//                message = JsonFormatter.formatJson(JsonFormatter.decodeUnicode(message));
-//            }
-            mMessage.append(message.concat("\n"));
-            // 响应结束，打印整条日志
-            if (message.startsWith("<-- END HTTP")) {
-                L.d(mMessage.toString());
-            } else if (message.startsWith("--> END POST")) {
-                L.d(mMessage.toString());
-            }
-
-        }
-    }
-
-
-    /**
-     * Observable<T> 做统一的处理，处理了线程调度、分割返回结果等操作组合了起
-     *
-     * @param responseObservable
-     * @param <T>
-     * @return
-     */
-    public <T> io.reactivex.Observable<T> applySchedulers(io.reactivex.Observable<T> responseObservable) {
-        return responseObservable.subscribeOn(io.reactivex.schedulers.Schedulers.io())//在线程池中执
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())//在主线程中获得观察结
-                .flatMap(new Function<T, io.reactivex.Observable<T>>() {
-                    @Override
-                    public io.reactivex.Observable<T> apply(@NonNull T t) throws Exception {
-                        return flatResponse(t);
-                    }
-                });
-
-    }
-
-    /**
-     * 对网络接口返回的Response进行分割操作 对于json 解析错误以及返回 响应实体为空的情况
-     * 主要用来防止 response为null的情况导致的crash
-     *
-     * @param response
-     * @return
-     */
-    public <T> io.reactivex.Observable<T> flatResponse(final T response) {
-        return io.reactivex.Observable.create(new ObservableOnSubscribe<T>() {
-            @Override
-            public void subscribe(ObservableEmitter<T> e) throws Exception {
-                Log.d("ApiFactory", "Api flatResponse:call");
-                if (response != null) {
-                    if (!e.isDisposed()) {
-                        e.onNext(response);   //此处onNext 中抛出异常会导致 onError onComplete不会调用  加上tryCatch也没用！
-                    }
-                } else {//response为null即解析失败或者返回空的数
-                    if (!e.isDisposed()) {
-                        e.onError(new appframe.network.retrofit.Api.APIException("11", "parse_json_error"));
-                    }
-                }
-                if (!e.isDisposed()) {
-                    e.onComplete();//必须有 否则最终的subscribe中的Observer不会调用onComplete
-                }
-            }
-        });
-    }
-
-}
-//.addInterceptor(new Interceptor() {
-//@Override
-//public Response intercept(Chain chain) throws IOException {
-//        Request.Builder builder = chain.request()
-//        .newBuilder()
-//        .addHeader("deviceID", RequestHeader.getInstance().getDeviceID())
-//        .addHeader("phoneType", RequestHeader.getInstance().getPhoneType())
-//        .addHeader("phoneSystem", RequestHeader.getInstance().getPhoneSystem())
-//        .addHeader("appVersion", RequestHeader.getInstance().getAppVersion())
-//        .addHeader("apiVersion", RequestHeader.getInstance().getApiVersion())
-//        .addHeader("language", LanguageUtils.getLanguageSymbol(BaseApplication.getDefault()))
-////                                    .addHeader("Cookie", CookieUtil.getCookie())
-//        .addHeader("Content-Type", "application/json;charset=utf-8");
-//        HttpUrl httpUrl = chain.request().url();
-//        String cookie = CookieUtil.getUnExpiredCookies(httpUrl.host());
-//        if (!TextUtils.isEmpty(cookie)) {
-//        builder.addHeader("Cookie", cookie);
-//        }
-//
-//        //添加额外的key
-//        Iterator<String> externalHeaderIterator = mExternalHeaders.keySet().iterator();
-//        while (externalHeaderIterator.hasNext()) {
-//        String key = externalHeaderIterator.next();
-//        builder.addHeader(key, mExternalHeaders.get(key));
-//        }
-//
-////                            Request request = chain.request()
-////                                    .newBuilder()
-////                                    .addHeader("deviceID", RequestHeader.getInstance().getDeviceID())
-////                                    .addHeader("phoneType", RequestHeader.getInstance().getPhoneType())
-////                                    .addHeader("phoneSystem", RequestHeader.getInstance().getPhoneSystem())
-////                                    .addHeader("appVersion", RequestHeader.getInstance().getAppVersion())
-////                                    .addHeader("apiVersion", RequestHeader.getInstance().getApiVersion())
-////                                    .addHeader("Cookie", CookieUtil.getCookie())
-////                                    .addHeader("Content-Type", "application/json;charset=utf-8")
-////                                    .build();
-//        Response response = chain.proceed(builder.build());
-////                            L.e("intercept", new String(response.body().bytes()));
-//        return response;
-//        }
-//
-//        })

@@ -34,9 +34,9 @@ import butterknife.ButterKnife;
  */
 public class RoomFragment extends Fragment {
 
-    @BindView(R.id.user_name)
+    @BindView(R.id.account_name)
     EditText mUserName;
-    @BindView(R.id.age)
+    @BindView(R.id.password)
     EditText mAge;
 
     @BindView(R.id.account_list)

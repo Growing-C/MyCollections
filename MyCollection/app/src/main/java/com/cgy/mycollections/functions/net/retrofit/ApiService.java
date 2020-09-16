@@ -16,7 +16,7 @@ import retrofit2.http.Url;
  */
 public interface ApiService {
 
-    //获取新闻列表
+    //创建firebase短链接
     @POST()
     Observable<Object> createShortDynamicLinks(@Url String url,@Body DynamicLinkParam params);
 
