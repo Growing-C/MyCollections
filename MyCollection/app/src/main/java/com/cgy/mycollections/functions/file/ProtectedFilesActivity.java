@@ -212,6 +212,10 @@ public class ProtectedFilesActivity extends BaseActivity {
 
             @Override
             public void onItemLongClick(int position, FileInfo data) {
+                ArrayList<FileInfo> fileList=new ArrayList<>();
+                fileList.add(data);
+                FileInfoDialogFragment.newInstance(fileList)
+                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
 
             }
 
