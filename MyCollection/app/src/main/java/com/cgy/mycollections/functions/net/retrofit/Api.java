@@ -480,11 +480,11 @@ public final class Api {
             mMessage.append(message.concat("\n"));
             // 响应结束，打印整条日志
             if (message.startsWith("<-- END HTTP")) {
-                L.e("EAGLE_BASE_HttpLogger", uuid.toString() + "-->message" + message);
+                L.e("EAGLE_BASE_HttpLogger", "HttpLogger id:" + uuid.toString() + "-->message" + message);
                 realLogOutPut(mMessage.toString());
 //                Logger.d(mMessage.toString());
             } else if (message.startsWith("--> END POST")) {
-                L.e("EAGLE_BASE_HttpLogger", uuid.toString() + "-->message" + message);
+                L.e("EAGLE_BASE_HttpLogger", "HttpLogger id:" + uuid.toString() + "-->message" + message);
 //                Logger.d(mMessage.toString());
                 realLogOutPut(mMessage.toString());
             }

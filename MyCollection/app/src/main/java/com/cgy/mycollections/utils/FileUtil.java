@@ -164,7 +164,34 @@ public class FileUtil {
     //<editor-fold desc="获取文件类型">
 
     /**
+     * 获取系统返回的文件类型
+     *
+     * @param file
+     * @return
+     */
+    public static String getRawFileType(@NonNull File file) {
+        if (file.isDirectory())
+            return null;
+        String mimeType = getMimeType(file.getPath());
+        if (TextUtils.isEmpty(mimeType)) {
+            //有mimeType就好办了
+            //mineType有以下几种 image/jpeg , audio/mpeg , video/mp4 , application/vnd.android.package-archive
+            return mimeType;
+        } else {//没有mimeType此时表示可能无法识别,需要读取文件头来识别
+            L.e("fileUtil", "--no mineType!!!!!!!!!!!" + file.getName());
+            String rawFileType = getFileTypeFromHeader(file.getPath());
+            if (!TextUtils.isEmpty(rawFileType)) {
+                L.e("fileUtil", "raw fileType:" + rawFileType + " --path:" + file.getPath());
+                return rawFileType;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 获取文件类型，此方法会返回一个大的类型
+     * 反回的类型是自定义的，如果要系统的类型使用
+     * {@link #getRawFileType(File)}
      *
      * @param file 此处的file需要是realFile
      * @return

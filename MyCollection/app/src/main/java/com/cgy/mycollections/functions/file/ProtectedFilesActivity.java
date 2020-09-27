@@ -199,8 +199,10 @@ public class ProtectedFilesActivity extends BaseActivity {
 //                        startActivity(it);
 //                    } else {
                     try {
-                        //TODO:FileUriExposedException
-                        startActivity(FileUtil.openFileIncludingHiddenFile(ProtectedFilesActivity.this, fileInfo.getShowFile()));
+                        Intent chooseOpenWayIntent = Intent.createChooser(
+                                FileUtil.openFileIncludingHiddenFile(ProtectedFilesActivity.this, fileInfo.getShowFile()), "选择打开方式");
+                        startActivity(chooseOpenWayIntent);
+//                        startActivity(FileUtil.openFileIncludingHiddenFile(ProtectedFilesActivity.this, fileInfo.getShowFile()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -212,7 +214,7 @@ public class ProtectedFilesActivity extends BaseActivity {
 
             @Override
             public void onItemLongClick(int position, FileInfo data) {
-                ArrayList<FileInfo> fileList=new ArrayList<>();
+                ArrayList<FileInfo> fileList = new ArrayList<>();
                 fileList.add(data);
                 FileInfoDialogFragment.newInstance(fileList)
                         .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
