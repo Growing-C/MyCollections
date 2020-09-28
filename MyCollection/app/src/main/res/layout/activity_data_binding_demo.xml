@@ -4,14 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cgy.mycollections.functions.framework.databinding.DataBindingDemo">
 
-    <data>
+    <!--    data可以加class 这样binding的名字就是固定的，
+    不然会根据xml名字自动生成如ActivityDataBindingDemoBinding-->
+    <data class="MyBinding">
+        <!--        数据类可以用import 然后直接type填类名，或者不import直接type写全路径-->
+        <!--        import类名相同路径不同的情况下可以定义alias别名-->
+        <!--        import还可以引入某个类，在下面可以直接使用这个类的方法（必须是static）-->
+        <import
+            alias="ClickListener"
+            type="com.cgy.mycollections.functions.framework.databinding.BindingClickListener" />
 
+        <import type="com.cgy.mycollections.functions.framework.databinding.BaseObservableDataBean" />
+
+        <!--        ObservableFiled 的collection型-->
+        <import type="androidx.databinding.ObservableList" />
+
+        <!--        需要注意int类型会被直接当作ids加载
+        如果int型要用作string 需要使用 String.valueOf(int)-->
         <variable
             name="demo"
             type="com.cgy.mycollections.Demo" />
 
+        <variable
+            name="baseObBean"
+            type="BaseObservableDataBean" />
+
+        <variable
+            name="listener"
+            type="ClickListener" />
+
+        <!--        &lt;String&gt; 是必须的，不然会编译报错ANTLR Tool version-->
+        <variable
+            name="obDataList"
+            type="ObservableList&lt;String&gt;" />
+
     </data>
-<!--    android.support.constraint.ConstraintLayout-->
+    <!--    android.support.constraint.ConstraintLayout-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -39,15 +67,97 @@
                 android:text="@{demo.infoId}" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
+        <Button
+            android:id="@+id/click_test"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/px30_common"
+            android:onClick="@{()->listener.onClick()}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/top_ll">
+            app:layout_constraintTop_toBottomOf="@id/top_ll"
+            android:text="点击测试修改数据" />
 
-        </androidx.recyclerview.widget.RecyclerView>
+        <LinearLayout
+            android:id="@+id/base_ob_ll"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_25"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/click_test">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@{baseObBean.testName}" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@{baseObBean.testContent}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@{baseObBean.obFiled}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@{obDataList[0]}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@{obDataList[1]}" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/px30_common"
+                android:onClick="@{()->listener.onBaseObservableClick()}"
+                android:text="点击测试BaseObservable修改数据" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_25"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/base_ob_ll">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="2dp"
+                android:text="@{baseObBean.inputData}"
+                android:background="#03A9F4"
+                android:gravity="left|center"
+                android:paddingLeft="20dp"
+                android:textColor="#FFFFFF"
+                android:textSize="14dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="15dp"
+                android:background="#F2F2F2"
+                android:text="@={baseObBean.inputData}"
+                android:hint="请输入数据"
+                android:paddingLeft="20dp"
+                android:textSize="14dp" />
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

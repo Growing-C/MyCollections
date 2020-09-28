@@ -117,6 +117,13 @@ android {
 //    }
 }
 
+//kotlin DSL
+//configurations.all {
+//    resolutionStrategy {
+//        force("org.antlr:antlr4-runtime:4.7.1")
+//        force("org.antlr:antlr4-tool:4.7.1")
+//    }
+//}
 dependencies {
     //正常依赖
     //implementation 'com.chemao.android:chemao-sdk:1.2.3'
