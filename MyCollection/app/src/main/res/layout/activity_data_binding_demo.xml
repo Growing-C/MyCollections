@@ -136,6 +136,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/base_ob_ll">
 
+            <!--            测试双向绑定和editText互动-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
@@ -156,6 +157,16 @@
                 android:hint="请输入数据"
                 android:paddingLeft="20dp"
                 android:textSize="14dp" />
+
+            <!--            测试BindingAdapter-->
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@android:color/holo_blue_bright"
+                android:layout_marginTop="15dp"
+                android:onClick="@{()->listener.onBaseObservableClick()}"
+                imageUrl="@{baseObBean.inputData}"
+                android:src="@drawable/tupian" />
         </LinearLayout>
 
 

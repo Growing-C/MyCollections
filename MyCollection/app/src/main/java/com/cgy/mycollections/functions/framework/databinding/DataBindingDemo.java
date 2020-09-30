@@ -1,16 +1,23 @@
 package com.cgy.mycollections.functions.framework.databinding;
 
+import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.cgy.mycollections.Demo;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.databinding.MyBinding;
+
+import appframe.utils.L;
 
 public class DataBindingDemo extends AppCompatActivity {
     Demo demo;
@@ -23,9 +30,30 @@ public class DataBindingDemo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_data_binding_demo);
 
+        //所有的数据类不应该引用activity，引用应该是单向的
         testSingleBinding();
 
         testBidirectionalBinding();
+
+//        binding.setLifecycleOwner(this); //这是和LiveData搭配使用的
+    }
+
+    //当xml中使用到BindingAdapter中的属性的时候都会调用这个方法
+    //如果使用 android:onClick之类的系统自带的也会走这里
+    //如果自定义如imageUrl,就可以直接在xml中使用 imageUrl来定义一些东西，会自动根据参数类型走到这个方法中来，
+    //需要注意的是如
+    //   android:onClick="@{()->listener.onBaseObservableClick()}"
+    // imageUrl="@{baseObBean.inputData}" 其中数据必须使用dataBinding才会走到这个方法中
+    //有两个参数的时候这个方法似乎会调用两次，且必须都设置了才会走这个方法
+    //此方法必须使用static 不然会崩溃
+    @BindingAdapter({"android:onClick", "imageUrl"})
+    public static void loadImage(ImageButton imageView, View.OnClickListener onClickListener, String imageUrl) {
+//        L.e("test", "invoke bindingAdapter setImageUrl:" + url);
+//      onClickListener是  com.cgy.mycollections.generated.callback.OnClickListener
+        L.e("test", "invoke bindingAdapter imageUrl:" + imageUrl);
+        L.e("test", "invoke bindingAdapter loadImage:" + onClickListener.getClass().getName());
+        imageView.setOnClickListener(onClickListener);
+        imageView.setImageResource(R.drawable.yinyue);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class SimpleRecyclerViewDemo extends AppCompatActivity {
     }
 
 
-    class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecyclerViewAdapter.SimpleRecyclerViewHolder> {
+    static class SimpleRecyclerViewAdapter extends RecyclerView.Adapter<SimpleRecyclerViewAdapter.SimpleRecyclerViewHolder> {
 
 
         private OnItemClickListener mOnItemClickListener;
