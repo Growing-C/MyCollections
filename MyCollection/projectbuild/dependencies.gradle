@@ -1,9 +1,3 @@
-//allprojects {
-//    repositories {
-//        google()
-//        jcenter()
-//    }
-//}
 
 ext {
     java_version = JavaVersion.VERSION_1_8

@@ -1,2 +1,3 @@
+include ':mediaoperator'
 include ':app',  ':mylibrary'
 //, ':X5WebDemo',':NetConf'
