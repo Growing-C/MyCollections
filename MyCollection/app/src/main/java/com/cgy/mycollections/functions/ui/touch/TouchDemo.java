@@ -48,10 +48,46 @@ import butterknife.OnClick;
  * 触摸相关demo
  */
 public class TouchDemo extends AppCompatActivity {
+    private String TAG = TouchDemo.class.getSimpleName();
     @BindView(R.id.touch_child)
     TouchChild mChildV;
     @BindView(R.id.touch_ll)
     TouchLinearLayout mTouchParent;
+
+    TouchListener mTouchListener = new TouchListener() {
+        @Override
+        public void onInvokeDispatchTouchEvent(MotionEvent event) {
+            String msg = "TouchDemo dispatchTouchEvent:" + TouchUtils.getTouchActionName(event.getAction());
+            L.e(TAG, msg);
+        }
+
+        @Override
+        public void onDispatchTouchEventResult(MotionEvent event, boolean result) {
+            String msg = "TouchDemo dispatchTouchEvent action:"
+                    + TouchUtils.getTouchActionName(event.getAction()) + " ---dispatchResult:" + result;
+            L.e(TAG, msg);
+        }
+
+        @Override
+        public void onInvokeTouchEvent(MotionEvent event) {
+
+        }
+
+        @Override
+        public void onTouchEventResult(MotionEvent event, boolean result) {
+
+        }
+
+        @Override
+        public void onInvokeInterceptTouchEvent(MotionEvent event) {
+
+        }
+
+        @Override
+        public void onInterceptTouchEventResult(MotionEvent event, boolean result) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +99,9 @@ public class TouchDemo extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        L.e("TouchDemo", "TouchDemo dispatchTouchEvent:" + ev.getAction());
+        mTouchListener.onInvokeDispatchTouchEvent(ev);
         boolean dispatchResult = super.dispatchTouchEvent(ev);
-        L.e("TouchDemo", "TouchDemo dispatchTouchEvent dispatchResult:" + dispatchResult);
+        mTouchListener.onDispatchTouchEventResult(ev, dispatchResult);
         return dispatchResult;
     }
 
@@ -76,15 +112,18 @@ public class TouchDemo extends AppCompatActivity {
         L.e("TouchDemo", "TouchDemo onTouchEvent touchResult:" + touchResult);
         return touchResult;
     }
-    //    @OnClick({R.id.touch_child, R.id.touch_ll})
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.touch_child:
-//                break;
-//            case R.id.touch_ll:
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+
+    @OnClick({R.id.touch_child, R.id.touch_ll})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.touch_child:
+                L.e("TouchDemo", "Child onClick:");
+                break;
+            case R.id.touch_ll:
+                L.e("TouchDemo", "Parent onClick:");
+                break;
+            default:
+                break;
+        }
+    }
 }

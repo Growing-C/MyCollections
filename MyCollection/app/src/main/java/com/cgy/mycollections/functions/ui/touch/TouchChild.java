@@ -16,12 +16,18 @@ import appframe.utils.L;
  * 类说明：
  */
 public class TouchChild extends View {
+    TouchListener mTouchListener;
+
     public TouchChild(Context context) {
         super(context);
     }
 
     public TouchChild(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setTouchListener(TouchListener touchListener) {
+        this.mTouchListener = touchListener;
     }
 
     @Override

@@ -142,7 +142,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':mylibrary')
-    implementation project(':mediaoperator')
+//    implementation project(':mediaoperator')
 
     //使用kotlin注解 的项目 必须用 kapt 不能用 annotationProcessor
 //   如果你有其他的注解处理器，它们都必须全部被从 annotationProcessor 转换为 kapt

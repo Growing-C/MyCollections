@@ -15,7 +15,7 @@ import appframe.utils.L;
  * 类说明：
  */
 public class TouchLinearLayout extends LinearLayout {
-    boolean shouldInterceptDispatch = false;
+    TouchListener mTouchListener;
 
     public TouchLinearLayout(Context context) {
         super(context);
@@ -23,6 +23,10 @@ public class TouchLinearLayout extends LinearLayout {
 
     public TouchLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setTouchListener(TouchListener touchListener) {
+        this.mTouchListener = touchListener;
     }
 
     @Override
