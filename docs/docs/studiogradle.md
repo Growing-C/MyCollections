@@ -50,6 +50,21 @@ configurations.all {
         force 'com.android.support:support-v4:27.1.0'
     }
 }
+也可以同时使用
+  configurations.all {
+        resolutionStrategy {
+            force "com.rm.kit:imageloader:1.0.0"
+            force "com.rm.kit:util:1.0.1.1603343576023-SNAPSHOT"
+        }
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.rm.kit' && details.requested.name == 'util') {
+                details.useVersion '1.0.1.1603343576023-SNAPSHOT'
+            }
+            if (details.requested.group == 'com.rm.lib' && details.requested.name == 'res') {
+//                details.useVersion '1.0.1.1599639918599-qa-SNAPSHOT'
+            }
+        }
+    }
 
 
 #6.引入aar

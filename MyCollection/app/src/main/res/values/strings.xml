@@ -54,6 +54,9 @@
     <string name="title_scale_view">ScaleViewDemo</string>
     <string name="info_scale_view">可选择范围的刻度尺</string>
 
+    <string name="title_touch">TouchDemo</string>
+    <string name="info_touch">触摸相关demo</string>
+
     <string name="title_activity_chart_demo">ChartDemo</string>
     <string name="info_chart_demo">安卓图表</string>
 

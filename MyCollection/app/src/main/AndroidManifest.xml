@@ -141,6 +141,7 @@
         <activity
             android:name=".functions.ui.dialogdemo.FloatingActivity"
             android:theme="@style/ActivityPopStyle" />
+        <activity android:name=".functions.ui.touch.TouchDemo" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

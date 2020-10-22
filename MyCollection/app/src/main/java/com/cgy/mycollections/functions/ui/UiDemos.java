@@ -24,6 +24,7 @@ import com.cgy.mycollections.functions.ui.dialogdemo.DialogAndWidgetsDemo;
 import com.cgy.mycollections.functions.ui.scale.ScaleViewDemo;
 import com.cgy.mycollections.functions.ui.systemui.statusbar.StatusBarDemo;
 import com.cgy.mycollections.functions.ui.textdemo.TextDemo;
+import com.cgy.mycollections.functions.ui.touch.TouchDemo;
 import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 
@@ -71,6 +72,7 @@ public class UiDemos extends AppCompatActivity {
             new Demo(R.string.title_text_demo, R.string.info_text_demo, TextDemo.class),
             new Demo(R.string.title_dialog, R.string.info_dialog, DialogAndWidgetsDemo.class),
             new Demo(R.string.title_scale_view, R.string.info_scale_view, ScaleViewDemo.class),
+            new Demo(R.string.title_touch, R.string.info_touch, TouchDemo.class),
     };
 
     @Override
