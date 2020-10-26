@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.cgy.mycollections.functions.chart.ChartDemo;
 import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.jetpack.JetPackDemos;
+import com.cgy.mycollections.functions.surfaceview.SurfaceViewDemo;
 import com.cgy.mycollections.functions.ui.UiDemos;
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.ble.BleDemo;
@@ -175,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Demo[] demos = {
+            new Demo(R.string.title_surface, R.string.surface_ui, false, SurfaceViewDemo.class),
             new Demo(R.string.title_test, R.string.test_ui, true, TestDemo.class),
             new Demo(R.string.title_webview, R.string.info_webview, true, WebViewDemos.class),
             new Demo(R.string.title_ui, R.string.info_ui, true, UiDemos.class),

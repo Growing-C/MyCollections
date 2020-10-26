@@ -1,50 +1,24 @@
 package com.cgy.mycollections.functions.ui.touch;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.text.method.Touch;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.URLSpan;
-import android.text.util.Linkify;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.ui.textdemo.EditTextActivity;
-import com.cgy.mycollections.functions.ui.textdemo.linkify.LinkClickListener;
-import com.cgy.mycollections.functions.ui.textdemo.linkify.LinkMovementMethodEx;
-import com.cgy.mycollections.functions.ui.textdemo.linkify.NoUnderlineSpan;
 import com.cgy.mycollections.utils.SystemUtil;
-import com.cgy.mycollections.widgets.WaveView;
 
-import java.util.Locale;
-import java.util.regex.Matcher;
 
 import appframe.utils.L;
-import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;

@@ -142,6 +142,10 @@
             android:name=".functions.ui.dialogdemo.FloatingActivity"
             android:theme="@style/ActivityPopStyle" />
         <activity android:name=".functions.ui.touch.TouchDemo" />
+        <activity android:name=".functions.surfaceview.SurfaceViewDemo" />
+        <activity
+            android:name=".functions.surfaceview.GameDemo"
+            android:screenOrientation="landscape" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

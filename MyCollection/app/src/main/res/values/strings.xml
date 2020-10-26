@@ -81,6 +81,9 @@
     <string name="title_test">TestDemo</string>
     <string name="test_ui">测试demo</string>
 
+    <string name="title_surface">SurfaceViewDemo</string>
+    <string name="surface_ui">测试SurfaceView</string>
+
     <string name="title_webview">WebViewDemo</string>
     <string name="info_webview">测试WebView</string>
 
