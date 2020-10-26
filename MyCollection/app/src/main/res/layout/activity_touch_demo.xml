@@ -9,7 +9,7 @@
     <com.cgy.mycollections.functions.ui.touch.TouchLinearLayout
         android:id="@+id/touch_ll"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:gravity="center"
         android:background="@android:color/holo_blue_light">
 
@@ -21,5 +21,97 @@
 
     </com.cgy.mycollections.functions.ui.touch.TouchLinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <CheckBox
+            android:id="@+id/activity_intercept_dispatch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/px24_margin"
+            android:text="Activity拦截dispatch" />
+
+        <CheckBox
+            android:id="@+id/activity_intercept_touch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Activity消费onTouch" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/group_intercept_dispatch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="group拦截dispatch" />
+
+        <CheckBox
+            android:id="@+id/group_intercept"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="group拦截intercept" />
+
+        <CheckBox
+            android:id="@+id/group_intercept_touch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="group消费onTouch" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/child_intercept_dispatch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="child拦截dispatch" />
+
+        <CheckBox
+            android:id="@+id/child_intercept_touch"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="child消费onTouch" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/clean"
+                android:layout_width="@dimen/px44_common"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/px4"
+                android:src="@drawable/activitypop_close"
+                android:tint="@color/red500"
+                android:layout_height="@dimen/px44_common" />
+
+            <TextView
+                android:id="@+id/log"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/px10_margin"
+                android:background="@null"
+                android:textSize="10sp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

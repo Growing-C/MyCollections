@@ -18,6 +18,9 @@ import appframe.utils.L;
 public class TouchChild extends View {
     TouchListener mTouchListener;
 
+    boolean shouldInterceptDispatch = false;//是否阻塞dispatch方法
+    boolean shouldCostTouch = false;//是否消费touch方法
+
     public TouchChild(Context context) {
         super(context);
     }
@@ -30,19 +33,35 @@ public class TouchChild extends View {
         this.mTouchListener = touchListener;
     }
 
+    public void setShouldInterceptDispatch(boolean shouldInterceptDispatch) {
+        this.shouldInterceptDispatch = shouldInterceptDispatch;
+    }
+
+    public void setShouldCostTouch(boolean shouldCostTouch) {
+        this.shouldCostTouch = shouldCostTouch;
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        L.e("TouchChild", "TouchChild dispatchTouchEvent:" + event.getAction());
+        if (mTouchListener != null)
+            mTouchListener.onInvokeDispatchTouchEvent(event);
+        if (shouldInterceptDispatch)
+            return true;
         boolean dispatchResult = super.dispatchTouchEvent(event);
-        L.e("TouchChild", "TouchChild dispatchTouchEvent dispatchResult:" + dispatchResult);
+        if (mTouchListener != null)
+            mTouchListener.onDispatchTouchEventResult(event, dispatchResult);
         return dispatchResult;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        L.e("TouchChild", "TouchChild onTouchEvent:" + event.getAction());
+        if (mTouchListener != null)
+            mTouchListener.onInvokeTouchEvent(event);
+        if (shouldCostTouch)
+            return true;
         boolean touchResult = super.onTouchEvent(event);
-        L.e("TouchChild", "TouchChild onTouchEvent touchResult:" + touchResult);
+        if (mTouchListener != null)
+            mTouchListener.onTouchEventResult(event, touchResult);
         return touchResult;
     }
 }

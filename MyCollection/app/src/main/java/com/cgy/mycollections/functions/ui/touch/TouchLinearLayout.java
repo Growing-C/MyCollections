@@ -17,6 +17,10 @@ import appframe.utils.L;
 public class TouchLinearLayout extends LinearLayout {
     TouchListener mTouchListener;
 
+    boolean shouldIntercept = false;//是否intercept
+    boolean shouldInterceptDispatch = false;//是否阻塞dispatch方法
+    boolean shouldCostTouch = false;//是否消费touch方法
+
     public TouchLinearLayout(Context context) {
         super(context);
     }
@@ -29,27 +33,50 @@ public class TouchLinearLayout extends LinearLayout {
         this.mTouchListener = touchListener;
     }
 
+    public void setShouldIntercept(boolean shouldIntercept) {
+        this.shouldIntercept = shouldIntercept;
+    }
+
+    public void setShouldInterceptDispatch(boolean shouldInterceptDispatch) {
+        this.shouldInterceptDispatch = shouldInterceptDispatch;
+    }
+
+    public void setShouldCostTouch(boolean shouldCostTouch) {
+        this.shouldCostTouch = shouldCostTouch;
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        L.e("TouchLinearLayout", "dispatchTouchEvent:" + ev.getAction());
+        if (mTouchListener != null)
+            mTouchListener.onInvokeDispatchTouchEvent(ev);
+        if (shouldInterceptDispatch) {
+            return true;
+        }
         boolean dispatchResult = super.dispatchTouchEvent(ev);
-        L.e("TouchLinearLayout", "dispatchTouchEvent dispatchResult:" + dispatchResult);
+        if (mTouchListener != null)
+            mTouchListener.onDispatchTouchEventResult(ev, dispatchResult);
         return dispatchResult;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        L.e("TouchLinearLayout", "onInterceptTouchEvent:" + ev.getAction());
+        if (mTouchListener != null)
+            mTouchListener.onInvokeInterceptTouchEvent(ev);
+        if (shouldIntercept)
+            return true;
         boolean interceptResult = super.onInterceptTouchEvent(ev);
-        L.e("TouchLinearLayout", "onInterceptTouchEvent interceptResult:" + interceptResult);
+        if (mTouchListener != null)
+            mTouchListener.onInterceptTouchEventResult(ev, interceptResult);
         return interceptResult;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        L.e("TouchLinearLayout", "onTouchEvent:" + event.getAction());
+        if (mTouchListener != null)
+            mTouchListener.onInvokeTouchEvent(event);
         boolean touchResult = super.onTouchEvent(event);
-        L.e("TouchLinearLayout", "onTouchEvent touchResult:" + touchResult);
+        if (mTouchListener != null)
+            mTouchListener.onTouchEventResult(event, touchResult);
         return touchResult;
     }
 }

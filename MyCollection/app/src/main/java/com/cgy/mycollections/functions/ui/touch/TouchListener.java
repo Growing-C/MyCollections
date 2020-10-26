@@ -42,12 +42,15 @@ public interface TouchListener {
      *
      * @param event
      */
-    void onInvokeInterceptTouchEvent(MotionEvent event);
+    default void onInvokeInterceptTouchEvent(MotionEvent event) {
+    }
 
     /**
      * 调用 onInterceptTouchEvent 结果
      *
      * @param event
      */
-    void onInterceptTouchEventResult(MotionEvent event, boolean result);
+    default void onInterceptTouchEventResult(MotionEvent event, boolean result) {
+    }
+
 }
