@@ -29,6 +29,7 @@ import dalvik.system.DexFile;
  * Created by RB-cgy on 2018/6/15.
  */
 public class TestMain {
+    //android项目下现在直接运行main可能报错，放到testsourcelib中
     public static void main(String[] args) {
         testMemory();
         testRound();
