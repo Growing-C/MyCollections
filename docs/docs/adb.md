@@ -41,3 +41,70 @@ Operation not allowed: java.lang.SecurityException: grantRuntimePermission: Neit
 后面带有 “(*)” 的库就表示 这个库 有被覆盖过。
 
 最后使用的是最高版本
+
+## adb常用命令
+
+// 列出进程列表 ，其中包含进程的 pid 等信息
+```
+adb shell ps
+```
+
+// 杀死指定pid的进程
+```
+adb shell kill pid
+```
+
+// 查看指定进程信息
+```
+adb shell ps -x pid 
+```
+
+// 把 pic目录下所有文件从电脑上拷贝到设备sd卡上
+```
+adb push ~/pic/ /mnt/sdcard/
+```
+
+// 把 a.png 从电脑上拷贝到设备sd卡上
+```
+adb push ~/a.png /mnt/sdcard/
+```
+
+// 把 a.png 从电脑上拷贝到设备sd卡上并重命名为 b.png
+```
+adb push ~/a.png /mnt/sdcard/b.png
+```
+
+// 把 a.png 从设备sd卡上拷贝到电脑上并命名为b.png
+```
+adb pull /mnt/sdcard/a.png ~/b.png
+```
+
+// 截屏放到指定目录下
+```
+adb shell screencap /sdcard/1.png
+```
+
+## adb 模拟按键
+// 模拟输入，其中 %s 代表空格
+adb shell input text "hello%sworld"
+
+// 模拟按键，82 代表 KEYCODE_MENU 即菜单键
+// 更多KEYCODE可以参考 http://developer.android.com/intl/zh-cn/reference/android/view/KeyEvent.html
+adb shell input keyevent 82
+
+// 模拟点击，屏幕上横坐标纵坐标分别为100 120的位置
+// 要查看具体坐标值，可以打开开发者选项->指针位置
+adb shell input tap 100 120
+
+// 模拟滑动，从位置（0,1000）滑动到(800,600)
+adb shell input swipe 0 1000 800 600
+
+// 模拟长按，在位置（100,200）长按500毫秒
+adb shell input swipe 100 200 100 200 500
+
+## adb 重启app
+adb shell am force-stop com.xiaopeng.montecarlo
+adb shell pm clear com.xiaopeng.montecarlo 清空应用程序数据
+
+
+adb shell am start -n com.xiaopeng.montecarlo/com.xiaopeng.montecarlo.MainActivity  启动

@@ -125,5 +125,9 @@ task aaTestSysArguments() {
         //单引号无法使用 $rootDir，使用双引号可以直接引用到
         //"$rootDir" 等效于 project.rootDir
         println('ccc root dir:' + "$rootDir")
+        //获取系统环境变量 C:\Users\Xpeng\AppData\Local\Android\Sdk\platform-tools;C:\Users\Xpeng\AppData\Local\Android\Sdk\tools
+        println("system android:" + System.getenv("androidtools"))
+        //获取系统环境变量，不过新建的环境变量需要重启ide才能获取到
+        println("system xp:" + System.getenv("XP_BUILD_CONFIG"))
     }
 }
