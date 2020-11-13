@@ -103,8 +103,6 @@ public class TTSService extends Service {
 
         public void say(String strSpeak) {
             if (!TextUtils.isEmpty(strSpeak)) {
-//                tts.speak(strSpeak, TextToSpeech.QUEUE_FLUSH,
-//                        null);
                 tts.speak(strSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
             }
 

@@ -1,0 +1,20 @@
+需要安装PlantUML插件，可以快速生成类图
+入门 ：
+https://plantuml.com/zh/sequence-diagram
+https://zhuanlan.zhihu.com/p/76948461
+
+@startuml
+
+
+
+class ArrayList {
+ public String test;
+ public void foo(){}
+}
+
+
+
+
+
+@enduml
+
