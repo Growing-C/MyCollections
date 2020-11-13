@@ -1,8 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+println '------gradle lifecycle root build.gradle execute------'
+
 //全局引入外部辅助gradle
 apply from: 'projectbuild/ci.gradle'
 //apply from: 'projectbuild/test.gradle'
 apply from: 'projectbuild/dependencies.gradle'
+
+println "gradle lifecycle all project size : ${allprojects.size()}"
 
 //  buildscript主要用于声明gardle脚本自身所需要使用的资源，
 // 包括依赖项、maven仓库地址、第三方插件等。你可以在里面手动添加一些三方插件、库的引用，
@@ -129,5 +133,69 @@ task aaTestSysArguments() {
         println("system android:" + System.getenv("androidtools"))
         //获取系统环境变量，不过新建的环境变量需要重启ide才能获取到
         println("system xp:" + System.getenv("XP_BUILD_CONFIG"))
+    }
+}
+
+//---------------测试生命周期的task--------------------------------
+gradle.settingsEvaluated { settings ->
+    println "gradle lifecycle settingsEvaluated"
+}
+
+gradle.projectsLoaded { gradle ->
+    println "gradle lifecycle projectsLoaded"
+}
+
+gradle.beforeProject { project ->
+    println "gradle lifecycle beforeProject: ${project.name} "
+}
+
+gradle.afterProject { project ->
+    println "gradle lifecycle afterProject: ${project.name}"
+}
+
+gradle.projectsEvaluated { gradle ->
+    println "gradle lifecycle projectsEvaluated"
+}
+
+//执行一个task的build完成最后会走这里
+gradle.buildFinished { buildResult ->
+    println "gradle lifecycle buildFinished"
+}
+
+gradle.taskGraph.whenReady { graph ->
+    println "============gradle lifecycle task graph is ready============"
+    //所有task运行do last前都会走这里
+    graph.getAllTasks().each {
+        println "gradle lifecycle task ${it.name} will execute"
+    }
+    println "============gradle lifecycle task graph is over============="
+}
+
+//所有task正要运行do last前都会走这里
+gradle.taskGraph.beforeTask { task ->
+    println "gradle lifecycle before ${task.name} execute"
+}
+//所有task do last 执行完了之后都会走这里
+gradle.taskGraph.afterTask { task ->
+    println "gradle lifecycle after ${task.name} execute"
+}
+
+//任务添加时会走这里，不过必须是写在这个之后的 如subTask1,之前的不会走
+tasks.whenTaskAdded { task ->
+    println "gradle lifecycle taskAdded:" + task.name
+}
+
+task subTask1 {
+    group "hello"
+    doLast {
+        println "gradle lifecycle ${name} execute"
+    }
+}
+
+//可以运行这个task来观察gradle执行的生命周期
+task subTask2(dependsOn: 'subTask1') {
+    group "hello"
+    doLast {
+        println "gradle lifecycle ${name} execute"
     }
 }

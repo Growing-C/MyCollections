@@ -1,4 +1,44 @@
+println '------gradle lifecycle setting.gradle execute------'
+
 include ':testsourcelib'
 include ':mediaoperator'
 include ':app',  ':mylibrary'
 //, ':X5WebDemo',':NetConf'
+
+
+//gradle 生命周期执行顺序
+//手动执行 task aaTestSysArguments，以下为执行过程
+//------gradle lifecycle setting.gradle execute------
+//------gradle lifecycle root build.gradle execute------
+//gradle lifecycle all project size : 5
+//ccc testSysArguments start!
+//gradle lifecycle taskAdded:subTask1
+//gradle lifecycle taskAdded:subTask2
+//gradle lifecycle afterProject: MyCollection
+//
+//gradle lifecycle beforeProject: app
+//------gradle lifecycle app build.gradle execute------
+//gradle lifecycle afterProject: app
+//gradle lifecycle app beforeEvaluate: app --in--
+//gradle lifecycle beforeProject: mediaoperator
+//gradle lifecycle afterProject: mediaoperator
+//
+//gradle lifecycle beforeProject: mylibrary
+//------gradle lifecycle lib build.gradle execute------
+//gradle lifecycle afterProject: mylibrary
+//
+//gradle lifecycle beforeProject: testsourcelib
+//gradle lifecycle afterProject: testsourcelib
+//============gradle lifecycle task graph is ready============
+//gradle lifecycle task aaTestSysArguments will execute
+//============gradle lifecycle task graph is over=============
+//gradle lifecycle projectsEvaluated
+//
+//> Task :aaTestSysArguments
+//gradle lifecycle before aaTestSysArguments execute
+//ccc testSysArguments dolast!
+//ccc root dir:F:\myprojects\MyCollections\MyCollection
+//ccc root dir:F:\myprojects\MyCollections\MyCollection
+//system xp:true
+//gradle lifecycle after aaTestSysArguments execute
+//gradle lifecycle buildFinished
