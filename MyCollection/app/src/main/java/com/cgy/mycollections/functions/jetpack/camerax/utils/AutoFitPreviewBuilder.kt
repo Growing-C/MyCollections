@@ -103,7 +103,7 @@ class AutoFitPreviewBuilder private constructor(
             parent.addView(innerViewFinder, 0)
 
             // Update internal texture
-            innerViewFinder.surfaceTexture = it.surfaceTexture
+            innerViewFinder.setSurfaceTexture(it.surfaceTexture)
 
             // Apply relevant transformations
             bufferRotation = it.rotationDegrees

@@ -171,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
                 L.e("test", "app list:" + packageInfo.packageName);
             }
         }
+        //根据id获取资源名称
+        L.e("test", "resource name:" + getResources().getResourceEntryName(R.string.action_settings));
+
 //        Intent intent = pm.getLaunchIntentForPackage(packageName);
 //        startActivity(intent);
     }
