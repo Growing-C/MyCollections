@@ -13,8 +13,8 @@ println "gradle lifecycle all project size : ${allprojects.size()}"
 // 这样你就可以在脚本中使用它们了。因为是引用，所以gradle在执行脚本时，会优先执行buildscript代码块中的内容。
 
 ext {
-    compile_sdk = 28
-    target_sdk = 28
+    compile_sdk = 30
+    target_sdk = 30
     min_sdk = 21
 
 //    androidx_version = '1.1.0'
@@ -51,7 +51,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

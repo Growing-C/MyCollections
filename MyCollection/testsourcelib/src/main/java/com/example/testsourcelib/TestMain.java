@@ -12,8 +12,21 @@ public class TestMain {
     }
 
     /**
-     *  测试直接赋值和通过加减赋值性能差距
-     *  10000000 级别都是2ms 几乎可以忽略不记
+     * 找到一串输入字符串中 最大不重复字符串的长度
+     * <p>
+     * 例  fffdsfdtlsdj  这串字符串中最大不重复串为 fdtls 即长度为 5
+     *
+     * @param input
+     * @return
+     */
+    public static int getMaxNotRepeatStringLenInString(String input) {
+        //TODO:
+        return 0;
+    }
+
+    /**
+     * 测试直接赋值和通过加减赋值性能差距
+     * 10000000 级别都是2ms 几乎可以忽略不记
      */
     private static void testDirectSetOrAdd() {
         int a = 1;

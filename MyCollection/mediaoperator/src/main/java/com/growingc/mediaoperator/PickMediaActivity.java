@@ -16,6 +16,6 @@ public class PickMediaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_media);
 
-        LoaderManager.getInstance(this)
+        LoaderManager.getInstance(this);
     }
 }

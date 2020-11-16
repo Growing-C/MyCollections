@@ -1,16 +1,17 @@
 apply plugin: 'com.android.library'
 
+def config = rootProject.extensions.getByName("ext")
+
 android {
-    compileSdkVersion 29
+    compileSdkVersion config["compile_sdk"]
 
     defaultConfig {
-        minSdkVersion 17
-        targetSdkVersion 29
+        minSdkVersion config["min_sdk"]
+        targetSdkVersion config["target_sdk"]
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        testInstrumentationRunner config["test_runner"]
     }
 
     buildTypes {

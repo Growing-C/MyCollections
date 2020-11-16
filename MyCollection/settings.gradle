@@ -1,8 +1,9 @@
 println '------gradle lifecycle setting.gradle execute------'
 
+include ':mylibrary'
 include ':testsourcelib'
 include ':mediaoperator'
-include ':app',  ':mylibrary'
+include ':app'
 //, ':X5WebDemo',':NetConf'
 
 
