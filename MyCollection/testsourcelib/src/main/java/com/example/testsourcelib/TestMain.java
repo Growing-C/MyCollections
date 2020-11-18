@@ -1,20 +1,19 @@
 package com.example.testsourcelib;
 
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+
 /**
  * Created by RB-cgy on 2018/6/15.
  */
 public class TestMain {
 
-    public static final int NAVI_DETAIL_BROADCAST = 1 << 4;//导航播报详细播报
-    public static final int NAVI_NORMAL_BROADCAST = 1 << 5;//导航播报一般播报
-
     public static void main(String[] args) {
 //        testRound();
 //        testDirectSetOrAdd();
-
-        System.out.println("NAVI_DETAIL_BROADCAST?" + ((708561 & NAVI_DETAIL_BROADCAST) == NAVI_DETAIL_BROADCAST));
-        System.out.println("NAVI_NORMAL_BROADCAST?" + ((708561 & NAVI_NORMAL_BROADCAST) == NAVI_NORMAL_BROADCAST));
+        getMaxNotRepeatStringLenInString("qwertyuiopqqasdfghjklzaazxcvbnmlkjzz");
     }
 
     /**
@@ -25,9 +24,37 @@ public class TestMain {
      * @param input
      * @return
      */
-    public static int getMaxNotRepeatStringLenInString(String input) {
+    public static void getMaxNotRepeatStringLenInString(String input) {
         //TODO:
-        return 0;
+        if (input == null || input.length() == 0) {
+            System.out.println("null string len is 0");
+            return;
+        }
+
+        HashSet<Character> charSet = new HashSet<>();
+        HashMap<Integer, String> maxStrings = new HashMap<>();
+        int rightIndex = 0;
+        int maxLen = 0;
+        for (int i = 0, len = input.length(); i < len; i++) {
+            while (rightIndex < len && !charSet.contains(input.charAt(rightIndex))) {
+                charSet.add(input.charAt(rightIndex));
+                rightIndex++;
+            }
+            maxLen = Math.max(maxLen, charSet.size());
+            if (charSet.size() == maxLen) {
+                String pre = maxStrings.get(maxLen);
+                String maxString = input.substring(i, rightIndex);
+                maxStrings.put(maxLen, pre == null ? maxString : pre + "," + maxString);
+            }
+            if (rightIndex == len) {
+                //已经到最后一个了，不可能再增加了
+                System.out.println(input + "--maxLen->" + maxLen);
+                System.out.println("--all strings->" + maxStrings.get(maxLen));
+                break;
+            }
+
+            charSet.remove(input.charAt(i));
+        }
     }
 
     /**
