@@ -5,10 +5,16 @@ package com.example.testsourcelib;
  * Created by RB-cgy on 2018/6/15.
  */
 public class TestMain {
+
+    public static final int NAVI_DETAIL_BROADCAST = 1 << 4;//导航播报详细播报
+    public static final int NAVI_NORMAL_BROADCAST = 1 << 5;//导航播报一般播报
+
     public static void main(String[] args) {
 //        testRound();
-        testDirectSetOrAdd();
+//        testDirectSetOrAdd();
 
+        System.out.println("NAVI_DETAIL_BROADCAST?" + ((708561 & NAVI_DETAIL_BROADCAST) == NAVI_DETAIL_BROADCAST));
+        System.out.println("NAVI_NORMAL_BROADCAST?" + ((708561 & NAVI_NORMAL_BROADCAST) == NAVI_NORMAL_BROADCAST));
     }
 
     /**

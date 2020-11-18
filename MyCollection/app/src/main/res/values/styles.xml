@@ -35,13 +35,23 @@
         <!-- colorAccent is used as the default value for colorControlActivated
        which is used to tint widgets -->
         <item name="colorAccent">@color/colorAccent</item>
-        <!--        配合沉浸式状态栏使用，用于把statusbar设为透明-->
-        <!--        <item name="android:windowTranslucentStatus">true</item>-->
+        <!--配合沉浸式状态栏使用，用于把statusbar设为透明-->
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
 
+        <!--TextColor只是xml屬性，用於將顏色設置爲任何給定視圖的文本。-->
+        <!--TextColorPrimary是啓用的按鈕和大文本視圖的默認文本顏色。-->
+        <!--TextColorSecondary是中文和小文字視圖的默認文本顏色。-->
         <!--可以控制view默认字体颜色，也可以控制toolbar默认的title颜色 toolbarStyle中的会被这个属性重写，除非直接在toolbar中指定style-->
         <item name="android:textColorPrimary">@android:color/holo_blue_bright</item>
-        <!--      可以控制view默认颜色，也可以控制toolbar菜单三点及返回按钮的颜色-->
-        <!--        <item name="android:colorControlNormal">@color/icFocused</item>-->
+        <!--全局控制textView默认字体颜色-->
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <!--全局控制textView默认字体颜色,上面两个都无效-->
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <!--如果要button和默认textView color不一样 使用下面的style-->
+        <!--<item name="android:buttonStyle">@style/myButtonStyle</item>-->
+
+        <!--可以控制view默认颜色，也可以控制toolbar菜单三点及返回按钮的颜色-->
+        <!--<item name="android:colorControlNormal">@color/icFocused</item>-->
         <!--toolbar右边文字颜色，有效,似乎层级在上面的属性会覆盖下面的 比如toolbarStyle中的actionMenuTextColor就被这里的覆盖了-->
         <item name="actionMenuTextColor">@android:color/holo_red_dark</item>
         <!--从apptheme层级设置toolbar右边弹出菜单，功能经测试有效，但是toolbarStyle中的popupTheme会覆盖这个-->
@@ -59,7 +69,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
-        <!--        背景蒙版,true背景会有一层黑色透明对话框式蒙版，false则没有-->
+        <!--背景蒙版,true背景会有一层黑色透明对话框式蒙版，false则没有-->
         <item name="android:backgroundDimEnabled">true</item>
         <!--是否浮现在activity之上-->
         <item name="android:windowIsFloating">true</item>

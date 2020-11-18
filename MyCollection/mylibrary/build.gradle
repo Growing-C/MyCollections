@@ -1,4 +1,4 @@
-//println '------gradle lifecycle lib build.gradle execute------'
+println '------gradle lifecycle lib build.gradle execute------'
 
 apply plugin: 'com.android.library'
 

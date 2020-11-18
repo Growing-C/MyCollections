@@ -29,6 +29,8 @@ import android.os.Bundle;
 //import androidx.appcompat.widget.RecyclerView;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.LayoutInflaterCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -36,9 +38,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cgy.mycollections.functions.chart.ChartDemo;
@@ -84,8 +89,36 @@ public class MainActivity extends AppCompatActivity {
 
     private ItemTouchHelper mItemTouchHelper;//滑动删除 拖拽实现
 
+    // 使用自定义的view替换自带的view
+    private LayoutInflater.Factory2 factory2 = new LayoutInflater.Factory2() {
+        @Override
+        public View onCreateView(String name, Context context, AttributeSet attrs) {
+            return onCreateView(null, name, context, attrs);
+        }
+
+        @Override
+        public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+            View view = null;
+            L.e("test", "factory replace view");
+            if ("TextView".equals(name)) {
+                view = new TextView(context, attrs);
+                //可以替换全局的字体默认颜色
+                //或者使用style中的
+                ((TextView) view).setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+            }
+            // 注意: 非activity的控件(如dialog)的,请在dialog中重新 setOnClickListener(), 此处无法区别
+//            if (view != null) {
+//                view.setOnClickListener(new HookViewClickUtil.OnClickListenerProxy(BaseFragmentActivity.this, getDoubleClickDuration()));
+//            }
+
+            return view;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //用于替换全局的某个view
+//        LayoutInflaterCompat.setFactory2(LayoutInflater.from(this), factory2);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);//butterKnife和dataBinding并不冲突
