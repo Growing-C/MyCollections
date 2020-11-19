@@ -5,7 +5,6 @@ import android.content.Context;
 import appframe.utils.L;
 
 import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
-import com.cgy.mycollections.functions.sqlite.db.UserAccount;
 import com.cgy.mycollections.utils.PinYinUtils;
 
 import org.web3j.crypto.MnemonicUtils;
@@ -22,7 +21,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import appframe.utils.IOUtils;
-import appframe.utils.TimeUtils;
 import dalvik.system.DexFile;
 
 /**
