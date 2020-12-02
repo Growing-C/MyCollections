@@ -1,9 +1,9 @@
 package com.example.testsourcelib;
 
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by RB-cgy on 2018/6/15.
@@ -14,6 +14,11 @@ public class TestMain {
 //        testRound();
 //        testDirectSetOrAdd();
         getMaxNotRepeatStringLenInString("qwertyuiopqqasdfghjklzaazxcvbnmlkjzz");
+    }
+
+    public static void testCompletableFuture() {
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
+
     }
 
     /**
