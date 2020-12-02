@@ -1,4 +1,38 @@
+#绑定高德账号流程
 @startuml
+LinkPlatformFragment -> LinkPlatformFragment: onSceneViewCreated()
+LinkPlatformFragment -> LinkPlatformFragment: initData()
+
+LinkPlatformFragment -> LinkPlatformPresent: getUserInfo()
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider: getUserInfo()
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_USERINFO)
+LinkPlatformFragment <-- LinkPlatformPresent: onGetUserInfoSuccess()
+
+LinkPlatformFragment -> LinkPlatformPresent: checkBindAMapStatus()
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider: checkBindAMapStatus()
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_CHECK_BIND_STATUS)
+LinkPlatformFragment <-- LinkPlatformPresent: onCheckBindAMapStatusSuccess()
+
+LinkPlatformFragment -> LinkPlatformPresent: checkIsAmapAccount()
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider: checkIsAmapAccount()
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_CHECK_IS_AMAP_ACCOUNT)
+LinkPlatformFragment <-- LinkPlatformPresent: onCheckIsAmapAccountSuccess()
+
+用户 -> LinkPlatformFragment:点击绑定高德地图
+LinkPlatformFragment -> LinkPlatformPresent:oneSecBindAmap()
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider:oneSecBindAmap()
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_ONE_SEC_BIND)
+LinkPlatformFragment <-- LinkPlatformPresent: onLoginAmapSuccess()
+
+LinkPlatformFragment -> LinkPlatformPresent:getAmapAccount()
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider:getAmapAccount()
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_AMAP_ACCOUNT)
+LinkPlatformFragment <-- LinkPlatformPresent: onAmapAccountSuccess()
+
+
+@enduml
+
+
 用户 -> 认证中心: 登录操作
 认证中心 -> 缓存: 存放(key=token+ip,value=token)token
 
@@ -7,4 +41,3 @@
 认证中心 <- 缓存: key=token+ip获取token
 其他服务 <- 认证中心: 存在且校验成功则跳转到用户请求的其他服务
 其他服务 --> 用户: 信息
-@enduml

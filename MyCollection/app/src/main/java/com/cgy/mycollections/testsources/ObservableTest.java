@@ -27,6 +27,14 @@ public class ObservableTest {
 
     }
 
+    /**
+     * publishSubject 特性
+     * 1.observer只能接收 subscribe之后的onNext
+     * 2.onError之后的所有onNext,onComplete都无效
+     * 3.onError之后的subscribe的observer能收到onError事件
+     * 4.onComplete之后的所有onNext,onError都无效
+     * 3.onComplete之后的subscribe的observer能收到onComplete事件
+     */
     public static void testPublishSubject() {
         PublishSubject<Integer> publishSubject = PublishSubject.create();
 
@@ -62,6 +70,22 @@ public class ObservableTest {
                 System.out.println("disposableObserver2 onComplete:");
             }
         };
+        DisposableObserver<Integer> disposableObserver3 = new DisposableObserver<Integer>() {
+            @Override
+            public void onNext(Integer integer) {
+                System.out.println("disposableObserver3 onNext:" + integer);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println("disposableObserver3 onError:" + e);
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("disposableObserver3 onComplete:");
+            }
+        };
         publishSubject.subscribe(disposableObserver1);
         publishSubject.onNext(11111);
         publishSubject.onNext(22222);
@@ -71,6 +95,14 @@ public class ObservableTest {
         publishSubject.onNext(333333);
 
         publishSubject.onComplete();
+        publishSubject.subscribe(disposableObserver3);
+        publishSubject.onNext(4444);
+        //以下是log
+//        disposableObserver1 onNext:11111
+//        disposableObserver1 onNext:22222
+//        disposableObserver1 onError:java.lang.NullPointerException: aaa
+//        disposableObserver2 onError:java.lang.NullPointerException: aaa
+//        disposableObserver3 onError:java.lang.NullPointerException: aaa
     }
 
     private static void testBackpressure() {
@@ -86,10 +118,11 @@ public class ObservableTest {
 
         flowable.subscribe(new Subscriber<Integer>() {
             Subscription s;
+
             @Override
             public void onSubscribe(Subscription s) {
                 System.out.println("onSubscribe");
-                this.s=s;
+                this.s = s;
                 s.request(1);
             }
 
