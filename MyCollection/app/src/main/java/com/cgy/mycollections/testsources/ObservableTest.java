@@ -1,6 +1,7 @@
 package com.cgy.mycollections.testsources;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -8,7 +9,9 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.Scheduler;
 import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -33,20 +36,22 @@ public class ObservableTest {
      * 2.onError之后的所有onNext,onComplete都无效
      * 3.onError之后的subscribe的observer能收到onError事件
      * 4.onComplete之后的所有onNext,onError都无效
-     * 3.onComplete之后的subscribe的observer能收到onComplete事件
+     * 5.onComplete之后的subscribe的observer能收到onComplete事件
+     * 6.publishSubject.observeOn切换观察线程只管后面subscribe的那个observable，
+     * 其他没有observeOn的subscribe依然在事件发送线程
      */
     public static void testPublishSubject() {
         PublishSubject<Integer> publishSubject = PublishSubject.create();
 
         DisposableObserver<Integer> disposableObserver1 = new DisposableObserver<Integer>() {
             @Override
-            public void onNext(Integer integer) {
-                System.out.println("disposableObserver1 onNext:" + integer);
+            public void onNext(@NotNull Integer integer) {
+                System.out.println("disposableObserver1 onNext:" + integer + Thread.currentThread().toString());
             }
 
             @Override
-            public void onError(Throwable e) {
-                System.out.println("disposableObserver1 onError:" + e);
+            public void onError(@NotNull Throwable e) {
+                System.out.println("disposableObserver1 onError:" + e + Thread.currentThread().toString());
             }
 
             @Override
@@ -56,13 +61,13 @@ public class ObservableTest {
         };
         DisposableObserver<Integer> disposableObserver2 = new DisposableObserver<Integer>() {
             @Override
-            public void onNext(Integer integer) {
-                System.out.println("disposableObserver2 onNext:" + integer);
+            public void onNext(@NotNull Integer integer) {
+                System.out.println("disposableObserver2 onNext:" + integer + Thread.currentThread().toString());
             }
 
             @Override
-            public void onError(Throwable e) {
-                System.out.println("disposableObserver2 onError:" + e);
+            public void onError(@NotNull Throwable e) {
+                System.out.println("disposableObserver2 onError:" + e + Thread.currentThread().toString());
             }
 
             @Override
@@ -72,13 +77,13 @@ public class ObservableTest {
         };
         DisposableObserver<Integer> disposableObserver3 = new DisposableObserver<Integer>() {
             @Override
-            public void onNext(Integer integer) {
-                System.out.println("disposableObserver3 onNext:" + integer);
+            public void onNext(@NotNull Integer integer) {
+                System.out.println("disposableObserver3 onNext:" + integer + Thread.currentThread().toString());
             }
 
             @Override
-            public void onError(Throwable e) {
-                System.out.println("disposableObserver3 onError:" + e);
+            public void onError(@NotNull Throwable e) {
+                System.out.println("disposableObserver3 onError:" + e + Thread.currentThread().toString());
             }
 
             @Override
@@ -108,7 +113,7 @@ public class ObservableTest {
     private static void testBackpressure() {
         Flowable<Integer> flowable = Flowable.create(new FlowableOnSubscribe<Integer>() {
             @Override
-            public void subscribe(FlowableEmitter<Integer> emitter) throws Exception {
+            public void subscribe(@NotNull FlowableEmitter<Integer> emitter) throws Exception {
                 for (int i = 0; i < 100; i++) {
                     emitter.onNext(i);
                 }
