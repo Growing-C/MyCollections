@@ -34,6 +34,7 @@ import com.cgy.mycollections.functions.ui.textdemo.linkify.LinkMovementMethodEx;
 import com.cgy.mycollections.functions.ui.textdemo.linkify.NoUnderlineSpan;
 import com.cgy.mycollections.widgets.WaveView;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -59,6 +60,8 @@ public class TextDemo extends AppCompatActivity {
     TextView mClickTextV;
     @BindView(R.id.linkify_text)
     TextView mLinkifyTextV;
+    @BindView(R.id.format)
+    TextView mFormatTextV;
     @BindView(R.id.count_down)
     Button mCountDownV;
 
@@ -76,6 +79,29 @@ public class TextDemo extends AppCompatActivity {
         setTextClick(tt);
 
         testLinkify();
+
+        showFormatText();
+    }
+
+    /**
+     * 小数点格式化,会四舍五入
+     */
+    private void showFormatText() {
+        float targetF = 3.4516f;
+        StringBuilder formatStr = new StringBuilder();
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
+        formatStr.append(targetF).append("格式化0位小数：").append(numberFormat.format(targetF));
+        formatStr.append("\n");
+
+        numberFormat.setMaximumFractionDigits(1);
+        formatStr.append(targetF).append("格式化1位小数：").append(numberFormat.format(targetF));
+        formatStr.append("\n");
+
+        numberFormat.setMaximumFractionDigits(3);
+        formatStr.append(targetF).append("格式化3位小数：").append(numberFormat.format(targetF));
+
+        mFormatTextV.setText(formatStr);
     }
 
     @Override
