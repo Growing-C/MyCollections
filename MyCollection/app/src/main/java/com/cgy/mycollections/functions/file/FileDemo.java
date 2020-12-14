@@ -32,6 +32,7 @@ import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.utils.CommonUtils;
+import com.cgy.mycollections.utils.FileSortUtils;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.utils.image.ImageLoader;
@@ -83,6 +84,7 @@ public class FileDemo extends BaseActivity {
 //   List< FileInfo> mSelectedFile;
 
     FileInfo targetFile = null;
+    SortInfo mSortInfo;//排序
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class FileDemo extends BaseActivity {
 
         setSupportActionBar(toolbar);
         setUpActionBarBack(toolbar);
+
+        mSortInfo = SortInfo.getDefault();
 
         if (getIntent() != null) {
             mFileOperateType = getIntent().getStringExtra(FileConstants.KEY_FILE_OPERATE);
@@ -128,6 +132,7 @@ public class FileDemo extends BaseActivity {
                     if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
                         Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
                         it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
+                        it.putExtra("sortInfo", mSortInfo);
                         startActivity(it);
                     } else {
                         try {
@@ -227,26 +232,15 @@ public class FileDemo extends BaseActivity {
                 }
             }
             if (distinguishDirAndFile) {
-                fileList.addAll(sortByName(dirList));
-                fileList.addAll(sortByName(rawFileList));
+                fileList.addAll(FileSortUtils.sortFileInfoListByName(dirList, mSortInfo.isAscending()));
+                fileList.addAll(FileSortUtils.sortFileInfoListByName(rawFileList, mSortInfo.isAscending()));
             } else {
-                sortByName(fileList);
+                FileSortUtils.sortFileInfoListByName(fileList, mSortInfo.isAscending());
             }
         }
         return fileList;
     }
 
-    public List<FileInfo> sortByName(List<FileInfo> fileList) {
-        if (fileList != null) {
-            Collections.sort(fileList, new Comparator<FileInfo>() {
-                @Override
-                public int compare(FileInfo o1, FileInfo o2) {
-                    return o1.getFileName().toUpperCase().compareTo(o2.getFileName().toUpperCase());
-                }
-            });
-        }
-        return fileList;
-    }
 
     /**
      * 显示底部菜单
@@ -446,6 +440,7 @@ public class FileDemo extends BaseActivity {
                 confirmSelectFile();
                 break;
             case R.id.action_reverse://顺序反转
+                mSortInfo.setAscending(!mSortInfo.isAscending());
                 if (mFileList != null && mFileList.size() > 0) {
                     Collections.reverse(mFileList);
                     mFileAdapter.notifyDataSetChanged();

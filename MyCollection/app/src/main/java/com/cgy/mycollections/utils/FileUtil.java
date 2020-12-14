@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Environment;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,7 +22,6 @@ import com.cgy.mycollections.functions.mediamanager.MediaHelper;
 import appframe.utils.L;
 
 import com.cgy.mycollections.utils.image.ImageHelper;
-import com.cgy.mycollections.utils.image.ImageLoader;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
 

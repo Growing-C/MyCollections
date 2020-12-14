@@ -23,9 +23,11 @@ import android.widget.TextView;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.BaseFullScreenActivity;
 import com.cgy.mycollections.functions.file.FileInfo;
+import com.cgy.mycollections.functions.file.SortInfo;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.RecyclerAdapter;
 import com.cgy.mycollections.listeners.OnMyItemClickListener;
+import com.cgy.mycollections.utils.FileSortUtils;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.SystemUiUtils;
 import com.cgy.mycollections.widgets.HeaderBar;
@@ -58,6 +60,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     HeaderBar mHeaderBar;
 
     ImageInfo mSelectedImage;
+    SortInfo mSortInfo;
     List<File> mImageFiles;
 
     @Override
@@ -90,10 +93,14 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 //        initFullScreenToggleAction(mDelayHideButton);//TODO:待搞清楚
 
         mSelectedImage = (ImageInfo) getIntent().getSerializableExtra("imageInfo");
+        mSortInfo = (SortInfo) getIntent().getSerializableExtra("sortInfo");
+        if (mSortInfo == null) {
+            mSortInfo = SortInfo.getDefault();
+        }
 
         File imageDir = new File(mSelectedImage.imageFilePath).getParentFile();
         mImageFiles = FileUtil.listImageFile(imageDir, true);
-        mImageFiles = sortByName(mImageFiles);
+        mImageFiles = FileSortUtils.sortFileListByName(mImageFiles, mSortInfo.isAscending());
 
         mImagePager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -133,17 +140,6 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         return -1;
     }
 
-    public List<File> sortByName(List<File> fileList) {
-        if (fileList != null) {
-            Collections.sort(fileList, new Comparator<File>() {
-                @Override
-                public int compare(File o1, File o2) {
-                    return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
-                }
-            });
-        }
-        return fileList;
-    }
 
     public void onClick(View v) {
         switch (v.getId()) {
