@@ -1,0 +1,4 @@
+# bindAmap onSuccess之后的流程onBindAmapSuccess(true)
+@startuml
+LinkPlatformFragment  -> LinkPlatformPresent: getAmapAccount()
+@enduml

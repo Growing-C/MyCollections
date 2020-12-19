@@ -1,0 +1,224 @@
+#绑定高德账号流程(bug)
+@startuml
+actor user
+
+LinkPlatformFragment -> LinkPlatformFragment: onSceneViewCreated()
+activate LinkPlatformFragment
+deactivate LinkPlatformFragment
+LinkPlatformFragment -> LinkPlatformFragment: initData()
+activate LinkPlatformFragment
+deactivate LinkPlatformFragment
+
+LinkPlatformFragment -> LinkPlatformPresent: getUserInfo()
+activate LinkPlatformPresent
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider: getUserInfo()
+activate LinkSeamlessNaviDataProvider
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_USERINFO)
+deactivate LinkSeamlessNaviDataProvider
+LinkPlatformFragment <-- LinkPlatformPresent: onGetUserInfoSuccess()
+deactivate LinkPlatformPresent
+activate LinkPlatformFragment
+
+LinkPlatformFragment -> LinkPlatformPresent: checkBindAMapStatus()
+deactivate LinkPlatformFragment
+activate LinkPlatformPresent
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider: checkBindAMapStatus()
+activate LinkSeamlessNaviDataProvider
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_CHECK_BIND_STATUS)
+deactivate LinkSeamlessNaviDataProvider
+LinkPlatformFragment <-- LinkPlatformPresent: onCheckBindAMapStatusSuccess()
+
+deactivate LinkPlatformPresent
+
+alt isBind=true 小鹏账号和高德已经绑定
+  LinkPlatformFragment -> LinkPlatformPresent:  getAmapAccount()
+  activate LinkPlatformPresent
+  LinkPlatformPresent -> LinkSeamlessNaviDataProvider: getAmapAccount()
+  activate LinkSeamlessNaviDataProvider
+  LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_AMAP_ACCOUNT)
+  deactivate LinkSeamlessNaviDataProvider
+  LinkPlatformFragment <-- LinkPlatformPresent: onAmapAccountSuccess()
+  deactivate LinkPlatformPresent
+
+else isBind=false 小鹏账号和高德未绑定，且已经登陆小鹏账号
+  LinkPlatformFragment -> LinkPlatformPresent:  checkIsAmapAccount()
+  activate LinkPlatformPresent
+  note right :bug进入走到这个流程
+  LinkPlatformPresent -> LinkSeamlessNaviDataProvider: checkIsAmapAccount()
+  activate LinkSeamlessNaviDataProvider
+  LinkSeamlessNaviDataProvider -> LinkSeamlessNaviDataProvider: checkIsAmapAccount()
+  activate LinkSeamlessNaviDataProvider #DarkSalmon
+  deactivate LinkSeamlessNaviDataProvider
+  LinkSeamlessNaviDataProvider ->LinkAMapWrapper:checkIsAMapAccount()
+  activate LinkAMapWrapper
+  LinkAMapWrapper ->XPAccountServiceWrapper:asyncGetOAuthCode()
+  activate XPAccountServiceWrapper
+  XPAccountServiceWrapper ->XPAccountServiceWrapper:asyncGetOAuthCode("xp_gd_navigation")
+  activate XPAccountServiceWrapper #DarkSalmon
+  deactivate XPAccountServiceWrapper
+  XPAccountServiceWrapper ->AccountManager:getAuthToken("xp_gd_navigation")
+  AccountManager -->XPAccountServiceWrapper:handleAccountResult()
+  XPAccountServiceWrapper -->LinkSeamlessNaviDataProvider:XCheckTokenCallBack.onSuccess()
+
+  alt responseParam.isAmap == 1 高德账号已绑定
+   LinkSeamlessNaviDataProvider ->SettingWrapper:saveIsAMapAccount(true)
+  else responseParam.isAmap != 1 高德账号未绑定
+   LinkSeamlessNaviDataProvider ->SettingWrapper:saveIsAMapAccount(false)
+  end
+
+  LinkSeamlessNaviDataProvider ->SettingWrapper:saveAMapCheckToken()
+  activate LinkSeamlessNaviDataProvider #DarkSalmon
+  deactivate LinkSeamlessNaviDataProvider
+  activate SettingWrapper
+  LinkSeamlessNaviDataProvider ->LinkSeamlessNaviDataProvider:notifyParam()
+  SettingWrapper ->AccIncreDataSupervision:mDataSetListener.dataChange(\nnotifyType=NOTIFY_ALL\nkey = key_amap_check_token_response)
+  deactivate SettingWrapper
+  deactivate XPAccountServiceWrapper
+  deactivate LinkAMapWrapper
+
+  LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_CHECK_IS_AMAP_ACCOUNT)
+  deactivate LinkSeamlessNaviDataProvider
+  deactivate LinkSeamlessNaviDataProvider
+  LinkPlatformFragment <-- LinkPlatformPresent: onCheckIsAmapAccountSuccess()
+  deactivate LinkPlatformPresent
+  note right:bug此处为false 不是amapAccount   mTvBindAction.setTag(TAG_AMAP_BTN_LOGIN);
+end
+
+== 用户点击操作==
+user -> LinkPlatformFragment:点击绑定高德地图
+alt tag = TAG_AMAP_BTN_LOGIN
+ LinkPlatformFragment -> LinkPlatformPresent:requestAmapQrcode()
+ activate LinkPlatformFragment
+ note right:bug 进入此处
+ LinkPlatformPresent -> LinkSeamlessNaviDataProvider:requestAmapQrcode()
+ activate LinkSeamlessNaviDataProvider
+ LinkSeamlessNaviDataProvider -> LinkSeamlessNaviDataProvider:requestAmapQrcode()
+ activate LinkSeamlessNaviDataProvider #DarkSalmon
+ deactivate LinkSeamlessNaviDataProvider
+ LinkSeamlessNaviDataProvider -> LinkAMapWrapper: getAMapQRCode()
+ activate LinkAMapWrapper
+ LinkAMapWrapper -> BLAccountServiceWrapper: requestGetQRCodeLogin()
+ BLAccountServiceWrapper -> AccountService: executeRequest(QRCodeLoginRequest)
+ AccountService -> DefaultAccountServiceObserver: notify(QRCodeLoginResult)
+ DefaultAccountServiceObserver --> EventBus: post(AccountEvent)
+ EventBus --> LinkAMapWrapper: mEventObserver.onAosAccountEvent(QRCodeLoginResult)
+ LinkAMapWrapper --> LinkAMapWrapper: getQRCodeEvent(QRCodeLoginResult)
+ activate LinkAMapWrapper
+ deactivate LinkAMapWrapper
+ LinkAMapWrapper --> LinkSeamlessNaviDataProvider: GetCodeLoginCallBack.onSuccess(QRCodeLoginResult)
+ deactivate LinkAMapWrapper
+
+ LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_AMAP_QRCODE)
+ LinkPlatformFragment <-- LinkPlatformPresent: onAmapQrCodeSuccess()
+ deactivate LinkSeamlessNaviDataProvider
+ deactivate LinkPlatformFragment
+
+ LinkPlatformFragment -> LinkPlatformFragment:showAmapQRCodeDialog()
+loop  一直轮询直到二维码扫码登陆成功
+ LinkPlatformFragment -> LinkPlatformPresent:loginByAMapQRCode()
+ LinkPlatformPresent -> LinkSeamlessNaviDataProvider:loginByAMapQRCode()
+
+ LinkSeamlessNaviDataProvider -> LinkSeamlessNaviDataProvider:doFetchData()
+ LinkSeamlessNaviDataProvider -> LinkSeamlessNaviDataProvider:loginByAMapQRCode()
+ LinkSeamlessNaviDataProvider -> LinkAMapWrapper:loginByAMapQRCode()
+ LinkAMapWrapper -> BLAccountServiceWrapper:requestQRCodeLoginConfirm()
+ BLAccountServiceWrapper -> AccountService: executeRequest(QRCodeLoginConfirmRequest)
+ AccountService -> DefaultAccountServiceObserver: notify(QRCodeLoginConfirmResult)
+ DefaultAccountServiceObserver --> EventBus: post(AccountEvent)
+ EventBus --> LinkAMapWrapper: mEventObserver.onAosAccountEvent(QRCodeLoginConfirmResult)
+ LinkAMapWrapper --> LinkAMapWrapper: qrCodeLoginEvent(QRCodeLoginConfirmResult)
+ activate LinkAMapWrapper
+ deactivate LinkAMapWrapper
+
+
+alt accountAosResult.code == AccountEvent.QRCODE_LOGIN_CONFIRM_RESULT_SUCCESS 二维码查询登陆成功
+ LinkAMapWrapper --> LinkSeamlessNaviDataProvider: mQRCodeLoginCallBack.onSuccess(QRCodeLoginResult)
+ LinkAMapWrapper --> BLAccountServiceWrapper: requestAccountProfile()
+ BLAccountServiceWrapper --> AccountService: executeRequest(AccountProfileRequest)
+ AccountService --> DefaultAccountServiceObserver: notify(AccountProfileResult)
+ note right:此处有log notify profile json
+
+ DefaultAccountServiceObserver --> SettingWrapper: setBlAccountProfile(key_bl_account_profile_json)
+ DefaultAccountServiceObserver --> SettingWrapper: setAmapLoginStatus(true,)\nkey_amap_login_status
+ DefaultAccountServiceObserver --> SettingWrapper: saveBindAMapStatus(true)\nkey_check_bind_amap_status
+ DefaultAccountServiceObserver --> XPAccountServiceWrapper: invokeAmapQuickLoginCallback()
+
+ '进入同步流程
+ XPAccountServiceWrapper --> AccountEventManager: amapQuickLogin()
+ AccountEventManager --> AccountSyncSession: addFavoriteForAmapSync()
+ AccountSyncSession --> BlAccountDataSyncScheduler: startBlSyncAccountData (103)
+ BlAccountDataSyncScheduler --> BlAccountDataSyncHelper: addFavoriteForAmapSync()
+ note right: 此处有log addFavoriteForAmapSync list：37
+ BlAccountDataSyncScheduler --> BlAccountDataSyncHelper: initBlLoginInfo()
+
+ BlAccountDataSyncHelper --> IncrementDataManager: addFavList(2)
+ IncrementDataManager --> BlIncrementDataHelper: addFavList()
+ BlIncrementDataHelper --> AccountSyncSession: startSync(55)
+
+ BlAccountDataSyncScheduler --> BlAccountDataSyncScheduler: mHandler.sendEmptyMessageDelayed(MSG_BL_MERGE, MSG_BL_MERGE_DELAY_TIME);\n2s延迟后操作
+... 2s后...
+ BlAccountDataSyncScheduler --> BlAccountDataSyncHelper: startMerge(true)
+
+
+
+ DefaultAccountServiceObserver --> EventBus: post(AccountEvent)
+ EventBus --> LinkAMapWrapper: getAccountInfoEvent( )
+ LinkAMapWrapper --> SettingWrapper: saveAMapLoginStatus( )
+
+
+
+ LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_LOGIN_AMAP_BY_QRCODE)
+ LinkPlatformFragment <-- LinkPlatformPresent: onLoginAmapSuccess(true,false)
+ note right : bug 在此处有log ->bindmap onLoginAmapSuccess isLogin= true isQuickLogin= false
+ LinkPlatformFragment  -> LinkPlatformPresent: bindAmap(false)
+ LinkPlatformPresent  -> LinkSeamlessNaviDataProvider: bindAmap()
+ LinkSeamlessNaviDataProvider  -> LinkSeamlessNaviDataProvider: bindAmap()
+ LinkSeamlessNaviDataProvider  -> LinkAMapWrapper: bindAmap()
+ activate LinkAMapWrapper
+ LinkAMapWrapper  -> XPAccountServiceWrapper: asyncGetOAuthCode()
+ LinkAMapWrapper  <-- XPAccountServiceWrapper: onAuthCodeHandler()
+ LinkAMapWrapper  -> AosServiceWrapper: requestCarLtdBind()
+ LinkAMapWrapper  -> DataSetHelper: set(key_check_bind_amap_status_int)
+ LinkAMapWrapper  --> LinkSeamlessNaviDataProvider: onSuccess()
+ LinkSeamlessNaviDataProvider  --> SettingWrapper: saveBindAMapStatus(true) \nkey_check_bind_amap_status
+ LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_BIND_AMAP)
+ LinkPlatformFragment <-- LinkPlatformPresent: onBindAmapSuccess(true)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ deactivate LinkAMapWrapper
+
+
+else 二维码查询登陆失败
+ LinkAMapWrapper --> LinkSeamlessNaviDataProvider: mQRCodeLoginCallBack.onFail(QRCodeLoginResult)
+ LinkSeamlessNaviDataProvider --> LinkPlatformPresent: onError(LOGIN_BY_AMAP_ERROR)
+ LinkPlatformPresent --> LinkPlatformFragment: onLoginAMapFail()
+ LinkPlatformFragment --> LinkPlatformPresent: loginByAMapQRCode()
+ note right: 查询二维码登陆失败则 重复轮询
+end alt
+end loop
+
+else tag = TAG_AMAP_BTN_BIND
+ LinkPlatformFragment -> LinkPlatformPresent:oneSecBindAmap()
+ LinkPlatformPresent -> LinkSeamlessNaviDataProvider:oneSecBindAmap()
+ LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_ONE_SEC_BIND)
+ LinkPlatformFragment <-- LinkPlatformPresent: onLoginAmapSuccess()
+
+ LinkPlatformFragment -> LinkPlatformPresent:getAmapAccount()
+ LinkPlatformPresent -> LinkSeamlessNaviDataProvider:getAmapAccount()
+ LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_AMAP_ACCOUNT)
+ LinkPlatformFragment <-- LinkPlatformPresent: onAmapAccountSuccess()
+end
+
+@enduml
