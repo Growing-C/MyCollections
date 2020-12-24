@@ -1,5 +1,9 @@
 package com.cgy.mycollections.testsources;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -11,6 +15,69 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class QueueTest {
     public static void main(String[] args) {
         testBlockingQueue();
+    }
+
+    /**
+     * 测试多个handler 使用handlerThread时 执行代码是否在同一个线程
+     * 结论：
+     * 1.handler 使用同一个looper时，handlerMessage，dispatchMessage和post的runnable都是运行在 looper的线程
+     * 2.在其他线程sendMessage还是会回到looper线程执行
+     */
+    public static void testHandlerThread() {
+        System.out.println( "--cccc testHandlerThread start thread:" + Thread.currentThread().toString());
+        HandlerThread handlerThread = new HandlerThread("testHandlerThread");
+        handlerThread.start();
+
+        final Handler handler1 = new Handler(handlerThread.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                System.out.println(msg.what + "--cccc 111 handler1 handleMessage thread:" + Thread.currentThread().toString());
+                super.handleMessage(msg);
+            }
+
+            @Override
+            public void dispatchMessage(Message msg) {
+                System.out.println(msg.what + "--cccc 111 handler1 dispatchMessage thread:" + Thread.currentThread().toString());
+                super.dispatchMessage(msg);
+            }
+        };
+        final Handler handler2 = new Handler(handlerThread.getLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                System.out.println(msg.what + "--cccc 222 handler2 handleMessage thread:" + Thread.currentThread().toString());
+                super.handleMessage(msg);
+            }
+
+            @Override
+            public void dispatchMessage(Message msg) {
+                System.out.println(msg.what + "--cccc 222 handler2 dispatchMessage thread:" + Thread.currentThread().toString());
+                super.dispatchMessage(msg);
+            }
+        };
+        handler1.sendEmptyMessage(1);
+        handler2.sendEmptyMessage(1);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(  "--cccc new thread  :" + Thread.currentThread().toString());
+                handler1.sendEmptyMessage(2);
+                handler2.sendEmptyMessage(2);
+            }
+        }).start();
+
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("run cccc handler1 thread:" + Thread.currentThread().toString());
+            }
+        }, 1000);
+        handler2.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("run cccc handler2 thread:" + Thread.currentThread().toString());
+            }
+        }, 1000);
+
     }
 
     private static void testBlockingQueue() {

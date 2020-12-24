@@ -80,14 +80,14 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.ext.java_version
     }
-    dataBinding {
-        enabled = true
-    }
+
     //viewBinding比dataBinding更加轻量，但是只能绑定视图，不能绑定数据
-    //此处仅用于取代kotlin-android-extensions插件中自动生成kotlin布局绑定的功能
-    viewBinding {
-        enabled = true
+    //viewBinding此处仅用于取代kotlin-android-extensions插件中自动生成kotlin布局绑定的功能
+    buildFeatures {
+        dataBinding true
+        viewBinding true
     }
+
     // Butterknife,CameraX requires Java 8.
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

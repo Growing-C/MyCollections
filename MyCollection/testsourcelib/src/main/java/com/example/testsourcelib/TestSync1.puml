@@ -1,4 +1,16 @@
 # bindAmap onSuccess之后的流程onBindAmapSuccess(true)
 @startuml
 LinkPlatformFragment  -> LinkPlatformPresent: getAmapAccount()
+activate LinkPlatformPresent
+LinkPlatformPresent -> LinkSeamlessNaviDataProvider: getAmapAccount()
+activate LinkSeamlessNaviDataProvider
+LinkSeamlessNaviDataProvider -> LinkSeamlessNaviDataProvider: getAmapAccount()
+activate LinkSeamlessNaviDataProvider #DarkSalmon
+deactivate LinkSeamlessNaviDataProvider
+LinkPlatformPresent <-- LinkSeamlessNaviDataProvider: onDataFetched\n(LINK_SEAMLESS_TYPE_GET_AMAP_ACCOUNT)
+deactivate LinkSeamlessNaviDataProvider
+LinkPlatformFragment <-- LinkPlatformPresent: onAmapAccountSuccess()
+deactivate LinkPlatformPresent
+activate LinkPlatformFragment
+
 @enduml

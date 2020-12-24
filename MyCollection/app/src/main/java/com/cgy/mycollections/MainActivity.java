@@ -18,26 +18,8 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-//import androidx.appcompat.widget.DefaultItemAnimator;
-//import androidx.appcompat.widget.LinearLayoutManager;
-//import androidx.appcompat.widget.RecyclerView;
-
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.LayoutInflaterCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import androidx.appcompat.widget.Toolbar;
-
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,39 +28,52 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cgy.mycollections.functions.chart.ChartDemo;
-import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
-import com.cgy.mycollections.functions.jetpack.JetPackDemos;
-import com.cgy.mycollections.functions.surfaceview.SurfaceViewDemo;
-import com.cgy.mycollections.functions.ui.UiDemos;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.ble.BleDemo;
 import com.cgy.mycollections.functions.cache.CacheDemo;
+import com.cgy.mycollections.functions.chart.ChartDemo;
 import com.cgy.mycollections.functions.ethereum.EthereumDemo;
 import com.cgy.mycollections.functions.file.FileDemo;
+import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
+import com.cgy.mycollections.functions.jetpack.JetPackDemos;
 import com.cgy.mycollections.functions.mediamanager.MediaManagerDemo;
 import com.cgy.mycollections.functions.net.NetDemos;
 import com.cgy.mycollections.functions.netconfig.NetConfigDemo;
 import com.cgy.mycollections.functions.sqlite.DataBaseDemo;
+import com.cgy.mycollections.functions.surfaceview.SurfaceViewDemo;
 import com.cgy.mycollections.functions.threadpool.ThreadPoolDemo;
 import com.cgy.mycollections.functions.tts.TTSDemo;
-import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
+import com.cgy.mycollections.functions.ui.UiDemos;
 import com.cgy.mycollections.functions.webview.WebViewDemos;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
 
-import appframe.utils.L;
-
 import java.util.List;
 
+import appframe.utils.L;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cgy.mycollections.FloatingService.ACTION_CHANGE_FLOATING_STATE;
 import static com.cgy.mycollections.FloatingService.KEY_SHOW_FLOATING;
+
+//import androidx.appcompat.widget.DefaultItemAnimator;
+//import androidx.appcompat.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
 
 
 public class MainActivity extends AppCompatActivity {
