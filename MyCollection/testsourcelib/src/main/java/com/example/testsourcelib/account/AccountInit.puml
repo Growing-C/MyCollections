@@ -1,0 +1,69 @@
+#AccountHandler初始化流程
+AccountHandler使用的都是 executeCachedTask，同一个线程池
+AccountHandler 的主要功能
+1.登陆小鹏账号
+2.退登小鹏账号
+3.检查高德账号绑定状态
+4.高德账号登陆
+5.退出高德账号
+@startuml
+boundary InitializerManager
+boundary MainFragment
+== 注册监听 ==
+InitializerManager -> AccountHandler:register()
+AccountHandler -> AccountObservable:addObserver(mXPAccountChangeObserver)
+AccountHandler -> LinkAMapWrapper:register()
+LinkAMapWrapper -> EventBus:register()
+AccountHandler -> XPNetworkManager:addNetworkListener(mIXPNetworkListener)
+== 发起账号登陆相关内容 ==
+alt TextUtils.isEmpty(SettingWrapper.getAccountOpenId()) && !XPAccountServiceWrapper.getInstance().isTempType()
+note right of MainFragment :openid为空表示小鹏账号之前是未登录状态，\nisTempType表示当前系统是临客状态，此处条件为非临客，即系统已登陆
+MainFragment -> AccountHandler:sendLoginXPMapMsg()
+activate AccountHandler
+note right :sendLoginXPMapMsg是登陆的入口，在多个地方使用
+AccountHandler -> AccountHandler:removeMessages()\n 清除可能有的退出小鹏账号，\n高德静默登陆，小鹏账号登陆消息
+AccountHandler -> AccountHandler:sendEmptyMessage(MSG_LOGIN_XPMAP_SERVER)
+AccountHandler -> AccountHandler:sendEmptyMessageDelayed(MSG_LOGIN_XPMAP_SERVER) \n延迟发送登陆消息，用于登陆失败重试
+AccountHandler -> AccountHandler:handlerLoginXPMapServer()
+activate AccountHandler #DarkSalmon
+deactivate AccountHandler
+deactivate AccountHandler
+
+AccountHandler -> XPAccountServiceWrapper:getOAuthCode()  获取系统小鹏账号的oauthCode
+activate XPAccountServiceWrapper
+XPAccountServiceWrapper --> AccountHandler:onSuccess()
+deactivate XPAccountServiceWrapper
+activate AccountHandler
+AccountHandler --> LinkAMapWrapper:loginXMapServer()
+deactivate AccountHandler
+activate LinkAMapWrapper
+LinkAMapWrapper --> AccountHandler:mLoginCallBack.onSuccess()
+activate AccountHandler
+AccountHandler --> AccountHandler:sendLogoutXPMapServerMsg()
+activate AccountHandler #DarkSalmon
+deactivate AccountHandler
+AccountHandler --> AccountHandler:sendEmptyMessage(MSG_BIND_AMAP_SILENT_LOGIN)
+activate AccountHandler #DarkSalmon
+deactivate AccountHandler
+deactivate AccountHandler
+LinkAMapWrapper --> XPAccountServiceWrapper:invokeXpMapLoginCallback()
+note right:此处触发其他地方的login业务事件，认为不应该在这里调用xpMapLoginCallback
+deactivate LinkAMapWrapper
+
+
+AccountHandler --> AccountHandler:handlerLogoutXPMapServer()
+activate AccountHandler
+AccountHandler --> LinkAMapWrapper:logoutXMapServer()
+note right:此处是为了退出可能存在的上次登陆的小鹏账号，省略
+deactivate AccountHandler
+
+AccountHandler --> AccountHandler:checkBindStatus()
+AccountHandler --> LinkAMapWrapper:checkBindAMapStatus()
+note right:callback AXPCheckBindCallBack中onFail的业务逻辑太多了,有重新查询绑定状态，有登陆小鹏账号，\n很可能会导致同时调用多次登陆接口
+
+
+
+end alt
+
+
+@enduml
