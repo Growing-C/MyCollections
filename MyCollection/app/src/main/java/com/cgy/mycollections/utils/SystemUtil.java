@@ -31,6 +31,7 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -51,6 +52,49 @@ public class SystemUtil {
     private SystemUtil() {
 
     }
+
+    /**
+     * 获取cpu是几核的
+     * 我们都知道，Linux 中的设备都是以文件的形式存在，CPU 也不例外，因此 CPU 的文件个数就等价与核数。
+     * <p>
+     * Android 的 CPU 设备文件位于 /sys/devices/system/cpu/ 目录
+     *
+     * @return
+     */
+    public static int getNumberOfCPUCores() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            // Gingerbread doesn't support giving a single application access to both cores, but a
+            // handful of devices (Atrix 4G and Droid X2 for example) were released with a dual-core
+            // chipset and Gingerbread; that can let an app in the background run without impacting
+            // the foreground application. But for our purposes, it makes them single core.
+            return 1;
+        }
+        int cores;
+        try {
+            cores = new File("/sys/devices/system/cpu/").listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    String path = pathname.getName();
+                    //regex is slow, so checking char by char.
+                    if (path.startsWith("cpu")) {
+                        for (int i = 3; i < path.length(); i++) {
+                            if (path.charAt(i) < '0' || path.charAt(i) > '9') {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            }).length;
+        } catch (SecurityException e) {
+            cores = -1;
+        } catch (NullPointerException e) {
+            cores = -1;
+        }
+        return cores;
+    }
+
 
     /**
      * 获取系统最大可以使用的内存

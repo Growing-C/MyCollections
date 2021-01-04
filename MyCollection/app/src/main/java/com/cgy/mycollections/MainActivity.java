@@ -61,6 +61,7 @@ import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
+import com.cgy.mycollections.utils.SystemUtil;
 
 import java.util.List;
 
@@ -151,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
         //下面的是展示用功能
         getAppList();
         getTaskInfo();
+
+        L.d("ccc", "设备是几核的额？" + SystemUtil.getNumberOfCPUCores());
     }
 
     private void initSwipeAndDrag(ItemTouchHelperAdapter itemAdapter) {
