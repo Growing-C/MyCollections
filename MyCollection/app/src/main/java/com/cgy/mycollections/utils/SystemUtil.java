@@ -58,6 +58,8 @@ public class SystemUtil {
      * 我们都知道，Linux 中的设备都是以文件的形式存在，CPU 也不例外，因此 CPU 的文件个数就等价与核数。
      * <p>
      * Android 的 CPU 设备文件位于 /sys/devices/system/cpu/ 目录
+     * <p>
+     * 也可以使用命令 adb shell cat /proc/cpuinfo
      *
      * @return
      */

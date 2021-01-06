@@ -13,7 +13,66 @@ public class TestMain {
     public static void main(String[] args) {
 //        testRound();
 //        testDirectSetOrAdd();
-        getMaxNotRepeatStringLenInString("qwertyuiopqqasdfghjklzaazxcvbnmlkjzz");
+//        getMaxNotRepeatStringLenInString("qwertyuiopqqasdfghjklzaazxcvbnmlkjzz");
+        testThreadParams();
+    }
+
+    /**
+     * 测试不同线程操作变量
+     * 结论
+     * 1.不同线程set和get如果set用synchronized 而get不用的话 get的值有可能会在set中间获取到导致值是前一个值，出现不正确
+     * 2.volatile对这种情况不起作用，多线程操作情况下必须set ，get都使用synchronized
+     * 3.set，get都使用synchronized的时候不会出现正在set的时候调用get
+     */
+    public static void testThreadParams() {
+        final ThreadClass threadClass = new ThreadClass();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+
+                for (int i = 0; i < 1000; i++) {
+                    threadClass.setParam(i);
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+//                System.out.println("thread 1 set thread param:");
+            }
+        }.start();
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                for (int i = 0; i < 1000; i++) {
+                    threadClass.getParam();
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+//                    System.out.println("thread 2 get thread param:" + threadClass.getParam());
+                }
+            }
+        }.start();
+
+    }
+
+    private static class ThreadClass {
+        private volatile int param;
+
+        public synchronized void setParam(int param) {
+            System.out.println("set param start-----------------" + param);
+            this.param = param;
+            System.out.println("set param end---------------" + param);
+        }
+
+        public int getParam() {
+            System.out.println("get param:" + param);
+            return param;
+        }
     }
 
     public static void testCompletableFuture() {
@@ -30,7 +89,6 @@ public class TestMain {
      * @return
      */
     public static void getMaxNotRepeatStringLenInString(String input) {
-        //TODO:
         if (input == null || input.length() == 0) {
             System.out.println("null string len is 0");
             return;
