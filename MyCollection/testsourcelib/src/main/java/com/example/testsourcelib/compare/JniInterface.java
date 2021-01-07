@@ -1,16 +1,18 @@
 package com.example.testsourcelib.compare;
 
+import java.util.Arrays;
+
 
 public class JniInterface {
 
-    private static final String TAG = JniInterface.class.getSimpleName();
+    private static final String TAG =   JniInterface.class.getSimpleName();
     private static IClusterService sClusterService = null;
 
-//    static {
+    static {
 //        System.loadLibrary("JniCluster");
 //        init();
-//    }
-//
+    }
+
 //    public native static void init();
 
 //    public static void setClusterService(IClusterService iClusterService) {
@@ -1072,6 +1074,7 @@ public class JniInterface {
      *
      * @param textvisible
      */
+    //暂时不使用
     public static void onTextVisible(boolean textvisible) {
         Log.d(TAG, "onTextVisible  " + textvisible);
         sClusterService.onTextVisible(textvisible);
@@ -1082,6 +1085,7 @@ public class JniInterface {
      *
      * @param textvalue
      */
+    //暂时不使用
     public static void onTextValue(String textvalue) {
         Log.d(TAG, "onTextValue  " + textvalue);
         sClusterService.onTextValue(textvalue);
@@ -1359,6 +1363,16 @@ public class JniInterface {
     public static void onCommonEnduranceMileage(int endurancemileage) {
         Log.d(TAG, "onCommonEnduranceMileage  " + endurancemileage);
         sClusterService.onEnduranceMileage(endurancemileage);
+    }
+
+    /**
+     * 续航里程是否显示
+     *
+     * @param flag true-显示 false-不显示
+     */
+    public static void onEnduranceMileageNumVisible(boolean flag) {
+        Log.d(TAG, "onEnduranceMileageNumVisible  " + flag);
+        sClusterService.onEnduranceMileageNumVisible(flag);
     }
 
     /**
@@ -1785,15 +1799,6 @@ public class JniInterface {
         sClusterService.onCallTime(calltime);
     }
 
-    /**
-     * 是否显示传感器故障界面
-     *
-     * @param sensorfailurevisible
-     */
-    public static void onOverlaySensorFailureVisible(boolean sensorfailurevisible) {
-        Log.d(TAG, "onOverlaySensorFailureVisible  " + sensorfailurevisible);
-        sClusterService.onSensorFailureVisible(sensorfailurevisible);
-    }
 
     /*-----------------------------------------------------------------------中型 osd(雷达报警/ACC跟车时距和速度调节/强制下电/来电显示) end -------------------------------------------------------------*/
 
@@ -1945,531 +1950,929 @@ public class JniInterface {
         sClusterService.onLightSopLamp(lightsoplamp);
     }
 
+
     public static void onBehindDistValue(String behinddistvalue) {
+        Log.d(TAG, "onBehindDistValue behinddistvalue:" + behinddistvalue);
+        sClusterService.onBehindDistValue(behinddistvalue);
 
     }
 
     public static void onBehindCLColor(int behindclcolor) {
+        Log.d(TAG, "onBehindCLColor behindclcolor:" + behindclcolor);
+        sClusterService.onBehindCLColor(behindclcolor);
 
     }
 
     public static void onBehindCLDist(int behindcldist) {
+        Log.d(TAG, "onBehindCLDist behindcldist:" + behindcldist);
+        sClusterService.onBehindCLDist(behindcldist);
 
     }
 
     public static void onBehindCRColor(int behindcrcolor) {
+        Log.d(TAG, "onBehindCRColor behindcrcolor:" + behindcrcolor);
+        sClusterService.onBehindCRColor(behindcrcolor);
 
     }
 
     public static void onBehindCRDist(int behindcrdist) {
+        Log.d(TAG, "onBehindCRDist behindcrdist:" + behindcrdist);
+        sClusterService.onBehindCRDist(behindcrdist);
 
     }
 
     public static void onBehindOLColor(int behindolcolor) {
+        Log.d(TAG, "onBehindOLColor behindolcolor:" + behindolcolor);
+        sClusterService.onBehindOLColor(behindolcolor);
 
     }
 
     public static void onBehindOLDist(int behindoldist) {
+        Log.d(TAG, "onBehindOLDist behindoldist:" + behindoldist);
+        sClusterService.onBehindOLDist(behindoldist);
 
     }
 
     public static void onBehindORColor(int behindorcolor) {
+        Log.d(TAG, "onBehindORColor behindorcolor:" + behindorcolor);
+        sClusterService.onBehindORColor(behindorcolor);
 
     }
 
     public static void onBehindORDist(int behindordist) {
+        Log.d(TAG, "onBehindORDist behindordist:" + behindordist);
+        sClusterService.onBehindORDist(behindordist);
 
     }
 
+
+    /**
+     * 左侧后等级
+     * vdt rp HOST_ERADAR_LEVEL_RSL
+     *
+     * @param behindslcolor
+     */
     public static void onBehindSLColor(int behindslcolor) {
+        Log.d(TAG, "onBehindSLColor behindslcolor:" + behindslcolor);
+        sClusterService.onBehindSLColor(behindslcolor);
 
     }
+
+    /**
+     * 左侧后距离
+     * vdt rp HOST_ERADAR_RSL 60
+     *
+     * @param behindsldist
+     */
 
     public static void onBehindSLDist(int behindsldist) {
+        Log.d(TAG, "onBehindSLDist behindsldist:" + behindsldist);
+        sClusterService.onBehindSLDist(behindsldist);
 
     }
 
+
+    /**
+     * 右侧后等级：
+     * vdt rp HOST_ERADAR_LEVEL_RSR 1
+     *
+     * @param behindsrcolor
+     */
     public static void onBehindSRColor(int behindsrcolor) {
+        Log.d(TAG, "onBehindSRColor behindsrcolor:" + behindsrcolor);
+        sClusterService.onBehindSRColor(behindsrcolor);
 
     }
 
     public static void onBehindSRDist(int behindsrdist) {
+        Log.d(TAG, "onBehindSRDist behindsrdist:" + behindsrdist);
+        sClusterService.onBehindSRDist(behindsrdist);
 
     }
 
     public static void onFrontDistValue(String frontdistvalue) {
+        Log.d(TAG, "onFrontDistValue frontdistvalue:" + frontdistvalue);
+        sClusterService.onFrontDistValue(frontdistvalue);
 
     }
 
+    /**
+     * 左中前等级：
+     * vdt rp HOST_ERADAR_LEVEL_FCL 3
+     *
+     * @param frontclcolor
+     */
     public static void onFrontCLColor(int frontclcolor) {
+        Log.d(TAG, "onFrontCLColor frontclcolor:" + frontclcolor);
+        sClusterService.onFrontCLColor(frontclcolor);
 
     }
 
+    /**
+     * 左中前距离：
+     * vdt rp HOST_ERADAR_SPACING_FCL 140
+     *
+     * @param frontcldist
+     */
     public static void onFrontCLDist(int frontcldist) {
+        Log.d(TAG, "onFrontCLDist frontcldist:" + frontcldist);
+        sClusterService.onFrontCLDist(frontcldist);
 
     }
 
+    /**
+     * 右中前等级：
+     * vdt rp HOST_ERADAR_LEVEL_FCR 3
+     *
+     * @param frontcrcolor
+     */
     public static void onFrontCRColor(int frontcrcolor) {
+        Log.d(TAG, "onFrontCRColor frontcrcolor:" + frontcrcolor);
+        sClusterService.onFrontCRColor(frontcrcolor);
 
     }
 
+    /**
+     * 右中前距离：
+     * vdt rp HOST_ERADAR_SPACING_FCR 140
+     *
+     * @param frontcrdist
+     */
     public static void onFrontCRDist(int frontcrdist) {
+        Log.d(TAG, "onFrontCRDist frontcrdist:" + frontcrdist);
+        sClusterService.onFrontCRDist(frontcrdist);
 
     }
 
+    /**
+     * 左前等级：
+     * vdt rp HOST_ERADAR_LEVEL_FL 2
+     *
+     * @param frontolcolor
+     */
     public static void onFrontOLColor(int frontolcolor) {
+        Log.d(TAG, "onFrontOLColor frontolcolor:" + frontolcolor);
+        sClusterService.onFrontOLColor(frontolcolor);
 
     }
+
+    /**
+     * 左前距离：
+     * vdt rp HOST_ERADAR_SPACING_FOL 100
+     *
+     * @param frontoldist
+     */
 
     public static void onFrontOLDist(int frontoldist) {
+        Log.d(TAG, "onFrontOLDist frontoldist:" + frontoldist);
+        sClusterService.onFrontOLDist(frontoldist);
 
     }
 
+    /**
+     * 右前等级：
+     * vdt rp HOST_ERADAR_LEVEL_FR 2
+     *
+     * @param frontorcolor
+     */
     public static void onFrontORColor(int frontorcolor) {
+        Log.d(TAG, "onFrontORColor frontorcolor:" + frontorcolor);
+        sClusterService.onFrontORColor(frontorcolor);
 
     }
 
+    /**
+     * 右前距离：vdt rp HOST_ERADAR_SPACING_FOR 100
+     *
+     * @param frontordist
+     */
     public static void onFrontORDist(int frontordist) {
+        Log.d(TAG, "onFrontORDist frontordist:" + frontordist);
+        sClusterService.onFrontORDist(frontordist);
 
     }
 
+    /**
+     * 左侧前等级：
+     * vdt rp HOST_ERADAR_LEVEL_FSL 1
+     *
+     * @param frontslcolor
+     */
     public static void onFrontSLColor(int frontslcolor) {
+        Log.d(TAG, "onFrontSLColor frontslcolor:" + frontslcolor);
+        sClusterService.onFrontSLColor(frontslcolor);
 
     }
 
+    /**
+     * 左侧前距离：
+     * vdt rp HOST_ERADAR_FSL 60
+     *
+     * @param frontsldist
+     */
     public static void onFrontSLDist(int frontsldist) {
+        Log.d(TAG, "onFrontSLDist frontsldist:" + frontsldist);
+        sClusterService.onFrontSLDist(frontsldist);
 
     }
 
+    /**
+     * 右侧前等级：
+     * vdt rp HOST_ERADAR_LEVEL_FSR 1
+     *
+     * @param frontsrcolor
+     */
     public static void onFrontSRColor(int frontsrcolor) {
+        Log.d(TAG, "onFrontSRColor frontsrcolor:" + frontsrcolor);
+        sClusterService.onFrontSRColor(frontsrcolor);
 
     }
 
+    /**
+     * 右侧前距离：
+     * vdt rp HOST_ERADAR_FSR 60
+     *
+     * @param frontsrdist
+     */
     public static void onFrontSRDist(int frontsrdist) {
+        Log.d(TAG, "onFrontSRDist frontsrdist:" + frontsrdist);
+        sClusterService.onFrontSRDist(frontsrdist);
 
     }
 
     public static void onRCTALeftVisible(boolean rctaleftvisible) {
+        Log.d(TAG, "onRCTALeftVisible rctaleftvisible:" + rctaleftvisible);
+        sClusterService.onRCTALeftVisible(rctaleftvisible);
 
     }
 
     public static void onRCTARightVisible(boolean rctarightvisible) {
+        Log.d(TAG, "onRCTARightVisible rctarightvisible:" + rctarightvisible);
+        sClusterService.onRCTARightVisible(rctarightvisible);
 
     }
 
     public static void onAdasRCWVisible(boolean rcwvisible) {
+        Log.d(TAG, "onAdasRCWVisible rcwvisible:" + rcwvisible);
+        sClusterService.onAdasRCWVisible(rcwvisible);
 
     }
 
     public static void onLeftC0(float leftc0) {
+        Log.d(TAG, "onLeftC0 leftc0:" + leftc0);
+        sClusterService.onLeftC0(leftc0);
 
     }
 
     public static void onLeftC1(float leftc1) {
+        Log.d(TAG, "onLeftC1 leftc1:" + leftc1);
+        sClusterService.onLeftC1(leftc1);
 
     }
 
     public static void onLeftC2(float leftc2) {
+        Log.d(TAG, "onLeftC2 leftc2:" + leftc2);
+        sClusterService.onLeftC2(leftc2);
 
     }
 
     public static void onLeftC3(float leftc3) {
+        Log.d(TAG, "onLeftC3 leftc3:" + leftc3);
+        sClusterService.onLeftC3(leftc3);
 
     }
 
     public static void onLeftType(int lefttype) {
+        Log.d(TAG, "onLeftType lefttype:" + lefttype);
+        sClusterService.onLeftType(lefttype);
 
     }
 
     public static void onLeftLeftC0(float leftleftc0) {
+        Log.d(TAG, "onLeftLeftC0 leftleftc0:" + leftleftc0);
+        sClusterService.onLeftLeftC0(leftleftc0);
 
     }
 
     public static void onLeftLeftC1(float leftleftc1) {
+        Log.d(TAG, "onLeftLeftC1 leftleftc1:" + leftleftc1);
+        sClusterService.onLeftLeftC1(leftleftc1);
 
     }
 
     public static void onLeftLeftC2(float leftleftc2) {
+        Log.d(TAG, "onLeftLeftC2 leftleftc2:" + leftleftc2);
+        sClusterService.onLeftLeftC2(leftleftc2);
 
     }
 
     public static void onLeftLeftC3(float leftleftc3) {
+        Log.d(TAG, "onLeftLeftC3 leftleftc3:" + leftleftc3);
+        sClusterService.onLeftLeftC3(leftleftc3);
 
     }
 
     public static void onLeftLeftType(int leftlefttype) {
+        Log.d(TAG, "onLeftLeftType leftlefttype:" + leftlefttype);
+        sClusterService.onLeftLeftType(leftlefttype);
 
     }
 
     public static void onRightC0(float rightc0) {
+        Log.d(TAG, "onRightC0 rightc0:" + rightc0);
+        sClusterService.onRightC0(rightc0);
 
     }
 
     public static void onRightC1(float rightc1) {
+        Log.d(TAG, "onRightC1 rightc1:" + rightc1);
+        sClusterService.onRightC1(rightc1);
 
     }
 
     public static void onRightC2(float rightc2) {
+        Log.d(TAG, "onRightC2 rightc2:" + rightc2);
+        sClusterService.onRightC2(rightc2);
 
     }
 
     public static void onRightC3(float rightc3) {
+        Log.d(TAG, "onRightC3 rightc3:" + rightc3);
+        sClusterService.onRightC3(rightc3);
 
     }
 
     public static void onRightType(int righttype) {
+        Log.d(TAG, "onRightType righttype:" + righttype);
+        sClusterService.onRightType(righttype);
 
     }
 
     public static void onRightRightC0(float rightrightc0) {
+        Log.d(TAG, "onRightRightC0 rightrightc0:" + rightrightc0);
+        sClusterService.onRightRightC0(rightrightc0);
 
     }
 
     public static void onRightRightC1(float rightrightc1) {
+        Log.d(TAG, "onRightRightC1 rightrightc1:" + rightrightc1);
+        sClusterService.onRightRightC1(rightrightc1);
 
     }
 
     public static void onRightRightC2(float rightrightc2) {
+        Log.d(TAG, "onRightRightC2 rightrightc2:" + rightrightc2);
+        sClusterService.onRightRightC2(rightrightc2);
 
     }
 
     public static void onRightRightC3(float rightrightc3) {
+        Log.d(TAG, "onRightRightC3 rightrightc3:" + rightrightc3);
+        sClusterService.onRightRightC3(rightrightc3);
 
     }
 
     public static void onRightRightType(int rightrighttype) {
+        Log.d(TAG, "onRightRightType rightrighttype:" + rightrighttype);
+        sClusterService.onRightRightType(rightrighttype);
 
     }
 
     public static void onVehlnfo1Angle(int vehlnfo1angle) {
+        Log.d(TAG, "onVehlnfo1Angle vehlnfo1angle:" + vehlnfo1angle);
+        sClusterService.onVehlnfo1Angle(vehlnfo1angle);
 
     }
 
     public static void onVehlnfo1X(int vehlnfo1x) {
+        Log.d(TAG, "onVehlnfo1X vehlnfo1x:" + vehlnfo1x);
+        sClusterService.onVehlnfo1X(vehlnfo1x);
 
     }
 
     public static void onVehlnfo1Y(float vehlnfo1y) {
+        Log.d(TAG, "onVehlnfo1Y vehlnfo1y:" + vehlnfo1y);
+        sClusterService.onVehlnfo1Y(vehlnfo1y);
 
     }
 
     public static void onVehlnfo1Color(int vehlnfo1color) {
+        Log.d(TAG, "onVehlnfo1Color vehlnfo1color:" + vehlnfo1color);
+        sClusterService.onVehlnfo1Color(vehlnfo1color);
 
     }
 
     public static void onVehlnfo1Type(int vehlnfo1type) {
+        Log.d(TAG, "onVehlnfo1Type vehlnfo1type:" + vehlnfo1type);
+        sClusterService.onVehlnfo1Type(vehlnfo1type);
 
     }
 
     public static void onVehlnfo2Angle(int vehlnfo2angle) {
+        Log.d(TAG, "onVehlnfo2Angle vehlnfo2angle:" + vehlnfo2angle);
+        sClusterService.onVehlnfo2Angle(vehlnfo2angle);
 
     }
 
     public static void onVehlnfo2X(int vehlnfo2x) {
+        Log.d(TAG, "onVehlnfo2X vehlnfo2x:" + vehlnfo2x);
+        sClusterService.onVehlnfo2X(vehlnfo2x);
 
     }
 
     public static void onVehlnfo2Y(float vehlnfo2y) {
+        Log.d(TAG, "onVehlnfo2Y vehlnfo2y:" + vehlnfo2y);
+        sClusterService.onVehlnfo2Y(vehlnfo2y);
 
     }
 
     public static void onVehlnfo2Color(int vehlnfo2color) {
+        Log.d(TAG, "onVehlnfo2Color vehlnfo2color:" + vehlnfo2color);
+        sClusterService.onVehlnfo2Color(vehlnfo2color);
 
     }
 
     public static void onVehlnfo2Type(int vehlnfo2type) {
+        Log.d(TAG, "onVehlnfo2Type vehlnfo2type:" + vehlnfo2type);
+        sClusterService.onVehlnfo2Type(vehlnfo2type);
 
     }
 
     public static void onVehlnfo3Angle(int vehlnfo3angle) {
+        Log.d(TAG, "onVehlnfo3Angle vehlnfo3angle:" + vehlnfo3angle);
+        sClusterService.onVehlnfo3Angle(vehlnfo3angle);
 
     }
 
     public static void onVehlnfo3X(int vehlnfo3x) {
+        Log.d(TAG, "onVehlnfo3X vehlnfo3x:" + vehlnfo3x);
+        sClusterService.onVehlnfo3X(vehlnfo3x);
 
     }
 
     public static void onVehlnfo3Y(float vehlnfo3y) {
+        Log.d(TAG, "onVehlnfo3Y vehlnfo3y:" + vehlnfo3y);
+        sClusterService.onVehlnfo3Y(vehlnfo3y);
 
     }
 
     public static void onVehlnfo3Color(int vehlnfo3color) {
+        Log.d(TAG, "onVehlnfo3Color vehlnfo3color:" + vehlnfo3color);
+        sClusterService.onVehlnfo3Color(vehlnfo3color);
 
     }
 
     public static void onVehlnfo3Type(int vehlnfo3type) {
+        Log.d(TAG, "onVehlnfo3Type vehlnfo3type:" + vehlnfo3type);
+        sClusterService.onVehlnfo3Type(vehlnfo3type);
 
     }
 
     public static void onVehlnfo4Angle(int vehlnfo4angle) {
+        Log.d(TAG, "onVehlnfo4Angle vehlnfo4angle:" + vehlnfo4angle);
+        sClusterService.onVehlnfo4Angle(vehlnfo4angle);
 
     }
 
     public static void onVehlnfo4X(int vehlnfo4x) {
+        Log.d(TAG, "onVehlnfo4X vehlnfo4x:" + vehlnfo4x);
+        sClusterService.onVehlnfo4X(vehlnfo4x);
 
     }
 
     public static void onVehlnfo4Y(float vehlnfo4y) {
+        Log.d(TAG, "onVehlnfo4Y vehlnfo4y:" + vehlnfo4y);
+        sClusterService.onVehlnfo4Y(vehlnfo4y);
 
     }
 
     public static void onVehlnfo4Color(int vehlnfo4color) {
+        Log.d(TAG, "onVehlnfo4Color vehlnfo4color:" + vehlnfo4color);
+        sClusterService.onVehlnfo4Color(vehlnfo4color);
 
     }
 
     public static void onVehlnfo4Type(int vehlnfo4type) {
+        Log.d(TAG, "onVehlnfo4Type vehlnfo4type:" + vehlnfo4type);
+        sClusterService.onVehlnfo4Type(vehlnfo4type);
 
     }
 
     public static void onVehlnfo5Angle(int vehlnfo5angle) {
+        Log.d(TAG, "onVehlnfo5Angle vehlnfo5angle:" + vehlnfo5angle);
+        sClusterService.onVehlnfo5Angle(vehlnfo5angle);
 
     }
 
     public static void onVehlnfo5X(int vehlnfo5x) {
+        Log.d(TAG, "onVehlnfo5X vehlnfo5x:" + vehlnfo5x);
+        sClusterService.onVehlnfo5X(vehlnfo5x);
 
     }
 
     public static void onVehlnfo5Y(float vehlnfo5y) {
+        Log.d(TAG, "onVehlnfo5Y vehlnfo5y:" + vehlnfo5y);
+        sClusterService.onVehlnfo5Y(vehlnfo5y);
 
     }
 
     public static void onVehlnfo5Color(int vehlnfo5color) {
+        Log.d(TAG, "onVehlnfo5Color vehlnfo5color:" + vehlnfo5color);
+        sClusterService.onVehlnfo5Color(vehlnfo5color);
 
     }
 
     public static void onVehlnfo5Type(int vehlnfo5type) {
+        Log.d(TAG, "onVehlnfo5Type vehlnfo5type:" + vehlnfo5type);
+        sClusterService.onVehlnfo5Type(vehlnfo5type);
 
     }
 
     public static void onVehlnfo6Angle(int vehlnfo6angle) {
+        Log.d(TAG, "onVehlnfo6Angle vehlnfo6angle:" + vehlnfo6angle);
+        sClusterService.onVehlnfo6Angle(vehlnfo6angle);
 
     }
 
     public static void onVehlnfo6X(int vehlnfo6x) {
+        Log.d(TAG, "onVehlnfo6X vehlnfo6x:" + vehlnfo6x);
+        sClusterService.onVehlnfo6X(vehlnfo6x);
 
     }
 
     public static void onVehlnfo6Y(float vehlnfo6y) {
+        Log.d(TAG, "onVehlnfo6Y vehlnfo6y:" + vehlnfo6y);
+        sClusterService.onVehlnfo6Y(vehlnfo6y);
 
     }
 
     public static void onVehlnfo6Color(int vehlnfo6color) {
+        Log.d(TAG, "onVehlnfo6Color vehlnfo6color:" + vehlnfo6color);
+        sClusterService.onVehlnfo6Color(vehlnfo6color);
 
     }
 
     public static void onVehlnfo6Type(int vehlnfo6type) {
+        Log.d(TAG, "onVehlnfo6Type vehlnfo6type:" + vehlnfo6type);
+        sClusterService.onVehlnfo6Type(vehlnfo6type);
 
     }
 
     public static void onVehlnfo7Angle(int vehlnfo7angle) {
+        Log.d(TAG, "onVehlnfo7Angle vehlnfo7angle:" + vehlnfo7angle);
+        sClusterService.onVehlnfo7Angle(vehlnfo7angle);
 
     }
 
     public static void onVehlnfo7X(int vehlnfo7x) {
+        Log.d(TAG, "onVehlnfo7X vehlnfo7x:" + vehlnfo7x);
+        sClusterService.onVehlnfo7X(vehlnfo7x);
 
     }
 
     public static void onVehlnfo7Y(float vehlnfo7y) {
+        Log.d(TAG, "onVehlnfo7Y vehlnfo7y:" + vehlnfo7y);
+        sClusterService.onVehlnfo7Y(vehlnfo7y);
 
     }
 
     public static void onVehlnfo7Color(int vehlnfo7color) {
+        Log.d(TAG, "onVehlnfo7Color vehlnfo7color:" + vehlnfo7color);
+        sClusterService.onVehlnfo7Color(vehlnfo7color);
 
     }
 
     public static void onVehlnfo7Type(int vehlnfo7type) {
+        Log.d(TAG, "onVehlnfo7Type vehlnfo7type:" + vehlnfo7type);
+        sClusterService.onVehlnfo7Type(vehlnfo7type);
 
     }
 
     public static void onVehlnfo8Angle(int vehlnfo8angle) {
+        Log.d(TAG, "onVehlnfo8Angle vehlnfo8angle:" + vehlnfo8angle);
+        sClusterService.onVehlnfo8Angle(vehlnfo8angle);
 
     }
 
     public static void onVehlnfo8X(int vehlnfo8x) {
+        Log.d(TAG, "onVehlnfo8X vehlnfo8x:" + vehlnfo8x);
+        sClusterService.onVehlnfo8X(vehlnfo8x);
 
     }
 
     public static void onVehlnfo8Y(float vehlnfo8y) {
+        Log.d(TAG, "onVehlnfo8Y vehlnfo8y:" + vehlnfo8y);
+        sClusterService.onVehlnfo8Y(vehlnfo8y);
 
     }
 
     public static void onVehlnfo8Color(int vehlnfo8color) {
+        Log.d(TAG, "onVehlnfo8Color vehlnfo8color:" + vehlnfo8color);
+        sClusterService.onVehlnfo8Color(vehlnfo8color);
 
     }
 
     public static void onVehlnfo8Type(int vehlnfo8type) {
+        Log.d(TAG, "onVehlnfo8Type vehlnfo8type:" + vehlnfo8type);
+        sClusterService.onVehlnfo8Type(vehlnfo8type);
 
     }
 
     public static void onVehlnfo9Angle(int vehlnfo9angle) {
+        Log.d(TAG, "onVehlnfo9Angle vehlnfo9angle:" + vehlnfo9angle);
+        sClusterService.onVehlnfo9Angle(vehlnfo9angle);
 
     }
 
     public static void onVehlnfo9X(int vehlnfo9x) {
+        Log.d(TAG, "onVehlnfo9X vehlnfo9x:" + vehlnfo9x);
+        sClusterService.onVehlnfo9X(vehlnfo9x);
 
     }
 
     public static void onVehlnfo9Y(float vehlnfo9y) {
+        Log.d(TAG, "onVehlnfo9Y vehlnfo9y:" + vehlnfo9y);
+        sClusterService.onVehlnfo9Y(vehlnfo9y);
 
     }
 
     public static void onVehlnfo9Color(int vehlnfo9color) {
+        Log.d(TAG, "onVehlnfo9Color vehlnfo9color:" + vehlnfo9color);
+        sClusterService.onVehlnfo9Color(vehlnfo9color);
 
     }
 
     public static void onVehlnfo9Type(int vehlnfo9type) {
+        Log.d(TAG, "onVehlnfo9Type vehlnfo9type:" + vehlnfo9type);
+        sClusterService.onVehlnfo9Type(vehlnfo9type);
 
     }
 
     public static void onVehlnfo10Angle(int vehlnfo10angle) {
+        Log.d(TAG, "onVehlnfo10Angle vehlnfo10angle:" + vehlnfo10angle);
+        sClusterService.onVehlnfo10Angle(vehlnfo10angle);
 
     }
 
     public static void onVehlnfo10X(int vehlnfo10x) {
+        Log.d(TAG, "onVehlnfo10X vehlnfo10x:" + vehlnfo10x);
+        sClusterService.onVehlnfo10X(vehlnfo10x);
 
     }
 
     public static void onVehlnfo10Y(float vehlnfo10y) {
+        Log.d(TAG, "onVehlnfo10Y vehlnfo10y:" + vehlnfo10y);
+        sClusterService.onVehlnfo10Y(vehlnfo10y);
 
     }
 
     public static void onVehlnfo10Color(int vehlnfo10color) {
+        Log.d(TAG, "onVehlnfo10Color vehlnfo10color:" + vehlnfo10color);
+        sClusterService.onVehlnfo10Color(vehlnfo10color);
 
     }
 
     public static void onVehlnfo10Type(int vehlnfo10type) {
+        Log.d(TAG, "onVehlnfo10Type vehlnfo10type:" + vehlnfo10type);
+        sClusterService.onVehlnfo10Type(vehlnfo10type);
 
     }
 
     public static void onVehlnfo11Angle(int vehlnfo11angle) {
+        Log.d(TAG, "onVehlnfo11Angle vehlnfo11angle:" + vehlnfo11angle);
+        sClusterService.onVehlnfo11Angle(vehlnfo11angle);
 
     }
 
     public static void onVehlnfo11X(int vehlnfo11x) {
+        Log.d(TAG, "onVehlnfo11X vehlnfo11x:" + vehlnfo11x);
+        sClusterService.onVehlnfo11X(vehlnfo11x);
 
     }
 
     public static void onVehlnfo11Y(float vehlnfo11y) {
+        Log.d(TAG, "onVehlnfo11Y vehlnfo11y:" + vehlnfo11y);
+        sClusterService.onVehlnfo11Y(vehlnfo11y);
 
     }
 
     public static void onVehlnfo11Color(int vehlnfo11color) {
+        Log.d(TAG, "onVehlnfo11Color vehlnfo11color:" + vehlnfo11color);
+        sClusterService.onVehlnfo11Color(vehlnfo11color);
 
     }
 
     public static void onVehlnfo11Type(int vehlnfo11type) {
+        Log.d(TAG, "onVehlnfo11Type vehlnfo11type:" + vehlnfo11type);
+        sClusterService.onVehlnfo11Type(vehlnfo11type);
 
     }
 
     public static void onParkSpaceALLState(int parkspaceallstate) {
+        Log.d(TAG, "onParkSpaceALLState parkspaceallstate:" + parkspaceallstate);
+        sClusterService.onParkSpaceALLState(parkspaceallstate);
 
     }
 
     public static void onParkSpaceL1State(int parkspacel1state) {
+        Log.d(TAG, "onParkSpaceL1State parkspacel1state:" + parkspacel1state);
+        sClusterService.onParkSpaceL1State(parkspacel1state);
 
     }
 
     public static void onParkSpaceL2State(int parkspacel2state) {
+        Log.d(TAG, "onParkSpaceL2State parkspacel2state:" + parkspacel2state);
+        sClusterService.onParkSpaceL2State(parkspacel2state);
 
     }
 
     public static void onParkSpaceL3State(int parkspacel3state) {
+        Log.d(TAG, "onParkSpaceL3State parkspacel3state:" + parkspacel3state);
+        sClusterService.onParkSpaceL3State(parkspacel3state);
 
     }
 
     public static void onParkSpaceR1State(int parkspacer1state) {
+        Log.d(TAG, "onParkSpaceR1State parkspacer1state:" + parkspacer1state);
+        sClusterService.onParkSpaceR1State(parkspacer1state);
 
     }
 
     public static void onParkSpaceR2State(int parkspacer2state) {
+        Log.d(TAG, "onParkSpaceR2State parkspacer2state:" + parkspacer2state);
+        sClusterService.onParkSpaceR2State(parkspacer2state);
 
     }
 
     public static void onParkSpaceR3State(int parkspacer3state) {
+        Log.d(TAG, "onParkSpaceR3State parkspacer3state:" + parkspacer3state);
+        sClusterService.onParkSpaceR3State(parkspacer3state);
 
     }
 
     public static void onLeftLeftStart(int leftleftstart) {
+        Log.d(TAG, "onLeftLeftStart leftleftstart:" + leftleftstart);
+        sClusterService.onLeftLeftStart(leftleftstart);
 
     }
 
     public static void onLeftLeftRange(int leftleftrange) {
+        Log.d(TAG, "onLeftLeftRange leftleftrange:" + leftleftrange);
+        sClusterService.onLeftLeftRange(leftleftrange);
 
     }
 
     public static void onLeftStart(int leftstart) {
+        Log.d(TAG, "onLeftStart leftstart:" + leftstart);
+        sClusterService.onLeftStart(leftstart);
 
     }
 
     public static void onLeftRange(int leftrange) {
+        Log.d(TAG, "onLeftRange leftrange:" + leftrange);
+        sClusterService.onLeftRange(leftrange);
 
     }
 
     public static void onRightRightStart(int rightrightstart) {
+        Log.d(TAG, "onRightRightStart rightrightstart:" + rightrightstart);
+        sClusterService.onRightRightStart(rightrightstart);
 
     }
 
     public static void onRightRightRange(int rightrightrange) {
+        Log.d(TAG, "onRightRightRange rightrightrange:" + rightrightrange);
+        sClusterService.onRightRightRange(rightrightrange);
 
     }
 
     public static void onRightStart(int rightstart) {
+        Log.d(TAG, "onRightStart rightstart:" + rightstart);
+        sClusterService.onRightStart(rightstart);
 
     }
 
     public static void onRightRange(int rightrange) {
+        Log.d(TAG, "onRightRange rightrange:" + rightrange);
+        sClusterService.onRightRange(rightrange);
 
     }
 
     public static void onALCState(int alcstate) {
+        Log.d(TAG, "onALCState alcstate:" + alcstate);
+        sClusterService.onALCState(alcstate);
 
     }
 
     public static void onALCX(int alcx) {
+        Log.d(TAG, "onALCX alcx:" + alcx);
+        sClusterService.onALCX(alcx);
 
     }
 
     public static void onALCY(int alcy) {
+        Log.d(TAG, "onALCY alcy:" + alcy);
+        sClusterService.onALCY(alcy);
 
     }
 
     public static void onAdasHold(boolean hold) {
+        Log.d(TAG, "onAdasHold hold:" + hold);
+        sClusterService.onAdasHold(hold);
 
     }
 
     public static void onTSRForbid(int value) {
+        Log.d(TAG, "onTSRForbid value:" + value);
+        sClusterService.onTSRForbid(value);
 
     }
 
     public static void onTSRWarning(int value) {
+        Log.d(TAG, "onTSRWarning value:" + value);
+        sClusterService.onTSRWarning(value);
 
     }
 
     public static void onTSRRateLimitingType(int value) {
+        Log.d(TAG, "onTSRRateLimitingType value:" + value);
+        sClusterService.onTSRRateLimitingType(value);
 
     }
 
     public static void onTSRRateLimitingValue(int value) {
+        Log.d(TAG, "onTSRRateLimitingValue value:" + value);
+        sClusterService.onTSRRateLimitingValue(value);
 
     }
 
     public static void onALCAngle(int value) {
+        Log.d(TAG, "onALCAngle value:" + value);
+        sClusterService.onALCAngle(value);
 
     }
 
     public static void onACCDisableChangeCard(boolean show) {
-
-    }
-
-    public static void onMidVolumeVisible(boolean show) {
+        Log.d(TAG, "onACCDisableChangeCard show:" + show);
+        sClusterService.onACCDisableChangeCard(show);
 
     }
 
     public static void onAirVolumeState(int state) {
+        Log.d(TAG, "onAirVolumeState state:" + state);
+        sClusterService.onAirVolumeState(state);
 
     }
 
     public static void onColorTest(int value) {
+        Log.d(TAG, "onColorTest value:" + value);
+        sClusterService.onColorTest(value);
+
+    }
+
+
+    /**
+     * 自动驾驶waring
+     *
+     * @param value
+     */
+    public static void onTriggerAutoState(int value) {
+        Log.d(TAG, "onTriggerAutoState  value:" + value);
+        sClusterService.onTriggerAutoState(value);
+
+    }
+
+
+    /**
+     * 普通waring
+     *
+     * @param value
+     */
+    public static void onTriggerState(int value) {
+        Log.d(TAG, "onTriggerState  value:" + value);
+        sClusterService.onTriggerState(value);
+
+    }
+
+    /**
+     * 固定指示灯
+     *
+     * @param id   指示灯
+     * @param show
+     */
+    public static void onCommonTelltale(int id, boolean show) {
+        Log.d(TAG, "onCommonTelltale  id:" + id + "show:" + show);
+        sClusterService.onCommonTelltale(id, show);
+    }
+
+    /**
+     * 浮动指示灯Idlist
+     *
+     * @param ids
+     */
+    public static void onUnsetTelltale(int[] ids) {
+        Log.d(TAG, "onUnsetTelltale  ids:" + Arrays.toString(ids));
+        sClusterService.onUnsetTelltale(ids);
 
     }
 

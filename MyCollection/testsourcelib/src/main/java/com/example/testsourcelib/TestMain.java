@@ -23,6 +23,31 @@ public class TestMain {
      * 1.不同线程set和get如果set用synchronized 而get不用的话 get的值有可能会在set中间获取到导致值是前一个值，出现不正确
      * 2.volatile对这种情况不起作用，多线程操作情况下必须set ，get都使用synchronized
      * 3.set，get都使用synchronized的时候不会出现正在set的时候调用get
+     * 4.使用了synchronized 不使用volatile也没关系，get到的变量值也会是正确的
+     * 5.volatile最适合使用的地方是一个线程写、其它线程读的场合，如果有多个线程并发写操作，仍然需要使用锁或者线程安全的容器或者原子变量来代替。
+     *
+     * 某一个线程进入synchronized代码块前后，执行过程入如下：
+     * a.线程获得互斥锁
+     * b.清空工作内存
+     * c.从主内存拷贝共享变量最新的值到工作内存成为副本
+     * d.执行代码
+     * e.将修改后的副本的值刷新回主内存中
+     * f.线程释放锁
+     *
+     * 所以set,get都加了synchronized的时候不需要使用volatile
+     * 而get没加的时候有可能获取到的值不正确 ,此时用volatile也没用，因为volatile不能保证变量更改的原子性。
+     * 单例由于指令重排可能判断是否为空的时候返回不会空实际仍然为空，所以需要加volatile
+     *
+     * volatile适用情况
+     * a.对变量的写入操作不依赖当前值
+     * 比如自增自减、number = number + 5等（不满足）
+     * b.当前volatile变量不依赖于别的volatile变量
+     * 比如 volatile_var > volatile_var2这个不等式（不满足）
+     *
+     *  synchronized和volatile比较
+     * a. volatile不需要同步操作，所以效率更高，不会阻塞线程，但是适用情况比较窄
+     * b. volatile读变量相当于加锁（即进入synchronized代码块），而写变量相当于解锁（退出synchronized代码块）
+     * c. synchronized既能保证共享变量可见性，也可以保证锁内操作的原子性；volatile只能保证可见性
      */
     public static void testThreadParams() {
         final ThreadClass threadClass = new ThreadClass();

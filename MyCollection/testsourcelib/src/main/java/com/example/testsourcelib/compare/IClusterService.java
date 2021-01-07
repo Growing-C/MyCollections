@@ -327,6 +327,8 @@ interface IClusterService {
 
     void onProgressBar(int progressbar);
 
+    void onOtaState(int otastate);
+
     /*------------------------------------------------------------------------OTA end--------------------------------------------------------*/
 
 
@@ -341,6 +343,8 @@ interface IClusterService {
     void onElectricQuantity(int electricquantity);
 
     void onEnduranceMileage(int endurancemileage);
+
+    void onEnduranceMileageNumVisible(boolean flag);
 
     void onElectricityColorControlProp(int electricitycolorcontrolprop);
 
@@ -433,8 +437,6 @@ interface IClusterService {
 
     void onCallTime(String calltime);
 
-    void onSensorFailureVisible(boolean sensorfailurevisible);
-
     /*-----------------------------------------------------------------------中型 osd(雷达报警/ACC跟车时距和速度调节/强制下电/来电显示) end -------------------------------------------------------------*/
 
 
@@ -444,8 +446,6 @@ interface IClusterService {
     void onIsOffControProp(boolean isoffcontroprop);
 
     void onIsCharging(boolean ischarging);
-
-    void onOtaState(int otastate);
 
     /*---------------------------------------------------------------------------common control end-----------------------------------------------------*/
 
@@ -481,4 +481,414 @@ interface IClusterService {
     void onLightSopLamp(boolean lightsoplamp);
 
     /*------------------------------------------------------------------adas end----------------------------------------------------------------------------*/
+
+
+    /*------------------------------------------------------------------warning start----------------------------------------------------------------------------*/
+
+    void onTriggerAutoState(int value);
+
+    void onTriggerState(int value);
+
+    void onCommonTelltale(int id, boolean show);
+
+    void onUnsetTelltale(int[] ids);
+
+    /*------------------------------------------------------------------warning end----------------------------------------------------------------------------*/
+
+    void onBehindDistValue(String behinddistvalue);
+
+
+    void onBehindCLColor(int behindclcolor);
+
+
+    void onBehindCLDist(int behindcldist);
+
+
+    void onBehindCRColor(int behindcrcolor);
+
+
+    void onBehindCRDist(int behindcrdist);
+
+
+    void onBehindOLColor(int behindolcolor);
+
+
+    void onBehindOLDist(int behindoldist);
+
+
+    void onBehindORColor(int behindorcolor);
+
+
+    void onBehindORDist(int behindordist);
+
+
+    void onBehindSLColor(int behindslcolor);
+
+
+    void onBehindSLDist(int behindsldist);
+
+
+    void onBehindSRColor(int behindsrcolor);
+
+
+    void onBehindSRDist(int behindsrdist);
+
+
+    void onFrontDistValue(String frontdistvalue);
+
+
+    void onFrontCLColor(int frontclcolor);
+
+
+    void onFrontCLDist(int frontcldist);
+
+
+    void onFrontCRColor(int frontcrcolor);
+
+
+    void onFrontCRDist(int frontcrdist);
+
+
+    void onFrontOLColor(int frontolcolor);
+
+
+    void onFrontOLDist(int frontoldist);
+
+
+    void onFrontORColor(int frontorcolor);
+
+
+    void onFrontORDist(int frontordist);
+
+
+    void onFrontSLColor(int frontslcolor);
+
+
+    void onFrontSLDist(int frontsldist);
+
+
+    void onFrontSRColor(int frontsrcolor);
+
+
+    void onFrontSRDist(int frontsrdist);
+
+
+    void onRCTALeftVisible(boolean rctaleftvisible);
+
+
+    void onRCTARightVisible(boolean rctarightvisible);
+
+
+    void onAdasRCWVisible(boolean rcwvisible);
+
+
+    void onLeftC0(float leftc0);
+
+
+    void onLeftC1(float leftc1);
+
+
+    void onLeftC2(float leftc2);
+
+
+    void onLeftC3(float leftc3);
+
+
+    void onLeftType(int lefttype);
+
+
+    void onLeftLeftC0(float leftleftc0);
+
+
+    void onLeftLeftC1(float leftleftc1);
+
+
+    void onLeftLeftC2(float leftleftc2);
+
+
+    void onLeftLeftC3(float leftleftc3);
+
+
+    void onLeftLeftType(int leftlefttype);
+
+
+    void onRightC0(float rightc0);
+
+
+    void onRightC1(float rightc1);
+
+
+    void onRightC2(float rightc2);
+
+
+    void onRightC3(float rightc3);
+
+
+    void onRightType(int righttype);
+
+
+    void onRightRightC0(float rightrightc0);
+
+
+    void onRightRightC1(float rightrightc1);
+
+
+    void onRightRightC2(float rightrightc2);
+
+
+    void onRightRightC3(float rightrightc3);
+
+
+    void onRightRightType(int rightrighttype);
+
+
+    void onVehlnfo1Angle(int vehlnfo1angle);
+
+
+    void onVehlnfo1X(int vehlnfo1x);
+
+
+    void onVehlnfo1Y(float vehlnfo1y);
+
+
+    void onVehlnfo1Color(int vehlnfo1color);
+
+
+    void onVehlnfo1Type(int vehlnfo1type);
+
+
+    void onVehlnfo2Angle(int vehlnfo2angle);
+
+
+    void onVehlnfo2X(int vehlnfo2x);
+
+
+    void onVehlnfo2Y(float vehlnfo2y);
+
+
+    void onVehlnfo2Color(int vehlnfo2color);
+
+
+    void onVehlnfo2Type(int vehlnfo2type);
+
+
+    void onVehlnfo3Angle(int vehlnfo3angle);
+
+
+    void onVehlnfo3X(int vehlnfo3x);
+
+
+    void onVehlnfo3Y(float vehlnfo3y);
+
+
+    void onVehlnfo3Color(int vehlnfo3color);
+
+
+    void onVehlnfo3Type(int vehlnfo3type);
+
+
+    void onVehlnfo4Angle(int vehlnfo4angle);
+
+
+    void onVehlnfo4X(int vehlnfo4x);
+
+
+    void onVehlnfo4Y(float vehlnfo4y);
+
+
+    void onVehlnfo4Color(int vehlnfo4color);
+
+
+    void onVehlnfo4Type(int vehlnfo4type);
+
+
+    void onVehlnfo5Angle(int vehlnfo5angle);
+
+
+    void onVehlnfo5X(int vehlnfo5x);
+
+
+    void onVehlnfo5Y(float vehlnfo5y);
+
+
+    void onVehlnfo5Color(int vehlnfo5color);
+
+
+    void onVehlnfo5Type(int vehlnfo5type);
+
+
+    void onVehlnfo6Angle(int vehlnfo6angle);
+
+
+    void onVehlnfo6X(int vehlnfo6x);
+
+
+    void onVehlnfo6Y(float vehlnfo6y);
+
+
+    void onVehlnfo6Color(int vehlnfo6color);
+
+
+    void onVehlnfo6Type(int vehlnfo6type);
+
+
+    void onVehlnfo7Angle(int vehlnfo7angle);
+
+
+    void onVehlnfo7X(int vehlnfo7x);
+
+
+    void onVehlnfo7Y(float vehlnfo7y);
+
+
+    void onVehlnfo7Color(int vehlnfo7color);
+
+
+    void onVehlnfo7Type(int vehlnfo7type);
+
+
+    void onVehlnfo8Angle(int vehlnfo8angle);
+
+
+    void onVehlnfo8X(int vehlnfo8x);
+
+
+    void onVehlnfo8Y(float vehlnfo8y);
+
+
+    void onVehlnfo8Color(int vehlnfo8color);
+
+
+    void onVehlnfo8Type(int vehlnfo8type);
+
+
+    void onVehlnfo9Angle(int vehlnfo9angle);
+
+
+    void onVehlnfo9X(int vehlnfo9x);
+
+
+    void onVehlnfo9Y(float vehlnfo9y);
+
+
+    void onVehlnfo9Color(int vehlnfo9color);
+
+
+    void onVehlnfo9Type(int vehlnfo9type);
+
+
+    void onVehlnfo10Angle(int vehlnfo10angle);
+
+
+    void onVehlnfo10X(int vehlnfo10x);
+
+
+    void onVehlnfo10Y(float vehlnfo10y);
+
+
+    void onVehlnfo10Color(int vehlnfo10color);
+
+
+    void onVehlnfo10Type(int vehlnfo10type);
+
+
+    void onVehlnfo11Angle(int vehlnfo11angle);
+
+
+    void onVehlnfo11X(int vehlnfo11x);
+
+
+    void onVehlnfo11Y(float vehlnfo11y);
+
+
+    void onVehlnfo11Color(int vehlnfo11color);
+
+
+    void onVehlnfo11Type(int vehlnfo11type);
+
+
+    void onParkSpaceALLState(int parkspaceallstate);
+
+
+    void onParkSpaceL1State(int parkspacel1state);
+
+
+    void onParkSpaceL2State(int parkspacel2state);
+
+
+    void onParkSpaceL3State(int parkspacel3state);
+
+
+    void onParkSpaceR1State(int parkspacer1state);
+
+
+    void onParkSpaceR2State(int parkspacer2state);
+
+
+    void onParkSpaceR3State(int parkspacer3state);
+
+
+    void onLeftLeftStart(int leftleftstart);
+
+
+    void onLeftLeftRange(int leftleftrange);
+
+
+    void onLeftStart(int leftstart);
+
+
+    void onLeftRange(int leftrange);
+
+
+    void onRightRightStart(int rightrightstart);
+
+
+    void onRightRightRange(int rightrightrange);
+
+
+    void onRightStart(int rightstart);
+
+
+    void onRightRange(int rightrange);
+
+
+    void onALCState(int alcstate);
+
+
+    void onALCX(int alcx);
+
+
+    void onALCY(int alcy);
+
+
+    void onAdasHold(boolean hold);
+
+
+    void onTSRForbid(int value);
+
+
+    void onTSRWarning(int value);
+
+
+    void onTSRRateLimitingType(int value);
+
+
+    void onTSRRateLimitingValue(int value);
+
+
+    void onALCAngle(int value);
+
+
+    void onACCDisableChangeCard(boolean show);
+
+
+    void onAirVolumeState(int state);
+
+
+    void onColorTest(int value);
+
+
+    void onCommonTelltale(boolean show);
+
+
 }

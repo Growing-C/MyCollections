@@ -1,7 +1,14 @@
 package com.example.testsourcelib.compare;
 
+public class JniInterface5 {
+//    static {
+        //System.loadLibrary("OpenCL");
+        //System.loadLibrary("XpIdcClusterClient");
+//        System.loadLibrary("JniCluster");
+        //init();
+//    }
+//    public native static void init();
 
-public class JniInterface1 {
 
 
     public static void onLeftListVisible(boolean leftlistvisible){
@@ -361,9 +368,9 @@ public class JniInterface1 {
     public static void onPowerInformationVoltage(String powerinformationvoltage){
 
     }
-    public static void onPowerInformationVisible(boolean powerinformationvisible){
-
-    }
+//    public static void onPowerInformationVisible(boolean powerinformationvisible){
+////
+////    }
     public static void onChargingState(int state){
 
     }
@@ -951,10 +958,6 @@ public class JniInterface1 {
 
     }
 
-    public static void onMidVolumeVisible(boolean show){
-
-    }
-
     public static void onAirVolumeState(int state){
 
     }
@@ -988,6 +991,10 @@ public class JniInterface1 {
 
 
     public static void onPowerIsInitOver(boolean flag){
+
+    }
+
+    public static void onEnduranceMileageNumVisible(boolean flag){
 
     }
 

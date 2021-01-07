@@ -1,7 +1,4 @@
-package com.example.testsourcelib;
-
-import com.example.testsourcelib.compare.JniInterface;
-import com.example.testsourcelib.compare.JniInterface1;
+package com.example.testsourcelib.compare;
 
 import java.lang.reflect.Method;
 
@@ -13,8 +10,8 @@ import java.lang.reflect.Method;
 public class CompareUtils {
     public static void main(String[] args) {
 //        compareMethodsOf(MethodClass1.class, MethodClass2.class);
-        compareMethodsOf(JniInterface1.class, JniInterface.class);
-        compareMethodsOf(JniInterface.class, JniInterface1.class);
+        compareMethodsOf(JniInterface5.class, JniInterface.class);
+        compareMethodsOf(JniInterface.class, JniInterface5.class);
     }
 
     /**
@@ -27,8 +24,8 @@ public class CompareUtils {
         Method[] sourceMethods = source.getDeclaredMethods();//这个只会获取当前类中的方法，不会获取继承的类中的，比如Object中的。 getMethods会获取Object中的方法
         Method[] targetMethods = target.getDeclaredMethods();
         boolean targetHasThisMethod;
-        System.out.println("source 方法数：" + sourceMethods.length);
-        System.out.println("target 方法数：" + targetMethods.length);
+        System.out.println("source :" + source.getSimpleName() + "  方法数：" + sourceMethods.length);
+        System.out.println("target :" + target.getSimpleName() + "  方法数：" + targetMethods.length);
         for (Method sourceMethod : sourceMethods) {
             String methodName = sourceMethod.getName();
 //            System.out.println("11 source method name:" + methodName);
@@ -38,12 +35,12 @@ public class CompareUtils {
                 if (methodName.equals(targetMethod.getName())) {
                     //返回类型不同
                     if (!sourceMethod.getReturnType().getName().equals(targetMethod.getReturnType().getName())) {
-                        System.out.println("22 找到了方法" + methodName + " 但是返回类型不同 source:" + sourceMethod.getReturnType().getName() + " -target:" + targetMethod.getReturnType().getName());
+                        System.out.println(target.getSimpleName() + "中 22 找到了方法" + methodName + " 但是返回类型不同 return type name of source:" + sourceMethod.getReturnType().getName() + " -target:" + targetMethod.getReturnType().getName());
                         continue;
                     }
                     //参数数目不同
                     if (sourceMethod.getParameterCount() != targetMethod.getParameterCount()) {
-                        System.out.println("22 找到了方法" + methodName + " 但是参数数目不同 source:" + sourceMethod.getParameterCount() + " -target:" + targetMethod.getParameterCount());
+                        System.out.println(target.getSimpleName() + "中 22 找到了方法" + methodName + " 但是参数数目不同 source:" + sourceMethod.getParameterCount() + " -target:" + targetMethod.getParameterCount());
                         continue;
                     }
                     //参数类型不一致
@@ -57,7 +54,7 @@ public class CompareUtils {
                                 }
                             }
                             if (!hasThisParam) {
-                                System.out.println("22 找到了方法" + methodName + " 但是参数类型不存在 source:" + sourceParamType.getName());
+                                System.out.println(target.getSimpleName() + "中 22 找到了方法" + methodName + " 但是参数类型不存在 param type name of source:" + sourceParamType.getName());
                                 continue A;
                             }
                         }
