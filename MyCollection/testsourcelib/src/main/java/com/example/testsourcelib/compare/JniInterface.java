@@ -23,6 +23,7 @@ public class JniInterface {
 
     /*----------------------------------------------------------------------card control start -----------------------------------------------------------*/
 
+
     /**
      * 左侧卡片选择列表是否显示
      *
@@ -659,32 +660,64 @@ public class JniInterface {
 
     /*------------------------------------------------------------------------music card start --------------------------------------------------------*/
 
+    /**
+     * 图片显示状态 false显示默认图片 true显示传入的图片
+     *
+     * @param musicimagestate
+     */
     public static void onMusicImageState(boolean musicimagestate) {
         Log.d(TAG, "onMusicImageState  " + musicimagestate);
         sClusterService.onMusicImageState(musicimagestate);
     }
 
 
+    /**
+     * 音乐播放状态 false停止 true播放
+     *
+     * @param musicplaystate
+     */
     public static void onMusicPlayState(boolean musicplaystate) {
         Log.d(TAG, "onMusicPlayState  " + musicplaystate);
         sClusterService.onMusicPlayState(musicplaystate);
     }
 
+    /**
+     * 声音播放来源
+     * 0:无音源 1:电台 2:有声读物 3:在线音乐 4:本地音乐 5:蓝牙音乐 6:三方音乐
+     *
+     * @param musicsoundstate
+     */
     public static void onMusicSoundState(int musicsoundstate) {
         Log.d(TAG, "onMusicSoundState  " + musicsoundstate);
         sClusterService.onMusicSoundState(musicsoundstate);
     }
 
+    /**
+     * 音乐卡片第一行文字
+     *
+     * @param musicstring1
+     */
     public static void onMusicString1(String musicstring1) {
         Log.d(TAG, "onMusicString1  " + musicstring1);
         sClusterService.onMusicString1(musicstring1);
     }
 
+    /**
+     * 音乐卡片第二行文字
+     *
+     * @param musicstring2
+     */
     public static void onMusicString2(String musicstring2) {
         Log.d(TAG, "onMusicString2  " + musicstring2);
         sClusterService.onMusicString2(musicstring2);
     }
 
+    /**
+     * 进度条位置
+     * 0-100 0空 100满
+     *
+     * @param musicbarvalue
+     */
     public static void onMusicBarValue(int musicbarvalue) {
         Log.d(TAG, "onMusicBarValue  " + musicbarvalue);
         sClusterService.onMusicBarValue(musicbarvalue);
@@ -1230,10 +1263,10 @@ public class JniInterface {
      *
      * @param powerinformationvisible false:不显示 true:显示
      */
-    public static void onPowerInformationVisible(boolean powerinformationvisible) {
+    /*public static void onPowerInformationVisible(boolean powerinformationvisible) {
         Log.d(TAG, "onPowerInformationVisible  " + powerinformationvisible);
         sClusterService.onPowerInformationVisible(powerinformationvisible);
-    }
+    }*/
 
     /**
      * 充放电状态
@@ -2874,6 +2907,10 @@ public class JniInterface {
         Log.d(TAG, "onUnsetTelltale  ids:" + Arrays.toString(ids));
         sClusterService.onUnsetTelltale(ids);
 
+    }
+
+    public static void onPowerIsInitOver(boolean flag) {
+        Log.d(TAG, "onPowerIsInitOver  flag:" + flag);
     }
 
 }

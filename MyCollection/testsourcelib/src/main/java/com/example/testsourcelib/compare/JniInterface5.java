@@ -1,11 +1,12 @@
 package com.example.testsourcelib.compare;
 
+
 public class JniInterface5 {
 //    static {
-        //System.loadLibrary("OpenCL");
-        //System.loadLibrary("XpIdcClusterClient");
+//        //System.loadLibrary("OpenCL");
+//        //System.loadLibrary("XpIdcClusterClient");
 //        System.loadLibrary("JniCluster");
-        //init();
+//        //init();
 //    }
 //    public native static void init();
 
@@ -998,6 +999,20 @@ public class JniInterface5 {
 
     }
 
+    public static void onRefreshImageGuidanceTexture(boolean isRGBA,byte[] data,int height,int width){
+
+
+    }
+
+    public static void onRefreshImageMusicTexture(boolean isRGBA,byte[] data,int height,int width){
+
+
+    }
+
+    public static void onRefreshImageNaviTexture(boolean isRGBA,byte[] data,int height,int width){
+
+
+    }
 
 
 
