@@ -34,23 +34,16 @@ interface IClusterService {
 
     /*------------------------------------------------------------------------map card start --------------------------------------------------------*/
 
-    void onNavigationStyle(int navigationstyle);
+    void onNavigationToast(String navigationdistance, String navigationdistanceunits,
+                           String navigationmoves, String navigationroadname);
 
     void onNavigationArrowID(int navigationarrowid);
 
-    void onNavigationArrowState(boolean navigationarrowstate);
-
-    void onNavigationDistance(String navigationdistance);
-
-    void onNavigationDistanceUnits(String navigationdistanceunits);
-
-    void onNavigationMoves(String navigationmoves);
-
-    void onNavigationRoadName(String navigationroadname);
-
     void onNavigationGuidanceVisible(boolean navigationguidancevisible);
 
-    void onNavigationEnabled(boolean navigationenabled);
+    void onRefreshImageGuidanceTexture(boolean isRGBA, byte[] data, int height, int width);
+
+    void onRefreshImageNaviTexture(boolean isRGBA, byte[] data, int height, int width);
 
     /*------------------------------------------------------------------------map card end --------------------------------------------------------*/
 
@@ -174,6 +167,8 @@ interface IClusterService {
     void onMusicString2(String musicstring2);
 
     void onMusicBarValue(int musicbarvalue);
+
+    void onRefreshImageMusicTexture(boolean isRGBA, byte[] data, int height, int width);
 
     /*------------------------------------------------------------------------music card end --------------------------------------------------------*/
 
@@ -889,6 +884,5 @@ interface IClusterService {
 
 
     void onCommonTelltale(boolean show);
-
 
 }

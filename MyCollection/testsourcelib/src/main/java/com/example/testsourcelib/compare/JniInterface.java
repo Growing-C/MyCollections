@@ -131,53 +131,45 @@ public class JniInterface {
 
     /*------------------------------------------------------------------------map card start --------------------------------------------------------*/
 
+    //<editor-fold desc="导航卡片 ">
 
-    public static void onNavigationStyle(int navigationstyle) {
-        Log.d(TAG, "onNavigationStyle  " + navigationstyle);
-        sClusterService.onNavigationStyle(navigationstyle);
+
+    /**
+     * 导航引导信息
+     *
+     * @param navigationdistance      离下个路口距离
+     * @param navigationdistanceunits 距离单位
+     * @param navigationmoves         到下个路口的操作，比如进入
+     * @param navigationroadname      下条路
+     */
+    public static void onNavigationToast(String navigationdistance, String navigationdistanceunits,
+                                         String navigationmoves, String navigationroadname) {
+        Log.d(TAG, "onNavigationToast navigationdistance: " + navigationdistance +
+                ",navigationdistanceunits:" + navigationdistanceunits + ",navigationmoves:" + navigationmoves + ",navigationroadname:" + navigationroadname);
+        sClusterService.onNavigationToast(navigationdistance, navigationdistanceunits, navigationmoves, navigationroadname);
     }
 
+    /**
+     * 导肮卡片引导view左边箭头的id。
+     *
+     * @param navigationarrowid 箭头id，根据id找到图片
+     */
     public static void onNavigationArrowID(int navigationarrowid) {
         Log.d(TAG, "onNavigationArrowID  " + navigationarrowid);
         sClusterService.onNavigationArrowID(navigationarrowid);
     }
 
-    public static void onNavigationArrowState(boolean navigationarrowstate) {
-        Log.d(TAG, "onNavigationArrowState  " + navigationarrowstate);
-        sClusterService.onNavigationArrowState(navigationarrowstate);
-    }
-
-    public static void onNavigationDistance(String navigationdistance) {
-        Log.d(TAG, "onNavigationDistance  " + navigationdistance);
-        //todo
-        //sClusterService.onNavigationDistance(navigationdistance);
-    }
-
-    public static void onNavigationDistanceUnits(String navigationdistanceunits) {
-        Log.d(TAG, "onNavigationDistanceUnits  " + navigationdistanceunits);
-        sClusterService.onNavigationDistanceUnits(navigationdistanceunits);
-    }
-
-    public static void onNavigationMoves(String navigationmoves) {
-        Log.d(TAG, "onNavigationMoves  " + navigationmoves);
-        sClusterService.onNavigationMoves(navigationmoves);
-    }
-
-    public static void onNavigationRoadName(String navigationroadname) {
-        Log.d(TAG, "onNavigationRoadName  " + navigationroadname);
-        sClusterService.onNavigationRoadName(navigationroadname);
-    }
-
+    /**
+     * 导航卡片引导view是否显示
+     *
+     * @param navigationguidancevisible true-显示
+     */
     public static void onNavigationGuidanceVisible(boolean navigationguidancevisible) {
         Log.d(TAG, "onNavigationGuidanceVisible  " + navigationguidancevisible);
         sClusterService.onNavigationGuidanceVisible(navigationguidancevisible);
     }
 
-    public static void onNavigationEnabled(boolean navigationenabled) {
-        Log.d(TAG, "onNavigationEnabled  " + navigationenabled);
-        sClusterService.onNavigationEnabled(navigationenabled);
-    }
-
+    //</editor-fold>
     /*------------------------------------------------------------------------map card end --------------------------------------------------------*/
 
 
@@ -2913,4 +2905,37 @@ public class JniInterface {
         Log.d(TAG, "onPowerIsInitOver  flag:" + flag);
     }
 
+
+    /**
+     * 导航卡片引导弹窗 左边箭头指引图片
+     *
+     * @param isRGBA 是否是rgba
+     * @param data   图片数据
+     * @param height 图片高
+     * @param width  图片宽
+     */
+    public static void onRefreshImageGuidanceTexture(boolean isRGBA, byte[] data, int height, int width) {
+        Log.d(TAG, "onRefreshImageGuidanceTexture  isRGBA:" + isRGBA);
+        sClusterService.onRefreshImageGuidanceTexture(isRGBA, data, height, width);
+    }
+
+    public static void onRefreshImageMusicTexture(boolean isRGBA, byte[] data, int height, int width) {
+        Log.d(TAG, "onRefreshImageMusicTexture  isRGBA:" + isRGBA);
+        sClusterService.onRefreshImageMusicTexture(isRGBA, data, height, width);
+
+    }
+
+    /**
+     * 导航卡片地图图片
+     *
+     * @param isRGBA 是否是rgba
+     * @param data   图片数据
+     * @param height 图片高
+     * @param width  图片宽
+     */
+    public static void onRefreshImageNaviTexture(boolean isRGBA, byte[] data, int height, int width) {
+        Log.d(TAG, "onRefreshImageNaviTexture  isRGBA:" + isRGBA);
+        sClusterService.onRefreshImageNaviTexture(isRGBA, data, height, width);
+
+    }
 }

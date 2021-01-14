@@ -39,27 +39,17 @@ public class JniInterface5 {
     public static void onRightCardVisible(boolean rightcardvisible){
 
     }
-    public static void onNavigationStyle(int navigationstyle){
 
-    }
     public static void onNavigationArrowID(int navigationarrowid){
 
     }
-    public static void onNavigationArrowState(boolean navigationarrowstate){
+
+
+    public static void onNavigationToast(String navigationdistance,String navigationdistanceunits,
+            String navigationmoves,String navigationroadname){
 
     }
-    public static void onNavigationDistance(String navigationdistance){
 
-    }
-    public static void onNavigationDistanceUnits(String navigationdistanceunits){
-
-    }
-    public static void onNavigationMoves(String navigationmoves){
-
-    }
-    public static void onNavigationRoadName(String navigationroadname){
-
-    }
     public static void onNavigationGuidanceVisible(boolean navigationguidancevisible){
 
     }
@@ -327,18 +317,7 @@ public class JniInterface5 {
     public static void onLookAroundCameraR(int lookaroundcamerar){
 
     }
-//    public static void onImageGuidanceTexture(imageguidancetexture){
-//
-//    }
-//    public static void onImageMusicTexture(imagemusictexture){
-//
-//    }
-//    public static void onImageNaviTexture(imagenavitexture){
-//
-//    }
-    public static void onNavigationEnabled(boolean navigationenabled){
 
-    }
     public static void onPowerAverageEnergyConsumption(int poweraverageenergyconsumption){
 
     }
@@ -460,9 +439,6 @@ public class JniInterface5 {
 
     }
     public static void onOverlayTemperatureVisible(boolean temperaturevisible){
-
-    }
-    public static void onOverlayAirVolumeVisible(boolean airvolumevisible){
 
     }
     public static void onOverlayMidVolume(float midvolume){
@@ -959,7 +935,7 @@ public class JniInterface5 {
 
     }
 
-    public static void onAirVolumeState(int state){
+    public static void onOverlayAirVolumeState(int state){
 
     }
 
@@ -990,6 +966,10 @@ public class JniInterface5 {
 
     }
 
+    public static void onResAvailPower(int value){
+
+    }
+
 
     public static void onPowerIsInitOver(boolean flag){
 
@@ -1011,6 +991,18 @@ public class JniInterface5 {
 
     public static void onRefreshImageNaviTexture(boolean isRGBA,byte[] data,int height,int width){
 
+
+    }
+
+    public static void onRefreshPowerVEHpwrValue(int value){
+
+    }
+
+    public static void onRefreshPowerVEHpwrMax(int value){
+
+    }
+
+    public static void onRefreshPowerVEHpwrMin(int value){
 
     }
 
