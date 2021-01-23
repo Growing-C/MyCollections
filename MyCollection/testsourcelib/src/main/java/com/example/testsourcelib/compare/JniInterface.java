@@ -23,7 +23,6 @@ public class JniInterface {
 
     /*----------------------------------------------------------------------card control start -----------------------------------------------------------*/
 
-
     /**
      * 左侧卡片选择列表是否显示
      *
@@ -1157,6 +1156,11 @@ public class JniInterface {
         sClusterService.onPowerAverageEnergyConsumption(poweraverageenergyconsumption);
     }
 
+    /**
+     * 100Km能耗
+     *
+     * @param powercurvevalue
+     */
     public static void onPowerCurveValue(float powercurvevalue) {
         Log.d(TAG, "onPowerCurveValue  " + powercurvevalue);
         sClusterService.onPowerCurveValue(powercurvevalue);
@@ -1627,15 +1631,6 @@ public class JniInterface {
         sClusterService.onTemperatureVisible(temperaturevisible);
     }
 
-    /**
-     * 空调风量osd是否显示
-     *
-     * @param airvolumevisible
-     */
-    public static void onOverlayAirVolumeVisible(boolean airvolumevisible) {
-        Log.d(TAG, "onOverlayAirVolumeVisible  " + airvolumevisible);
-        sClusterService.onAirVolumeVisible(airvolumevisible);
-    }
 
     /**
      * 音量调节
@@ -1786,7 +1781,7 @@ public class JniInterface {
 
     /**
      * 来电显示的各个状态界面
-     *
+     * 1：来电 2：已接通 3：已挂断
      * @param callstate
      */
     public static void onOverlayCallState(int callstate) {
@@ -2843,8 +2838,14 @@ public class JniInterface {
 
     }
 
-    public static void onAirVolumeState(int state) {
-        Log.d(TAG, "onAirVolumeState state:" + state);
+    /**
+     * 空调风量状态
+     * 0 不显示
+     *
+     * @param state
+     */
+    public static void onOverlayAirVolumeState(int state) {
+        Log.d(TAG, "onOverlayAirVolumeState state:" + state);
         sClusterService.onAirVolumeState(state);
 
     }
@@ -2901,6 +2902,16 @@ public class JniInterface {
 
     }
 
+    /**
+     * 剩余可用能耗
+     *
+     * @param value
+     */
+    public static void onResAvailPower(int value) {
+        Log.d(TAG, "onResAvailPower  value:" + value);
+        sClusterService.onResAvailPower(value);
+    }
+
     public static void onPowerIsInitOver(boolean flag) {
         Log.d(TAG, "onPowerIsInitOver  flag:" + flag);
     }
@@ -2936,6 +2947,25 @@ public class JniInterface {
     public static void onRefreshImageNaviTexture(boolean isRGBA, byte[] data, int height, int width) {
         Log.d(TAG, "onRefreshImageNaviTexture  isRGBA:" + isRGBA);
         sClusterService.onRefreshImageNaviTexture(isRGBA, data, height, width);
-
     }
+
+    /**
+     * 瞬时能耗
+     *
+     * @param value
+     */
+    public static void onRefreshPowerVEHpwrValue(int value) {
+        Log.d(TAG, "onRefreshPowerVEHpwrValue  value:" + value);
+        sClusterService.onRefreshPowerVEHpwrValue(value);
+    }
+
+    public static void onRefreshPowerVEHpwrMax(int value) {
+        Log.d(TAG, "onRefreshPowerVEHpwrMax  value:" + value);
+    }
+
+    public static void onRefreshPowerVEHpwrMin(int value) {
+        Log.d(TAG, "onRefreshPowerVEHpwrMin  value:" + value);
+    }
+
+
 }

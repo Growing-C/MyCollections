@@ -50,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/px30_common"
-            android:layout_marginTop="@dimen/dimen_10"
             android:gravity="center"
             android:text="我是你的http://www.baidu.com,专属顾问，地18351321215，方萨芬2231哈哈 这是\m我的手机号码15051286100"
             android:textIsSelectable="true"
@@ -61,9 +60,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/px30_common"
-            android:layout_marginTop="@dimen/dimen_10"
             android:gravity="center"
             android:text="小数点格式化"
+            android:textIsSelectable="true"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/px30_common"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="   长度测试大厦附近的洛杉矶发了你是个大傻逼大手大脚"
             android:textIsSelectable="true"
             android:textSize="18sp" />
 

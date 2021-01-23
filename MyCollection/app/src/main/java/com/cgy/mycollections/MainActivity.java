@@ -62,6 +62,7 @@ import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
 import com.cgy.mycollections.utils.SystemUtil;
+import com.growingc.mediaoperator.PickMediaActivity;
 
 import java.util.List;
 
@@ -244,6 +245,9 @@ public class MainActivity extends AppCompatActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         i.addCategory(Intent.CATEGORY_HOME);
         startActivity(i);
+
+//        Intent intent = new Intent(MainActivity.this, PickMediaActivity.class);
+//        startActivity(intent);
     }
 
     @Override

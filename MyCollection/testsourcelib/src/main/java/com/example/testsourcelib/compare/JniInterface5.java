@@ -1007,6 +1007,11 @@ public class JniInterface5 {
     }
 
 
+    public static void onChargeStatus(int status){
+
+    }
+
+
 
 
 }

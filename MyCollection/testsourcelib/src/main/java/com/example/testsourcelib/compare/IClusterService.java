@@ -7,6 +7,7 @@ package com.example.testsourcelib.compare;
 interface IClusterService {
 
 
+
     /*------------------------------------------------------------------------card control start --------------------------------------------------------*/
 
     void onLeftListVisible(boolean leftlistvisible);
@@ -281,6 +282,10 @@ interface IClusterService {
 
     void onPowerCurveValue(float powercurvevalue);
 
+    void onResAvailPower(int value);
+
+    void onRefreshPowerVEHpwrValue(int value);
+
     /*------------------------------------------------------------------------能耗卡片 end--------------------------------------------------------*/
 
 
@@ -388,7 +393,7 @@ interface IClusterService {
 
     void onTemperatureVisible(boolean temperaturevisible);
 
-    void onAirVolumeVisible(boolean airvolumevisible);
+    void onAirVolumeState(int state);
 
     void onMidVolume(float midvolume);
 
@@ -877,12 +882,8 @@ interface IClusterService {
     void onACCDisableChangeCard(boolean show);
 
 
-    void onAirVolumeState(int state);
-
-
     void onColorTest(int value);
 
 
-    void onCommonTelltale(boolean show);
 
 }
