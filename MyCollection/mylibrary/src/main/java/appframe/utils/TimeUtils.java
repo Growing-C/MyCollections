@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,6 +36,8 @@ public class TimeUtils {
      * @param context context
      * @return 12 /24 / null
      * @see android.content.Intent#EXTRA_TIME_PREF_VALUE_USE_12_HOUR
+     * @see android.text.format.DateFormat#is24HourFormat(Context) 和这个方法内容差不多
+     * @deprecated use {@link android.text.format.DateFormat#is24HourFormat(Context)}
      */
     public static String getSystemHourFormat(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
@@ -49,6 +50,8 @@ public class TimeUtils {
      * 获取当前系统时间格式
      * 12小时制 2021年1月27日 下午1:53:57   toPattern:y年M月d日 ah:mm:ss
      * 24小时制 2021年1月27日 13:54:02     toPattern:y年M月d日 HH:mm:ss
+     *
+     * @deprecated 这种方式在有的地方不准，使用android.text.DateFormat.is24HourFormat()方法
      */
     public static void getSystemTimeFormat() {
         Calendar calendar = Calendar.getInstance(Locale.getDefault());
@@ -59,13 +62,13 @@ public class TimeUtils {
             L.i("toPattern:" + ((SimpleDateFormat) dateFormat).toPattern());
         }
         L.i("am_pm:" + calendar.get(Calendar.AM_PM));
-        ;
     }
 
     /**
      * 获取当前系统时间是不是24小时制
      *
      * @return true-24小时制 false-12小时制
+     * @deprecated 这种方式在有的地方不准，使用android.text.DateFormat.is24HourFormat()方法
      */
     public static boolean isSystemTimeIn24() {
         String systemTimePattern = null;

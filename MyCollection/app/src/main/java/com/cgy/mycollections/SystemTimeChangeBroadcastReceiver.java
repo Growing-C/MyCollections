@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -80,9 +81,10 @@ public class SystemTimeChangeBroadcastReceiver extends BroadcastReceiver {
             //每分钟时间改变
             TimeUtils.getSystemTimeFormat();
         } else if (TextUtils.equals(intent.getAction(), Intent.ACTION_TIME_CHANGED)) {
-            int hourFormat = intent.getExtras().getInt(Intent.EXTRA_TIME_PREF_24_HOUR_FORMAT);
+            int hourFormat = intent.getExtras().getInt(Intent.EXTRA_TIME_PREF_24_HOUR_FORMAT, -1);
             L.i("hourFormat:" + hourFormat);
             L.i("time_12_24:" + TimeUtils.getSystemHourFormat(context));
+            L.i("time_12_24:" + DateFormat.is24HourFormat(context));
 
             TimeUtils.getSystemTimeFormat();
 //        scheduleCountDownTimer();
