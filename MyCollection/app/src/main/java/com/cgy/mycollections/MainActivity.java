@@ -67,6 +67,7 @@ import com.growingc.mediaoperator.PickMediaActivity;
 import java.util.List;
 
 import appframe.utils.L;
+import appframe.utils.TimeUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         getTaskInfo();
 
         L.d("ccc", "设备是几核的额？" + SystemUtil.getNumberOfCPUCores());
+        SystemTimeChangeBroadcastReceiver.registerSystemTimeChangeReceiver(this);
     }
 
     private void initSwipeAndDrag(ItemTouchHelperAdapter itemAdapter) {
@@ -236,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopService(new Intent(MainActivity.this, FloatingService.class));
+
+        SystemTimeChangeBroadcastReceiver.unRegisterSystemTimeChangeReceiver(this);
     }
 
     @Override

@@ -1,11 +1,17 @@
 package appframe.utils;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -23,6 +29,52 @@ public class TimeUtils {
 
     private TimeUtils() {
         throw new AssertionError();
+    }
+
+    /**
+     * 获取系统时间样式 12小时制 还是24小时制，或者跟随系统会返回null
+     *
+     * @param context context
+     * @return 12 /24 / null
+     * @see android.content.Intent#EXTRA_TIME_PREF_VALUE_USE_12_HOUR
+     */
+    public static String getSystemHourFormat(Context context) {
+        ContentResolver contentResolver = context.getContentResolver();
+        String time_12_24 = Settings.System.getString(contentResolver, Settings.System.TIME_12_24);
+        L.i("time_12_24:" + time_12_24);
+        return time_12_24;
+    }
+
+    /**
+     * 获取当前系统时间格式
+     * 12小时制 2021年1月27日 下午1:53:57   toPattern:y年M月d日 ah:mm:ss
+     * 24小时制 2021年1月27日 13:54:02     toPattern:y年M月d日 HH:mm:ss
+     */
+    public static void getSystemTimeFormat() {
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+        String formatS = dateFormat.format(calendar.getTime());
+        L.i("testTimeFormat:" + formatS);
+        if (dateFormat instanceof SimpleDateFormat) {
+            L.i("toPattern:" + ((SimpleDateFormat) dateFormat).toPattern());
+        }
+        L.i("am_pm:" + calendar.get(Calendar.AM_PM));
+        ;
+    }
+
+    /**
+     * 获取当前系统时间是不是24小时制
+     *
+     * @return true-24小时制 false-12小时制
+     */
+    public static boolean isSystemTimeIn24() {
+        String systemTimePattern = null;
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+        if (dateFormat instanceof SimpleDateFormat) {
+            systemTimePattern = ((SimpleDateFormat) dateFormat).toPattern();
+            L.i("toPattern:" + systemTimePattern);
+        }
+        return (systemTimePattern != null && systemTimePattern.contains("HH"));
     }
 
     /**

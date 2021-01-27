@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.growingc.mediaoperator.picturerender.ByteBufferUtils;
 import com.growingc.mediaoperator.picturerender.ImageShaderHelper;
 
 /**
@@ -39,6 +40,7 @@ public class PickMediaActivity extends AppCompatActivity {
         mPic = findViewById(R.id.pic);
 
         Bitmap map = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+        map = ByteBufferUtils.testBitmap2Buffer2Bitmap(map);
 
         ImageShaderHelper helper = new ImageShaderHelper();
         helper.init(this);
@@ -47,5 +49,9 @@ public class PickMediaActivity extends AppCompatActivity {
         //使用上面的图片的宽高来进行测试绘图对比 两张图绘制效果
         ImageView testPic = findViewById(R.id.test_pic);
         testPic.setImageBitmap(helper.testDraw(map));
+
+
+        ByteBufferUtils.bitmap2JpgData(map);
+        ByteBufferUtils.convertBitmap2Buffer(map);
     }
 }

@@ -17,6 +17,7 @@ import com.cgy.mycollections.widgets.EasyTouchView;
 
 /**
  * Created by user on 2016/10/2.
+ * 有个问题，放后台一段时间后会自动被销毁
  */
 public class FloatingService extends Service implements EasyTouchView.FloatingViewActionListener {
 
