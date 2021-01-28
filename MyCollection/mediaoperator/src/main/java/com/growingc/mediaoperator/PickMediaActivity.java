@@ -40,7 +40,6 @@ public class PickMediaActivity extends AppCompatActivity {
         mPic = findViewById(R.id.pic);
 
         Bitmap map = BitmapFactory.decodeResource(getResources(), R.drawable.test);
-        map = ByteBufferUtils.testBitmap2Buffer2Bitmap(map);
 
         ImageShaderHelper helper = new ImageShaderHelper();
         helper.init(this);
@@ -50,8 +49,8 @@ public class PickMediaActivity extends AppCompatActivity {
         ImageView testPic = findViewById(R.id.test_pic);
         testPic.setImageBitmap(helper.testDraw(map));
 
-
-        ByteBufferUtils.bitmap2JpgData(map);
-        ByteBufferUtils.convertBitmap2Buffer(map);
+//        map = ByteBufferUtils.testBitmap2Buffer2Bitmap(map);
+//        ByteBufferUtils.bitmap2JpgData(map);
+//        ByteBufferUtils.convertBitmap2Buffer(map);
     }
 }

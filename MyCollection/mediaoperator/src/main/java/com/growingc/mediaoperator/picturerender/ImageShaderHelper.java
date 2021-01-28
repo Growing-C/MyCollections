@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ComposeShader;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
@@ -31,6 +32,7 @@ public class ImageShaderHelper {
      */
     public void init(@NonNull Context context) {
         mNaviShaderSourceBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_mask);
+        mNaviShaderSourceBitmap = horizontalReverseBitmap(mNaviShaderSourceBitmap);
         mPaint = new Paint();
     }
 
@@ -41,6 +43,23 @@ public class ImageShaderHelper {
         mNaviShaderSourceBitmap.recycle();
         mNaviShaderSourceBitmap = null;
         mPaint = null;
+    }
+
+
+    /**
+     * 水平翻转图片
+     *
+     * @param source
+     * @return
+     */
+    private Bitmap horizontalReverseBitmap(@android.annotation.NonNull Bitmap source) {
+        Matrix m = new Matrix();
+        m.setScale(-1, 1);//水平翻转
+
+        int w = source.getWidth();
+        int h = source.getHeight();
+        //生成的翻转后的bitmap
+        return Bitmap.createBitmap(source, 0, 0, w, h, m, true);
     }
 
     /**
