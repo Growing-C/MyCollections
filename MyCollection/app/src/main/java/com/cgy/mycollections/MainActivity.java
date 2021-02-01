@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.Ringtone;
@@ -28,8 +30,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -62,12 +66,10 @@ import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
 import com.cgy.mycollections.utils.SystemUtil;
-import com.growingc.mediaoperator.PickMediaActivity;
 
 import java.util.List;
 
 import appframe.utils.L;
-import appframe.utils.TimeUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     private ItemTouchHelper mItemTouchHelper;//滑动删除 拖拽实现
+    UiModeManager mUiModeManager;//昼夜模式管理者
 
     // 使用自定义的view替换自带的view
     private LayoutInflater.Factory2 factory2 = new LayoutInflater.Factory2() {
@@ -269,18 +272,56 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.action_settings:
-                openFloatingWindow();
-                return true;
-            case R.id.action_notify:
-                addNotification();//添加通知栏，仅展示玩玩
-                return true;
-            default:
-                break;
+        if (id == R.id.action_settings) {
+            openFloatingWindow();
+        } else if (id == R.id.action_notify) {
+            addNotification();//添加通知栏，仅展示玩玩
+        } else if (id == R.id.action_day_night_mode) {
+            //切换昼夜模式
+            //mUiModeManager 是全局的
+            //AppCompatDelegate.setDefaultNightMode 是单app的，
+            // 切换单app的不会影响全局的，表现为UiModeManager.getNightMode不会变
+            //AppCompatDelegate.setDefaultNightMode 没有走onConfigurationChanged,直接重新创建了activity
+            if (mUiModeManager == null) {
+                mUiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            }
+            L.i("getNightMode:" + AppCompatDelegate.getDefaultNightMode());
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+//                mUiModeManager.disableCarMode(UiModeManager.DISABLE_CAR_MODE_GO_HOME);
+//                mUiModeManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+                AppCompatDelegate.setDefaultNightMode(
+                        AppCompatDelegate.MODE_NIGHT_NO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(
+                        AppCompatDelegate.MODE_NIGHT_YES);
+//                mUiModeManager.enableCarMode(0);
+//                mUiModeManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+            }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        L.i("onConfigurationChanged isDay:" + isDay(newConfig));
+    }
+
+    private boolean isDay(Configuration configuration) {
+        int currentNightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+//        switch (currentNightMode) {
+//            case Configuration.UI_MODE_NIGHT_NO:
+//                // Night mode is not active, we're in day time
+//                return true;
+//            case Configuration.UI_MODE_NIGHT_YES:
+//                // Night mode is active, we're at night!
+//                return false;
+//            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+//                // We don't know what mode we're in, assume notnight
+//                return true;
+//        }
+        return currentNightMode == Configuration.UI_MODE_NIGHT_NO;
     }
 
     //添加通知栏

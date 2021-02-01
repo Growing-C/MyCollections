@@ -5,6 +5,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">打开悬浮窗口</string>
+    <string name="action_switch_day_night_mode">切换昼夜模式</string>
 
     <string name="title_activity_thread_pool_demo">ThreadPoolDemo</string>
     <string name="info_thread_pool_demo">ThreadPoolDemo</string>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="main_item_bg_color">@android:color/black</color>
+    <color name="main_item_title_tx_color">@android:color/white</color>
+    <color name="main_item_des_tx_color">@android:color/darker_gray</color>
+
+</resources>
