@@ -25,11 +25,9 @@ import androidx.databinding.BindingAdapter;
 import com.cgy.mycollections.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-
-import appframe.utils.L;
+import java.util.Map;
 
 
 /**
@@ -38,6 +36,7 @@ import appframe.utils.L;
  * description: 充放电 电池自定义view
  */
 public class BatteryView extends View {
+    private static final String TAG = BatteryView.class.getSimpleName();
 
     private static final int BATTERY_FRAME_THICKNESS = 5;//电池框厚度
     private static final int BATTERY_LIMIT_LINE_THICKNESS = 6;//限制线宽度
@@ -81,8 +80,16 @@ public class BatteryView extends View {
     private AnimatorSet mBatteryLevelAddAnimator;//电量增加动画
     private AnimatorSet mBatteryLevelFirstSetAnimator;//首次设置电量时的增加动画
 
-    private Path mFirstSetBatteryLevelClipPath = new Path();//首次设置电量时，动画的clip path
+    //-------------首次设置电量相关---------
+    private final Path mFirstSetBatteryLevelClipPath = new Path();//首次设置电量时，动画的clip path
     private boolean mShouldClipBatteryLevel = false;//是否需要裁剪电量视图
+
+    float mBatteryColumnWidth = 0;//电量线宽，设置后不变
+
+    int mColumnGrow = 2;//高度增长，可用于控制右边不是最大高度的电量条数目
+    Map<Float, RectF> mBatteryColumnClipMap = new HashMap<>();//裁剪的rect集合
+    int mLastGrowth = 0;
+    //-------------------------------------------
 
     public enum BatteryLevelState {
         BATTERY_LEVEL_NORMAL,//电量正常，绿色
@@ -347,37 +354,40 @@ public class BatteryView extends View {
         mBatteryLevelRect.right = mBatteryBgRect.left + mFullPowerWidth * battery / 100;//设置电量右边界(最终的值)
         mBatteryLevelSrcRect.right = mBatteryLevelBitmap.getWidth() * battery / 100;//设置电量裁剪图标的右边界(最终的值)
 
-        L.i("startBatteryLevelFirstSetAnim left:" + mBatteryLevelRect.left);
-        L.i("startBatteryLevelFirstSetAnim right:" + mBatteryLevelRect.right);
+        Log.i(TAG, "startBatteryLevelFirstSetAnim left:" + mBatteryLevelRect.left);
+        Log.i(TAG, "startBatteryLevelFirstSetAnim right:" + mBatteryLevelRect.right);
+        int batteryRectWidth = mBatteryLevelRect.right - mBatteryLevelRect.left;
         mBatteryLevelFirstSetAnimator = new AnimatorSet();
         mBatteryLevelFirstSetAnimator.setInterpolator(new LinearInterpolator());
-        mBatteryLevelFirstSetAnimator.setDuration(13600);
+
+        int duration = 36000 * battery / 100;//满电量播放时间是5秒，其他的电量按照比例缩减
+        mBatteryLevelFirstSetAnimator.setDuration(duration);
 
         ValueAnimator batteryLevelFirstAddAnim = ObjectAnimator.ofFloat(this, "batteryLevelClipRightX",
-                mBatteryLevelRect.left, mBatteryLevelRect.right);
-        batteryLevelFirstAddAnim.setRepeatCount(ValueAnimator.INFINITE);
-        batteryLevelFirstAddAnim.setRepeatMode(ValueAnimator.RESTART);
+                mBatteryLevelRect.left, mBatteryLevelRect.right + batteryRectWidth);//右边界使用超出当前电量右边的值
+        ValueAnimator batteryLevelItemGrowthAnim = ObjectAnimator.ofInt(this, "batteryLevelClipColumnGrowth",
+                0, 2 * battery);
 
-        mBatteryLevelFirstSetAnimator.play(batteryLevelFirstAddAnim);
+        mBatteryLevelFirstSetAnimator.playTogether(batteryLevelFirstAddAnim, batteryLevelItemGrowthAnim);
 
         mBatteryLevelFirstSetAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationCancel(Animator animation) {
-                L.i("onAnimationCancel");
+                Log.i(TAG, "onAnimationCancel");
                 mShouldClipBatteryLevel = false;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                L.i("onAnimationEnd");
+                Log.i(TAG, "onAnimationEnd");
                 mShouldClipBatteryLevel = false;
             }
 
             @Override
             public void onAnimationStart(Animator animation) {
-                L.i("onAnimationStart");
+                Log.i(TAG, "onAnimationStart");
                 mShouldClipBatteryLevel = true;
-                mBatteryColumnClipList.clear();
+                mBatteryColumnClipMap.clear();
             }
         });
 
@@ -392,7 +402,7 @@ public class BatteryView extends View {
             mBatteryLevelFirstSetAnimator.cancel();
             mBatteryLevelFirstSetAnimator = null;
         }
-        mBatteryColumnClipList.clear();
+        mBatteryColumnClipMap.clear();
     }
 
     /**
@@ -465,10 +475,10 @@ public class BatteryView extends View {
         mFullPowerHeight = mBatteryBgRect.bottom - mBatteryBgRect.top;
 
         //设置电量矩形，根据电量设置右边界
-        mBatteryLevelRect.left = mBatteryBgRect.left;
-        mBatteryLevelRect.top = mBatteryBgRect.top;
-        mBatteryLevelRect.bottom = mBatteryBgRect.bottom;
-        mBatteryLevelRect.right = mBatteryBgRect.left;
+        mBatteryLevelRect.left = mBatteryBgRect.left + 4;//电量和其背景图片宽度差8px
+        mBatteryLevelRect.top = mBatteryBgRect.top + 3;
+        mBatteryLevelRect.bottom = mBatteryBgRect.bottom - 3;
+        mBatteryLevelRect.right = mBatteryBgRect.left - 4;
 
         //设置电池充电动画的绘制矩形
         mBatteryChargingAnimRect.left = mBatteryBgRect.left;
@@ -482,6 +492,14 @@ public class BatteryView extends View {
 
         //充电动画rect宽度
         mBatteryChargingAnimRectWidth = mBatteryChargingAnimBitmap.getWidth() * (mBatteryChargingAnimRect.bottom - mBatteryChargingAnimRect.top) / mBatteryChargingAnimBitmap.getHeight();
+
+        //首次设置电量动画相关参数
+        float offSet = (float) mFullPowerWidth / 200;
+        mBatteryColumnWidth = (mFullPowerWidth + offSet) / 50;//宽度需要加上一个偏移值，不然不准确
+        mColumnGrow = mFullPowerHeight / 15;
+        Log.i(TAG, "mColumnGrow:" + mColumnGrow);
+        Log.i(TAG, "offSet:" + offSet);
+        Log.i(TAG, "mBatteryColumnWidth:" + mBatteryColumnWidth);
 
         setMeasuredDimension(specWidthSize, specHeightSize);
     }
@@ -522,119 +540,105 @@ public class BatteryView extends View {
 
     //<editor-fold desc="属性动画相关">
 
-    int mMaxClipPathFirstColumnHeight = 10;
-
-    int mFirstColumnInitialHeight = 10;//右边首行电量初始高度，不变
-    float mColumnHeightOffset = 0;//不同竖行电量高度差，不变
-    int mBatteryColumnWidth = 0;//电量线宽，不变
-
-    int mColumnGrow = 1;//高度增长
-    List<RectF> mBatteryColumnClipList = new ArrayList<>();//裁剪的rect集合
-
     /**
      * 设置电量图裁剪的右边界
      *
      * @param clipRightX 右边界
      */
     public void setBatteryLevelClipRightX(float clipRightX) {
-        //-------不变----------------
-        mColumnHeightOffset = mFullPowerHeight / 4;
-        mBatteryColumnWidth = mFullPowerWidth / 50;
-        mMaxClipPathFirstColumnHeight = mFullPowerHeight * 2 / 5;
-        //-------不变----------------
-
-
         //找到当前的电量条
         float thisColumnLeft = mBatteryLevelRect.left;
         if (clipRightX - mBatteryColumnWidth > mBatteryLevelRect.left) {
             float widthOffset = (clipRightX - mBatteryLevelRect.left) % mBatteryColumnWidth;
             thisColumnLeft = clipRightX - (widthOffset == 0 ? mBatteryColumnWidth : widthOffset);
-//                thisLineLeftX = lastLineLeftX - mBatteryColumnWidth;
-//                L.i(" widthOffset :" + widthOffset);
         }
 
-        RectF thisColumnRect = null;
-        RectF lastColumnRect = null;//左边的column
-        RectF needRemoveRect = null;
-        for (RectF showSegment : mBatteryColumnClipList) {
-            showSegment.top = showSegment.top - mColumnGrow;
-            showSegment.bottom = showSegment.bottom + mColumnGrow;
-
-            if (showSegment.top <= mBatteryLevelRect.top) {
-                needRemoveRect = showSegment;
-            }
-
-            if (thisColumnLeft == showSegment.left) {
-                showSegment.right = clipRightX;
-
-                thisColumnRect = showSegment;
-            } else if (showSegment.left < thisColumnLeft) {
-                if (lastColumnRect == null || lastColumnRect.left < showSegment.left) {
-                    lastColumnRect = showSegment;
-                }
-            }
+        RectF thisColumnRect = mBatteryColumnClipMap.get(thisColumnLeft);
+        if (thisColumnRect != null) {
+            thisColumnRect.right = clipRightX;
         }
-        if (needRemoveRect != null) {
-            mBatteryColumnClipList.remove(needRemoveRect);
-        }
-        if (thisColumnRect == null) {
+
+        //超过了右边界就不再加了
+        if (thisColumnRect == null && clipRightX <= mBatteryLevelRect.right) {
+            addBatteryLevelColumnHeight(2);
 
             float thisColumnTop;
             float thisColumnBottom;
-
-            if (lastColumnRect != null) {
-                thisColumnTop = lastColumnRect.top + mColumnHeightOffset / 2;
-                thisColumnBottom = lastColumnRect.bottom - mColumnHeightOffset / 2;
-            } else {
-                thisColumnTop = (float) (mFullPowerHeight - mFirstColumnInitialHeight) / 2 + mBatteryLevelRect.top;
-                thisColumnBottom = thisColumnTop + mFirstColumnInitialHeight;
-            }
+            thisColumnTop = (float) (mFullPowerHeight - mColumnGrow) / 2 + mBatteryLevelRect.top;
+            thisColumnBottom = thisColumnTop + mColumnGrow;
 
             thisColumnRect = new RectF(thisColumnLeft, thisColumnTop, clipRightX, thisColumnBottom);
-            mBatteryColumnClipList.add(thisColumnRect);
+            mBatteryColumnClipMap.put(thisColumnLeft, thisColumnRect);
+            Log.i(TAG, "111111111111111111111111111 newnewnewnewnewnewnewnewnewnew:");
         }
 
-
-//            L.i(" segment.left :" + segment.left);
-//            L.i(" segment.right:" + segment.right);
-//            L.i(" segment.top :" + segment.top);
-//            L.i(" segment.bottom:" + segment.bottom);
-
+        RectF leftColumnRect = null;//高度不是最大的几个电量条中最左边的那个
+        //此处 mBatteryColumnClipMap 中的item必定高度都不是最大的
+        for (Map.Entry<Float, RectF> item : mBatteryColumnClipMap.entrySet()) {
+            RectF showSegment = item.getValue();
+            if (leftColumnRect == null || leftColumnRect.left > showSegment.left) {
+                leftColumnRect = showSegment;
+            }
+        }
 
         mFirstSetBatteryLevelClipPath.reset();
-        if (!mBatteryColumnClipList.isEmpty()) {
-            Collections.sort(mBatteryColumnClipList, new Comparator<RectF>() {
-                @Override
-                public int compare(RectF o1, RectF o2) {
-                    float result = o1.left - o2.left;
-                    if (result > 0) {
-                        return 1;
-                    } else if (result == 0) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
-                }
-            });
-
+        if (!mBatteryColumnClipMap.isEmpty()) {
             mFirstSetBatteryLevelClipPath.moveTo(mBatteryLevelRect.left, mBatteryLevelRect.top);
-            for (int i = 0, len = mBatteryColumnClipList.size(); i < len; i++) {
-                RectF lineSegment = mBatteryColumnClipList.get(i);
-                if (i == 0) {
-                    mFirstSetBatteryLevelClipPath.lineTo(lineSegment.left, mBatteryLevelRect.top);
-                    mFirstSetBatteryLevelClipPath.lineTo(lineSegment.left, mBatteryLevelRect.bottom);
-                    mFirstSetBatteryLevelClipPath.lineTo(mBatteryLevelRect.left, mBatteryLevelRect.bottom);
-                }
-                mFirstSetBatteryLevelClipPath.addRect(lineSegment, Path.Direction.CCW);
+            if (leftColumnRect != null) {
+                Log.i(TAG, "0000 mBatteryColumnClipList.size :" + mBatteryColumnClipMap.size());
+                mFirstSetBatteryLevelClipPath.lineTo(leftColumnRect.left, mBatteryLevelRect.top);
+                mFirstSetBatteryLevelClipPath.lineTo(leftColumnRect.left, mBatteryLevelRect.bottom);
+                mFirstSetBatteryLevelClipPath.lineTo(mBatteryLevelRect.left, mBatteryLevelRect.bottom);
+            }
+            for (Map.Entry<Float, RectF> item : mBatteryColumnClipMap.entrySet()) {
+                mFirstSetBatteryLevelClipPath.addRect(item.getValue(), Path.Direction.CCW);
             }
         }
         mFirstSetBatteryLevelClipPath.close();
+        //此处取消动画
+        if (clipRightX > mBatteryLevelRect.right && mBatteryColumnClipMap.isEmpty()) {
+            destroyBatteryLevelFirstSetAnim();
+        }
 
         invalidate();
     }
 
-    private void getLeftClipRectHeight() {
 
+    /**
+     * 设置电量条增长速率
+     *
+     * @param growth 用于控制增长速率
+     */
+    public void setBatteryLevelClipColumnGrowth(int growth) {
+        if (mLastGrowth == growth) {
+            return;
+        }
+        Log.i(TAG, "setBatteryLevelClipColumnGrowth:" + growth);
+        mLastGrowth = growth;
+
+        addBatteryLevelColumnHeight(mColumnGrow);
+//        invalidate();
+    }
+
+    /**
+     * 增长电量条高度
+     */
+    private void addBatteryLevelColumnHeight(int growValue) {
+        List<Float> needRemoveList = new ArrayList<>();
+        for (Map.Entry<Float, RectF> item : mBatteryColumnClipMap.entrySet()) {
+            RectF showSegment = item.getValue();
+            showSegment.top = showSegment.top - growValue;
+            showSegment.bottom = showSegment.bottom + growValue;
+
+            if (showSegment.top <= mBatteryLevelRect.top) {
+                needRemoveList.add(item.getKey());
+            }
+        }
+        if (!needRemoveList.isEmpty()) {
+            for (Float key : needRemoveList) {
+                mBatteryColumnClipMap.remove(key);
+            }
+        }
     }
 
     /**
@@ -643,9 +647,9 @@ public class BatteryView extends View {
      * @param batteryLevelFloat 电量浮点值
      */
     public void setBatteryLevelFloat(float batteryLevelFloat) {
-        mBatteryLevelRect.right = (int) (mBatteryBgRect.left + mFullPowerWidth * batteryLevelFloat / 100);//设置电量右边界
+        mBatteryLevelRect.right = (int) (mBatteryLevelRect.left + mFullPowerWidth * batteryLevelFloat / 100);//设置电量右边界
         mBatteryLevelSrcRect.right = (int) (mBatteryLevelBitmap.getWidth() * batteryLevelFloat / 100);//设置电量裁剪图标的右边界
-//        L.i("setBatteryLevelFloat:" + batteryLevelFloat + " ,mBatteryLevelRect.right:" + mBatteryLevelRect.right + "," + mBatteryLevelSrcRect.right);
+//        Log.i(TAG,"setBatteryLevelFloat:" + batteryLevelFloat + " ,mBatteryLevelRect.right:" + mBatteryLevelRect.right + "," + mBatteryLevelSrcRect.right);
         invalidate();
     }
 
@@ -655,12 +659,12 @@ public class BatteryView extends View {
      * @param chargingRightX 充电右边界
      */
     public void setChargingRightX(float chargingRightX) {
-//        L.i("setChargingX:" + chargingRightX + ",mBatteryBgRect.right:" + mBatteryBgRect.right);
+//        Log.i(TAG,"setChargingX:" + chargingRightX + ",mBatteryBgRect.right:" + mBatteryBgRect.right);
         int rightX = (int) Math.min(chargingRightX, mBatteryBgRect.right);
         int newLeftX = (int) Math.max(chargingRightX - mBatteryChargingAnimRectWidth, 0);
         if (newLeftX > rightX) {//相同且大于0且大于等于右边值说明到达最右边了，此时不用再重绘
-//            L.i("setChargingRightX rightX:" + rightX);
-//            L.i("setChargingRightX newLeftX:" + newLeftX);
+//            Log.i(TAG,"setChargingRightX rightX:" + rightX);
+//            Log.i(TAG,"setChargingRightX newLeftX:" + newLeftX);
             return;
         }
         mBatteryChargingAnimRect.left = newLeftX;

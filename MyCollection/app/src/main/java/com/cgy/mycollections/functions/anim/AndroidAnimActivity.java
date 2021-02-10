@@ -105,7 +105,7 @@ public class AndroidAnimActivity extends AppCompatActivity {
                 if (bat == 0) {
                     mBinding.battery.setBatteryLevel(0);
                 } else if (bat == 1) {
-                    mBinding.battery.setBatteryLevel(60);
+                    mBinding.battery.setBatteryLevel(40);
                 } else if (bat == 2) {
                     mBinding.battery.setBatteryLevel(80);
                 } else if (bat == 3) {
