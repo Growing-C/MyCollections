@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!--可翻转的社保卡-->
@@ -47,7 +47,38 @@
         <com.cgy.mycollections.widgets.LockMenuView
             android:id="@+id/lock_menu"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"/>
+            android:layout_height="45dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_sport_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="50dp"
+                android:contentDescription="@string/nav_app_bar_open_drawer_description"
+                android:src="@drawable/xp_bottom_bar_driving_mode_eco" />
+
+
+            <com.cgy.mycollections.functions.anim.AnimatorImageView
+                android:id="@+id/iv_driving_mode_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/nav_app_bar_open_drawer_description"
+                android:src="@drawable/xp_bottom_bar_driving_mode_eco_hint" />
+
+        </RelativeLayout>
+
+        <com.cgy.mycollections.widgets.BatteryView
+            android:id="@+id/battery"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 </ScrollView>

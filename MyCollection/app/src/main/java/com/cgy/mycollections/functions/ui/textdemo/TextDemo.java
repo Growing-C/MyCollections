@@ -14,6 +14,7 @@ import android.os.CountDownTimer;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
@@ -81,6 +82,51 @@ public class TextDemo extends AppCompatActivity {
         testLinkify();
 
         showFormatText();
+
+        testMeasureText();
+    }
+
+    private void testMeasureText() {
+        //1.measureText 测量出来的宽度有一定规律一个英文字符和中文字符的宽度不同
+        //2.测量的时候\n并不会换行，实际还是算成一行来测量了，\n也会当作字符来测量
+        Paint textPaint = new Paint();
+        L.i("text width:" + textPaint.measureText("你是我的小苹果呀fddfs"));//  124
+        L.i("text width:" + textPaint.measureText("你是我的小苹果呀小苹果"));//11个汉字  132
+        L.i("text width:" + textPaint.measureText("你是我的小苹果呀\n小苹果，哈"));//12+1
+        L.i("text width:" + textPaint.measureText("你是我的小苹果呀小苹果哈利"));//13
+        L.i("text width:" + textPaint.measureText("你是我的小苹果呀小苹果哈利路"));//14
+        L.i("text width:" + textPaint.measureText("你是我的小苹果呀小苹果哈利路呀"));//15
+        L.i("text width:" + "dfasf\nfdsaf".contains("\n"));//15
+        L.i("text width:" + "dfasf\nfdsaf".split("\n")[1]);//15
+
+        cutTextExactWidth("你是我的小苹果呀小苹果哈利路", 124);
+    }
+
+    /**
+     * 截取指定宽度的文字
+     *
+     * @param input
+     * @param width
+     */
+    private void cutTextExactWidth(String input, int width) {
+        try {
+
+            Paint paint = new Paint();
+            int targetEnd = input.length();
+            while (paint.measureText(input, 0, targetEnd) > width) {
+                L.i("cutTextExactWidth:" + input.substring(0, targetEnd));
+                targetEnd--;
+            }
+            L.i("targetWidth  :" + width);
+            L.i("final  :" + paint.measureText(input.substring(0, targetEnd)));
+            L.i("final 1:" + paint.measureText(input.substring(0, targetEnd + 1)));
+            if (targetEnd < input.length()) {
+                L.i("targetString  :" + input.substring(0, targetEnd) + "\n" + input.substring(targetEnd));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
