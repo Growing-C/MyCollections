@@ -16,13 +16,13 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.functions.anim.animator.DelayAccDecInterpolator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -255,13 +255,13 @@ public class BatteryView extends View {
         if (mChargingAnimator == null) {
             mChargingAnimator = new AnimatorSet();
             ValueAnimator chargingXAnimator = ObjectAnimator.ofFloat(this, "chargingRightX",
-                    0, mBatteryBgRect.right + mBatteryChargingAnimRectWidth + 500);//500 当作间隔使用
+                    0, mBatteryBgRect.right + mBatteryChargingAnimRectWidth);
             chargingXAnimator.setRepeatCount(ValueAnimator.INFINITE);
             chargingXAnimator.setRepeatMode(ValueAnimator.RESTART);
+            chargingXAnimator.setDuration(2280);//总时间，包含人为制造的间隔,流光动效从左到右动效的时间是1.9s，第一次和第二次动效的间隔时间是0.38s
+            chargingXAnimator.setInterpolator(new DelayAccDecInterpolator(2280, 380));
 
-            mChargingAnimator.playTogether(chargingXAnimator);
-            mChargingAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-            mChargingAnimator.setDuration(2280);//总时间，包含人为制造的间隔,流光动效从左到右动效的时间是1.9s，第一次和第二次动效的间隔时间是0.38s
+            mChargingAnimator.play(chargingXAnimator);
         }
         mChargingAnimator.start();
     }
