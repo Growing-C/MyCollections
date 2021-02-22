@@ -1,0 +1,79 @@
+#LinkAMapRunnable使用流程
+LinkAMapRunnable使用的都是 executeCachedTask，同一个线程池
+LinkAMapRunnable 的主要功能
+1.检查绑定高德地图状态
+2.检查是否是高德账号
+3.同步收藏夹信息
+@startuml
+boundary InitializerManager
+boundary MainFragment
+alt 当前未登陆或者登陆账号和本地保存账号不一致
+ LinkAMapRunnable -> AccountHandler:sendLoginXPMapMsg()
+else 已登录账号
+ LinkAMapRunnable -> LinkAMapWrapper:checkBindAMapStatus()
+ note right:该接口后台是去用户中心查询的，绑定与否状态由用户中心维护
+ alt onSuccess
+  LinkAMapWrapper -> AXPCheckBindCallBack:onSuccess()
+  AXPCheckBindCallBack -> LinkAMapRunnable:onSuccess()
+
+   alt 本地该账号和高德账号是绑定状态，但是接口返回高德账号并不是绑定状态
+    LinkAMapRunnable -> DialogUtils:showUnbindDialog()
+    note right:显示换绑提示框（实际啥都没做）
+   end alt
+
+   alt 高德账号是绑定状态
+    LinkAMapRunnable -> SettingWrapper:saveLastAccountSid()
+    LinkAMapRunnable -> SettingWrapper:saveLastAccountOpenId()
+    note right:此处将上次登陆账号相关信息设置为当前账号的。意义不明
+    LinkAMapRunnable -> LinkAMapRunnable:syncFavorite()
+   end alt
+
+ else onFail
+  LinkAMapWrapper -> AXPCheckBindCallBack:onFail()
+   alt sid过期 ERROR_CODE_REQUEST_SID_EXPIRE_FAIL
+    AXPCheckBindCallBack -> LinkAMapWrapper:checkBindAMapStatus()
+   else 需要重新登陆 ERROR_CODE_REQUEST_SID_INVALID_FAIL ERROR_CODE_CHECK_MAP_SERVER_SID_OPENID
+    AXPCheckBindCallBack -> XPAccountServiceWrapper:asyncGetOAuthCode()
+    XPAccountServiceWrapper -> AXPCheckBindCallBack:onSuccess()
+    AXPCheckBindCallBack -> LinkAMapWrapper:loginXMapServer()
+    LinkAMapWrapper -> AXPCheckBindCallBack:onSuccess()
+    AXPCheckBindCallBack -> LinkAMapWrapper:checkBindAMapStatus()
+   end alt
+ end alt
+
+
+
+
+end alt
+
+alt 非临客账号
+ LinkAMapRunnable -> LinkAMapWrapper:checkIsAMapAccount()
+ note right:此处一个接口嵌套一个接口异常冗余复杂，需要整改
+ LinkAMapWrapper -> XPAccountServiceWrapper:asyncGetOAuthCode()
+ XPAccountServiceWrapper -> XCheckTokenCallBack:onAuthCodeHandler()
+ XCheckTokenCallBack -> AosServiceWrapper:requestCarLtdCheckToken()
+ AosServiceWrapper -> CheckTokenCallBack:checkToken()
+ CheckTokenCallBack -> XCheckTokenCallBack:onSuccess()
+ XCheckTokenCallBack -> LinkAMapRunnable:onSuccess()
+
+ alt isAmap=1 该账号是高德账号
+  LinkAMapRunnable -> SettingWrapper:saveIsAMapAccount(true)
+ else 该账号非高德账号
+  LinkAMapRunnable -> SettingWrapper:saveIsAMapAccount(false)
+ end alt
+
+end alt
+
+
+@enduml
+
+问题列表：
+1.持有view的对象，后续可能会使用这个对象显示对话框。虽然是weakReference，但是放在此处不合适，类的职责不清晰
+2.checkBindAMapStatus 和AccountHandler中重复，尽量相同的功能在一个地方使用，不要东一个西一个
+3.各种SettingWrapper.save 持久化保存是异步的，(内存保存是同步的)可能会存在异步保存过程中 app异常退出导致下次进来状态不正确的问题
+4.过多的使用单例保存账号相关信息，如XPAccountServiceWrapper.getInstance().isTempType()
+  SettingWrapper.getBindAMapStatus() 账号相关信息过于零碎，需要整理
+5.checkIsAMapAccount 实际查询了高德sdk 是否是高德账号， 获取了checkToken,和高德账号高度相关，建议也和AccountHanlder进行整合
+6.AXPCheckBindCallBack 中失败也自行调用了登陆xp账号，不便于管理，也增加了异常可能。
+
+综上，LinkAMapRunnable 功能和AccountHandler高度交叉重合，结构不合理需要整改。

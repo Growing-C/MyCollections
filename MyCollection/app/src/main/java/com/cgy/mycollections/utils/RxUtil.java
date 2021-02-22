@@ -17,6 +17,8 @@
 package com.cgy.mycollections.utils;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -37,24 +39,19 @@ public class RxUtil {
      */
     public static <T> ObservableTransformer<T, T> applySchedulersJobUI() {
         return new ObservableTransformer<T, T>() {
+            @NotNull
             @Override
-            public ObservableSource<T> apply(Observable<T> upstream) {
+            public ObservableSource<T> apply(@NotNull Observable<T> upstream) {
                 return upstream.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
             }
         };
 
+        //和以上的等效
 //        return observable -> observable
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread());
     }
-
-//    public static <T> ObservableTransformer<T, T> applySchedulers() {
-//        return observable -> observable
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
-
 
     /**
      * 主线程中运行

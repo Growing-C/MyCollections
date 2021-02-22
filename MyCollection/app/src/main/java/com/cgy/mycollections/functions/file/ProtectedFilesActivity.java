@@ -3,33 +3,23 @@ package com.cgy.mycollections.functions.file;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-//import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
-import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
+import com.cgy.mycollections.base.BaseActivity;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
-import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileUtil;
-
-import appframe.utils.L;
-
-import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenu;
@@ -40,7 +30,6 @@ import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.yanzhenjie.recyclerview.touch.OnItemMoveListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,10 +37,13 @@ import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
+import appframe.utils.L;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.observers.DisposableObserver;
+
+//import androidx.appcompat.widget.RecyclerView;
 
 /**
  * 受保护的文件

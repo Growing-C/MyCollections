@@ -23,10 +23,9 @@ public class ImageHelper {
     public static boolean isPic(String filePath) {
         if (TextUtils.isEmpty(filePath))
             return false;
+        String lowerCase = filePath.toLowerCase();
 
-        if (filePath.endsWith(".jpg") || filePath.endsWith(".png") || filePath.endsWith(".jpeg") || filePath.endsWith(".gif"))
-            return true;
-        return false;
+        return lowerCase.endsWith(".jpg") || lowerCase.endsWith(".png") || lowerCase.endsWith(".jpeg") || lowerCase.endsWith(".gif") || lowerCase.endsWith(".webp");
     }
 
     /**
@@ -43,7 +42,8 @@ public class ImageHelper {
         if (upperCaseFilePath.endsWith("JPG")
                 || upperCaseFilePath.endsWith("PNG")
                 || upperCaseFilePath.endsWith("JPEG")
-                || upperCaseFilePath.endsWith("GIF"))
+                || upperCaseFilePath.endsWith("GIF")
+                || upperCaseFilePath.endsWith("WEBP"))
             return true;
         return false;
     }

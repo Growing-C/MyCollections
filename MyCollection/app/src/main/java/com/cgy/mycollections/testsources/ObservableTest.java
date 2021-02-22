@@ -1,17 +1,29 @@
 package com.cgy.mycollections.testsources;
 
 
+import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
+import com.cgy.mycollections.utils.RxUtil;
+
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Scheduler;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -152,5 +164,73 @@ public class ObservableTest {
 
             }
         });
+    }
+
+
+    /**
+     * 1.retryWhen 的apply先于 ObservableOnSubscribe.subscribe执行，代表在发送事件之前就执行了，但是只会执行这一次
+     * 2.当emitter.onError执行的时候会走errors.takeWhile.test方法，只要返回一直是false就会一直执行
+     * 3.Observable.timer可以延迟下次事件发送时间
+     * 4.在retry过程中 dispose的话不仅收不到回调，连下次emitter发送都不会再发。
+     * 5.在flatMap过程中dispose无效，还是会收到当前的onNext,但是后续的onNext等操作不会再收到，跑还是会跑，即会将emitter 的事件发送完。
+     * 6.使用了主线程子线程切换的话，除了Observer中的onNext onError,onComplete,其他 包括retryWhen初始化调用的那次全都是在子线程中执行
+     */
+    public static void testDelay() {
+        System.out.println("testDelay  start");
+        DisposableObserver<Integer> disposableObserver = new DisposableObserver<Integer>() {
+            @Override
+            public void onNext(@NonNull Integer o) {
+                System.out.println("testDelay onNext:" + o);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                System.out.println("testDelay onError:" + e);
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("testDelay onComplete:");
+            }
+        };
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Integer> emitter) throws Exception {
+                System.out.println("testDelay ObservableOnSubscribe 111");
+                emitter.onNext(3);
+                System.out.println("testDelay ObservableOnSubscribe 222");
+                emitter.onNext(4);
+                emitter.onError(new NullPointerException("wo cuo le !!"));
+            }
+        }).flatMap(new Function<Integer, ObservableSource<Integer>>() {
+            @Override
+            public ObservableSource<Integer> apply(@NonNull Integer o) throws Exception {
+                System.out.println("testDelay flatMap:" + o);
+//                disposableObserver.dispose();
+                return Observable.just(o + 2);
+            }
+        }).retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
+            @Override
+            public ObservableSource<?> apply(@NonNull Observable<Throwable> errors) throws Exception {
+                System.out.println("testDelay retryWhen:");
+                AtomicInteger counter = new AtomicInteger();
+                return errors.takeWhile(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(@NonNull Throwable throwable) throws Exception {
+                        System.out.println("testDelay takeWhile:" + counter.get());
+                        if (counter.get() == 2) {
+                            disposableObserver.dispose();
+                        }
+                        return counter.getAndIncrement() != 4;
+                    }
+                }).flatMap(new Function<Throwable, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
+                        System.out.println("testDelay delay retry by " + counter.get() + " second(s)");
+                        return Observable.timer(counter.get() + 5, TimeUnit.SECONDS);
+                    }
+                });
+            }
+        }).compose(RxUtil.applySchedulersJobUI()).subscribe(disposableObserver);
     }
 }
