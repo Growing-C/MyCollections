@@ -64,7 +64,6 @@ import com.cgy.mycollections.functions.webview.WebViewDemos;
 import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
-import com.cgy.mycollections.testsources.ObservableTest;
 import com.cgy.mycollections.testsources.TestDemo;
 import com.cgy.mycollections.utils.SystemUtil;
 
@@ -162,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
         L.d("ccc", "设备是几核的额？" + SystemUtil.getNumberOfCPUCores());
         SystemTimeChangeBroadcastReceiver.registerSystemTimeChangeReceiver(this);
 
-        ObservableTest.testDelay();
     }
 
     private void initSwipeAndDrag(ItemTouchHelperAdapter itemAdapter) {
