@@ -1,14 +1,12 @@
 package com.cgy.mycollections.testsources;
 
 
-import com.cgy.mycollections.functions.mediamanager.images.MediaInfo;
 import com.cgy.mycollections.utils.RxUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,7 +20,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.subjects.PublishSubject;
 
@@ -174,6 +171,10 @@ public class ObservableTest {
      * 4.在retry过程中 dispose的话不仅收不到回调，连下次emitter发送都不会再发。
      * 5.在flatMap过程中dispose无效，还是会收到当前的onNext,但是后续的onNext等操作不会再收到，跑还是会跑，即会将emitter 的事件发送完。
      * 6.使用了主线程子线程切换的话，除了Observer中的onNext onError,onComplete,其他 包括retryWhen初始化调用的那次全都是在子线程中执行
+     * 7.errors.take(4) 代表了重试几次，4则只会重试4次
+     * 8.多次emit 的时候如果flatmap里也是create 且里面有onerror，第一个里有多个onnext然后onerror，会导致崩溃
+     * 9.只要每个 emitter发送的事件 只有一个就没有8 的问题，不管是onError还是onNext
+     * 10.两个含有retry逻辑的observable通过flatmap拼接 retry执行没有问题，按照预期执行了各自的retry逻辑，任何时候dispose都会终止整个流程
      */
     public static void testDelay() {
         System.out.println("testDelay  start");
@@ -193,43 +194,123 @@ public class ObservableTest {
                 System.out.println("testDelay onComplete:");
             }
         };
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(@NonNull ObservableEmitter<Integer> emitter) throws Exception {
-                System.out.println("testDelay ObservableOnSubscribe 111");
-                emitter.onNext(3);
-                System.out.println("testDelay ObservableOnSubscribe 222");
-                emitter.onNext(4);
-                emitter.onError(new NullPointerException("wo cuo le !!"));
-            }
-        }).flatMap(new Function<Integer, ObservableSource<Integer>>() {
-            @Override
-            public ObservableSource<Integer> apply(@NonNull Integer o) throws Exception {
-                System.out.println("testDelay flatMap:" + o);
-//                disposableObserver.dispose();
-                return Observable.just(o + 2);
-            }
-        }).retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
-            @Override
-            public ObservableSource<?> apply(@NonNull Observable<Throwable> errors) throws Exception {
-                System.out.println("testDelay retryWhen:");
-                AtomicInteger counter = new AtomicInteger();
-                return errors.takeWhile(new Predicate<Throwable>() {
+
+        AtomicInteger counter1 = new AtomicInteger();
+        Observable<Integer> ob1 =
+                Observable.create(new ObservableOnSubscribe<Integer>() {
                     @Override
-                    public boolean test(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("testDelay takeWhile:" + counter.get());
-                        if (counter.get() == 2) {
-                            disposableObserver.dispose();
-                        }
-                        return counter.getAndIncrement() != 4;
+                    public void subscribe(@NonNull ObservableEmitter<Integer> emitter) throws Exception {
+                        System.out.println("11111 testDelay ObservableOnSubscribe 111");
+                        emitter.onNext(3);
+                        System.out.println("11111 testDelay ObservableOnSubscribe 222");
+//                        emitter.onNext(4);//flatMap中onerror之后会重试，此onnext会执行但是不会走到flatMap中也不会继续往下，等于无效
+//                emitter.onError(new NullPointerException("wo cuo le !!"));//flatmap中调用了onError此处就不能再调用，不然会崩溃
                     }
-                }).flatMap(new Function<Throwable, ObservableSource<?>>() {
+                }).flatMap(new Function<Integer, ObservableSource<Integer>>() {
                     @Override
-                    public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
-                        System.out.println("testDelay delay retry by " + counter.get() + " second(s)");
-                        return Observable.timer(counter.get() + 5, TimeUnit.SECONDS);
+                    public ObservableSource<Integer> apply(@NonNull Integer o) throws Exception {
+                        System.out.println("11111 testDelay flatMap:" + o);
+//                disposableObserver.dispose();
+//                return Observable.just(o + 2);
+                        return Observable.create(new ObservableOnSubscribe<Integer>() {
+                            @Override
+                            public void subscribe(@NonNull ObservableEmitter<Integer> emitter) throws Exception {
+                                if (counter1.get() == 5) {
+                                    System.out.println("11111 testDelay ObservableOnSubscribe 333");
+                                    emitter.onNext(o + 10);
+                                } else {
+                                    System.out.println("11111 testDelay ObservableOnSubscribe 444");
+                                    emitter.onError(new NullPointerException("111 wo cuo le !!"));
+                                }
+                            }
+                        });
+                    }
+                }).retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(@NonNull Observable<Throwable> errors) throws Exception {
+                        System.out.println("11111 testDelay retryWhen:");
+                        return errors.take(Integer.MAX_VALUE).flatMap(new Function<Throwable, ObservableSource<?>>() {
+                            @Override
+                            public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
+                                counter1.incrementAndGet();
+                                System.out.println("11111 testDelay delay retry by " + counter1.get() + " second(s)");
+                                if (counter1.get() == 8) {
+                                    disposableObserver.dispose();
+                                }
+                                return Observable.timer(counter1.get(), TimeUnit.SECONDS);
+                            }
+                        });
+//                return errors.takeWhile(new Predicate<Throwable>() {
+//                    @Override
+//                    public boolean test(@NonNull Throwable throwable) throws Exception {
+//                        System.out.println("testDelay takeWhile:" + counter.get());
+//                        if (counter.get() == 2) {
+//                            disposableObserver.dispose();
+//                        }
+//                        return counter.getAndIncrement() != 4;
+//                    }
+//                }).flatMap(new Function<Throwable, ObservableSource<?>>() {
+//                    @Override
+//                    public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
+//                        System.out.println("testDelay delay retry by " + counter.get() + " second(s)");
+//                        return Observable.timer(counter.get() + 5, TimeUnit.SECONDS);
+//                    }
+//                });
                     }
                 });
+
+        AtomicInteger counter2 = new AtomicInteger();
+        Observable<Integer> ob2 =
+                Observable.create(new ObservableOnSubscribe<Integer>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<Integer> emitter) throws Exception {
+                        System.out.println("22222 testDelay ObservableOnSubscribe 111");
+                        emitter.onNext(13);
+                        System.out.println("22222 testDelay ObservableOnSubscribe 222");
+//                        emitter.onNext(4);//flatMap中onerror之后会重试，此onnext会执行但是不会走到flatMap中也不会继续往下，等于无效
+//                emitter.onError(new NullPointerException("wo cuo le !!"));//flatmap中调用了onError此处就不能再调用，不然会崩溃
+                    }
+                }).flatMap(new Function<Integer, ObservableSource<Integer>>() {
+                    @Override
+                    public ObservableSource<Integer> apply(@NonNull Integer o) throws Exception {
+                        System.out.println("22222 testDelay flatMap:" + o);
+//                disposableObserver.dispose();
+//                return Observable.just(o + 2);
+                        return Observable.create(new ObservableOnSubscribe<Integer>() {
+                            @Override
+                            public void subscribe(@NonNull ObservableEmitter<Integer> emitter) throws Exception {
+                                if (counter2.get() == 4) {
+                                    System.out.println("22222 testDelay ObservableOnSubscribe 333");
+                                    emitter.onNext(o + 10);
+                                } else {
+                                    System.out.println("22222 testDelay ObservableOnSubscribe 444");
+                                    emitter.onError(new NullPointerException("2222  wo cuo le !!"));
+                                }
+                            }
+                        });
+                    }
+                }).retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(@NonNull Observable<Throwable> errors) throws Exception {
+                        System.out.println("testDelay retryWhen:");
+                        return errors.take(Integer.MAX_VALUE).flatMap(new Function<Throwable, ObservableSource<?>>() {
+                            @Override
+                            public ObservableSource<?> apply(@NonNull Throwable throwable) throws Exception {
+                                counter2.incrementAndGet();
+                                System.out.println("testDelay delay retry by " + counter2.get() + " second(s)");
+                                if (counter2.get() == 8) {
+                                    disposableObserver.dispose();
+                                }
+                                return Observable.timer(counter2.get(), TimeUnit.SECONDS);
+                            }
+                        });
+                    }
+                });
+
+        ob1.flatMap(new Function<Integer, ObservableSource<Integer>>() {
+            @Override
+            public ObservableSource<Integer> apply(@NonNull Integer o) throws Exception {
+                return ob2;
             }
         }).compose(RxUtil.applySchedulersJobUI()).subscribe(disposableObserver);
     }
