@@ -86,6 +86,9 @@
     <string name="surface_ui">&#160;&#160;测试 SurfaceView</string>
     <!--    前后直接空格是无效的，必须使用 &#160;-->
 
+    <string name="title_image">ImageDemo</string>
+    <string name="image_ui">测试 Image</string>
+
     <string name="title_webview">WebViewDemo</string>
     <string name="info_webview">测试WebView</string>
 

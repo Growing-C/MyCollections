@@ -66,6 +66,7 @@ import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
 import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
 import com.cgy.mycollections.utils.SystemUtil;
+import com.growingc.mediaoperator.PickMediaActivity;
 
 import java.util.List;
 
@@ -217,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Demo[] demos = {
+            new Demo(R.string.title_image, R.string.image_ui, false, PickMediaActivity.class),
             new Demo(R.string.title_surface, R.string.surface_ui, false, SurfaceViewDemo.class),
             new Demo(R.string.title_test, R.string.test_ui, true, TestDemo.class),
             new Demo(R.string.title_webview, R.string.info_webview, true, WebViewDemos.class),

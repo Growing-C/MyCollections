@@ -175,6 +175,7 @@ public class ObservableTest {
      * 8.多次emit 的时候如果flatmap里也是create 且里面有onerror，第一个里有多个onnext然后onerror，会导致崩溃
      * 9.只要每个 emitter发送的事件 只有一个就没有8 的问题，不管是onError还是onNext
      * 10.两个含有retry逻辑的observable通过flatmap拼接 retry执行没有问题，按照预期执行了各自的retry逻辑，任何时候dispose都会终止整个流程
+     * 11.想终止retry 直接返回 Observable.error 即可
      */
     public static void testDelay() {
         System.out.println("testDelay  start");
@@ -205,6 +206,7 @@ public class ObservableTest {
                         System.out.println("11111 testDelay ObservableOnSubscribe 222");
 //                        emitter.onNext(4);//flatMap中onerror之后会重试，此onnext会执行但是不会走到flatMap中也不会继续往下，等于无效
 //                emitter.onError(new NullPointerException("wo cuo le !!"));//flatmap中调用了onError此处就不能再调用，不然会崩溃
+                        emitter.onComplete();//加不加onComplete似乎对重试没有影响
                     }
                 }).flatMap(new Function<Integer, ObservableSource<Integer>>() {
                     @Override
@@ -237,6 +239,7 @@ public class ObservableTest {
                                 if (counter1.get() == 8) {
                                     disposableObserver.dispose();
                                 }
+//                                return Observable.error(throwable);//如果此处返回error 则会直接走onError，不会再重试
                                 return Observable.timer(counter1.get(), TimeUnit.SECONDS);
                             }
                         });

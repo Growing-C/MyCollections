@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="@dimen/camera_drawable_width_padding"
+        android:right="@dimen/camera_drawable_width_padding"
+        android:drawable="@drawable/shape_iconbutton_large_electroniceye_roundbox"
+        android:gravity="center"/>
+    <item
+        android:left="@dimen/camera_drawable_width_padding"
+        android:right="@dimen/camera_drawable_width_padding"
+        android:id="@+id/camera_icon"
+        android:drawable="@drawable/vector_ic_mid_monitor"
+        android:gravity="center"/>
+</layer-list>
