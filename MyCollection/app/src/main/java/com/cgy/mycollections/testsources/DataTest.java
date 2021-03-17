@@ -27,7 +27,7 @@ public class DataTest {
         System.out.println("Numeric：" + Numeric.toHexString(Numeric.hexStringToByteArray(hexS)));
 //        CHexConverter：73 B0 50 1E 1A F6 6B E7 70 7A 26 7F 53 D6 E6 A2 EA 75 99 9E A3 84 9D DC 15 FE F2 08 4B AE 61 35 EA 46 AF 7F BA 68 19 D1 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0D E0 B6 B3 A7 64 00 00 5D D7 A2 CD E1 66 36 18 5E A8 D8 DB
 //        Numeric：0x73b0501e1af66be7707a267f53d6e6a2ea75999ea3849ddc15fef2084bae6135ea46af7fba6819d10000000000000000000000000000000000000000000000000de0b6b3a76400005dd7a2cde16636185ea8d8db
-
+        testByteMove();
     }
 
     public static void testJson() {
@@ -55,4 +55,10 @@ public class DataTest {
         }
     }
 
+
+    public static void testByteMove() {
+        System.out.println("value :" + (1 << 19));
+        System.out.println("value result :" + (3656833 & (1 << 19)));
+        System.out.println("value result :" + (3656833 & (1 << 18)));
+    }
 }

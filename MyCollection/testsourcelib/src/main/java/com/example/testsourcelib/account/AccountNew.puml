@@ -1,0 +1,62 @@
+@startuml
+
+
+
+DefaultAccountServiceObserver <- BLAccountServiceWrapper
+LinkAMapWrapper <- AccountOperator
+AccountStore <.. AccountOperator
+AccountStore <.. LinkAMapWrapper
+AccountStore <.. LinkAMapUtils
+LinkAMapWrapper ..> BLAccountServiceWrapper
+AccountOperator ..> BLAccountServiceWrapper
+
+class AccountStore <<(S,#FF7700)Singleton>>{
++ clearCurrentXpAccountInfo()
++ clearLastXpAccountInfo()
++ resetXpAccountInfo()
++ resetCurrentXpAMapInfo()
++ setCurrentXpAccountLoginAMap()
++ setAMapAccountLogout()
++ isCurrentXpLoginAMap()
++ isLastAMapAccountLogin()
+}
+
+class AccountOperator <<(S,#FF7700)Singleton>>{
+-long BL_COOKIE_REFRESH_INTERVAL
+-mLinkAMapWrapper:LinkAMapWrapper
+-CompositeRxAction mOperationsHolder
+-PublishSubject<Boolean> mPublishSubject
+-boolean mIsAccountInitFinished
+-Observer mXPAccountChangeObserver
+-IXPNetworkListener mIXPNetworkListener
++ register()
++ unRegister()
++ registerAMapAccountUnbindObserver(Observer<Boolean> amapAccountUnbindObserver)
++ startAccountInit()
+- createLoginRelatedProcess(String currentSid, String currentOpenId)
+- refreshAMapAccountCookie()
+}
+
+class LinkAMapWrapper extends LinkAMapUtils{
+createAMapQuickLoginObservable()
+createCheckIsAMapObservable()
+createLogoutLastAMapAccountObservable()
+}
+
+class LinkAMapUtils{
++createXpLoginObservable()
++createXpLogoutObservable(String lastSid, String lastOpenId, String openId)
++checkBindAMapStatusFromXP(String sid, String openId)
+#applySchedulers()
+#applyRetry()
+}
+
+class BLAccountServiceWrapper<<(S,#FF7700)Singleton>>{
+-PublishSubject<AccountEvent> mAccountEventPublishSubject
+}
+
+class DefaultAccountServiceObserver{
+-PublishSubject<AccountEvent> mAccountEventPublishSubject
+notify()..
+}
+@enduml

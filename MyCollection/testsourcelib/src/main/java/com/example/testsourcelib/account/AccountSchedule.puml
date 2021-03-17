@@ -1,0 +1,57 @@
+@startuml
+
+boundary InitializerManager
+boundary MainFragment
+boundary XPAccountChangeObserver
+== 注册监听 ==
+InitializerManager -> AccountOperator:register()
+AccountOperator -> AccountObservable:addObserver(mXPAccountChangeObserver)
+AccountOperator -> LinkAMapWrapper:register()
+LinkAMapWrapper -> EventBus:register()
+AccountOperator -> XPNetworkManager:addNetworkListener(mIXPNetworkListener)
+== 发起账号登陆相关内容 ==
+MainFragment -> AccountOperator:startAccountInit
+activate AccountOperator
+XPAccountChangeObserver -> AccountOperator:startAccountInit
+AccountOperator -> LinkAMapWrapper:logoutLastXpAccount
+deactivate AccountOperator
+activate LinkAMapWrapper
+LinkAMapWrapper --> AccountOperator
+deactivate LinkAMapWrapper
+AccountOperator -> LinkAMapWrapper:logoutLastAMapAccount
+activate LinkAMapWrapper
+LinkAMapWrapper --> AccountOperator
+deactivate LinkAMapWrapper
+alt isTempType=false 非临客
+ alt isLoginXp=false 当前小鹏账号未登陆
+ AccountOperator -> LinkAMapWrapper:loginXp
+ activate LinkAMapWrapper
+ LinkAMapWrapper --> AccountOperator
+ deactivate LinkAMapWrapper
+ end alt
+ AccountOperator -> LinkAMapWrapper:checkBindAMapStatusFromXP
+  activate LinkAMapWrapper
+ LinkAMapWrapper --> AccountOperator
+  deactivate LinkAMapWrapper
+ alt isBindAMap=true 小鹏账号绑定了高德账号
+  alt 当前小鹏账号未登陆高德账号
+  AccountOperator -> LinkAMapWrapper:loginAMap
+  activate LinkAMapWrapper
+  LinkAMapWrapper --> AccountOperator
+  deactivate LinkAMapWrapper
+  AccountOperator -> AccountOperator:startSync
+  else
+  AccountOperator -> AccountOperator:refreshAMapAccountCookie
+  AccountOperator -> AccountOperator:startSync
+  end alt
+ else 小鹏账号未绑定高德账号
+ AccountOperator -> LinkAMapWrapper:createCheckIsAMap
+ activate LinkAMapWrapper
+ LinkAMapWrapper --> AccountOperator
+ deactivate LinkAMapWrapper
+ end alt
+
+
+end alt
+
+@enduml
