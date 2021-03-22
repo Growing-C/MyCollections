@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import appframe.utils.L;
+import appframe.utils.SharePreUtil;
 
 /**
  * Description :

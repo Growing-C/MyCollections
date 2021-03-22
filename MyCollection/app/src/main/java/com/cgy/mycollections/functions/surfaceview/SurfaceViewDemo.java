@@ -1,17 +1,13 @@
 package com.cgy.mycollections.functions.surfaceview;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseActivity;
-import com.cgy.mycollections.functions.threadpool.ThreadPoolDemoFragment;
+import com.cgy.mycollections.base.AppBaseActivity;
 
-public class SurfaceViewDemo extends BaseActivity {
+public class SurfaceViewDemo extends AppBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

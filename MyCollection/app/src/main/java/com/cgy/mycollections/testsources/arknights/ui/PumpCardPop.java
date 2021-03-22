@@ -18,13 +18,14 @@ import android.widget.Toast;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.testsources.arknights.ArknightsConstant;
 import appframe.utils.L;
-import com.cgy.mycollections.utils.SharePreUtil;
+
 import com.cgy.mycollections.widgets.pickerview.adapter.NumericWheelAdapter;
 import com.cgy.mycollections.widgets.pickerview.lib.WheelView;
 import com.cgy.mycollections.widgets.pickerview.listener.OnItemSelectedListener;
 
 import java.lang.reflect.Method;
 
+import appframe.utils.SharePreUtil;
 import appframe.utils.ToastCustom;
 
 /**

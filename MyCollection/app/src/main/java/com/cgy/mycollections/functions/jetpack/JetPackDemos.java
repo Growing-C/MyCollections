@@ -1,29 +1,23 @@
 package com.cgy.mycollections.functions.jetpack;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.viewpager.widget.ViewPager;
 
+import com.cgy.mycamera.camerax.CameraXFragment;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseActivity;
-import com.cgy.mycollections.functions.jetpack.camerax.CameraXFragment;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.jetpack.navigation.NavigationFragment;
 import com.cgy.mycollections.functions.jetpack.room.RoomFragment;
 import com.cgy.mycollections.functions.jetpack.workmanager.WorkManagerFragment;
 import com.cgy.mycollections.functions.mediamanager.mediaimageui.SectionsPagerAdapter;
-import com.cgy.mycollections.functions.net.NetRequestDemo;
-import com.cgy.mycollections.functions.net.WifiAPDemo;
-import com.cgy.mycollections.functions.net.WifiP2PDemo;
 import com.google.android.material.tabs.TabLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
-public class JetPackDemos extends BaseActivity {
+public class JetPackDemos extends AppBaseActivity {
 
     @BindView(R.id.tabs)
     TabLayout mTabs;

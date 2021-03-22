@@ -1,7 +1,6 @@
 package com.cgy.mycollections;
 
-import com.cgy.mycollections.utils.SharePreUtil;
-import com.google.android.gms.common.util.SharedPreferencesUtils;
+import appframe.utils.SharePreUtil;
 
 /**
  * Description :配置相关

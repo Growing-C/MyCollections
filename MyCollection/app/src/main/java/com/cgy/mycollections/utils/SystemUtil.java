@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import appframe.utils.SharePreUtil;
+
 /**
  * android系统工具类
  */

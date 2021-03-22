@@ -4,17 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,19 +22,16 @@ import android.widget.Toast;
 
 import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
 import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
-import com.cgy.mycollections.functions.ui.wheel.WheelDemo;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.utils.CommonUtils;
 import com.cgy.mycollections.utils.FileSortUtils;
 import com.cgy.mycollections.utils.FileUtil;
 import com.cgy.mycollections.utils.image.ImageHelper;
-import com.cgy.mycollections.utils.image.ImageLoader;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
-import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.widgets.pickerview.utils.PickerViewAnimateUtil;
 
 import appframe.network.retrofit.callback.ApiCallback;
@@ -46,7 +40,6 @@ import appframe.utils.L;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import appframe.permission.PermissionDenied;
@@ -56,12 +49,11 @@ import appframe.permission.PermissionManager;
 import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.functions.Consumer;
 
 /**
  * 文件操作 读取等
  */
-public class FileDemo extends BaseActivity {
+public class FileDemo extends AppBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.file_list)

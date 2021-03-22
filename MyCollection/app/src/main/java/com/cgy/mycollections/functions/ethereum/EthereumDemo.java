@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ethereum.contract.ContractDto;
 import appframe.utils.L;
-import com.cgy.mycollections.utils.SharePreUtil;
 
 import org.web3j.crypto.Bip39Wallet;
 import org.web3j.crypto.Credentials;
@@ -19,6 +18,7 @@ import org.web3j.protocol.core.methods.response.EthAccounts;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import appframe.utils.SharePreUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.observers.DisposableObserver;

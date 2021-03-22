@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -22,12 +19,9 @@ import com.cgy.mycollections.R;
 import com.cgy.mycollections.testsources.arknights.ArknightsConstant;
 
 import appframe.utils.L;
-
-import com.cgy.mycollections.utils.SharePreUtil;
+import appframe.utils.SharePreUtil;
 
 import java.lang.reflect.Method;
-
-import appframe.utils.DisplayHelperUtils;
 
 /**
  * Description :

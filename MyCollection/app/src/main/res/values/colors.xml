@@ -38,11 +38,6 @@
     <color name="textlight">#546e7a</color>
 
 
-    <!--    drawable中的verctor使用-->
-    <color name="icActive">#FFFFFFFF</color>
-    <color name="icFocused">#DDFFFFFF</color>
-    <color name="icPressed">#AAFFFFFF</color>
-
     <color name="black_overlay">#66000000</color>
 
     <color name="focused_color">#ff871e</color>

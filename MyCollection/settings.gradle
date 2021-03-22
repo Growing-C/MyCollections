@@ -1,3 +1,4 @@
+include ':mycamera'
 println '------gradle lifecycle setting.gradle execute------'
 
 include ':mylibrary'

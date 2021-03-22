@@ -15,7 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
 import appframe.utils.L;
 import com.cgy.mycollections.utils.SystemUtil;
@@ -33,7 +33,7 @@ import butterknife.OnClick;
  * 配网解决方案
  * 包含权限检查等
  */
-public class NetConfigDemo extends BaseActivity {
+public class NetConfigDemo extends AppBaseActivity {
     @BindView(R.id.wifi_ssid)
     TextInputEditText mSsidV;
     @BindView(R.id.wifi_password)

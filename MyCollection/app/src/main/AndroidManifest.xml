@@ -44,8 +44,8 @@
         <activity-alias
             android:name="MainActivityEntry1"
             android:enabled="false"
-            android:label="Settings"
             android:icon="@mipmap/setting"
+            android:label="Settings"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -61,8 +61,8 @@
         <activity-alias
             android:name="MainActivityEntry2"
             android:enabled="false"
-            android:label="Wechat"
             android:icon="@mipmap/wechat"
+            android:label="Wechat"
             android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -118,22 +118,6 @@
         <activity android:name=".functions.jetpack.JetPackDemos" />
         <activity android:name=".testsources.arknights.ui.ArknightsDemo" />
         <activity android:name=".functions.ui.wheel.WheelDemo" />
-        <activity android:name=".functions.jetpack.camerax.CameraXDemo">
-
-            <!-- Register as a system camera app -->
-            <intent-filter>
-                <action android:name="android.media.action.IMAGE_CAPTURE" />
-                <action android:name="android.media.action.STILL_IMAGE_CAMERA" />
-                <action android:name="android.media.action.VIDEO_CAMERA" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <!-- Declare notch support -->
-            <meta-data
-                android:name="android.notch_support"
-                android:value="true" />
-        </activity>
         <activity android:name=".functions.ui.scale.ScaleViewDemo" />
         <activity android:name=".functions.chart.ChartDemo" />
         <activity android:name=".testsources.TestDemo" />
@@ -143,6 +127,7 @@
             android:theme="@style/ActivityPopStyle" />
         <activity android:name=".functions.ui.touch.TouchDemo" />
         <activity android:name=".functions.surfaceview.SurfaceViewDemo" />
+        <activity android:name=".functions.aidl.AidlDemo" />
         <activity
             android:name=".functions.surfaceview.GameDemo"
             android:screenOrientation="landscape" />
@@ -209,9 +194,6 @@
     </application>
 
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- wifi p2p所需权限 -->
@@ -234,6 +216,5 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Declare features -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

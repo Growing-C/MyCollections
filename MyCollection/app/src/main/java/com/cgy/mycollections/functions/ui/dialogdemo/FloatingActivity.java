@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.widgets.RoundLinearLayout;
 
 import butterknife.BindView;
@@ -21,7 +21,7 @@ import butterknife.OnClick;
  * 修改日期: 2020/9/1 16:09
  * 类说明：悬浮框样式的activity
  */
-public class FloatingActivity extends BaseActivity {
+public class FloatingActivity extends AppBaseActivity {
     @BindView(R.id.floating_content)
     RoundLinearLayout mContent;
 

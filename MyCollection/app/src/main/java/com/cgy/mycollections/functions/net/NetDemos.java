@@ -10,7 +10,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
 
 import appframe.network.retrofit.network.NetworkMonitor;
@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class NetDemos extends BaseActivity {
+public class NetDemos extends AppBaseActivity {
     NetWorkChangeBroadcastReceiver receiver;
 
     @Override

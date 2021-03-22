@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.net.wifip2p.DirectActionListener;
 import com.cgy.mycollections.functions.net.wifip2p.DirectBroadcastReceiver;
@@ -46,7 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class WifiP2PDemo extends BaseActivity {
+public class WifiP2PDemo extends AppBaseActivity {
     @BindView(R.id.p2p_device_list)
     RecyclerView mP2pDeviceListV;
     @BindView(R.id.device_info)

@@ -30,7 +30,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdapter;
 import com.cgy.mycollections.functions.net.wifiap.WifiAdmin;
@@ -50,7 +50,7 @@ import butterknife.OnClick;
 /**
  * wifi热点管理（并且通过热点通信）
  */
-public class WifiAPDemo extends BaseActivity {
+public class WifiAPDemo extends AppBaseActivity {
     @BindView(R.id.hotpot_toggle)
     ToggleButton mHotpotToggle;
     @BindView(R.id.wifi_ssid)

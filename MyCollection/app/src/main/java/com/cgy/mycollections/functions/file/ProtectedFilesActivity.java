@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
 import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
@@ -48,7 +48,7 @@ import io.reactivex.observers.DisposableObserver;
 /**
  * 受保护的文件
  */
-public class ProtectedFilesActivity extends BaseActivity {
+public class ProtectedFilesActivity extends AppBaseActivity {
     @BindView(R.id.protected_files)
     SwipeRecyclerView mProtectedFileListV;
 

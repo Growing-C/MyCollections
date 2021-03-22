@@ -17,7 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.ble.client.BLEClient;
 import com.cgy.mycollections.functions.ble.client.DataCallback;
@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class BleDemo extends BaseActivity {
+public class BleDemo extends AppBaseActivity {
     @BindView(R.id.type_group)
     RadioGroup mTypeGroup;
 

@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.functions.file.FileInfo;
 import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
@@ -41,7 +41,7 @@ import io.reactivex.observers.DisposableObserver;
  * 隐藏图片，获取最近的媒体文件等功能
  * https://www.cnblogs.com/imouto/p/how-do-apps-interact-with-media-storage-service.html
  */
-public class MediaManagerDemo extends BaseActivity {
+public class MediaManagerDemo extends AppBaseActivity {
     private final int REQUEST_FILE = 2;
 
     @BindView(R.id.log)

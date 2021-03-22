@@ -1,12 +1,11 @@
 package com.cgy.mycollections.functions.surfaceview;
 
 import android.os.Bundle;
-import android.view.SurfaceView;
 
 import androidx.annotation.Nullable;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 
 import appframe.utils.L;
 import butterknife.BindView;
@@ -17,7 +16,7 @@ import butterknife.ButterKnife;
  * Author :cgy
  * Date :2020/10/26
  */
-public class GameDemo extends BaseActivity {
+public class GameDemo extends AppBaseActivity {
     @BindView(R.id.game_surface)
     GameSurface mGameSurface;
 

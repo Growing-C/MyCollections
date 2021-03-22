@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 
-import com.cgy.mycollections.base.BaseActivity;
+import com.cgy.mycollections.base.AppBaseActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,7 +19,7 @@ import butterknife.OnClick;
  * 目前仅切换了app名和图标
  * TODO：  待开发不同模式内容，如好孩子模式等，
  */
-public class SwitchAppAliaActivity extends BaseActivity {
+public class SwitchAppAliaActivity extends AppBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
