@@ -108,3 +108,18 @@ adb shell pm clear com.xiaopeng.montecarlo 清空应用程序数据
 
 
 adb shell am start -n com.xiaopeng.montecarlo/com.xiaopeng.montecarlo.MainActivity  启动
+
+## adb获取进程信息
+linux下  
+```
+adb shell ps | grep zygote
+```
+
+windows下
+```
+adb shell ps | findstr zygote
+adb shell ps | findstr com.xxx
+```
+
+如何分辨一个app是64位还是 32位 可以通过 获取zygote 进程id 然后查看对应app包名，使用的是哪个zygote
+系统有两个zygote，一个是 zygote  一个是 zygote64
