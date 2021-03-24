@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
@@ -42,6 +41,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.accessibility.AccessibilityDemo;
 import com.cgy.mycollections.functions.anim.AnimDemo;
 import com.cgy.mycollections.functions.ble.BleDemo;
@@ -82,7 +82,7 @@ import static com.cgy.mycollections.FloatingService.KEY_SHOW_FLOATING;
 //import androidx.appcompat.widget.RecyclerView;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recycler_view)
@@ -145,7 +145,11 @@ public class MainActivity extends AppCompatActivity {
         mainItemAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(new Intent(MainActivity.this, demos[position].c));
+                if (demos[position].getDemoClass() == null) {
+                    showToast(demos[position].getClassPath() + " not found!");
+                } else {
+                    startActivity(new Intent(MainActivity.this, demos[position].getDemoClass()));
+                }
             }
         });
         recyclerView.setAdapter(mainItemAdapter);

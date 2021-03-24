@@ -53,7 +53,7 @@ public class WebViewDemos extends AppCompatActivity {
         mainItemAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(new Intent(WebViewDemos.this, uiDemos[position].c));
+                startActivity(new Intent(WebViewDemos.this, uiDemos[position].getDemoClass()));
             }
         });
         recyclerView.setAdapter(mainItemAdapter);

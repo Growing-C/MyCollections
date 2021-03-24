@@ -16,7 +16,14 @@ public class TestMain {
 //        testDirectSetOrAdd();
 //        getMaxNotRepeatStringLenInString("qwertyuiopqqasdfghjklzaazxcvbnmlkjzz");
 //        testThreadParams();
-        testPoolBytes();
+//        testPoolBytes();
+
+        int a = 0x04 | 0x08;
+        int con = 64;
+        con |= 0x100;
+//        con ^= 0x100;
+//        con = con | a;
+        System.out.println("iiiii:" + con);
     }
 
     /**

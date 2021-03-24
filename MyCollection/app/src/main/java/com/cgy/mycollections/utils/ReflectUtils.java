@@ -2,7 +2,9 @@ package com.cgy.mycollections.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import java.lang.reflect.Field;
 
@@ -64,5 +66,24 @@ public class ReflectUtils {
         Resources resources = context.getResources();
         String packageName = context.getPackageName();
         return resources.getIdentifier(name, "string", packageName);
+    }
+
+    /**
+     * 根据名字找到对应的fragment并创建实例
+     *
+     * @param fragmentPath 路径名 如：
+     * @return Fragment实例
+     */
+    public static Fragment getFragmentByName(String fragmentPath) {
+        try {
+            Class<?> fragment = Class.forName(fragmentPath);
+            Object fragmentInstance = fragment.newInstance();
+            if (fragmentInstance instanceof Fragment)
+                return (Fragment) fragmentInstance;
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

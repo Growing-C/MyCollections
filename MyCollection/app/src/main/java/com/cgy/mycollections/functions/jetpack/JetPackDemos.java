@@ -2,15 +2,16 @@ package com.cgy.mycollections.functions.jetpack;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.cgy.mycamera.camerax.CameraXFragment;
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.jetpack.navigation.NavigationFragment;
 import com.cgy.mycollections.functions.jetpack.room.RoomFragment;
 import com.cgy.mycollections.functions.jetpack.workmanager.WorkManagerFragment;
 import com.cgy.mycollections.functions.mediamanager.mediaimageui.SectionsPagerAdapter;
+import com.cgy.mycollections.utils.ReflectUtils;
 import com.google.android.material.tabs.TabLayout;
 
 import butterknife.BindView;
@@ -39,7 +40,11 @@ public class JetPackDemos extends AppBaseActivity {
         sectionsPagerAdapter.addFragment("WorkManager", WorkManagerFragment.newInstance());
         sectionsPagerAdapter.addFragment("Room", RoomFragment.newInstance());
         sectionsPagerAdapter.addFragment("Navigation", NavigationFragment.newInstance());
-        sectionsPagerAdapter.addFragment("CameraX", CameraXFragment.newInstance());
+//        sectionsPagerAdapter.addFragment("CameraX", CameraXFragment.newInstance());
+        Fragment cameraXFragment = ReflectUtils.getFragmentByName("com.cgy.mycamera.camerax.CameraXFragment");
+        if (cameraXFragment != null) {
+            sectionsPagerAdapter.addFragment("CameraX", ReflectUtils.getFragmentByName("com.cgy.mycamera.camerax.CameraXFragment"));
+        }
         mTabPager.setAdapter(sectionsPagerAdapter);
         mTabs.setupWithViewPager(mTabPager);
 

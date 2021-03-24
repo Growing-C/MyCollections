@@ -8,19 +8,19 @@ afterEvaluate { project ->
     println "gradle lifecycle app beforeEvaluate: ${project.name} --in--"
 }
 
-class GreetingPluginExtension{
+class GreetingPluginExtension {
     String message = "Hello from GreetingPlugin"
 }
 
 
-class GreetingPlugin implements Plugin<Project>{
+class GreetingPlugin implements Plugin<Project> {
 
     @Override
-    void apply(Project project){
+    void apply(Project project) {
 
-        def extension  = project.extensions.create('greeting',GreetingPluginExtension)
+        def extension = project.extensions.create('greeting', GreetingPluginExtension)
 
-        project.task('hello'){
+        project.task('hello') {
             doLast {
                 println extension.message
             }
@@ -158,6 +158,7 @@ dependencies {
     implementation project(':mylibrary')
     implementation project(':mediaoperator')
     implementation project(':mycamera')
+    implementation project(':myaidl')
 
     //使用kotlin注解 的项目 必须用 kapt 不能用 annotationProcessor
 //   如果你有其他的注解处理器，它们都必须全部被从 annotationProcessor 转换为 kapt
