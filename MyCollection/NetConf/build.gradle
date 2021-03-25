@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
 
+def config = rootProject.extensions.getByName("ext")
 android {
-    compileSdkVersion 21
+    compileSdkVersion config["compile_sdk"]
     defaultConfig {
         applicationId "com.example.netconfig"
-        minSdkVersion 21
-        targetSdkVersion 21
+        minSdkVersion config["min_sdk"]
+        targetSdkVersion config["target_sdk"]
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

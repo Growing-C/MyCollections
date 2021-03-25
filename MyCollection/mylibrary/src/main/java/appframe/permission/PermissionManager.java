@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -96,7 +97,7 @@ public class PermissionManager {
     public static void requestExternalPermission(Object object, String rationale) {
         rationaleMap.put(REQUEST_EXTERNAL_PERMISSION, rationale);
 //        PermissionManager.sRationale = rationale;
-        doRequestPermissions(object, REQUEST_EXTERNAL_PERMISSION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+        doRequestPermissions(object, REQUEST_EXTERNAL_PERMISSION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     /**
@@ -176,10 +177,11 @@ public class PermissionManager {
         }
         List<String> deniedPermissions = PermissionUtils.findDeniedPermissions(PermissionUtils.getActivity(object), permissions);
 
-        System.out.println("deniedPermissions:"+deniedPermissions.size());
+        System.out.println("deniedPermissions:" + deniedPermissions.size());
         if (deniedPermissions.size() > 0) {
             if (object instanceof Activity) {
-                ((Activity) object).requestPermissions(deniedPermissions.toArray(new String[deniedPermissions.size()]), requestCode);
+                ActivityCompat.requestPermissions(((Activity) object), deniedPermissions.toArray(new String[deniedPermissions.size()]), requestCode);
+//                ((Activity) object).requestPermissions(deniedPermissions.toArray(new String[deniedPermissions.size()]), requestCode);
             } else if (object instanceof Fragment) {
                 ((Fragment) object).requestPermissions(deniedPermissions.toArray(new String[deniedPermissions.size()]), requestCode);
             } else {

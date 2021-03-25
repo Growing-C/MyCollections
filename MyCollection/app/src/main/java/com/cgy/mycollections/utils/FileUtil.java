@@ -10,17 +10,13 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-
-import androidx.annotation.NonNull;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+
 import com.cgy.mycollections.functions.mediamanager.MediaHelper;
-
-import appframe.utils.L;
-
 import com.cgy.mycollections.utils.image.ImageHelper;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
@@ -49,6 +45,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import appframe.utils.L;
 
 /**
  * 文件操作工具 可以创建和删除文件等
@@ -150,8 +148,12 @@ public class FileUtil {
         if (file.isDirectory()) {
             L.e("listFile，这是文件夹，路径为：" + file.getPath());
             File[] files = file.listFiles();
-            for (int i = 0, len = files.length; i < len; i++) {
-                L.e("路径" + files[i].getPath());
+            if (files == null) {
+                L.e("listFile，该文件夹子文件为空：" + file.getPath());
+                return;
+            }
+            for (File value : files) {
+                L.e("路径" + value.getPath());
             }
         } else {
             L.e("listFile，这是文件，路径为：" + file.getPath());

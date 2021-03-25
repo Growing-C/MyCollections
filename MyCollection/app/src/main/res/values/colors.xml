@@ -46,4 +46,8 @@
     <color name="main_item_title_tx_color">@android:color/black</color>
     <color name="main_item_des_tx_color">@android:color/darker_gray</color>
 
+    <!--    drawable中的verctor使用-->
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
 </resources>

@@ -164,6 +164,7 @@ public class MainActivity extends AppBaseActivity {
         getTaskInfo();
 
         L.d("ccc", "设备是几核的额？" + SystemUtil.getNumberOfCPUCores());
+        L.d("ccc", "VERSION.SDK_INT：" + Build.VERSION.SDK_INT);
         SystemTimeChangeBroadcastReceiver.registerSystemTimeChangeReceiver(this);
 
     }

@@ -4,13 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-//import androidx.appcompat.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,6 +13,11 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cgy.mycollections.Config;
 import com.cgy.mycollections.R;
@@ -34,18 +33,17 @@ import com.cgy.mycollections.utils.image.ImageHelper;
 import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
 import com.cgy.mycollections.widgets.pickerview.utils.PickerViewAnimateUtil;
 
-import appframe.network.retrofit.callback.ApiCallback;
-import appframe.utils.L;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import appframe.network.retrofit.callback.ApiCallback;
 import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
+import appframe.utils.L;
 import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,11 +67,7 @@ public class FileDemo extends AppBaseActivity {
 
     List<FileInfo> mFileList = new ArrayList<>();
 
-//    File mRootDir;
-//    File mCurrentDir;
-
     String mFileOperateType;
-//   List< FileInfo> mSelectedFile;
 
     FileInfo targetFile = null;
     SortInfo mSortInfo;//排序
@@ -160,7 +154,6 @@ public class FileDemo extends AppBaseActivity {
 //        mRootDir = Environment.getExternalStorageDirectory();
 //        mCurrentDir = mRootDir;
         mBottomMenuHolderV.setVisibility(View.GONE);
-
     }
 
     /**
@@ -370,6 +363,18 @@ public class FileDemo extends AppBaseActivity {
     public void externalPermissionGranted() {
         L.i("externalPermissionGranted");
         getDataAfterPermissionGranted();
+
+//        testFiles();
+
+        //不知道为什么 以下api 都显示红的，即使点进去方法都有
+        //android 11 管理所有文件需要权限，可以将targetSDk降低来绕过
+//        https://developer.android.com/training/data-storage/manage-all-files
+//        if (Environment.isExternalStorageManager()) {
+//
+//        }
+//        Intent intent = new Intent("android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION");
+
+//        startActivity(intent);
     }
 
     @PermissionDenied(requestCode = PermissionManager.REQUEST_EXTERNAL_PERMISSION)
@@ -448,4 +453,68 @@ public class FileDemo extends AppBaseActivity {
         return true;
     }
 
+
+    //--------------------测试-----------------------------
+    private void testFiles() {
+//    <!--    files-path	Context.getFilesDir() /data/user/0/com.cgy.mycollections/files-->
+//    <!--    cache-path	Context.getCacheDir() /data/user/0/com.cgy.mycollections/cache-->
+//    <!--    external-path	Environment.getExternalStorageDirectory() /storage/emulated/0-->
+//    <!--    external-files-path	Context.getExternalFilesDir(null) /storage/emulated/0/Android/data/com.cgy.mycollections/files-->
+//    <!--    external-cache-path	Context.getExternalCacheDir() /storage/emulated/0/Android/data/com.cgy.mycollections/cache-->
+
+        File filesDir = getFilesDir();
+        File cachesDir = getCacheDir();
+        File externalDir = Environment.getExternalStorageDirectory();
+        File externalFilesDir = getExternalFilesDir(null);
+        File externalCacheDir = getExternalCacheDir();
+        L.i("teta", filesDir.exists() + "---filesDir:  " + filesDir.getAbsolutePath());
+        L.i("teta", cachesDir.exists() + "---cachesDir:  " + cachesDir.getAbsolutePath());
+        L.i("teta", externalDir.exists() + "---externalDir:  " + externalDir.getAbsolutePath());
+        L.i("teta", externalFilesDir.exists() + "---externalFilesDir:  " + externalFilesDir.getAbsolutePath());
+        L.i("teta", externalCacheDir.exists() + "---externalCacheDir:  " + externalCacheDir.getAbsolutePath());
+        File rootDir = Environment.getRootDirectory();
+        L.i("teta", rootDir.exists() + "---rootDir:  " + rootDir.getAbsolutePath());
+        L.i("teta", "---mounted:  " + (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())));
+        getPermission(externalDir);
+//        FileUtil.listFile(externalDir);
+//        if (externalDir.isDirectory()) {
+//            File[] childFiles = new File("/storage").listFiles();
+//            for (File child :
+//                    childFiles) {
+//                FileUtil.listFile(child);
+//            }
+//        }
+    }
+
+    private void getPermission(File destFile) {
+        //获取权限
+        // android 11 external Sd卡上的其他文件都没有读写权限，所以listFiles 找不到，可以通过降低targetSdk版本来暂时解决，或者适配 MANAGE_EXTERNAL_STORAGE 权限
+        // android 10 可以通过在manifest 中加上     android:requestLegacyExternalStorage="true" 来暂时禁用分区存储（注意compile sdk 和targetSdk都要是29或以下）
+        L.i(destFile.getPath() + "  canRead:" + destFile.canRead());
+        L.i(destFile.getPath() + "  canWrite:" + destFile.canWrite());
+        if (!destFile.canRead() || !destFile.canWrite()) {
+            try {
+                /* Missing read/write permission, trying to chmod the file */
+                Process su;
+                su = Runtime.getRuntime().exec("su");
+                String cmd = "chmod 666 /dev/video0\nexit\n";
+                su.getOutputStream().write(cmd.getBytes());
+//                if ((su.waitFor() != 0) || !destFile.canRead()
+//                        || !destFile.canWrite()) {
+//                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+//        try {
+//            String command = "chmod 777 " + destFile.getAbsolutePath();
+//            L.i("zyl", "command = " + command);
+//            Runtime runtime = Runtime.getRuntime();
+//
+//            Process proc = runtime.exec(command);
+//        } catch (IOException e) {
+//            L.i("zyl", "chmod fail!!!!");
+//            e.printStackTrace();
+//        }
+    }
 }
