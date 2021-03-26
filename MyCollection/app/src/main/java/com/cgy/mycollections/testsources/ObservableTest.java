@@ -1,6 +1,8 @@
 package com.cgy.mycollections.testsources;
 
 
+import android.util.Log;
+
 import com.cgy.mycollections.utils.RxUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +39,68 @@ public class ObservableTest {
     public static void testZip() {
 
 
+    }
+
+    /**
+     * 测试Debounce
+     * 一段时间之内的事件只传递一个
+     * 如下例子两个事件间隔150 ms  但是debounce设置的200 ，所以只会传递第二个事件，第一个会被抛弃
+     */
+    public static void testDebounce() {
+        final PublishSubject<String> publishSubject = PublishSubject.create();
+        publishSubject.debounce(200, TimeUnit.MILLISECONDS).subscribe(new DisposableObserver<String>() {
+            @Override
+            public void onNext(@NonNull String o) {
+                Log.i("fdsf", "onNext:" + o);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        Observable.timer(100, TimeUnit.MILLISECONDS).subscribe(new DisposableObserver<Long>() {
+            @Override
+            public void onNext(@NonNull Long aLong) {
+
+                publishSubject.onNext("111:" + aLong);
+                Log.i("fdsf", "111:" + aLong);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+        });
+        Observable.timer(250, TimeUnit.MILLISECONDS).subscribe(new DisposableObserver<Long>() {
+            @Override
+            public void onNext(@NonNull Long aLong) {
+
+                publishSubject.onNext("222:" + aLong);
+                Log.i("fdsf", "222:" + aLong);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     /**

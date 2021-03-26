@@ -144,10 +144,8 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.dummy_button:
-                SystemUiUtils.showSystemUi(mContentView);
                 break;
             case R.id.blur:
-                SystemUiUtils.blurSystemUi(mContentView);
                 break;
             case R.id.hide:
 //                SystemUiUtils.hideSystemUi(mContentView);

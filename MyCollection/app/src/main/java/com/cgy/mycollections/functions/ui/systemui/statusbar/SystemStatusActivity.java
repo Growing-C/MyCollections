@@ -4,14 +4,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.cgy.mycollections.R;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -52,7 +51,7 @@ public class SystemStatusActivity extends AppCompatActivity {
         //直接用其他的view 可以  不知道为什么 toolbar沉浸式一直有问题
         setSupportActionBar(mToolbar);
 //        NOTICE:需要沉浸的view要搭配 android:fitsSystemWindows="true"来使用，不然  view的内容会占用statusBar的位置，导致重叠
-        //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
+        //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏 和    SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());等效
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//4.4-6.0的状态栏会是  白字，看不到字
 //            以下功能也可以通过在appTheme中添加<item name="android:windowIsTranslucent">true</item> 来实现
 
@@ -62,10 +61,12 @@ public class SystemStatusActivity extends AppCompatActivity {
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
 
-        //6.0以上的 亮色状态栏模式，可以把状态栏字体变成 黑字
+        //6.0以上的 亮色状态栏模式，可以把状态栏字体变成 黑字 (SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN 没啥用)和  SystemUiUtils.setStatusLight(mContentView);等效
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
+
 //        1. 在 Android 6.0 以前，Android 没有方法可以实现「状态栏黑色字符」效果，因此 MIUI 自己做了一个接口；
 //        2. 在 Android 6.0 及以上版本，Android 提供了标准的方法实现「状态栏黑色字符」效果，但这个方法和 MIUI 的方法产生了冲突，所以当开发者使用 Android 标准方法时，没有出现预期的效果，这给很多开发者都造成了困扰，尤其是海外开发者
     }

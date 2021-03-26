@@ -1,16 +1,11 @@
 package com.cgy.mycollections.testsources;
 
-import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.SystemPageUtils;
@@ -33,141 +28,36 @@ public class TestDemo extends AppCompatActivity {
         ButterKnife.bind(this);//butterKnife和dataBinding并不冲突
 //        setSupportActionBar(toolbar);
 
-        //全屏，设置了这个之后调用changeFullScreen 不会抖动
-//        View decorView = getWindow().getDecorView();
-//        int option = View.SYSTEM_UI_FLAG_FULLSCREEN;
-//        decorView.setSystemUiVisibility(option);
-
-
-        View decorView = getWindow().getDecorView();
-        //透明状态栏
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-//            decorView.setSystemUiVisibility(option);
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//        }
-
-        //全屏且隐藏导航栏,不过屏幕碰一下就显示了status和导航栏
-//        int option = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                | View.SYSTEM_UI_FLAG_FULLSCREEN;
-//        decorView.setSystemUiVisibility(option);
+        //设置view大小扩展到navigationBar底下，这样隐藏导航栏时显示的view的大小就不会变化
+//        SystemUiUtils.setScreenUnderNavBar(mContentView);
 
         //view占据全屏，但是依然能看到status 和导航栏，只是背景透明
-//        这里使用了SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION，表示会让应用的主体内容占用系统导航栏的空间，然后又调用了setNavigationBarColor()方法将导航栏设置成透明色。
-//        int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-//        decorView.setSystemUiVisibility(option);
 //        getWindow().setNavigationBarColor(Color.TRANSPARENT);
 //        getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-    }
+        //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
+        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
 
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);//真正的沉浸式,隐藏status和navigation 可以下滑拉出但是一段时间后自动隐藏
-        L.e("test", "onWindowFocusChanged hasFocus:" + hasFocus);
-        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
+        //6.0以上的 亮色状态栏模式，可以把状态栏字体变成 黑字
+        SystemUiUtils.setStatusLight(mContentView);
     }
 
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.navigate:
-                SystemPageUtils.openLocationSettings(this);
-                break;
-            case R.id.fullscreen:
-//                SystemUiUtils.showSystemUi(mContentView);
-//                hideStatus();
-//                toggle(true);
-                changeFullScreen(true);
-                break;
-            case R.id.quit_full:
-//                SystemUiUtils.blurSystemUi(mContentView);
-//                hideNavigation();
-//                toggle(false);
-                changeFullScreen(false);
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.navigate) {
+            SystemPageUtils.openLocationSettings(this);
+        } else if (v.getId() == R.id.quit_full) {
+            SystemUiUtils.showStatusAndNavBarExitImmersive(mContentView);
+        } else if (v.getId() == R.id.lean_back) {
+            SystemUiUtils.enableLeanbackMode(mContentView);
+        } else if (v.getId() == R.id.immerse) {
+            SystemUiUtils.enableImmersiveMode(mContentView);
+        } else if (v.getId() == R.id.sticky_immerse) {
+            SystemUiUtils.enableImmersiveStickyMode(mContentView);
+        } else if (v.getId() == R.id.hide_status) {
+            SystemUiUtils.hideStatusBarOnly(mContentView);
+        } else if (v.getId() == R.id.hide_navigation) {//快速点击时系统会出bug， 显示了透明的导航栏
+            SystemUiUtils.hideNavigationBarOnly(mContentView);
         }
-    }
-
-    void hideStatus() {
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
-
-    void hideNavigation() {
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
-
-    private void changeFullScreen(boolean isFullScreen) {
-        if (!isFullScreen) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN); //非全屏
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN); //清除非全屏的flag
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //设置全屏的flag
-        }
-
-//        if (isFullScreen) {
-//            WindowManager.LayoutParams params = getWindow().getAttributes();
-//            params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-//            getWindow().setAttributes(params);
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//        } else {
-//            WindowManager.LayoutParams params = getWindow().getAttributes();
-//            params.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//            getWindow().setAttributes(params);
-//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//        }
-    }
-
-    /**
-     * 依然会闪一下
-     *
-     * @param mVisible
-     */
-    private void toggle(boolean mVisible) {
-        if (mVisible) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LOW_PROFILE
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        } else {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            );
-        }
-    }
-
-    void setNavVisibility(boolean visible) {
-        int newVis = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE;
-        if (!visible) {
-            newVis |= View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
-        }
-        // If we are now visible, schedule a timer for us to go invisible.
-        // Set the new desired visibility.
-        mContentView.setSystemUiVisibility(newVis);
     }
 
     @Override
@@ -177,4 +67,12 @@ public class TestDemo extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);//真正的沉浸式,隐藏status和navigation 可以下滑拉出但是一段时间后自动隐藏
+        L.e("test", "onWindowFocusChanged hasFocus:" + hasFocus);
+        if (hasFocus) {
+//            hideSystemUI();
+        }
+    }
 }
