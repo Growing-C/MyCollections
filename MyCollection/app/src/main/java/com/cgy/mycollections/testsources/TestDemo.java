@@ -1,6 +1,5 @@
 package com.cgy.mycollections.testsources;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -29,17 +28,34 @@ public class TestDemo extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 
         //设置view大小扩展到navigationBar底下，这样隐藏导航栏时显示的view的大小就不会变化
-//        SystemUiUtils.setScreenUnderNavBar(mContentView);
+        SystemUiUtils.setScreenUnderNavBar(mContentView);
 
         //view占据全屏，但是依然能看到status 和导航栏，只是背景透明
 //        getWindow().setNavigationBarColor(Color.TRANSPARENT);
 //        getWindow().setStatusBarColor(Color.TRANSPARENT);
 
         //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
-        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
+//        SystemUiUtils.setWindowTranslucentStatusAndNavigation(getWindow());
 
         //6.0以上的 亮色状态栏模式，可以把状态栏字体变成 黑字
         SystemUiUtils.setStatusLight(mContentView);
+
+        getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                // Note that system bars will only be "visible" if none of the
+                // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    // TODO: The system bars are visible. Make any desired
+                    // adjustments to your UI, such as showing the action bar or
+                    // other navigational controls.
+                } else {
+                    // TODO: The system bars are NOT visible. Make any desired
+                    // adjustments to your UI, such as hiding the action bar or
+                    // other navigational controls.
+                }
+            }
+        });
     }
 
     public void onClick(View v) {
@@ -57,6 +73,11 @@ public class TestDemo extends AppCompatActivity {
             SystemUiUtils.hideStatusBarOnly(mContentView);
         } else if (v.getId() == R.id.hide_navigation) {//快速点击时系统会出bug， 显示了透明的导航栏
             SystemUiUtils.hideNavigationBarOnly(mContentView);
+        } else if (v.getId() == R.id.window_immerse) {
+            //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
+            SystemUiUtils.setFullScreen(getWindow());
+        } else if (v.getId() == R.id.clear_window_immerse) {
+            SystemUiUtils.quitFullScreen(getWindow());
         }
     }
 

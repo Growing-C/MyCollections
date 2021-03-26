@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
  * Date :2020/1/21
  */
 public class SystemUiUtils {
-//    View.SYSTEM_UI_FLAG_FULLSCREEN, //全屏，状态栏和导航栏不显示
+//    View.SYSTEM_UI_FLAG_FULLSCREEN, //全屏，状态栏和导航栏不显示，但是这个会导致状态栏变成一个黑条
 //    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION, //隐藏导航栏
 //    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN, //全屏，状态栏会盖在布局上
 //    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION, 隐藏导航栏
@@ -28,8 +28,8 @@ public class SystemUiUtils {
      * 获取statusBar高度
      * 需要注意 在activity#onCreate中调用结果是0，因为此时view还没有测量绘制
      *
-     * @param window
-     * @return
+     * @param window window
+     * @return 高度
      */
     public static int getStatusBarHeight(@NonNull Window window) {
         Rect rect = new Rect();
@@ -49,8 +49,8 @@ public class SystemUiUtils {
      * 获取titleBar高度
      * 需要注意 在activity#onCreate中调用结果是0，因为此时view还没有测量绘制
      *
-     * @param window
-     * @return
+     * @param window window
+     * @return 高度
      */
     public static int getTitleBarHeight(@NonNull Window window) {
         Rect rect = new Rect();
@@ -77,30 +77,63 @@ public class SystemUiUtils {
      * 不过此时statusBar字体图标都是白色，看情况配合setStatusLight使用。
      * 设置这个的时候会自动全屏，此时搭配fitsSystemWindows=true来使用可以实现沉浸式
      *
-     * @param window
+     * @param window window
+     * @apiNote 这个方式状态栏只是背景透明了，但是文字图标还看得到，但是又不能用View.SYSTEM_UI_FLAG_FULLSCREEN 因为会导致出现黑边。。咋整？
      */
-    public static void setWindowTranslucentStatusAndNavigation(Window window) {
+    public static void setFullScreen(@NonNull Window window) {
         //        NOTICE:需要沉浸的view要搭配 android:fitsSystemWindows="true"来使用，不然  view的内容会占用statusBar的位置，导致重叠
         //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//4.4-6.0的状态栏会是  白字，看不到字
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//4.4-6.0的状态栏会是  白字，看不到字
 //            以下功能也可以通过在appTheme中添加<item name="android:windowIsTranslucent">true</item> 来实现
 
-            //透明状态栏
-            //When this flag is enabled for a window, it automatically sets
-            //the system UI visibility flags {@link View.SYSTEM_UI_FLAG_LAYOUT_STABLE} and
-            //{@link View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN}
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明状态栏
+        //When this flag is enabled for a window, it automatically sets
+        //the system UI visibility flags {@link View.SYSTEM_UI_FLAG_LAYOUT_STABLE} and
+        //{@link View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN}
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//去除全屏的标记，温和方法。
-            //透明导航栏（在使用toolbar，且其高度为wrap_content时 下面的属性会导致toolbar高度异常）
-            //When this flag is enabled for a window, it automatically sets
-            //the system UI visibility flags {@link View#SYSTEM_UI_FLAG_LAYOUT_STABLE} and
-            //{@link View#SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION}
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        //透明导航栏（在使用toolbar，且其高度为wrap_content时 下面的属性会导致toolbar高度异常）
+        //When this flag is enabled for a window, it automatically sets
+        //the system UI visibility flags {@link View#SYSTEM_UI_FLAG_LAYOUT_STABLE} and
+        //{@link View#SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION}
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
-            //退出全屏
+        //退出全屏
 //            window.setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
 //            WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-        }
+//        }
+//        hideNavigationBarOnly(window.getDecorView());//如果不要显示透明的导航栏则调用这个
+        darkSystemUi(window.getDecorView());
+    }
+
+    /**
+     * 退出全屏沉浸模式
+     *
+     * @param window window
+     */
+    public static void quitFullScreen(@NonNull Window window) {
+        //        NOTICE:需要沉浸的view要搭配 android:fitsSystemWindows="true"来使用，不然  view的内容会占用statusBar的位置，导致重叠
+        //当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//4.4-6.0的状态栏会是  白字，看不到字
+//            以下功能也可以通过在appTheme中添加<item name="android:windowIsTranslucent">true</item> 来实现
+
+        //透明状态栏
+        //When this flag is enabled for a window, it automatically sets
+        //the system UI visibility flags {@link View.SYSTEM_UI_FLAG_LAYOUT_STABLE} and
+        //{@link View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN}
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//去除全屏的标记，温和方法。
+        //透明导航栏（在使用toolbar，且其高度为wrap_content时 下面的属性会导致toolbar高度异常）
+        //When this flag is enabled for a window, it automatically sets
+        //the system UI visibility flags {@link View#SYSTEM_UI_FLAG_LAYOUT_STABLE} and
+        //{@link View#SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION}
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+        //退出全屏
+//            window.setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+//            WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+//        }
+//        showStatusAndNavBarExitImmersive(window.getDecorView());
     }
 
     /**
@@ -124,6 +157,17 @@ public class SystemUiUtils {
     //----------------------------------------------------------------
 
     //<editor-folder desc="安卓官方demo做法">
+
+    /**
+     * 调暗状态栏和导航栏(没感觉啥区别)
+     *
+     * @param view 用于setSystemUiVisibility的view
+     */
+    public static void darkSystemUi(@NonNull View view) {
+        int uiOptions = view.getSystemUiVisibility();
+        uiOptions |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        view.setSystemUiVisibility(uiOptions);
+    }
 
     /**
      * 正常模式 显示状态栏，导航栏，退出沉浸模式

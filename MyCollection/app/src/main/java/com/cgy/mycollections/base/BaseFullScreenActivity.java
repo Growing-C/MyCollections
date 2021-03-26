@@ -6,11 +6,12 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.cgy.mycollections.R;
+import com.cgy.mycollections.utils.SystemUiUtils;
+
+import appframe.utils.L;
 
 /**
  * Description :全屏activity的基类,用于把全屏和取消全屏的逻辑独立出来
@@ -81,7 +82,7 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {
-            hide();
+            exitFullScreen();
         }
     };
     /**
@@ -123,12 +124,12 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
         mContentView = getContentView();
 
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
+//        mContentView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                toggle();
+//            }
+//        });
 
         //  设置延迟隐藏的按钮
         // Upon interacting with UI controls, delay any scheduled hide()
@@ -141,7 +142,7 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
+        L.i("onPostCreate");
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
@@ -151,13 +152,14 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
 
     protected void toggle() {
         if (mVisible) {
-            hide();
+            exitFullScreen();
         } else {
-            show();
+            showFullScreen();
         }
     }
 
-    private void hide() {
+    private void exitFullScreen() {
+        L.i("exitFullScreen");
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -166,6 +168,9 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
         if (mView2Hide != null) {
             mView2Hide.setVisibility(View.GONE);
         }
+
+        SystemUiUtils.quitFullScreen(getWindow());
+
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -174,10 +179,14 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
     }
 
     @SuppressLint("InlinedApi")
-    private void show() {
+    private void showFullScreen() {
+        L.i("showFullScreen");
         // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+//        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+
+        SystemUiUtils.setFullScreen(getWindow());
+
         mVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
