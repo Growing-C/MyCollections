@@ -27,9 +27,8 @@ android {
 
 dependencies {
 
+    //api 可以被外部库使用， implementation只能本库使用
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    implementation 'androidx.appcompat:appcompat:1.2.0'
-//    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
 
     def applicationDependencies = rootProject.ext.mainApplication
     def unitTestDependencies = rootProject.ext.unitTesting

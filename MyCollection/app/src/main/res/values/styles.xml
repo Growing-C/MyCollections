@@ -19,6 +19,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="AppTheme.Base">
         <!-- Customize your theme here. -->
+        <!--        右滑退出activity -->
+        <item name="android:windowSwipeToDismiss">true</item>
     </style>
 
     <!-- Base application theme. -->

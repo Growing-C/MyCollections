@@ -18,6 +18,12 @@ import appframe.utils.L;
 import appframe.utils.LanguageUtils;
 
 
+/**
+ * 全局activity的base，
+ * 启用右滑退出功能方式
+ * 1.getWindow().requestFeature(Window.FEATURE_SWIPE_TO_DISMISS);, 必须在setContentView()之前进行设置
+ * 2.在主题样式中加入:<item name="android:windowSwipeToDismiss">true</item>
+ */
 public abstract class BaseActivity extends AppCompatActivity {
 
     private LoadingDialog loadingDialog;

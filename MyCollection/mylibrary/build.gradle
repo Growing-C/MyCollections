@@ -27,7 +27,8 @@ android {
 
 dependencies {
 
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //api 可以被外部库使用， implementation只能本库使用
+    api fileTree(dir: 'libs', include: ['*.jar'])
 
     def applicationDependencies = rootProject.ext.mainApplication
     def unitTestDependencies = rootProject.ext.unitTesting
