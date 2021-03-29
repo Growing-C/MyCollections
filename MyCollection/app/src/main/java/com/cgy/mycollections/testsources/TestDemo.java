@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.utils.SystemPageUtils;
-import com.cgy.mycollections.utils.SystemUiUtils;
 
 import appframe.utils.L;
+import appframe.utils.SystemUiUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

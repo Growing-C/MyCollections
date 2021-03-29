@@ -1,16 +1,15 @@
 package com.cgy.mycollections.functions.ui.systemui.statusbar;
 
 import android.content.Intent;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.utils.SystemUiUtils;
 
 import appframe.utils.L;
+import appframe.utils.SystemUiUtils;
 
 /**
  * Google从android kitkat(Android 4.4)开始,给我们开发者提供了一套能透明的系统ui样式给状态栏和导航栏，

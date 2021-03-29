@@ -3,8 +3,6 @@ package com.cgy.mycollections.testsources;
 
 import android.util.Log;
 
-import com.cgy.mycollections.utils.RxUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -12,6 +10,7 @@ import org.reactivestreams.Subscription;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import appframe.utils.RxUtil;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;

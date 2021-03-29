@@ -10,7 +10,8 @@ import android.text.TextUtils;
 
 
 import com.cgy.mycollections.MyApplication;
-import com.cgy.mycollections.functions.file.FileInfo;
+import com.growingc.mediaoperator.beans.FileInfo;
+
 import appframe.utils.L;
 
 

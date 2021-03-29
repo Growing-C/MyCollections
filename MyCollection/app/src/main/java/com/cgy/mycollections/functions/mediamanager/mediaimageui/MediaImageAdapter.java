@@ -1,10 +1,5 @@
 package com.cgy.mycollections.functions.mediamanager.mediaimageui;
 
-import androidx.annotation.NonNull;
-//import androidx.appcompat.widget.RecyclerView;
-
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +7,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
-import com.cgy.mycollections.utils.image.ImageLoader;
+import com.growingc.mediaoperator.beans.ThumbnailInfo;
+import com.growingc.mediaoperator.utils.ImageLoader;
 
 import java.util.List;
 
 import appframe.utils.DisplayHelperUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+//import androidx.appcompat.widget.RecyclerView;
 
 /**
  * Description :

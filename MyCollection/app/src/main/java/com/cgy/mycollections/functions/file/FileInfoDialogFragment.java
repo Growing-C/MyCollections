@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.cgy.mycollections.R;
 import com.cgy.mycollections.base.BaseDialogFragment;
+import com.growingc.mediaoperator.beans.FileInfo;
 
 import java.util.ArrayList;
 import java.util.List;

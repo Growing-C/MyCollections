@@ -15,13 +15,14 @@ import androidx.annotation.NonNull;
 
 import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.file.FileInfo;
 import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
 import com.cgy.mycollections.utils.CommonUtils;
 import appframe.utils.L;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
+import com.growingc.mediaoperator.beans.FileInfo;
+import com.growingc.mediaoperator.utils.MediaHelper;
 
 import java.io.File;
 import java.util.List;

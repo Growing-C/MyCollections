@@ -2,35 +2,41 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/px85_common"
+    android:layout_height="@dimen/px94_size"
     android:background="?attr/colorPrimary"
-    android:fitsSystemWindows="true"
     android:minHeight="@dimen/px85_common"
     android:theme="@style/AppTheme.AppBarOverlay">
 
-    <ImageView
-        android:id="@+id/back_img"
+    <!--    toolbar 中设置 android:fitsSystemWindows="true"
+     会导致内容全部不见了，   可能是增加了内部padding
+      导致view内容下移到不可见位置-->
+    <LinearLayout
+        android:id="@+id/ll_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:background="?attr/selectableItemBackground"
-        android:paddingLeft="@dimen/px28_margin"
-        android:paddingRight="@dimen/px28_margin"
-        android:scaleType="centerInside"
-        android:src="@drawable/nav_arrow"
-        />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/back_text"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/px28_margin"
-        android:text="@string/close"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/px31_tx_size"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/back_img"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:background="?attr/selectableItemBackground"
+            android:paddingLeft="@dimen/px28_margin"
+            android:paddingRight="@dimen/px10_margin"
+            android:scaleType="centerInside"
+            android:src="@drawable/nav_arrow" />
+
+        <TextView
+            android:id="@+id/back_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:text="@string/back"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/px31_tx_size" />
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -46,7 +52,7 @@
             android:maxLines="1"
             android:maxWidth="@dimen/px384_height"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/px35_tx_size" />
+            android:textSize="@dimen/px33_tx_size" />
 
         <ImageView
             android:id="@+id/toolbar_headimg"
@@ -86,8 +92,8 @@
             android:id="@+id/toolbar_right_image"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginRight="@dimen/px50_margin"
             android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/px50_margin"
             android:scaleType="centerInside" />
     </RelativeLayout>
 

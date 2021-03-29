@@ -1,4 +1,6 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 def config = rootProject.extensions.getByName("ext")
 
@@ -34,5 +36,10 @@ dependencies {
     def acceptanceTestDependencies = rootProject.ext.acceptanceTesting
     def developmentDependencies = rootProject.ext.development
 
+    annotationProcessor applicationDependencies.glideCompiler
+
     implementation project(':mylibrary')
+    implementation applicationDependencies.viewpager2
+    implementation applicationDependencies.glide
+    implementation applicationDependencies.fresco
 }

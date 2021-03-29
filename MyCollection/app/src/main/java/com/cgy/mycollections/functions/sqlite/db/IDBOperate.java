@@ -1,7 +1,7 @@
 package com.cgy.mycollections.functions.sqlite.db;
 
 
-import com.cgy.mycollections.functions.file.FileInfo;
+import com.growingc.mediaoperator.beans.FileInfo;
 
 import java.util.List;
 

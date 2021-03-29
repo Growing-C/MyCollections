@@ -4,7 +4,6 @@ package com.cgy.mycollections.functions.file;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.mediamanager.MediaHelper;
-import com.cgy.mycollections.listeners.OnItemClickListener;
 import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
-import com.cgy.mycollections.utils.FileUtil;
-import com.cgy.mycollections.utils.image.ImageHelper;
-import com.cgy.mycollections.utils.image.ImageLoader;
+import com.growingc.mediaoperator.beans.FileInfo;
+import com.growingc.mediaoperator.utils.FileUtil;
+import com.growingc.mediaoperator.utils.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import appframe.utils.L;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

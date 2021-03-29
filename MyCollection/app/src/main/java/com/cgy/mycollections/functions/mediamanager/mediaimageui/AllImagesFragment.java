@@ -11,9 +11,7 @@ import androidx.annotation.Nullable;
 //import androidx.core.app.Fragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 //import androidx.appcompat.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.ContextMenu;
@@ -23,10 +21,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.mediamanager.ShowImagesActivity;
-import com.cgy.mycollections.functions.mediamanager.images.ImageInfo;
-import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
 import com.cgy.mycollections.listeners.OnTItemClickListener;
+import com.growingc.mediaoperator.beans.ImageInfo;
+import com.growingc.mediaoperator.beans.ThumbnailInfo;
+import com.growingc.mediaoperator.imagebrowser.ShowImagesActivity;
 
 import java.util.List;
 

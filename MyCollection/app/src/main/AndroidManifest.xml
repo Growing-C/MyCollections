@@ -35,9 +35,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".functions.mediamanager.ShowImagesActivity"
-            android:label="图片展示" />
-        <activity
             android:name=".functions.mediamanager.MediaImagesActivity"
             android:label="@string/title_activity_media_images" />
         <activity

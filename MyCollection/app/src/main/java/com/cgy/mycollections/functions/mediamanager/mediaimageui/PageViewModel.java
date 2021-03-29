@@ -7,11 +7,12 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.cgy.mycollections.MyApplication;
-import com.cgy.mycollections.functions.mediamanager.MediaHelper;
-import com.cgy.mycollections.functions.mediamanager.images.ThumbnailInfo;
-import appframe.utils.L;
+import com.growingc.mediaoperator.beans.ThumbnailInfo;
+import com.growingc.mediaoperator.utils.MediaHelper;
 
 import java.util.List;
+
+import appframe.utils.L;
 
 public class PageViewModel extends ViewModel {
 
@@ -50,7 +51,7 @@ public class PageViewModel extends ViewModel {
     }
 
     public LiveData<List<ThumbnailInfo>> test() {
-        return  Transformations.map(mThumbnailsInfo, new Function<List<ThumbnailInfo>, List<ThumbnailInfo>>() {
+        return Transformations.map(mThumbnailsInfo, new Function<List<ThumbnailInfo>, List<ThumbnailInfo>>() {
             @Override
             public List<ThumbnailInfo> apply(List<ThumbnailInfo> input) {
                 L.e("test  apply:" + (input == null));
