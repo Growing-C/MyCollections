@@ -1,5 +1,10 @@
 package com.cgy.mycollections.utils.image;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
 
@@ -12,4 +17,10 @@ import com.bumptech.glide.module.AppGlideModule;
 @GlideModule
 public final class GalleryModule extends AppGlideModule {
     // Intentionally empty.
+
+    @Override
+    public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
+        super.applyOptions(context, builder);
+        //此处可以自定义全局option
+    }
 }

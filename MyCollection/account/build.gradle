@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.library'
+}
+
+def config = rootProject.extensions.getByName("ext")
+
+android {
+    compileSdkVersion config["compile_sdk"]
+
+    defaultConfig {
+        minSdkVersion config["min_sdk"]
+        targetSdkVersion config["target_sdk"]
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    //api 可以被外部库使用， implementation只能本库使用
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def applicationDependencies = rootProject.ext.mainApplication
+    def unitTestDependencies = rootProject.ext.unitTesting
+    def acceptanceTestDependencies = rootProject.ext.acceptanceTesting
+    def developmentDependencies = rootProject.ext.development
+
+    annotationProcessor applicationDependencies.glideCompiler
+
+    implementation project(':mylibrary')
+    implementation applicationDependencies.fresco
+    testImplementation unitTestDependencies.junit
+
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}

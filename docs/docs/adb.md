@@ -123,3 +123,7 @@ adb shell ps | findstr com.xxx
 
 如何分辨一个app是64位还是 32位 可以通过 获取zygote 进程id 然后查看对应app包名，使用的是哪个zygote
 系统有两个zygote，一个是 zygote  一个是 zygote64
+
+## adb获取fd 日志
+首先获取进程pid
+然后 在 /proc/${进程id}/fd/ 目录下执行ls –l查看到增加的FD指向创建的文件，
