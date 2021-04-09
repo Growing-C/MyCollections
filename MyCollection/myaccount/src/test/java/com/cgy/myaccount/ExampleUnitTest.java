@@ -1,4 +1,4 @@
-package com.cgy.account;
+package com.cgy.myaccount;
 
 import org.junit.Test;
 

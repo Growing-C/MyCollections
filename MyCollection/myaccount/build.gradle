@@ -13,7 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner config["test_runner"]
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -31,20 +31,16 @@ android {
 
 dependencies {
 
-    //api 可以被外部库使用， implementation只能本库使用
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     def applicationDependencies = rootProject.ext.mainApplication
     def unitTestDependencies = rootProject.ext.unitTesting
     def acceptanceTestDependencies = rootProject.ext.acceptanceTesting
     def developmentDependencies = rootProject.ext.development
 
-    annotationProcessor applicationDependencies.glideCompiler
-
     implementation project(':mylibrary')
-    implementation applicationDependencies.fresco
-    testImplementation unitTestDependencies.junit
 
+//    implementation 'androidx.appcompat:appcompat:1.2.0'
+//    implementation 'com.google.android.material:material:1.3.0'
+//    testImplementation 'junit:junit:4.+'
 //    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 //    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

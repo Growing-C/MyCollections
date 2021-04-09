@@ -1,4 +1,4 @@
-package com.cgy.account;
+package com.cgy.myaccount;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.cgy.account.test", appContext.getPackageName());
+        assertEquals("com.cgy.myaccount.test", appContext.getPackageName());
     }
 }
