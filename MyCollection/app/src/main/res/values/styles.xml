@@ -21,6 +21,8 @@
         <!-- Customize your theme here. -->
         <!--        右滑退出activity -->
         <item name="android:windowSwipeToDismiss">true</item>
+        <!--        自定义跳转动画-->
+        <item name="android:windowAnimationStyle">@style/noAnimation</item>
     </style>
 
     <!-- Base application theme. -->
@@ -64,6 +66,22 @@
          colorControlHighlight and colorSwitchThumbNormal. -->
         <!--<item name="android:windowIsTranslucent">true</item>&lt;!&ndash;半透明&ndash;&gt;-->
         <!--windowIsTranslucent makes the background of app transparent-->
+    </style>
+
+    <!--    acitivty跳转动画,全都设置为空-->
+    <style name="noAnimation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
     </style>
 
     <!-- dialog风格的activity使用-->
