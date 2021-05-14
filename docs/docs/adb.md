@@ -84,6 +84,21 @@ adb pull /mnt/sdcard/a.png ~/b.png
 adb shell screencap /sdcard/1.png
 ```
 
+// 复制粘贴
+```
+cp -r ../vmap_0120/vmap/AIAssistant vmap/
+```
+// 移动文件
+```
+mv detail_list vmap/
+```
+```
+rm -r xxx //删除名字为xxx的文件夹及其里面的所有文件 
+rm xxx //删除文件xxx 
+rmdir xxx //删除xxx的文件夹
+```
+
+
 ## adb 模拟按键
 // 模拟输入，其中 %s 代表空格
 adb shell input text "hello%sworld"
@@ -127,3 +142,11 @@ adb shell ps | findstr com.xxx
 ## adb获取fd 日志
 首先获取进程pid
 然后 在 /proc/${进程id}/fd/ 目录下执行ls –l查看到增加的FD指向创建的文件，
+
+
+## adb获取存储分区大小
+```
+adb shell df
+adb shell df -h  (单位为G，M)
+```
+
