@@ -52,7 +52,7 @@ public class ImageShaderHelper {
      * @param source
      * @return
      */
-    private Bitmap horizontalReverseBitmap(@android.annotation.NonNull Bitmap source) {
+    private Bitmap horizontalReverseBitmap(@NonNull Bitmap source) {
         Matrix m = new Matrix();
         m.setScale(-1, 1);//水平翻转
 

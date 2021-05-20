@@ -46,7 +46,7 @@ Operation not allowed: java.lang.SecurityException: grantRuntimePermission: Neit
 
 // 列出进程列表 ，其中包含进程的 pid 等信息
 ```
-adb shell ps
+adb shell ps |findstr com.xxx
 ```
 
 // 杀死指定pid的进程
@@ -150,3 +150,7 @@ adb shell df
 adb shell df -h  (单位为G，M)
 ```
 
+1、adb shell
+2、df（截图看下结果）
+3、cd /mnt/vmap/
+4、du -h -d 3（查看文件夹下面各个文件的大小，需要root）

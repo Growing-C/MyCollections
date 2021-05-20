@@ -490,8 +490,11 @@ public class FileDemo extends AppBaseActivity {
 
     private void getPermission(File destFile) {
         //获取权限
-        // android 11 external Sd卡上的其他文件都没有读写权限，所以listFiles 找不到，可以通过降低targetSdk版本来暂时解决，或者适配 MANAGE_EXTERNAL_STORAGE 权限
-        // android 10 可以通过在manifest 中加上     android:requestLegacyExternalStorage="true" 来暂时禁用分区存储（注意compile sdk 和targetSdk都要是29或以下）
+        // android 11 external Sd卡上的其他文件都没有读写权限，所以listFiles 找不到，
+        // 可以通过降低targetSdk版本来暂时解决，或者适配 MANAGE_EXTERNAL_STORAGE 权限
+        // android 10 可以通过在manifest 中加上     
+        // android:requestLegacyExternalStorage="true" 来暂时禁用分区存储
+        // （注意compile sdk 和targetSdk都要是29或以下,最好是28）
         L.i(destFile.getPath() + "  canRead:" + destFile.canRead());
         L.i(destFile.getPath() + "  canWrite:" + destFile.canWrite());
         if (!destFile.canRead() || !destFile.canWrite()) {
