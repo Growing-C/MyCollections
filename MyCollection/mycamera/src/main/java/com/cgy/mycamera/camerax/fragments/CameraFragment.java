@@ -46,7 +46,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cgy.mycamera.R;
 import com.cgy.mycamera.camerax.CameraXDemo;
 import com.cgy.mycamera.camerax.utils.AutoFitPreviewBuilder;
-import com.cgy.mycamera.camerax.utils.FileUtil;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -57,6 +56,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import appframe.utils.FileUtils;
 
 import static com.cgy.mycamera.camerax.CameraXDemo.KEY_EVENT_ACTION;
 import static com.cgy.mycamera.camerax.CameraXDemo.KEY_EVENT_EXTRA;
@@ -219,7 +220,7 @@ public class CameraFragment extends Fragment {
             // but otherwise other apps will not be able to access our images unless we
             // scan them using [MediaScannerConnection]
             String mimeType = MimeTypeMap.getSingleton()
-                    .getMimeTypeFromExtension(FileUtil.getFileExtensionName(photoFile.getName()));
+                    .getMimeTypeFromExtension(FileUtils.getFileExtensionName(photoFile.getName()));
             MediaScannerConnection.scanFile(
                     getContext(), new String[]{photoFile.getAbsolutePath()}, new String[]{mimeType}, null);
         }

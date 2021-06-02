@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.widgets.ruler.ScrollRulerLayout;
 import com.cgy.mycollections.widgets.scaleview.HorizontalScaleView;
 import com.cgy.mycollections.widgets.scaleview.OnValueChangeListener;
@@ -20,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ScaleViewDemo extends AppCompatActivity {
+public class ScaleViewDemo extends AppBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 

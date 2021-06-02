@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ComposeShader;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Shader;
@@ -15,6 +14,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.growingc.mediaoperator.R;
+import com.growingc.mediaoperator.utils.BitmapUtils;
 
 
 /**
@@ -32,7 +32,7 @@ public class ImageShaderHelper {
      */
     public void init(@NonNull Context context) {
         mNaviShaderSourceBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bg_mask);
-        mNaviShaderSourceBitmap = horizontalReverseBitmap(mNaviShaderSourceBitmap);
+        mNaviShaderSourceBitmap = BitmapUtils.horizontalReverseBitmap(mNaviShaderSourceBitmap);
         mPaint = new Paint();
     }
 
@@ -45,39 +45,27 @@ public class ImageShaderHelper {
         mPaint = null;
     }
 
-
-    /**
-     * 水平翻转图片
-     *
-     * @param source
-     * @return
-     */
-    private Bitmap horizontalReverseBitmap(@NonNull Bitmap source) {
-        Matrix m = new Matrix();
-        m.setScale(-1, 1);//水平翻转
-
-        int w = source.getWidth();
-        int h = source.getHeight();
-        //生成的翻转后的bitmap
-        return Bitmap.createBitmap(source, 0, 0, w, h, m, true);
+    public Bitmap createShaderBitmap(Bitmap sourceBitmap) {
+        return createShaderBitmap(sourceBitmap, mNaviShaderSourceBitmap);
     }
 
     /**
      * 使用shader 将地图图片周围模糊
      *
-     * @param naviMapBitmap 原始的地图图片
+     * @param sourceBitmap       原始的地图图片
+     * @param shaderSourceBitmap 周围模糊的图片源
      * @return 周边模糊处理后的地图展示图片
      */
-    public Bitmap createNaviShaderBitmap(Bitmap naviMapBitmap) {
-        if (naviMapBitmap == null || mNaviShaderSourceBitmap == null) {
+    public Bitmap createShaderBitmap(Bitmap sourceBitmap, Bitmap shaderSourceBitmap) {
+        if (sourceBitmap == null || shaderSourceBitmap == null) {
             return null;
         }
-        int bitmapWidth = mNaviShaderSourceBitmap.getWidth();
-        int bitmapHeight = mNaviShaderSourceBitmap.getHeight();
+        int bitmapWidth = shaderSourceBitmap.getWidth();
+        int bitmapHeight = shaderSourceBitmap.getHeight();
         Log.i("testImage", "bitmapWidth:" + bitmapWidth);
         Log.i("testImage", "bitmapHeight:" + bitmapHeight);
-        Log.i("testImage", "naviMapBitmap width:" + naviMapBitmap.getWidth());
-        Log.i("testImage", "naviMapBitmap height:" + naviMapBitmap.getHeight());
+        Log.i("testImage", "sourceBitmap width:" + sourceBitmap.getWidth());
+        Log.i("testImage", "sourceBitmap height:" + sourceBitmap.getHeight());
 //        bitmapWidth:1980
 //        bitmapHeight:1980
 //        naviMapBitmap width:1722
@@ -87,9 +75,9 @@ public class ImageShaderHelper {
         Canvas canvas = new Canvas(target);
 
         //创建BitmapShader，用以绘制椭圆形渐变图
-        BitmapShader bitmapShader = new BitmapShader(mNaviShaderSourceBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        BitmapShader bitmapShader = new BitmapShader(shaderSourceBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         //创建BitmapShader，用于将目标图片像素和源像素进行进行处理
-        BitmapShader mapShader = new BitmapShader(naviMapBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        BitmapShader mapShader = new BitmapShader(sourceBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         //bitmapShader对应目标像素，mapShader对应源像素，像素颜色混合采用MULTIPLY模式
         ComposeShader composeShader = new ComposeShader(bitmapShader, mapShader, PorterDuff.Mode.MULTIPLY);
         //将组合的composeShader作为画笔paint绘图所使用的shader

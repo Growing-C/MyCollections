@@ -21,7 +21,8 @@ public class MobileManager {
     /**
      * 获取唯一的设备id
      *
-     * @return
+     * @return meid
+     * android.permission.READ_PRIVILEGED_PHONE_STATE
      */
     public String getMEID() {
         return mTelManager.getDeviceId();

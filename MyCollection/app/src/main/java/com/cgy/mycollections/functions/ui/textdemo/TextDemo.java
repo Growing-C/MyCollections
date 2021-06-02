@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.ui.textdemo.linkify.LinkClickListener;
 import com.cgy.mycollections.functions.ui.textdemo.linkify.LinkMovementMethodEx;
 import com.cgy.mycollections.functions.ui.textdemo.linkify.NoUnderlineSpan;
@@ -52,7 +53,7 @@ import butterknife.OnClick;
  * VectorDrawable
  * AnimatedVectorDrawable
  */
-public class TextDemo extends AppCompatActivity {
+public class TextDemo extends AppBaseActivity {
     @BindView(R.id.wave_view)
     WaveView mWaveView;
     @BindView(R.id.tv_unlock)

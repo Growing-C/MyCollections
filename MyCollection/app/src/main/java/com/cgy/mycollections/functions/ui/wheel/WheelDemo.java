@@ -1,25 +1,16 @@
 package com.cgy.mycollections.functions.ui.wheel;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.OnPasswordInputListener;
-import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.PayPasswordDialog;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.ui.wheel.rvgallery.GalleryFragment;
-import com.cgy.mycollections.widgets.PopWindowGenerator;
-import com.cgy.mycollections.widgets.pickerview.TimePickerView;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.Date;
-
-import appframe.utils.TimeUtils;
 import appframe.utils.ToastCustom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +19,7 @@ import butterknife.ButterKnife;
  * 该页面展示了对话框
  * 1.密码输入对话框
  */
-public class WheelDemo extends AppCompatActivity {
+public class WheelDemo extends AppBaseActivity {
 
     @BindView(R.id.tabs)
     TabLayout mTabs;

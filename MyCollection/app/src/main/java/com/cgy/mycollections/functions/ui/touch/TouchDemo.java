@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.utils.SystemUtil;
 
 
@@ -27,7 +28,7 @@ import butterknife.OnClick;
 /**
  * 触摸相关demo
  */
-public class TouchDemo extends AppCompatActivity {
+public class TouchDemo extends AppBaseActivity {
     private String TAG = TouchDemo.class.getSimpleName();
     @BindView(R.id.touch_child)
     TouchChild mChildV;

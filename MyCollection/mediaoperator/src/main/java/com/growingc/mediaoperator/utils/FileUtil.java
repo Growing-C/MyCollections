@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -34,6 +34,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -41,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -340,6 +346,67 @@ public class FileUtil {
     }
     //</editor-fold>
 
+    //<editor-fold desc="文件权限相关">
+
+    /**
+     * 设置文件权限
+     *
+     * @param f 文件
+     */
+    public static void setFileWith755Permission(File f) {
+        if (null == f) {
+            return;
+        }
+        L.i("setFileWith755Permission-- " + f.getAbsolutePath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Path path = Paths.get(f.getAbsolutePath());
+            try {
+                Set<PosixFilePermission> perms = Files.readAttributes(path, PosixFileAttributes.class).permissions();
+                perms.add(PosixFilePermission.OWNER_WRITE);
+                perms.add(PosixFilePermission.OWNER_READ);
+                perms.add(PosixFilePermission.OWNER_EXECUTE);
+                perms.add(PosixFilePermission.GROUP_READ);
+                perms.add(PosixFilePermission.GROUP_EXECUTE);
+                perms.add(PosixFilePermission.OTHERS_READ);
+                perms.add(PosixFilePermission.OTHERS_EXECUTE);
+                Files.setPosixFilePermissions(path, perms);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 获取文件操作权限相关
+     *
+     * @param f 文件
+     * @return 权限描述
+     */
+    public static String getFilePermission(File f) {
+        if (null == f) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        L.i("getFilePermission-- " + f.getAbsolutePath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Path path = Paths.get(f.getAbsolutePath());
+            try {
+                Set<PosixFilePermission> perms = Files.readAttributes(path, PosixFileAttributes.class).permissions();
+                for (PosixFilePermission item : perms) {
+                    sb.append(item.name()).append(",");
+                }
+                if (sb.length() > 0) {
+                    sb.setLength(sb.length() - 1);
+                }
+                L.i("getFilePermission-- " + f.getAbsolutePath() + ",permission:" + sb.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
+    //</editor-fold>
+
     //<editor-fold desc="文件隐藏相关">
 
     /**
@@ -606,24 +673,6 @@ public class FileUtil {
     //---------------------------------------------------
 
     /**
-     * 存储bitmap
-     */
-    public static void saveBitmap(@NonNull String filePath, @NonNull Bitmap bitmap) {
-        File file = createFile(filePath);
-        try {
-            FileOutputStream os = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.flush();
-            os.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
      * 获取文件后缀名
      */
     public static String getFileExtensionName(String fileName) {
@@ -631,8 +680,10 @@ public class FileUtil {
             return "";
         }
         int endP = fileName.lastIndexOf(".");
-        return endP > -1 ? fileName.substring(endP + 1, fileName.length()) : "";
+        return endP > -1 ? fileName.substring(endP + 1) : "";
     }
+
+    //<editor-fold desc="文件MD5相关">
 
     /**
      * 校验文件MD5码
@@ -643,7 +694,7 @@ public class FileUtil {
      */
     public static boolean checkMD5(String md5, File updateFile) {
         if (TextUtils.isEmpty(md5) || updateFile == null) {
-//            L.e(TAG, "MD5 string empty or updateFile null");
+            L.e("MD5 string empty or updateFile null");
             return false;
         }
 
@@ -697,6 +748,7 @@ public class FileUtil {
         }
     }
 
+    //</editor-fold>
 
     /**
      * 获取SDCard的目录路径功能
@@ -974,21 +1026,19 @@ public class FileUtil {
     public static File createFile(String path) {
         File file = new File(path);
         if (!file.getParentFile().exists()) {
-//            FL.d(TAG, "目标文件所在路径不存在，准备创建……");
+            L.d("目标文件所在路径不存在，准备创建……");
             if (!createDir(file.getParent())) {
-//                FL.d(TAG, "创建目录文件所在的目录失败！文件路径【" + path + "】");
+                L.d("创建目录文件所在的目录失败！文件路径【" + path + "】");
             }
         }
         // 创建目标文件
         try {
             if (!file.exists()) {
                 if (file.createNewFile()) {
-//                    FL.d(TAG, "创建文件成功:" + file.getAbsolutePath());
+                    L.d("创建文件成功:" + file.getAbsolutePath());
                 }
-                return file;
-            } else {
-                return file;
             }
+            return file;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1005,7 +1055,7 @@ public class FileUtil {
         File file = new File(path);
         if (!file.exists()) {
             if (!file.mkdirs()) {
-//                FL.d(TAG, "创建失败，请检查路径和是否配置文件权限！");
+                L.d("创建失败，请检查路径和是否配置文件权限！");
                 return false;
             }
             return true;
@@ -1114,6 +1164,42 @@ public class FileUtil {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * delete file or directory
+     * <ul>
+     * <li>if path is null or empty, return true</li>
+     * <li>if path not exist, return true</li>
+     * <li>if path exist, delete recursion. return true</li>
+     * <ul>
+     *
+     * @param path
+     * @return
+     */
+    public static boolean deleteFileAndFolder(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return true;
+        }
+
+        File file = new File(path);
+        if (!file.exists()) {
+            return true;
+        }
+        if (file.isFile()) {
+            return file.delete();
+        }
+        if (!file.isDirectory()) {
+            return false;
+        }
+        for (File f : file.listFiles()) {
+            if (f.isFile()) {
+                f.delete();
+            } else if (f.isDirectory()) {
+                deleteFile(f.getAbsolutePath());
+            }
+        }
+        return file.delete();
     }
 
     /**
@@ -1409,7 +1495,7 @@ public class FileUtil {
     }
     //</editor-fold>
 
-    //<editor-fold desc="打开文件 ">
+    //<editor-fold desc="打开各种格式的文件 ">
 
     /**
      * 打开文件，如果文件不存在会找到对应的隐藏或者非隐藏文件

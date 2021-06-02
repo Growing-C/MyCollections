@@ -15,7 +15,7 @@ public abstract class AppBaseActivity extends BaseActivity {
     public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
         super.startActivityForResult(intent, requestCode, options);
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        L.i("fsfdsfsf33 ");
+        L.i("cccc startActivityForResult ");
     }
 
     @Override
@@ -26,7 +26,7 @@ public abstract class AppBaseActivity extends BaseActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.slide_out_right, android.R.anim.slide_in_left);
-        L.i("fsfdsfsf55 ");
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        L.i("ccccc finish ");
     }
 }

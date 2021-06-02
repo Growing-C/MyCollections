@@ -158,41 +158,7 @@ public class FileUtils {
         return (dire.exists() && dire.isDirectory());
     }
 
-    /**
-     * delete file or directory
-     * <ul>
-     * <li>if path is null or empty, return true</li>
-     * <li>if path not exist, return true</li>
-     * <li>if path exist, delete recursion. return true</li>
-     * <ul>
-     *
-     * @param path
-     * @return
-     */
-    public static boolean deleteFile(String path) {
-        if (TextUtils.isEmpty(path)) {
-            return true;
-        }
 
-        File file = new File(path);
-        if (!file.exists()) {
-            return true;
-        }
-        if (file.isFile()) {
-            return file.delete();
-        }
-        if (!file.isDirectory()) {
-            return false;
-        }
-        for (File f : file.listFiles()) {
-            if (f.isFile()) {
-                f.delete();
-            } else if (f.isDirectory()) {
-                deleteFile(f.getAbsolutePath());
-            }
-        }
-        return file.delete();
-    }
 
     /**
      * 检测Sdcard是否存在
@@ -294,106 +260,17 @@ public class FileUtils {
         return output;
     }
 
-    /**
-     * 读取SD卡图片并缩小到相应尺寸
-     */
-    public static final Bitmap getSizeBitmap(String filepath, int maxWidth, int maxHeight) {
-        Bitmap bitmap = null;
-        if (!new File(filepath).exists()) {
-            return null;
-        }
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        // 当为true时，不为图片分配内存，只获取图片的大小，并保存在opts的outWidth和outHeight中
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filepath, options);
-        int srcWidth = options.outWidth;
-        int srcHeight = options.outHeight;
-        options.inJustDecodeBounds = false;
-        if (srcWidth <= maxWidth && srcHeight <= maxHeight) {
-            options.inPreferredConfig = Bitmap.Config.RGB_565;
-            options.inPurgeable = true;
-            options.inInputShareable = true;
-            bitmap = BitmapFactory.decodeFile(filepath, options);
-            LogUtils.i("未缩放，srcWidth = " + srcWidth + ", srcHeight = " + srcHeight);
-        } else {
-            LogUtils.i("缩放前，srcWidth = " + srcWidth + ", srcHeight = " + srcHeight);
-            float be = 1;
-            if (srcWidth / (float) srcHeight >= maxWidth / (float) maxHeight)
-                be = srcWidth / (float) maxWidth;
-            else
-                be = srcHeight / (float) maxHeight;
-            options.inSampleSize = (int) be;
-            options.inPreferredConfig = Bitmap.Config.RGB_565;
-            options.inPurgeable = true;
-            options.inInputShareable = true;
-            bitmap = BitmapFactory.decodeFile(filepath, options);
 
-            if (bitmap == null) {// 此读图方式只是试试
-                try {
-                    bitmap = BitmapFactory.decodeFileDescriptor(
-                            new FileInputStream(new File(filepath)).getFD(), null,
-                            options);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            /** 若只是缩小图片，到此 return bitmap即可，以下内容是返回的固定大小图片 */
-
-            int tempWidth = bitmap.getWidth();
-            int tempHeight = bitmap.getHeight();
-            float scale_w = ((float) maxWidth) / tempWidth;
-            float scale_h = ((float) maxHeight) / tempHeight;
-            // 按原图比例缩小
-            Matrix matrix = new Matrix();
-            float scale = (scale_w < scale_h ? scale_w : scale_h);
-            matrix.postScale(scale, scale);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, tempWidth, tempHeight, matrix, true);
-            LogUtils.i("tempWidth = " + tempWidth + "tempHeight = " + tempHeight);
-        }
-        return bitmap;
-    }
 
     /**
-     * 把bitmap图像保存到本地
-     *
-     * @param bitmap
-     * @param path
-     * @return true-代表保存成功，false-代表保存失败
+     * 获取文件后缀名
      */
-    public static boolean saveBitmapToSdcard(Bitmap bitmap, String path) {
-        if (bitmap != null && !bitmap.isRecycled()) {
-            File file = new File(path);
-            File dir = file.getParentFile();
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            if (file.exists())
-                file.delete();
-            FileOutputStream out = null;
-            try {
-                out = new FileOutputStream(file);
-                if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
-                    out.flush();
-                    return true;
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public static String getFileExtensionName(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return "";
         }
-        return false;
+        int endP = fileName.lastIndexOf(".");
+        return endP > -1 ? fileName.substring(endP + 1) : "";
     }
 
 }

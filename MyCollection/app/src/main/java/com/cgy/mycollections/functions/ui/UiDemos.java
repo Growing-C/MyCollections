@@ -3,22 +3,18 @@ package com.cgy.mycollections.functions.ui;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-//import androidx.appcompat.widget.DefaultItemAnimator;
-//import androidx.appcompat.widget.LinearLayoutManager;
-//import androidx.appcompat.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.Menu;
 import android.view.View;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cgy.mycollections.Demo;
 import com.cgy.mycollections.MainItemAdapter;
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.ui.androiddesign.recyclerview.SimpleRecyclerViewDemo;
 import com.cgy.mycollections.functions.ui.dialogdemo.DialogAndWidgetsDemo;
 import com.cgy.mycollections.functions.ui.scale.ScaleViewDemo;
@@ -31,8 +27,12 @@ import com.cgy.mycollections.listeners.OnItemClickListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+//import androidx.appcompat.widget.DefaultItemAnimator;
+//import androidx.appcompat.widget.LinearLayoutManager;
+//import androidx.appcompat.widget.RecyclerView;
 
-public class UiDemos extends AppCompatActivity {
+
+public class UiDemos extends AppBaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recycler_view)

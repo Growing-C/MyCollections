@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.utils.HookViewClickUtil;
 import com.cgy.mycollections.utils.ViewUtils;
 
@@ -24,7 +25,7 @@ import butterknife.OnClick;
  * VectorDrawable
  * AnimatedVectorDrawable
  */
-public class EditTextActivity extends AppCompatActivity {
+public class EditTextActivity extends AppBaseActivity {
 
     @BindView(R.id.limit_in_code)
     EditText mLimitInCodeV;

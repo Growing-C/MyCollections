@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.cgy.mycollections.R;
+import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.OnPasswordInputListener;
 import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.PayPasswordDialog;
 import com.cgy.mycollections.functions.ui.dialogdemo.dialogs.TestWindowDialog;
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
  * 该页面展示了对话框
  * 1.密码输入对话框
  */
-public class DialogAndWidgetsDemo extends AppCompatActivity {
+public class DialogAndWidgetsDemo extends AppBaseActivity {
 
     @BindView(R.id.wheel_view)
     WheelView mWheelView;

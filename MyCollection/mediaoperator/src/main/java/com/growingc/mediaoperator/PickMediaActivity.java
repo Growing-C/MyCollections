@@ -46,7 +46,7 @@ public class PickMediaActivity extends AppCompatActivity {
 
         ImageShaderHelper helper = new ImageShaderHelper();
         helper.init(this);
-        mPic.setImageBitmap(helper.createNaviShaderBitmap(map));
+        mPic.setImageBitmap(helper.createShaderBitmap(map));
 
         //使用上面的图片的宽高来进行测试绘图对比 两张图绘制效果
         ImageView testPic = findViewById(R.id.test_pic);
