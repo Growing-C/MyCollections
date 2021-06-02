@@ -21,8 +21,8 @@
         <!-- Customize your theme here. -->
         <!--        右滑退出activity -->
         <item name="android:windowSwipeToDismiss">true</item>
-        <!--        自定义跳转动画,这个好像需要搭配 @android:style/Animation.Activity 使用-->
-<!--        <item name="android:windowAnimationStyle">@style/noAnimation</item>-->
+        <!--        自定义跳转动画, -->
+        <item name="android:windowAnimationStyle">@style/myWindowAnimation</item>
     </style>
 
     <!-- Base application theme. -->
@@ -68,8 +68,8 @@
         <!--windowIsTranslucent makes the background of app transparent-->
     </style>
 
-    <!--    acitivty跳转动画,全都设置为空-->
-    <style name="noAnimation">
+    <!--    acitivty跳转动画, 如果使用了 translucent 需要搭配parent @android:style/Animation.Translucent 使用-->
+    <style name="myWindowAnimation" parent="@android:style/Animation.Translucent">
         <item name="android:activityOpenEnterAnimation">@anim/anim_left_in</item>
         <item name="android:activityOpenExitAnimation">@anim/anim_right_out</item>
         <item name="android:activityCloseEnterAnimation">@anim/anim_left_in</item>
