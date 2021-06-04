@@ -48,8 +48,6 @@ import com.cgy.mycollections.functions.ble.BleDemo;
 import com.cgy.mycollections.functions.cache.CacheDemo;
 import com.cgy.mycollections.functions.chart.ChartDemo;
 import com.cgy.mycollections.functions.ethereum.EthereumDemo;
-import com.cgy.mycollections.functions.file.FileDemo;
-import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.framework.databinding.DataBindingDemo;
 import com.cgy.mycollections.functions.jetpack.JetPackDemos;
 import com.cgy.mycollections.functions.mediamanager.MediaManagerDemo;
@@ -67,6 +65,8 @@ import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
 import com.cgy.mycollections.utils.SystemUtil;
 import com.growingc.mediaoperator.PickMediaActivity;
+import com.growingc.mediaoperator.filebrowser.FileDemo;
+import com.growingc.mediaoperator.filebrowser.ProtectedFilesActivity;
 
 import java.util.List;
 

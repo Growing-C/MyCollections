@@ -41,4 +41,5 @@ dependencies {
     implementation applicationDependencies.viewpager2
     implementation applicationDependencies.glide
     implementation applicationDependencies.fresco
+    implementation applicationDependencies.yanzhenjieRecyclerView
 }

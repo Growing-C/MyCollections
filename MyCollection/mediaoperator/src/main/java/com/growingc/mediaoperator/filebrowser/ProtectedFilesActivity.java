@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.file;
+package com.growingc.mediaoperator.filebrowser;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,16 +12,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.AppBaseActivity;
-import com.cgy.mycollections.functions.sqlite.db.DBOperator;
-import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
-import com.cgy.mycollections.listeners.swipedrag.ItemTouchHelperAdapter;
-import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
-import com.cgy.mycollections.utils.CommonUtils;
-import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
+import com.growingc.mediaoperator.R;
 import com.growingc.mediaoperator.beans.FileInfo;
+import com.growingc.mediaoperator.db.DBOperator;
+import com.growingc.mediaoperator.filebrowser.swipedrag.ItemTouchHelperAdapter;
+import com.growingc.mediaoperator.filebrowser.swipedrag.SimpleItemTouchHelperCallback;
+import com.growingc.mediaoperator.utils.AccountUtils;
 import com.growingc.mediaoperator.utils.FileUtil;
+import com.growingc.mediaoperator.widgets.SpaceItemDecoration;
 import com.yanzhenjie.recyclerview.OnItemMenuClickListener;
 import com.yanzhenjie.recyclerview.SwipeMenu;
 import com.yanzhenjie.recyclerview.SwipeMenuBridge;
@@ -39,9 +37,6 @@ import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
 import appframe.utils.L;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.observers.DisposableObserver;
 
 //import androidx.appcompat.widget.RecyclerView;
@@ -49,8 +44,7 @@ import io.reactivex.observers.DisposableObserver;
 /**
  * 受保护的文件
  */
-public class ProtectedFilesActivity extends AppBaseActivity {
-    @BindView(R.id.protected_files)
+public class ProtectedFilesActivity extends FileOperateBaseActivity {
     SwipeRecyclerView mProtectedFileListV;
 
     FileListAdapter mFileAdapter;
@@ -161,11 +155,11 @@ public class ProtectedFilesActivity extends AppBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_protected_files);
-        ButterKnife.bind(this);
+        mProtectedFileListV = findViewById(R.id.protected_files);
 
         initSwipe();
 
-        userId = CommonUtils.getUserId(this);
+        userId = AccountUtils.getUserId(this);
 
 //        initSwipeAndDrag(mFileAdapter);
         getProtectedFiles();
@@ -241,7 +235,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
      *
      * @param position
      */
-    private void switchProtectStatus(int position) {
+    private void switchProtectStatus(final int position) {
         FileInfo fileInfo = mFileList.get(position);
 
         if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
@@ -261,7 +255,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
             fileInfo.protectState = FileConstants.STATE_PROTECTED;
         }
 
-        DBOperator.getInstance().addProtectedFile(userId, fileInfo).subscribe(new DisposableObserver<Boolean>() {
+        DBOperator.getInstance(this).addProtectedFile(userId, fileInfo).subscribe(new DisposableObserver<Boolean>() {
             @Override
             public void onNext(Boolean o) {
                 showToast("操作完成");
@@ -281,7 +275,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
 
     }
 
-    private void showDeleteDialog(int position) {
+    private void showDeleteDialog(final int position) {
         FileInfo fileInfo = mFileList.get(position);
         new AlertDialog.Builder(ProtectedFilesActivity.this)
                 .setMessage("确认移除文件保护？（不会删除源文件）：\n" + fileInfo.getFilePath())
@@ -299,7 +293,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
      *
      * @param position
      */
-    private void deleteProtectedFile(int position) {
+    private void deleteProtectedFile(final int position) {
         FileInfo fileInfo = mFileList.get(position);
 
         if (fileInfo.protectState == FileConstants.STATE_PROTECTED) {
@@ -312,7 +306,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
             fileInfo.protectState = FileConstants.STATE_UNPROTECTED;
         }
 
-        DBOperator.getInstance().removeProtectedFile(userId, fileInfo).subscribe(new DisposableObserver<Boolean>() {
+        DBOperator.getInstance(this).removeProtectedFile(userId, fileInfo).subscribe(new DisposableObserver<Boolean>() {
             @Override
             public void onNext(Boolean success) {
                 if (success) {
@@ -337,7 +331,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
     }
 
     private void getProtectedFiles() {
-        DBOperator.getInstance().getProtectedFiles(userId).subscribe(new DisposableObserver<List<FileInfo>>() {
+        DBOperator.getInstance(this).getProtectedFiles(userId).subscribe(new DisposableObserver<List<FileInfo>>() {
             @Override
             public void onNext(List<FileInfo> files) {
                 L.e("getProtectedFiles onNext size:" + files.size());
@@ -358,24 +352,18 @@ public class ProtectedFilesActivity extends AppBaseActivity {
     }
 
 
-    @OnClick({R.id.add, R.id.protect_all, R.id.remove_protect})
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.add:
-                Intent it = new Intent(this, FileDemo.class);
-                it.putExtra(FileConstants.KEY_FILE_OPERATE, FileConstants.OPERATE_TYPE_SELECT);
-                startActivityForResult(it, 1);
-                break;
-            case R.id.protect_all://保护全部
-                mIsProtect = true;
-                PermissionManager.requestExternalPermission(ProtectedFilesActivity.this, "for test");
-                break;
-            case R.id.remove_protect://移除保护
-                mIsProtect = false;
-                PermissionManager.requestExternalPermission(ProtectedFilesActivity.this, "for test");
-                break;
-            default:
-                break;
+        int id = v.getId();
+        if (id == R.id.add) {
+            Intent it = new Intent(this, FileDemo.class);
+            it.putExtra(FileConstants.KEY_FILE_OPERATE, FileConstants.OPERATE_TYPE_SELECT);
+            startActivityForResult(it, 1);
+        } else if (id == R.id.protect_all) {//保护全部
+            mIsProtect = true;
+            PermissionManager.requestExternalPermission(ProtectedFilesActivity.this, "for test");
+        } else if (id == R.id.remove_protect) {//移除保护
+            mIsProtect = false;
+            PermissionManager.requestExternalPermission(ProtectedFilesActivity.this, "for test");
         }
     }
 
@@ -402,7 +390,7 @@ public class ProtectedFilesActivity extends AppBaseActivity {
             }
         }
 
-        DBOperator.getInstance().addProtectedFiles(userId, mFileList).subscribe(new DisposableObserver<Boolean>() {
+        DBOperator.getInstance(this).addProtectedFiles(userId, mFileList).subscribe(new DisposableObserver<Boolean>() {
             @Override
             public void onNext(Boolean o) {
                 showToast("操作完成");

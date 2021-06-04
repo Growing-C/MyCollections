@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.file;
+package com.growingc.mediaoperator.filebrowser;
 
 /**
  * Description :
@@ -6,8 +6,6 @@ package com.cgy.mycollections.functions.file;
  * Date :2019/8/2
  */
 public class FileConstants {
-    public static final String PREF_USER = "user";
-    public static final String KEY_USER_ID = "user_id";
 
     public static final String KEY_FILE_OPERATE = "file_operate";
     public static final String KEY_FILE_INFO = "file_info";

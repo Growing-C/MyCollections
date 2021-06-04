@@ -15,13 +15,13 @@ import androidx.annotation.NonNull;
 
 import com.cgy.mycollections.base.AppBaseActivity;
 import com.cgy.mycollections.R;
-import com.cgy.mycollections.functions.file.ProtectedFilesActivity;
 import com.cgy.mycollections.functions.sqlite.db.DBOperator;
-import com.cgy.mycollections.utils.CommonUtils;
 import appframe.utils.L;
 import com.facebook.common.file.FileUtils;
 import com.facebook.common.internal.Preconditions;
 import com.growingc.mediaoperator.beans.FileInfo;
+import com.growingc.mediaoperator.filebrowser.ProtectedFilesActivity;
+import com.growingc.mediaoperator.utils.AccountUtils;
 import com.growingc.mediaoperator.utils.MediaHelper;
 
 import java.io.File;
@@ -72,7 +72,7 @@ public class MediaManagerDemo extends AppBaseActivity {
         L.e("isMediaScannerScanning:" + MediaHelper.isMediaScannerScanning(this));
         L.e("MediaStore.getVersion:" + MediaStore.getVersion(this));
 
-        DBOperator.getInstance().getProtectedFiles(CommonUtils.getUserId(this)).subscribe(new DisposableObserver<List<FileInfo>>() {
+        DBOperator.getInstance().getProtectedFiles(AccountUtils.getUserId(this)).subscribe(new DisposableObserver<List<FileInfo>>() {
             @Override
             public void onNext(List<FileInfo> files) {
                 L.e("getProtectedFiles onNext size:" + files.size());

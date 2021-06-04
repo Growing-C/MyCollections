@@ -1,20 +1,15 @@
-package com.cgy.mycollections.functions.file;
+package com.growingc.mediaoperator.filebrowser;
 
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.BaseDialogFragment;
+import com.growingc.mediaoperator.R;
 import com.growingc.mediaoperator.beans.FileInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Description :
@@ -23,13 +18,9 @@ import butterknife.OnClick;
  */
 public class FileInfoDialogFragment extends BaseDialogFragment {
 
-    @BindView(R.id.file_name)
     TextView mFileNameV;
-    @BindView(R.id.file_path)
     TextView mFilePathV;
-    @BindView(R.id.file_size)
     TextView mFileSizeV;
-    @BindView(R.id.file_last_modify_time)
     TextView mFileModifyTimeV;
 
     private FileInfo mFileInfo;
@@ -52,7 +43,16 @@ public class FileInfoDialogFragment extends BaseDialogFragment {
 
     @Override
     public void initView(View view) {
-        ButterKnife.bind(this, view);
+        mFileNameV = view.findViewById(R.id.file_name);
+        mFilePathV = view.findViewById(R.id.file_path);
+        mFileSizeV = view.findViewById(R.id.file_size);
+        mFileModifyTimeV = view.findViewById(R.id.file_last_modify_time);
+        view.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         Bundle bd = getArguments();
         if (bd != null) {
@@ -87,14 +87,4 @@ public class FileInfoDialogFragment extends BaseDialogFragment {
         }
     }
 
-    @OnClick({R.id.close_btn})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.close_btn:
-                dismiss();
-                break;
-            default:
-                break;
-        }
-    }
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,10 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingLeft="@dimen/px24_margin"
-        android:paddingRight="@dimen/px24_margin"
         android:layout_marginBottom="@dimen/px24_margin"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/px24_margin"
+        android:paddingRight="@dimen/px24_margin">
 
         <LinearLayout
             android:id="@+id/add"
@@ -31,6 +30,7 @@
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
+            android:onClick="onClick"
             android:orientation="vertical">
 
             <ImageView
@@ -40,7 +40,7 @@
                 android:background="@drawable/shape_circle_add_n"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_add_black_32dp"
-                android:tint="@android:color/white" />
+                app:tint="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,6 +56,7 @@
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
+            android:onClick="onClick"
             android:orientation="vertical">
 
             <ImageView
@@ -66,7 +67,7 @@
                 android:backgroundTint="@color/color_A9C010"
                 android:scaleType="centerInside"
                 android:src="@drawable/baohu"
-                android:tint="@android:color/white" />
+                app:tint="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,6 +83,7 @@
             android:layout_weight="1"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
+            android:onClick="onClick"
             android:orientation="vertical">
 
             <ImageView
@@ -92,7 +94,7 @@
                 android:backgroundTint="@color/red500"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_switch"
-                android:tint="@android:color/white" />
+                app:tint="@android:color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -105,9 +107,9 @@
     <com.yanzhenjie.recyclerview.SwipeRecyclerView
         android:id="@+id/protected_files"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/bottom_menus"
         android:layout_alignParentTop="true"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/px24_margin" />
 
 </RelativeLayout>

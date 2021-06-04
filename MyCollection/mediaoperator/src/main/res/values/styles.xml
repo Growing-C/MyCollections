@@ -1,4 +1,9 @@
 <resources>
 
 
+    <style name="CommonDivider">
+        <item name="android:background">@color/grey_26818181</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/px2_size</item>
+    </style>
 </resources>

@@ -10,6 +10,7 @@ import com.cgy.mycollections.R;
  */
 public class PickerViewAnimateUtil {
     private static final int INVALID = -1;
+
     /**
      * Get default animation resource when not defined by the user
      *
@@ -18,9 +19,8 @@ public class PickerViewAnimateUtil {
      * @return the id of the animation resource
      */
     public static int getAnimationResource(int gravity, boolean isInAnimation) {
-        switch (gravity) {
-            case Gravity.BOTTOM:
-                return isInAnimation ? R.anim.slide_in_bottom : R.anim.slide_out_bottom;
+        if (gravity == Gravity.BOTTOM) {
+            return isInAnimation ? R.anim.slide_in_bottom : R.anim.slide_out_bottom;
         }
         return INVALID;
     }

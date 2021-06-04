@@ -125,7 +125,6 @@
         <activity android:name=".functions.anim.AndroidAnimActivity" />
         <activity android:name=".functions.cache.CacheDemo" />
         <activity android:name=".functions.ethereum.EthereumDemo" />
-        <activity android:name=".functions.file.FileDemo" />
         <activity android:name=".functions.ui.dialogdemo.DialogAndWidgetsDemo" />
         <activity android:name=".functions.mediamanager.MediaManagerDemo" />
         <activity

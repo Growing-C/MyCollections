@@ -1,7 +1,6 @@
-package com.cgy.mycollections.functions.file;
+package com.growingc.mediaoperator.widgets;
 
 import android.content.Context;
-import android.gesture.Prediction;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -9,20 +8,19 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.cgy.mycollections.R;
-
-import appframe.utils.L;
+import com.growingc.mediaoperator.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import appframe.utils.L;
 
 /**
  * Description : 文件路径显示view

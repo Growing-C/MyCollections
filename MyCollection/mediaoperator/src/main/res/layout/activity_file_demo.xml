@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
     android:layout_height="match_parent"
-    tools:context=".functions.anim.AnimDemo">
+    android:background="@android:color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -23,12 +21,12 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.cgy.mycollections.functions.file.FilePathView
+    <com.growingc.mediaoperator.widgets.FilePathView
         android:id="@+id/file_path"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/px80_size"
         android:layout_below="@id/app_bar"
-        android:layout_marginLeft="@dimen/px10_margin"
-        android:layout_height="@dimen/px80_size" />
+        android:layout_marginLeft="@dimen/px10_margin" />
     <!--    <LinearLayout-->
     <!--        android:id="@+id/file_path"-->
     <!--        android:layout_width="match_parent"-->
@@ -53,16 +51,16 @@
         android:id="@+id/no_file"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:gravity="center"
         android:layout_below="@id/divider"
-        android:text="没有文件" />
+        android:gravity="center"
+        android:text="没有文件"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/file_list"
         android:layout_width="match_parent"
-        android:layout_above="@+id/operate_holder"
         android:layout_height="match_parent"
+        android:layout_above="@+id/operate_holder"
         android:layout_below="@id/divider" />
 
     <LinearLayout
@@ -70,35 +68,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="@dimen/px18_margin"
         android:background="@android:color/white"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/px18_margin"
-        android:paddingRight="@dimen/px18_margin">
+        android:paddingRight="@dimen/px18_margin"
+        android:paddingBottom="@dimen/px18_margin">
 
         <Button
             android:id="@+id/detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/px10_margin"
+            android:layout_weight="1"
             android:background="@null"
-            android:onClick="onClick"
             android:drawableTop="@drawable/ic_error_outline_24dp"
             android:drawableTint="@android:color/black"
-            android:textColor="@android:color/black"
-            android:layout_weight="1"
-            android:text="详情" />
+            android:onClick="onClick"
+            android:text="详情"
+            android:textColor="@android:color/black" />
 
         <Button
             android:id="@+id/delete"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@null"
-            android:onClick="onClick"
             android:drawableTop="@drawable/ic_delete_white_24dp"
             android:drawableTint="@android:color/black"
-            android:textColor="@android:color/black"
-            android:layout_weight="1"
-            android:text="删除" />
+            android:onClick="onClick"
+            android:text="删除"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 </RelativeLayout>

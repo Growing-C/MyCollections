@@ -1,8 +1,4 @@
-package com.cgy.mycollections.functions.file;
-
-//import androidx.appcompat.widget.RecyclerView;
-
-import androidx.recyclerview.widget.RecyclerView;
+package com.growingc.mediaoperator.filebrowser;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,8 +9,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cgy.mycollections.R;
-import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.growingc.mediaoperator.R;
 import com.growingc.mediaoperator.beans.FileInfo;
 import com.growingc.mediaoperator.utils.FileUtil;
 import com.growingc.mediaoperator.utils.ImageLoader;
@@ -22,8 +19,6 @@ import com.growingc.mediaoperator.utils.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Description :
@@ -37,9 +32,6 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
 
     private boolean mIsSelect = false;//是否是选择文件
     private boolean mShowHide = false;//是否显示隐藏文件
-
-    public FileListAdapter() {
-    }
 
     public FileListAdapter(boolean showHide) {
         this.mShowHide = showHide;
@@ -113,23 +105,22 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileHo
     }
 
     class FileHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.file_name)
         TextView fileName;
-        @BindView(R.id.file_info)
         TextView fileInfoV;
-        @BindView(R.id.right_arrow)
         View rightArrow;
-        @BindView(R.id.select)
         CheckBox selectBox;
 
-        @BindView(R.id.file_image)
         ImageView fileImage;
-        @BindView(R.id.file_protected)
         View protectedV;
 
         public FileHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            fileName = itemView.findViewById(R.id.file_name);
+            fileInfoV = itemView.findViewById(R.id.file_info);
+            rightArrow = itemView.findViewById(R.id.right_arrow);
+            selectBox = itemView.findViewById(R.id.select);
+            fileImage = itemView.findViewById(R.id.file_image);
+            protectedV = itemView.findViewById(R.id.file_protected);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

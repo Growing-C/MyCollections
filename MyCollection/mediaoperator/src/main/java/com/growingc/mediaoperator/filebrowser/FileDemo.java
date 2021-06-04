@@ -1,4 +1,4 @@
-package com.cgy.mycollections.functions.file;
+package com.growingc.mediaoperator.filebrowser;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,21 +18,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.cgy.mycollections.Config;
-import com.cgy.mycollections.R;
-import com.cgy.mycollections.base.AppBaseActivity;
-import com.cgy.mycollections.functions.sqlite.db.DBOperator;
-import com.cgy.mycollections.listeners.OnMyItemLongClickListener;
-import com.cgy.mycollections.utils.CommonUtils;
-import com.cgy.mycollections.widgets.itemdecorations.SpaceItemDecoration;
-import com.cgy.mycollections.widgets.pickerview.utils.PickerViewAnimateUtil;
+import com.growingc.mediaoperator.R;
 import com.growingc.mediaoperator.beans.FileInfo;
 import com.growingc.mediaoperator.beans.ImageInfo;
 import com.growingc.mediaoperator.beans.SortInfo;
+import com.growingc.mediaoperator.db.DBOperator;
 import com.growingc.mediaoperator.imagebrowser.ShowImagesActivity;
+import com.growingc.mediaoperator.utils.AccountUtils;
 import com.growingc.mediaoperator.utils.FileSortUtils;
 import com.growingc.mediaoperator.utils.FileUtil;
 import com.growingc.mediaoperator.utils.ImageHelper;
+import com.growingc.mediaoperator.widgets.FilePathView;
+import com.growingc.mediaoperator.widgets.SpaceItemDecoration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,22 +43,15 @@ import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
 import appframe.utils.L;
 import appframe.utils.ToastCustom;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 文件操作 读取等
  */
-public class FileDemo extends AppBaseActivity {
-    @BindView(R.id.toolbar)
+public class FileDemo extends FileOperateBaseActivity {
     Toolbar toolbar;
-    @BindView(R.id.file_list)
     RecyclerView mFileListV;
-    @BindView(R.id.operate_holder)
     View mBottomMenuHolderV;
-    @BindView(R.id.file_path)
     FilePathView mFilePathV;
-    @BindView(R.id.no_file)
     View mNoFileV;
 
     FileListAdapter mFileAdapter;
@@ -78,7 +67,11 @@ public class FileDemo extends AppBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_demo);
-        ButterKnife.bind(this);
+        toolbar = findViewById(R.id.toolbar);
+        mFileListV = findViewById(R.id.file_list);
+        mBottomMenuHolderV = findViewById(R.id.operate_holder);
+        mFilePathV = findViewById(R.id.file_path);
+        mNoFileV = findViewById(R.id.no_file);
         L.e("onCreate");
 
         setSupportActionBar(toolbar);
@@ -102,7 +95,7 @@ public class FileDemo extends AppBaseActivity {
         });
 
         mFileListV.setLayoutManager(new LinearLayoutManager(this));
-        mFileAdapter = new FileListAdapter(Config.isShowHiddenFiles());
+        mFileAdapter = new FileListAdapter(Config.isShowHiddenFiles(this));
         if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
             //选择文件模式
             mFileAdapter.setIsSelect(true);
@@ -170,7 +163,7 @@ public class FileDemo extends AppBaseActivity {
     }
 
     private void refreshCurrentFileList(File parent) {
-        mFileList = getSortedChildFiles(parent, Config.isShowHiddenFiles(), true);
+        mFileList = getSortedChildFiles(parent, Config.isShowHiddenFiles(this), true);
         mFileAdapter.clearSelectedFiles();//清空选中的文件
         mFileAdapter.setData(mFileList);
         L.e(parent.getName() + "-->mFileList size:" + mFileList.size());
@@ -233,7 +226,7 @@ public class FileDemo extends AppBaseActivity {
      * 显示底部菜单
      */
     private void showBottomMenu() {
-        int res = PickerViewAnimateUtil.getAnimationResource(Gravity.BOTTOM, true);
+        int res = R.anim.slide_in_bottom;
         Animation bottomInAnim = AnimationUtils.loadAnimation(this, res);
         mBottomMenuHolderV.setVisibility(View.VISIBLE);
         mBottomMenuHolderV.startAnimation(bottomInAnim);
@@ -247,7 +240,7 @@ public class FileDemo extends AppBaseActivity {
             return;
         }
 
-        int res = PickerViewAnimateUtil.getAnimationResource(Gravity.BOTTOM, false);
+        int res = R.anim.slide_out_bottom;
         Animation bottomOutAnim = AnimationUtils.loadAnimation(this, res);
         bottomOutAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -270,20 +263,16 @@ public class FileDemo extends AppBaseActivity {
 
     @SuppressLint("CheckResult")
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.detail://详情
-                FileInfoDialogFragment.newInstance(mFileAdapter.getSelectedFiles())
-                        .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
-                break;
-            case R.id.delete://删除
-                showDeleteDialog(mFileAdapter.getSelectedFiles());
-                break;
-            default:
-                break;
+        int id = v.getId();
+        if (id == R.id.detail) {//详情
+            FileInfoDialogFragment.newInstance(mFileAdapter.getSelectedFiles())
+                    .show(getSupportFragmentManager(), "CheckInSelectRoomDialogFragment");
+        } else if (id == R.id.delete) {//删除
+            showDeleteDialog(mFileAdapter.getSelectedFiles());
         }
     }
 
-    private void showDeleteDialog(ArrayList<FileInfo> filesToDelete) {
+    private void showDeleteDialog(final ArrayList<FileInfo> filesToDelete) {
         if (filesToDelete == null || filesToDelete.size() == 0)
             return;
         int len = filesToDelete.size();
@@ -339,7 +328,7 @@ public class FileDemo extends AppBaseActivity {
     private void confirmSelectFile() {
         List<FileInfo> fileList = mFileAdapter.getSelectedFiles();
         if (!fileList.isEmpty()) {
-            DBOperator.getInstance().addProtectedFiles(CommonUtils.getUserId(this), fileList).subscribe(new ApiCallback<Boolean>() {
+            DBOperator.getInstance(this).addProtectedFiles(AccountUtils.getUserId(this), fileList).subscribe(new ApiCallback<Boolean>() {
                 @Override
                 public void onSuccess(Boolean model) {
                     setResult(RESULT_OK);
@@ -407,7 +396,7 @@ public class FileDemo extends AppBaseActivity {
         MenuItem showOrHideFileMenu = menu.findItem(R.id.action_show_hidden_files);
         MenuItem confirmMenu = menu.findItem(R.id.action_confirm);
         if (showOrHideFileMenu != null) {
-            showOrHideFileMenu.setChecked(Config.isShowHiddenFiles());
+            showOrHideFileMenu.setChecked(Config.isShowHiddenFiles(this));
         }
         L.e("onCreateOptionsMenu");
         if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
@@ -426,30 +415,23 @@ public class FileDemo extends AppBaseActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.action_show_hidden_files://隐藏 隐藏文件
-                item.setChecked(!item.isChecked());
-                Config.setShowHiddenFiles(item.isChecked());
+        //筛选
+        if (id == R.id.action_show_hidden_files) {//隐藏 隐藏文件
+            item.setChecked(!item.isChecked());
+            Config.setShowHiddenFiles(item.isChecked(), this);
 
-                refreshCurrentFileList(mFilePathV.getCurrentDir());
+            refreshCurrentFileList(mFilePathV.getCurrentDir());
 
-                mFileAdapter.setShowHideFiles(item.isChecked());
-                break;
-            case R.id.action_confirm://确定选择文件
-                confirmSelectFile();
-                break;
-            case R.id.action_reverse://顺序反转
-                mSortInfo.setAscending(!mSortInfo.isAscending());
-                if (mFileList != null && mFileList.size() > 0) {
-                    Collections.reverse(mFileList);
-                    mFileAdapter.notifyDataSetChanged();
-                }
-                break;
-            case R.id.action_filter://筛选
-
-                break;
-            default:
-                break;
+            mFileAdapter.setShowHideFiles(item.isChecked());
+        } else if (id == R.id.action_confirm) {//确定选择文件
+            confirmSelectFile();
+        } else if (id == R.id.action_reverse) {//顺序反转
+            mSortInfo.setAscending(!mSortInfo.isAscending());
+            if (mFileList != null && mFileList.size() > 0) {
+                Collections.reverse(mFileList);
+                mFileAdapter.notifyDataSetChanged();
+            }
+        } else if (id == R.id.action_filter) {
         }
 
         return true;

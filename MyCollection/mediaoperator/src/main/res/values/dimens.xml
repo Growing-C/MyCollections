@@ -3,4 +3,7 @@
 
     <dimen name="px100">50dp</dimen>
     <dimen name="camera_drawable_width_padding">33dp</dimen>
+
+
+    <dimen name="dimen_10">10dp</dimen>
 </resources>

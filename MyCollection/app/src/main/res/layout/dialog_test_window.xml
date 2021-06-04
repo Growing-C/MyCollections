@@ -2,16 +2,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_rec_white_r8"
+    android:background="@drawable/shape_rec_grey_r5"
     android:paddingLeft="@dimen/px18_margin"
     android:paddingRight="@dimen/px18_margin">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginBottom="@dimen/px80_size"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/px10_margin"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="@dimen/px80_size">
 
         <ImageView
             android:id="@+id/close_btn"
@@ -22,9 +22,9 @@
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
+            android:layout_height="@dimen/px50_margin"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:layout_height="@dimen/px50_margin"
             android:text="测试window"
             android:textColor="@android:color/black"
             android:textSize="@dimen/px25_tx_size" />
@@ -33,11 +33,11 @@
         <Button
             android:id="@+id/show_alert"
             android:layout_width="match_parent"
-            android:layout_margin="@dimen/px30_common"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/title"
-            android:gravity="center"
             android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/px30_common"
+            android:gravity="center"
             android:text="显示新的dialog"
             android:textColor="@android:color/black"
             android:textSize="@dimen/px31_tx_size" />
