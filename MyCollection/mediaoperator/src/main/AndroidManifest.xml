@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity android:name=".PickMediaActivity" />
-        <activity android:name=".filebrowser.FileDemo" />
+        <activity android:name=".filebrowser.FileBrowserActivity" />
         <activity android:name=".filebrowser.ProtectedFilesActivity" />
 
         <activity

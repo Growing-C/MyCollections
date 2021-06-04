@@ -9,7 +9,7 @@ import appframe.utils.SharePreUtil;
  * Author :cgy
  * Date :2019/12/5
  */
-public class Config {
+public class FileConfig {
     private static final String CONFIG_PREF = "config";
 
     private static final String KEY_SHOW_HIDDEN_FILES = "show_hidden_file";

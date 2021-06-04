@@ -176,7 +176,7 @@ public class ProtectedFilesActivity extends FileOperateBaseActivity {
                 L.e("mFileAdapter onItemClick:" + position);
                 if (fileInfo.isDirectory()) {
                     //文件夹
-                    Intent it = new Intent(ProtectedFilesActivity.this, FileDemo.class);
+                    Intent it = new Intent(ProtectedFilesActivity.this, FileBrowserActivity.class);
                     it.putExtra(FileConstants.KEY_FILE_INFO, fileInfo);
                     startActivity(it);
                 } else {
@@ -355,7 +355,7 @@ public class ProtectedFilesActivity extends FileOperateBaseActivity {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.add) {
-            Intent it = new Intent(this, FileDemo.class);
+            Intent it = new Intent(this, FileBrowserActivity.class);
             it.putExtra(FileConstants.KEY_FILE_OPERATE, FileConstants.OPERATE_TYPE_SELECT);
             startActivityForResult(it, 1);
         } else if (id == R.id.protect_all) {//保护全部

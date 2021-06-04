@@ -47,7 +47,7 @@ import appframe.utils.ToastCustom;
 /**
  * 文件操作 读取等
  */
-public class FileDemo extends FileOperateBaseActivity {
+public class FileBrowserActivity extends FileOperateBaseActivity {
     Toolbar toolbar;
     RecyclerView mFileListV;
     View mBottomMenuHolderV;
@@ -95,7 +95,7 @@ public class FileDemo extends FileOperateBaseActivity {
         });
 
         mFileListV.setLayoutManager(new LinearLayoutManager(this));
-        mFileAdapter = new FileListAdapter(Config.isShowHiddenFiles(this));
+        mFileAdapter = new FileListAdapter(FileConfig.isShowHiddenFiles(this));
         if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
             //选择文件模式
             mFileAdapter.setIsSelect(true);
@@ -111,14 +111,14 @@ public class FileDemo extends FileOperateBaseActivity {
 
                 if (!fileInfo.isDirectory()) {
                     if (ImageHelper.isPicIgnoreDot(fileInfo.getFilePath())) {
-                        Intent it = new Intent(FileDemo.this, ShowImagesActivity.class);
+                        Intent it = new Intent(FileBrowserActivity.this, ShowImagesActivity.class);
                         it.putExtra("imageInfo", ImageInfo.importFromFileInfo(fileInfo));
                         it.putExtra("sortInfo", mSortInfo);
                         startActivity(it);
                     } else {
                         try {
                             //TODO:FileUriExposedException
-                            startActivity(FileUtil.openFileIncludingHiddenFile(FileDemo.this, fileInfo.getShowFile()));
+                            startActivity(FileUtil.openFileIncludingHiddenFile(FileBrowserActivity.this, fileInfo.getShowFile()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -144,7 +144,7 @@ public class FileDemo extends FileOperateBaseActivity {
         mFileListV.setAdapter(mFileAdapter);
         mFileListV.addItemDecoration(new SpaceItemDecoration(2));
 
-        PermissionManager.requestExternalPermission(FileDemo.this, "for test");
+        PermissionManager.requestExternalPermission(FileBrowserActivity.this, "for test");
 
 //        mRootDir = Environment.getExternalStorageDirectory();
 //        mCurrentDir = mRootDir;
@@ -163,7 +163,7 @@ public class FileDemo extends FileOperateBaseActivity {
     }
 
     private void refreshCurrentFileList(File parent) {
-        mFileList = getSortedChildFiles(parent, Config.isShowHiddenFiles(this), true);
+        mFileList = getSortedChildFiles(parent, FileConfig.isShowHiddenFiles(this), true);
         mFileAdapter.clearSelectedFiles();//清空选中的文件
         mFileAdapter.setData(mFileList);
         L.e(parent.getName() + "-->mFileList size:" + mFileList.size());
@@ -283,7 +283,7 @@ public class FileDemo extends FileOperateBaseActivity {
             filePathList.append(filesToDelete.get(i).getFilePath());
             filePathList.append("\n");
         }
-        new AlertDialog.Builder(FileDemo.this)
+        new AlertDialog.Builder(FileBrowserActivity.this)
                 .setMessage("确认删除" + filesToDelete.size() + "个文件？ \n" + filePathList)
                 .setNegativeButton("取消", null)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -307,7 +307,7 @@ public class FileDemo extends FileOperateBaseActivity {
                 deleteFileCount++;
             }
         }
-        new ToastCustom(FileDemo.this, "删除了 " + deleteFileCount + "个文件", Toast.LENGTH_SHORT).show();
+        new ToastCustom(FileBrowserActivity.this, "删除了 " + deleteFileCount + "个文件", Toast.LENGTH_SHORT).show();
 
 //        hideBottomMenu();
 
@@ -372,7 +372,7 @@ public class FileDemo extends FileOperateBaseActivity {
     public void externalPermissionDenied() {
         L.e("externalPermissionDenied");
 
-        PermissionDialog mPermissionDialog = new PermissionDialog(FileDemo.this, "需要读取文件权限");
+        PermissionDialog mPermissionDialog = new PermissionDialog(FileBrowserActivity.this, "需要读取文件权限");
         mPermissionDialog.show();
     }
 
@@ -396,7 +396,7 @@ public class FileDemo extends FileOperateBaseActivity {
         MenuItem showOrHideFileMenu = menu.findItem(R.id.action_show_hidden_files);
         MenuItem confirmMenu = menu.findItem(R.id.action_confirm);
         if (showOrHideFileMenu != null) {
-            showOrHideFileMenu.setChecked(Config.isShowHiddenFiles(this));
+            showOrHideFileMenu.setChecked(FileConfig.isShowHiddenFiles(this));
         }
         L.e("onCreateOptionsMenu");
         if (FileConstants.OPERATE_TYPE_SELECT.equals(mFileOperateType)) {
@@ -418,7 +418,7 @@ public class FileDemo extends FileOperateBaseActivity {
         //筛选
         if (id == R.id.action_show_hidden_files) {//隐藏 隐藏文件
             item.setChecked(!item.isChecked());
-            Config.setShowHiddenFiles(item.isChecked(), this);
+            FileConfig.setShowHiddenFiles(item.isChecked(), this);
 
             refreshCurrentFileList(mFilePathV.getCurrentDir());
 

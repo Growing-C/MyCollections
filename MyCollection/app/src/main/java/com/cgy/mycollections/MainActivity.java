@@ -65,7 +65,7 @@ import com.cgy.mycollections.listeners.swipedrag.SimpleItemTouchHelperCallback;
 import com.cgy.mycollections.testsources.TestDemo;
 import com.cgy.mycollections.utils.SystemUtil;
 import com.growingc.mediaoperator.PickMediaActivity;
-import com.growingc.mediaoperator.filebrowser.FileDemo;
+import com.growingc.mediaoperator.filebrowser.FileBrowserActivity;
 import com.growingc.mediaoperator.filebrowser.ProtectedFilesActivity;
 
 import java.util.List;
@@ -239,7 +239,7 @@ public class MainActivity extends AppBaseActivity {
             new Demo(R.string.title_database_demo, R.string.info_database_demo, DataBaseDemo.class),
             new Demo(R.string.title_cache_demo, R.string.info_cache_demo, CacheDemo.class),
             new Demo(R.string.title_ethereum_demo, R.string.info_ethereum_demo, EthereumDemo.class),
-            new Demo(R.string.title_file, R.string.info_file, FileDemo.class),
+            new Demo(R.string.title_file, R.string.info_file, FileBrowserActivity.class),
             new Demo(R.string.title_ble, R.string.info_ble, BleDemo.class),
             new Demo(R.string.title_net_config, R.string.info_net_config, NetConfigDemo.class),
             new Demo(R.string.title_media_manager, R.string.info_media_manager, MediaManagerDemo.class),
