@@ -211,6 +211,7 @@ public class ImageLoader {
     public static void loadImageFitCenter(Context context, String url, ImageView imageView) {
 //        Glide.with(context).load(url).into(imageView);
         Glide.with(context).load(url).fitCenter().into(imageView);
+//        Glide.with(context).load(url).centerCrop().into(imageView);
 
     }
 
