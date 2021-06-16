@@ -2,9 +2,12 @@ package appframe.permission;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import java.lang.annotation.Annotation;
@@ -26,6 +29,15 @@ public class PermissionUtils {
      */
     public static boolean isOverMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    }
+
+    public static boolean isPermissionAllGranted(@NonNull Context context, @NonNull String... permission) {
+        for (String value : permission) {
+            if (ContextCompat.checkSelfPermission(context, value) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

@@ -32,7 +32,8 @@ public class FilePathView extends HorizontalScrollView {
     LinearLayout mFilePathContainer;
 
     IPathSelectListener mListener;
-    File mRootDir;
+    File mExternalStorageDir;//外部存储 手机存储=storage/emulated/0
+    File mRootDir;//根文件夹，有可能是外部传过来的路径，所以和 mExternalStorageDir 不一定相同
     File mCurrentDir;
 
     public FilePathView(Context context) {
@@ -66,6 +67,7 @@ public class FilePathView extends HorizontalScrollView {
     public void initRootFile() {
         mFilePathContainer.removeAllViews();
 
+        mExternalStorageDir = Environment.getExternalStorageDirectory();
         mRootDir = Environment.getExternalStorageDirectory();
         mCurrentDir = mRootDir;
 
@@ -97,7 +99,7 @@ public class FilePathView extends HorizontalScrollView {
         if (pathFile == null)
             return;
         String pathName = pathFile.getName();
-        if (mRootDir.equals(pathFile)) {
+        if (mExternalStorageDir.equals(pathFile)) {
             pathName = "手机存储";
         }
 

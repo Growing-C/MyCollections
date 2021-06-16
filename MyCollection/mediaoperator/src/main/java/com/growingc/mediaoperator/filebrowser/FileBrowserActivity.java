@@ -1,5 +1,6 @@
 package com.growingc.mediaoperator.filebrowser;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import appframe.permission.PermissionDenied;
 import appframe.permission.PermissionDialog;
 import appframe.permission.PermissionGranted;
 import appframe.permission.PermissionManager;
+import appframe.permission.PermissionUtils;
 import appframe.utils.L;
 import appframe.utils.ToastCustom;
 
@@ -149,6 +151,14 @@ public class FileBrowserActivity extends FileOperateBaseActivity {
 //        mRootDir = Environment.getExternalStorageDirectory();
 //        mCurrentDir = mRootDir;
         mBottomMenuHolderV.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (PermissionUtils.isPermissionAllGranted(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            refreshCurrentFileList(mFilePathV.getCurrentDir());
+        }
     }
 
     /**

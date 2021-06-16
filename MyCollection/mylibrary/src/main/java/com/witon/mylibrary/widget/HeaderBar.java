@@ -152,6 +152,15 @@ public class HeaderBar {
     }
 
     /**
+     * 设置标题
+     */
+    public void setSubTitle(String subTitle) {
+        TextView textView = (TextView) findViewById(R.id.toolbar_sub_title);
+
+        textView.setText(subTitle);
+    }
+
+    /**
      * 设置右边的文字
      *
      * @param ids

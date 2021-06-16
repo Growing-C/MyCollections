@@ -1,10 +1,12 @@
 package com.growingc.mediaoperator.imagebrowser;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.growingc.mediaoperator.R;
@@ -19,6 +21,8 @@ import com.witon.mylibrary.widget.HeaderBar;
 import java.io.File;
 import java.util.List;
 
+import appframe.utils.ToastCustom;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -30,6 +34,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     View mDelayHideButton;
     HeaderBar mHeaderBar;
 
+    ImagePagerAdapter mImagePagerAdapter;
     ImageInfo mSelectedImage;
     SortInfo mSortInfo;
     List<File> mImageFiles;
@@ -44,7 +49,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
         mContentView = findViewById(R.id.fullscreen_content);
         mImagePager = findViewById(R.id.image_pager);
         mView2Hide = findViewById(R.id.fullscreen_content_controls);
-        mDelayHideButton = findViewById(R.id.dummy_button);
+        mDelayHideButton = findViewById(R.id.btn_delay_hide);
 
         mHeaderBar = new HeaderBar(this);
 //        mToolbar.setTitleMarginStart(100);
@@ -55,7 +60,6 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 //        getSupportActionBar().hide();
 
         mHeaderBar.setDefaultBackIcon();
-        findViewById(R.id.test).setVisibility(View.GONE);
 
         initFullScreenToggleAction(mDelayHideButton);
 
@@ -65,28 +69,36 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
             mSortInfo = SortInfo.getDefault();
         }
 
-        File imageDir = new File(mSelectedImage.imageFilePath).getParentFile();
-        mImageFiles = FileUtil.listImageFile(imageDir, true);
-        mImageFiles = FileSortUtils.sortFileListByName(mImageFiles, mSortInfo.isAscending());
-
         mImagePager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 mHeaderBar.setTitle(position + 1 + "/" + mImageFiles.size());
+                mHeaderBar.setSubTitle(mImagePagerAdapter.getItem(position).getName());
             }
         });
-        ImagePagerAdapter adapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
+        mImagePagerAdapter = new ImagePagerAdapter(this, new OnMyItemClickListener<File>() {
             @Override
             public void onItemClick(int position, File data) {
                 toggle();
             }
         });
-        mImagePager.setAdapter(adapter);
-        adapter.setData(mImageFiles);
-        int selectedPos = findFileIndexInList(mSelectedImage.imageFilePath, mImageFiles);
-        if (selectedPos >= 0)
-            mImagePager.setCurrentItem(selectedPos, false);
+        mImagePager.setAdapter(mImagePagerAdapter);
 
+        refreshImages(true);
+    }
+
+    private void refreshImages(boolean needShowImagePos) {
+        File imageDir = new File(mSelectedImage.imageFilePath).getParentFile();
+        mImageFiles = FileUtil.listImageFile(imageDir, true);
+        mImageFiles = FileSortUtils.sortFileListByName(mImageFiles, mSortInfo.isAscending());
+
+        mImagePagerAdapter.setData(mImageFiles);
+        if (needShowImagePos) {
+            int selectedPos = findFileIndexInList(mSelectedImage.imageFilePath, mImageFiles);
+            if (selectedPos >= 0) {
+                mImagePager.setCurrentItem(selectedPos, false);
+            }
+        }
     }
 
     @Override
@@ -110,45 +122,32 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
 
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.dummy_button) {
-        } else if (id == R.id.blur) {
-        } else if (id == R.id.hide) {//                SystemUiUtils.hideSystemUi(mContentView);
-            setNavVisibility(false);
-        } else if (id == R.id.show) {//                SystemUiUtils.showSystemUi(mContentView);
-            setNavVisibility(true);
+        if (id == R.id.btn_delete) {
+            File fileToDelete = mImagePagerAdapter.getItem(mImagePager.getCurrentItem());
+            showDeleteDialog(fileToDelete);
         }
     }
 
-    Handler handler = new Handler();
-    Runnable mNavHider = new Runnable() {
-        @Override
-        public void run() {
-            setNavVisibility(false);
-        }
-    };
+    private void showDeleteDialog(final File fileToDelete) {
+        if (fileToDelete == null)
+            return;
+        new AlertDialog.Builder(ShowImagesActivity.this)
+                .setMessage("确认删除文件：" + fileToDelete.getName())
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteFiles(fileToDelete);
+                    }
+                }).create().show();
+    }
 
-    void setNavVisibility(boolean visible) {
-        int newVis = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE;
-        if (!visible) {
-            newVis |= View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
+    private void deleteFiles(File fileToDelete) {
+        if (fileToDelete == null)
+            return;
+        if (FileUtil.deleteFile(fileToDelete.getPath())) {
+            new ToastCustom(this, "删除了文件：" + fileToDelete.getName(), Toast.LENGTH_SHORT).show();
+            refreshImages(false);
         }
-        // If we are now visible, schedule a timer for us to go invisible.
-        if (visible) {
-            Handler h = handler;
-            if (h != null) {
-                h.removeCallbacks(mNavHider);
-                // If the menus are open or play is paused, we will not auto-hide.
-                h.postDelayed(mNavHider, 3000);
-            }
-        }
-        // Set the new desired visibility.
-        mContentView.setSystemUiVisibility(newVis);
-//        mTitleView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
-//        mPlayButton.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
-//        mSeekView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 }

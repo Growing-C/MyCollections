@@ -49,10 +49,23 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:ellipsize="end"
-            android:maxLines="1"
             android:maxWidth="@dimen/px384_height"
+            android:maxLines="1"
             android:textColor="@android:color/white"
             android:textSize="@dimen/px33_tx_size" />
+
+        <TextView
+            android:id="@+id/toolbar_sub_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/px2_size"
+            android:layout_centerHorizontal="true"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/px384_height"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/px25_tx_size" />
 
         <ImageView
             android:id="@+id/toolbar_headimg"
