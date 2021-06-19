@@ -3,6 +3,7 @@ package com.witon.mylibrary.widget;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,14 +14,17 @@ import androidx.core.content.ContextCompat;
 
 import com.witon.mylibrary.R;
 
+import appframe.utils.L;
+import appframe.utils.SystemUiUtils;
+
 
 /**
  * toolbar
  * Created by RB-cgy on 2017/1/9.
  */
 public class HeaderBar {
-    private Toolbar mToolbar;
-    private AppCompatActivity mActivity;
+    private final Toolbar mToolbar;
+    private final AppCompatActivity mActivity;
     private View rootView;//根view
 
     public HeaderBar(AppCompatActivity activity) {//activity使用,必须保证activity布局中有include toolbar
@@ -39,6 +43,23 @@ public class HeaderBar {
         mToolbar.setTitle("");//默认的title靠左，设为空
         mActivity.setSupportActionBar(mToolbar);
         setHeadImg("", "");
+    }
+
+    /**
+     * 设置 沉浸态的情况下 不要遮盖状态栏
+     *
+     * @deprecated 不灵，不如外面包一层layout 然后外部设置 fitSystemWindows。
+     */
+    public void setFitSystemWindows(final Window window) {
+        mToolbar.setFitsSystemWindows(true);
+        mToolbar.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int statusBarHeight = SystemUiUtils.getStatusBarHeight(window);
+                L.i("statusBarHeight:" + statusBarHeight);
+//                mToolbar.getLayoutParams();
+            }
+        }, 0);
     }
 
     /**

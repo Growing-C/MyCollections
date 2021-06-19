@@ -133,7 +133,6 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".functions.ui.androiddesign.recyclerview.contact.ContactListActivity" />
         <activity android:name=".functions.ble.BleDemo" />
-        <activity android:name=".functions.file.ProtectedFilesActivity" />
         <activity android:name=".functions.ui.UiDemos" />
         <activity android:name=".functions.jetpack.JetPackDemos" />
         <activity android:name=".testsources.arknights.ui.ArknightsDemo" />

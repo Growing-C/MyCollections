@@ -25,49 +25,6 @@
         <item name="android:windowAnimationStyle">@style/myWindowAnimation</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <!--If you are using revision 22.1 please use just windowNoTitle. Without android:-->
-        <item name="windowNoTitle">true</item><!--无标题-->
-        <!--We will be using the toolbar so no need to show ActionBar-->
-        <item name="windowActionBar">false</item>
-        <!-- colorPrimary is used for the default action bar background -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!-- colorAccent is used as the default value for colorControlActivated
-       which is used to tint widgets -->
-        <item name="colorAccent">@color/colorAccent</item>
-        <!--配合沉浸式状态栏使用，用于把statusbar设为透明-->
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
-
-        <!--TextColor只是xml屬性，用於將顏色設置爲任何給定視圖的文本。-->
-        <!--TextColorPrimary是啓用的按鈕和大文本視圖的默認文本顏色。-->
-        <!--TextColorSecondary是中文和小文字視圖的默認文本顏色。-->
-        <!--可以控制view默认字体颜色，也可以控制toolbar默认的title颜色 toolbarStyle中的会被这个属性重写，除非直接在toolbar中指定style-->
-        <item name="android:textColorPrimary">@android:color/holo_blue_bright</item>
-        <!--全局控制textView默认字体颜色-->
-        <item name="android:textColorSecondary">@color/textColorSecondary</item>
-        <!--全局控制textView默认字体颜色,上面两个都无效-->
-        <item name="android:textColor">@android:color/darker_gray</item>
-        <!--如果要button和默认textView color不一样 使用下面的style-->
-        <!--<item name="android:buttonStyle">@style/myButtonStyle</item>-->
-
-        <!--可以控制view默认颜色，也可以控制toolbar菜单三点及返回按钮的颜色-->
-        <!--<item name="android:colorControlNormal">@color/icFocused</item>-->
-        <!--toolbar右边文字颜色，有效,似乎层级在上面的属性会覆盖下面的 比如toolbarStyle中的actionMenuTextColor就被这里的覆盖了-->
-        <item name="actionMenuTextColor">@android:color/holo_red_dark</item>
-        <!--从apptheme层级设置toolbar右边弹出菜单，功能经测试有效，但是toolbarStyle中的popupTheme会覆盖这个-->
-        <item name="actionOverflowMenuStyle">@style/AppTheme.PopupOverlay</item>
-        <!--toolbarStyle是为了去掉自定义toolbar左边的留白,有用-->
-        <item name="toolbarStyle">@style/AppToolBar</item>
-        <!-- You can also set colorControlNormal, colorControlActivated
-         colorControlHighlight and colorSwitchThumbNormal. -->
-        <!--<item name="android:windowIsTranslucent">true</item>&lt;!&ndash;半透明&ndash;&gt;-->
-        <!--windowIsTranslucent makes the background of app transparent-->
-    </style>
-
     <!--    acitivty跳转动画, 如果使用了 translucent 需要搭配parent @android:style/Animation.Translucent 使用-->
     <style name="myWindowAnimation" parent="@android:style/Animation.Translucent">
         <item name="android:activityOpenEnterAnimation">@anim/anim_left_in</item>
@@ -94,16 +51,6 @@
         <!--是否浮现在activity之上-->
         <item name="android:windowIsFloating">true</item>
     </style>
-
-    <!--    为toolbar设置theme 可以控制toolbar样式 如返回键颜色（colorControlNormal） etc-->
-    <style name="AppToolBar" parent="Widget.AppCompat.Toolbar">
-        <item name="contentInsetStart">0dp</item><!-- 设置该属性解决空白部分-->
-
-        <item name="popupTheme">@style/AppTheme.PopupOverlay</item>
-        <item name="theme">@style/ToolbarTheme</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <!--很多属性如 popupBackgroun dropDownVerticalOffset在此处不生效，必须在v21中编辑才有用-->
     <!--<style name="AppTheme.PopupOverlay" parent="Widget.AppCompat.PopupMenu.Overflow"  >-->
@@ -175,8 +122,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>

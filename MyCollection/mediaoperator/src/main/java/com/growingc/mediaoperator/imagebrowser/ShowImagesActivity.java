@@ -3,12 +3,13 @@ package com.growingc.mediaoperator.imagebrowser;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
+import android.view.WindowInsets;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.gson.Gson;
 import com.growingc.mediaoperator.R;
 import com.growingc.mediaoperator.beans.ImageInfo;
 import com.growingc.mediaoperator.beans.SortInfo;
@@ -21,6 +22,7 @@ import com.witon.mylibrary.widget.HeaderBar;
 import java.io.File;
 import java.util.List;
 
+import appframe.utils.L;
 import appframe.utils.ToastCustom;
 
 /**
@@ -43,7 +45,7 @@ public class ShowImagesActivity extends BaseFullScreenActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+//        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_show_images);
 
         mContentView = findViewById(R.id.fullscreen_content);

@@ -46,34 +46,41 @@
             android:orientation="horizontal" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/fullscreen_content_controls"
+    <!--    包一层，不然toolbar fitSystemWindows无效-->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/px100"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-        <Button
-            android:id="@+id/btn_delay_hide"
-            style="@style/CommonBtnStyle"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_close_black_24dp"
-            android:text="@string/hide" />
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/px100"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/btn_delete"
-            style="@style/CommonBtnStyle"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:drawableStart="@drawable/ic_delete"
-            android:onClick="onClick"
-            android:text="@string/delete" />
+            <Button
+                android:id="@+id/btn_delay_hide"
+                style="@style/CommonBtnStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_close_black_24dp"
+                android:text="@string/hide" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_delete"
+                style="@style/CommonBtnStyle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_delete"
+                android:onClick="onClick"
+                android:text="@string/delete" />
 
-    <include layout="@layout/toolbar" />
+        </LinearLayout>
+
+        <include layout="@layout/toolbar" />
+    </RelativeLayout>
 
     <!--    <TextView-->
     <!--        android:id="@+id/fullscreen_content"-->

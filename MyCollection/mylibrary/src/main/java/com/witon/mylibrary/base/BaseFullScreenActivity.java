@@ -48,40 +48,38 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
 
     private View mContentView;//主要内容的view，点击这个view可以切换全屏状态
     private View mView2Hide;//要显示和隐藏的额外的view（除了actionbar和systemUi以外的要控制的view）
-    private final Runnable mHidePart2Runnable = new Runnable() {
+    //进入全屏的时候隐藏某些view
+    private final Runnable mHideViesOnEnterFullScreenRunnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
         public void run() {
             // Delayed removal of status and navigation bar
-
+            hideViewsOnEnterFullScreen();
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            if (mContentView != null)
-                mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//            if (mContentView != null)
+//                mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
-    private final Runnable mShowPart2Runnable = new Runnable() {
+    //退出全屏的时候 显示要显示的view
+    private final Runnable mShowViewsOnExitFullScreenRunnable = new Runnable() {
         @Override
         public void run() {
             // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-            mView2Hide.setVisibility(View.VISIBLE);
+            showViewsOnExitFullScreen();
         }
     };
-    private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
+    private boolean mIsFullScreen;//是否全屏
+    private final Runnable mEnterFullScreenRunnable = new Runnable() {
         @Override
         public void run() {
-            exitFullScreen();
+            showFullScreen();
         }
     };
     /**
@@ -118,7 +116,7 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
      * 初始化全屏需要的内容，不调用就无法切换全屏状态
      */
     protected void initFullScreenToggleAction(View delayHideButton) {
-        mVisible = true;
+        mIsFullScreen = true;
         mView2Hide = getView2Hide();
         mContentView = getContentView();
 
@@ -142,15 +140,21 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         L.i("onPostCreate");
+
+        //设置view大小扩展到navigationBar底下，这样隐藏导航栏时显示的view的大小就不会变化
+        SystemUiUtils.setScreenUnderNavBar(getContentView());
+        //6.0以上的 亮色状态栏模式，可以把状态栏字体变成 黑字
+        SystemUiUtils.setStatusLight(getContentView());
+
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        if (mVisible)
+        if (mIsFullScreen)
             delayedHide(0);
     }
 
     protected void toggle() {
-        if (mVisible) {
+        if (mIsFullScreen) {
             exitFullScreen();
         } else {
             showFullScreen();
@@ -159,7 +163,19 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
 
     private void exitFullScreen() {
         L.i("exitFullScreen");
-        // Hide UI first
+        SystemUiUtils.quitFullScreen(getWindow());
+
+        mIsFullScreen = false;
+
+        // Schedule a runnable to remove the status and navigation bar after a delay
+        mHideHandler.removeCallbacks(mHideViesOnEnterFullScreenRunnable);
+        mHideHandler.postDelayed(mShowViewsOnExitFullScreenRunnable, UI_ANIMATION_DELAY);
+    }
+
+    /**
+     * 退出全屏显示要显示的view
+     */
+    private void hideViewsOnEnterFullScreen() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -167,14 +183,6 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
         if (mView2Hide != null) {
             mView2Hide.setVisibility(View.GONE);
         }
-
-        SystemUiUtils.quitFullScreen(getWindow());
-
-        mVisible = false;
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
     @SuppressLint("InlinedApi")
@@ -184,13 +192,26 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
 //        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 //                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
+        //先隐藏，后隐藏的话可能会看到状态栏透明一下
+        hideViewsOnEnterFullScreen();
         SystemUiUtils.setFullScreen(getWindow());
 
-        mVisible = true;
+        mIsFullScreen = true;
 
         // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+        mHideHandler.removeCallbacks(mShowViewsOnExitFullScreenRunnable);
+//        mHideHandler.postDelayed(mHideViesOnEnterFullScreenRunnable, UI_ANIMATION_DELAY);
+    }
+
+    /**
+     * 进入全屏隐藏view
+     */
+    private void showViewsOnExitFullScreen() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.show();
+        }
+        mView2Hide.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -198,8 +219,8 @@ public abstract class BaseFullScreenActivity extends AppCompatActivity {
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+        mHideHandler.removeCallbacks(mEnterFullScreenRunnable);
+        mHideHandler.postDelayed(mEnterFullScreenRunnable, delayMillis);
     }
 
 }
